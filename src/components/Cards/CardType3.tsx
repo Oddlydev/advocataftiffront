@@ -3,7 +3,7 @@ import WhiteButton from "../Buttons/WhiteBtn";
 
 const CardType3: React.FC = () => {
   return (
-    <div className="my-20">
+    <div className="">
       <a href="#" className="group">
         <div className="relative flex flex-col h-full overflow-hidden transition-all duration-500 ease-in-out cursor-pointer rounded-lg border border-slate-400 text-slate-50 bg-brand-black hover:border-slate-200 hover:shadow-lg hover:-translate-y-1.5 focus-within:border-brand-1-900 focus-within:shadow-lg">
           <div className="flex flex-col justify-between xl:px-12 xl:pt-12 md:px-9 md:pt-9 px-6 pt-6">
