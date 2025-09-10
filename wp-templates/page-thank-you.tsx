@@ -1,13 +1,43 @@
+import { useEffect, useState } from "react";
+
 export default function ThankYou() {
+  const [status, setStatus] = useState("loading");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (!token) {
+      setStatus("error");
+      return;
+    }
+
+    fetch(
+      `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/mailpoet/v1/subscribers/confirm`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }), // 👈 IMPORTANT
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "subscribed") {
+          setStatus("success");
+        } else {
+          setStatus("error");
+        }
+      })
+      .catch(() => setStatus("error"));
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-brand-2-900 text-white">
-      <div className="max-w-xl text-center">
-        <h1 className="text-3xl font-bold">🎉 Subscription Confirmed</h1>
-        <p className="mt-4 text-lg">
-          Thanks for confirming your subscription. You’ll now receive our latest
-          research and insights in your inbox.
-        </p>
-      </div>
+    <div>
+      {status === "loading" && <p>Confirming subscription...</p>}
+      {status === "success" && <p>🎉 Subscription confirmed!</p>}
+      {status === "error" && <p>⚠️ Something went wrong.</p>}
     </div>
   );
 }
