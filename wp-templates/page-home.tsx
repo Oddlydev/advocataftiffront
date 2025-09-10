@@ -336,12 +336,12 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
             <div className="lg:pt-4 lg:pr-4 lg:w-2xl">
               <div className="max-w-lg lg:max-w-none">
                 {data?.page?.homeAiSection?.aiTitle && (
-                  <span className="text-xs font-semibold text-white bg-white/25 py-2 px-3 rounded-full uppercase font-manrope">
+                  <span className="text-xs font-semibold text-white bg-white/25 py-2 px-3 rounded-full uppercase font-sourcecodepro">
                     {data.page.homeAiSection.aiTitle}
                   </span>
                 )}
                 {data?.page?.homeAiSection?.aiDescription && (
-                  <h2 className="mt-5 xl:text-6xl sm:text-5xl text-3xl leading-9 md:leading-14 xl:leading-16 font-normal font-playfair text-pretty text-white">
+                  <h2 className="mt-5 xl:text-6xl sm:text-5xl text-3xl leading-9 md:leading-14 xl:leading-16 font-normal font-montserrat text-pretty text-white">
                     {data.page.homeAiSection.aiDescription}
                   </h2>
                 )}
