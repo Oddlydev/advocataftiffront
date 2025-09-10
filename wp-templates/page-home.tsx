@@ -295,7 +295,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
       {/* Dashboards */}
       <div className="bg-white pb-24 sm:pb-32 -mt-18">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-          <div className="mx-auto max-w-2xl text-center">
+          <div className="mx-auto max-w-4xl text-center">
             <PageSubTitle className="page-sub-title">dashboard</PageSubTitle>
             <PageTitle className="page-title">
               Explore Our advance dashboards
@@ -354,7 +354,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
       {/* Datasets */}
       <div className="bg-white py-12 md:py-16 xl:py-20">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-          <div className="mx-auto max-w-2xl text-center">
+          <div className="mx-auto max-w-4xl text-center">
             <PageSubTitle className="page-sub-title">Datasets</PageSubTitle>
             <PageTitle className="page-title">
               Explore Our Comprehensive Dataset Collection
@@ -386,7 +386,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
       {/* Insights */}
       <div className="bg-pink-100 py-12 md:py-16 xl:py-24">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-          <div className="mx-auto max-w-2xl text-center">
+          <div className="mx-auto max-w-4xl text-center">
             <PageSubTitle className="page-sub-title">Highlights</PageSubTitle>
             <PageTitle className="page-title">
               Up to date with our latest news and updates
