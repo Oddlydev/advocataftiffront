@@ -11,9 +11,9 @@
 /* ----------------------------------------------------------------------- 
  *  General resets 
  * --------------------------------------------------------------------- */
-a:where(:not(.wp-element-button)) {
+/* a:where(:not(.wp-element-button)) {
     text-decoration: none !important;
-}
+} */
 
 button {
     cursor: pointer;
@@ -56,9 +56,9 @@ button {
  * --------------------------------------------------------------------- */
 
 /* prose link override */
-.prose a:not(.wp-element-button) {
+/* .prose a:not(.wp-element-button) {
     text-decoration: none;
-}
+} */
 
 /* responsive table helper (expands @apply max-w-[9rem] sm:max-w-none whitespace-normal sm:whitespace-nowrap break-words;) */
 .mobile-col {
