@@ -221,39 +221,42 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
         description={heroDescription}
       />
       {/* Hero section */}
-      <div className="home-hero relative bg-cover bg-center bg-no-repeat text-white">
+      <div className="home-hero relative bg-cover bg-center bg-no-repeat text-white h-screen">
+        {/* Background Image */}
         <div>
           <img
             src={homeHeroBg}
             width={1628}
             height={700}
-            className="h-full w-full object-cover"
+            className="h-screen w-full object-cover"
             alt="home-hero-bg"
           />
         </div>
+
+        {/* overlay */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 h-full w-full"
           style={{
             background:
               "linear-gradient(0deg, rgba(235, 26, 82, 0.20) 0%, rgba(235, 26, 82, 0.20) 100%), linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.45) 100%)",
           }}
         />
         <div className="absolute inset-0 flex items-center">
-          <div className="px-5 md:px-10 xl:px-16 py-12 md:py-16 xl:py-20 mx-auto w-full">
-            <div className="text-center mx-auto max-w-6xl grid place-items-center">
+          <div className="hero-block-container px-5 md:px-16 xl:px-20 pt-10 pb-28 md:pt-16 md:pb-16 xl:pt-32 xl:pb-72 relative z-10 mx-auto">
+            <div className="hero-block-center text-center mx-auto max-w-6xl grid justify-center">
               {heroTitle && (
-                <h1 className="mb-5 md:mb-0 text-slate-50 text-4xl md:text-5xl xl:text-6xl leading-snug font-montserrat font-bold whitespace-pre-line">
+                <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-[80px] leading-snug font-family-montserrat font-extrabold max-w-4xl">
                   {heroTitle}
                 </h1>
               )}
               {heroDescription && (
                 <div className="space-y-2.5">
-                  <p className="text-slate-200 text-base/6 lg:text-lg/7 font-playfair font-normal max-w-2xl">
+                  <p className="hero-paragraph text-slate-200 text-base/6 lg:text-lg/7 font-family-montserrat font-normal max-w-3xl mx-auto">
                     {heroDescription}
                   </p>
                 </div>
               )}
-              <div className="pb-8 w-full max-w-2xl">
+              <div className="mt-8">
                 <SearchFieldHome />
               </div>
             </div>
@@ -292,6 +295,9 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
         </div>
       )}
 
+
+
+{/* my changes */}
       {/* Dashboards */}
       <div className="bg-white pb-24 sm:pb-32 -mt-18">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
@@ -300,12 +306,13 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
             <PageTitle className="page-title">
               Explore Our advance dashboards
             </PageTitle>
-            <PageTitleText className="page-title-text !text-slate-800 ">
+            <PageTitleText className="page-title-text">
               Powered by Advocata’s cutting-edge AI, our platform leverages
               advanced data insights to help you connect with people who share
               your values and interests.
             </PageTitleText>
           </div>
+
           <div className="mt-10 grid grid-cols-1 gap-6 md:gap-8 xl:gap-10 sm:mt-16 xl:grid-cols-7 xl:grid-rows-2">
             <div className="flex p-px xl:col-span-4">
               <CardType1 />
@@ -320,6 +327,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
               <CardType4 />
             </div>
           </div>
+          
         </div>
       </div>
 
@@ -336,14 +344,14 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
             <div className="lg:pt-4 lg:pr-4 lg:w-2xl">
               <div className="max-w-lg lg:max-w-none">
                 {data?.page?.homeAiSection?.aiTitle && (
-                  <span className="text-xs font-semibold text-white bg-white/25 py-2 px-3 rounded-full uppercase font-sourcecodepro">
+                  <span className="text-xs font-semibold text-white bg-white/25 py-2 px-3 rounded-full uppercase font-family-sourcecodepro">
                     {data.page.homeAiSection.aiTitle}
                   </span>
                 )}
                 {data?.page?.homeAiSection?.aiDescription && (
-                  <h2 className="mt-5 xl:text-6xl sm:text-5xl text-3xl leading-9 md:leading-14 xl:leading-16 font-normal font-montserrat text-pretty text-white">
+                  <h3 className="mt-5 xl:text-6xl sm:text-5xl text-3xl leading-9 md:leading-14 xl:leading-16 font-normal font-family-montserrat text-pretty text-white">
                     {data.page.homeAiSection.aiDescription}
-                  </h2>
+                  </h3>
                 )}
               </div>
             </div>
