@@ -27,14 +27,14 @@ export const PageTitle: React.FC<TypographyProps> = ({
   className,
 }) => {
   return (
-    <h1
+    <h2
       className={clsx(
-        "mb-2 text-3xl md:text-4xl xl:text-6xl leading-snug font-bold font-family-montserrat text-slate-900 tracking-tight text-balance",
+        "mb-2 text-3xl md:text-4xl xl:text-5xl leading-snug font-bold font-family-montserrat text-slate-900 tracking-tight text-balance",
         className
       )}
     >
       {children}
-    </h1>
+    </h2>
   );
 };
 

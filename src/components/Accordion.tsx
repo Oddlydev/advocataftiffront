@@ -47,7 +47,7 @@ export default function Accordion({
 
   return (
     <div className={`w-full ${className}`}>
-      <dl className="mt-16 max-w-2xl space-y-4 mx-auto">
+      <dl className="mt-16 max-w-4xl space-y-4 mx-auto">
         {items.map((item, i) => {
           const panelId = `${baseId}-panel-${i}`;
           const btnId = `${baseId}-button-${i}`;
@@ -136,12 +136,12 @@ export default function Accordion({
                 </h3>
 
                 {item.content ? (
-                  <div className="text-base leading-6 md:text-lg md:leading-7 pt-4 max-w-[18rem] md:max-w-xl font-normal font-sourcecodepro">
+                  <div className="text-base leading-6 md:text-lg md:leading-7 pt-4 max-w-full md:max-w-4xl font-normal font-sourcecodepro">
                     {item.content}
                   </div>
                 ) : item.html ? (
                   <div
-                    className="text-base leading-6 md:text-lg md:leading-7 pt-4 max-w-[18rem] md:max-w-xl font-normal font-sourcecodepro"
+                    className="text-base leading-6 md:text-lg md:leading-7 pt-4 max-w-full md:max-w-4xl font-normal font-sourcecodepro"
                     dangerouslySetInnerHTML={{ __html: item.html }}
                   />
                 ) : null}

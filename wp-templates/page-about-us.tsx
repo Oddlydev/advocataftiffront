@@ -163,7 +163,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ data }) => {
         {/* FAQ */}
         <section className="relative overflow-hidden py-24 sm:py-32 bg-brand-2-900">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-            <div className="mx-auto max-w-2xl text-center">
+            <div className="mx-auto max-w-4xl text-center">
               <PageSubTitle className="!text-slate-50">FAQ</PageSubTitle>
               <PageTitle className="!text-slate-50">
                 How can we help you?
@@ -180,7 +180,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ data }) => {
                   </span>
                 ),
                 content: (
-                  <p className="text-base/6 md:text-lg/7 pt-4 max-w-sm md:max-w-xl">
+                  <p className="text-base/6 md:text-lg/7 pt-4 max-w-sm md:max-w-4xl">
                     {item.content}
                   </p>
                 ),

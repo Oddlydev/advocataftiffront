@@ -24,7 +24,7 @@ export default function TextBlock({
           </span>
         )}
 
-        <h3 className="text-title mb-3.5 md:mb-5 text-slate-950 text-4xl md:text-5xl xl:text-6xl leading-snug font-family-montserrat font-bold max-w-3xl">
+        <h3 className="text-title mb-3.5 md:mb-5 text-slate-950 text-4xl md:text-5xl xl:text-6xl leading-snug font-family-montserrat font-bold max-w-2xl">
           {title}
         </h3>
 
@@ -32,7 +32,7 @@ export default function TextBlock({
           {paragraphs.map((p, i) => (
             <p
               key={i}
-              className="text-paragraph text-slate-800 text-base/6 lg:text-lg/7 font-family-baskervville font-normal max-w-3xl"
+              className="text-paragraph text-slate-800 text-base/6 lg:text-lg/7 font-family-baskervville font-normal max-w-2xl"
             >
               {p}
             </p>
