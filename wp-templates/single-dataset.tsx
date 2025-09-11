@@ -13,6 +13,7 @@ import {
 } from "@/src/lib/downloadUtils";
 import { InnerPageTitle, PageSubTitle } from "@/src/components/Typography";
 import CsvTable from "@/src/components/CsvTable";
+import RelatedDatasets from "@/src/components/RelatedDatasets";
 
 /** Single dataset + a small related list */
 export const SINGLE_DATASET_QUERY = gql`
@@ -20,6 +21,7 @@ export const SINGLE_DATASET_QUERY = gql`
     dataSet(id: $slug, idType: SLUG) {
       id
       title
+      databaseId
       content
       date
       uri
@@ -33,11 +35,17 @@ export const SINGLE_DATASET_QUERY = gql`
         opengraphDescription
         opengraphUrl
         opengraphSiteName
-        opengraphImage { sourceUrl }
+        opengraphImage {
+          sourceUrl
+        }
         twitterTitle
         twitterDescription
-        twitterImage { sourceUrl }
-        schema { raw }
+        twitterImage {
+          sourceUrl
+        }
+        schema {
+          raw
+        }
       }
       dataSetFields {
         dataSetFile {
@@ -85,6 +93,7 @@ interface SingleDatasetProps {
   data?: {
     dataSet?: {
       id: string;
+      databaseId: number;
       title?: string | null;
       content?: string | null;
       date?: string | null;
@@ -320,7 +329,8 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       </div>
 
       {/* Related datasets */}
-      {related.length > 0 && (
+      <RelatedDatasets datasetId={String(dataset.databaseId)} />
+      {/* {related.length > 0 && (
         <section className="bg-pink-100 py-12 md:py-16 xl:py-20">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
             <PageSubTitle>Advocata ai suggestions</PageSubTitle>
@@ -341,7 +351,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
             </div>
           </div>
         </section>
-      )}
+      )} */}
     </main>
   );
 };

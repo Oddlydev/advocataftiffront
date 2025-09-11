@@ -1,6 +1,6 @@
-import { algoliasearch } from "algoliasearch"; // valid named import in v5+
+import { liteClient as algoliasearch } from "algoliasearch/lite";
 
-const searchClient = algoliasearch(
+export const searchClient = algoliasearch(
     process.env.NEXT_PUBLIC_ALGOLIA_APP_ID as string,
     process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY as string
 );
