@@ -65,13 +65,16 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
       relatedProducts({
         container: "#related-datasets-container",
         objectIDs: [recommendObjectID],
+        queryParameters: {
+          filters: 'post_type_label:"Data Sets"',
+        },
         cssClasses: {
           list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
           item: "h-full",
           title: "hidden",
         },
         templates: {
-          header: "", // removes default "Related products" h3
+          header: "",
           item(hit: any) {
             const title = hit.post_title || "";
             const excerpt = hit.post_excerpt || "";
