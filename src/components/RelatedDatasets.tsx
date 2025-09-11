@@ -11,7 +11,7 @@ interface RelatedDatasetsProps {
   datasetId: string;
 }
 
-// Utility functions — make sure you have these in your project already
+// Utility functions
 function stripParagraphTags(text: string = ""): string {
   return text.replace(/<\/?p[^>]*>/g, "").trim();
 }
@@ -48,7 +48,13 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
       relatedProducts({
         container: "#related-datasets-container",
         objectIDs: [recommendObjectID],
+        cssClasses: {
+          list: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
+          item: "h-full",
+          title: "hidden",
+        },
         templates: {
+          header: "", // removes default "Related products" h3
           item(hit: any) {
             const title = hit.post_title || "";
             const excerpt = hit.post_excerpt || "";
@@ -56,38 +62,32 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
             const postDate = hit.post_date || "";
 
             return `
-              <div class="h-full">
-                <div class="relative flex flex-col h-full overflow-hidden rounded-lg bg-white border border-slate-300
-                            transition-all duration-500 ease-in-out
-                            hover:-translate-y-1.5 hover:border-brand-2-100
-                            hover:shadow-[0_0_40px_0_rgba(79,8,46,0.40)]
-                            focus:border-brand-2-100 focus:shadow-inner-lg
-                            card card-type-6">
-                  ${
-                    uri
-                      ? `<a href="${uri}" aria-label="${title}" class="absolute inset-0 z-10">
-                           <span class="sr-only">${title}</span>
-                         </a>`
-                      : ""
-                  }
-                  <div class="card-body flex flex-1 flex-col justify-between bg-white px-6 py-5">
-                    <div class="flex-1">
-                      <div>
-                        <h2 class="mt-2 cursor-pointer text-2xl leading-snug font-semibold font-family-montserrat text-slate-800 transition-colors duration-500 ease-in-out">
-                          ${title}
-                        </h2>
-                        <div class="mt-2 text-base/6 font-normal font-family-sourcecodepro text-slate-600 line-clamp-3 transition-colors duration-500 ease-in-out">
-                          ${stripParagraphTags(excerpt)}
-                        </div>
-                      </div>
+              <div class="relative flex flex-col h-full overflow-hidden rounded-lg bg-white border border-slate-300
+                          transition-all duration-500 ease-in-out
+                          hover:-translate-y-1.5 hover:border-brand-2-100
+                          hover:shadow-[0_0_40px_0_rgba(79,8,46,0.40)]
+                          focus:border-brand-2-100 focus:shadow-inner-lg
+                          card card-type-6">
+                ${
+                  uri
+                    ? `<a href="${uri}" aria-label="${title}" class="absolute inset-0 z-10">
+                         <span class="sr-only">${title}</span>
+                       </a>`
+                    : ""
+                }
+                <div class="card-body flex flex-1 flex-col justify-between bg-white px-6 py-5">
+                  <div class="flex-1">
+                    <h2 class="mt-2 cursor-pointer text-2xl leading-snug font-semibold font-family-montserrat text-slate-800">
+                      ${title}
+                    </h2>
+                    <div class="mt-2 text-base/6 font-normal font-family-sourcecodepro text-slate-600 line-clamp-3">
+                      ${stripParagraphTags(excerpt)}
                     </div>
-                    <div class="card-footer mt-6 flex items-center justify-between">
-                      <div class="date-info flex justify-between w-full items-center space-x-1 text-xs/tight font-medium font-family-sourcecodepro text-slate-600">
-                        <time class="text-xs/tight font-medium font-family-sourcecodepro text-slate-600">
-                          ${formatDate(postDate)}
-                        </time>
-                      </div>
-                    </div>
+                  </div>
+                  <div class="card-footer mt-6 flex items-center justify-between">
+                    <time class="text-xs/tight font-medium font-family-sourcecodepro text-slate-600">
+                      ${formatDate(postDate)}
+                    </time>
                   </div>
                 </div>
               </div>
@@ -109,10 +109,7 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
       <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
         <PageSubTitle>Advocata AI Suggestions</PageSubTitle>
         <InnerPageTitle className="mb-8">Related Datasets</InnerPageTitle>
-        <div
-          id="related-datasets-container"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        />
+        <div id="related-datasets-container" />
       </div>
     </section>
   );
