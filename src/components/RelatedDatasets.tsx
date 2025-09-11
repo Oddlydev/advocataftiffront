@@ -16,13 +16,30 @@ function stripParagraphTags(text: string = ""): string {
   return text.replace(/<\/?p[^>]*>/g, "").trim();
 }
 
-function formatDate(date: string = ""): string {
-  if (!date) return "";
-  return new Date(date).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+function formatDate(dateValue: string | number | null): string {
+  if (!dateValue) return "";
+
+  let d: Date;
+
+  if (typeof dateValue === "number") {
+    // Unix timestamp in seconds
+    d = new Date(dateValue * 1000);
+  } else if (/^\d+$/.test(dateValue)) {
+    // Numeric string -> treat as Unix timestamp
+    d = new Date(parseInt(dateValue, 10) * 1000);
+  } else {
+    // Normal date string
+    d = new Date(dateValue);
+  }
+
+  if (isNaN(d.getTime())) return ""; // invalid date
+
+  // Format: YYYY-MM-DD
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
