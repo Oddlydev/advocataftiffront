@@ -75,7 +75,7 @@ export default function DefaultDropdown({
   }, []);
 
   return (
-    <div className={["default-dropdown-btn-wrapper relative inline-block text-left", className].join(" ")}> 
+    <div className={["default-dropdown-btn-wrapper relative inline-block text-left", className].join(" ")}>
       <div>
         <button
           ref={btnRef}
