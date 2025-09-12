@@ -82,17 +82,17 @@ export default function FilterCarousel({
       items.map((label, index) => {
         const isActive = index === activeIndex;
         return (
-          <div key={`${label}-${index}`} className="slider-item inline-block align-middle">
+          <div key={`${label}-${index}`} className="slider-item align-middle">
             <button
               type="button"
               onClick={() => handleSelect(index)}
               className={[
-                "px-3 py-2 md:px-4 rounded-full text-slate-800 text-sm xl:text-base font-normal uppercase",
-                "hover:bg-brand-1-50 hover:border hover:border-brand-1-900",
+                "px-3 py-2 md:px-4 rounded-full text-sm xl:text-base font-normal uppercase",
+                "",
                 "font-family-baskervville",
                 isActive
-                  ? "bg-brand-1-500 text-slate-50 hover:text-slate-800"
-                  : "",
+                  ? "bg-brand-1-500 text-slate-50 hover:text-slate-800 hover:bg-brand-1-50 hover:border hover:border-brand-1-900"
+                  : "text-slate-800 hover:bg-brand-1-50 hover:border hover:border-brand-1-900",
               ].join(" ")}
             >
               {label}
