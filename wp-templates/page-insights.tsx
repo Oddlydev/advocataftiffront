@@ -278,11 +278,27 @@ export default function InsightsPage({ data }: InsightsPageProps) {
   return (
     <main>
       <SEO yoast={page?.seo as any} title={page?.title ?? undefined} />
-      <HeroBasic
-        bgUrl={insightBgPattern}
-        title="Exploring Insights"
-        paragraph={heroParagraph}
-      />
+      
+      <div className="insight-hero relative">
+          {/* Background Image */}
+          <img
+            src={insightBgPattern}
+            alt="hero background"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[rgba(235,26,82,0.16)] to-[rgba(235,26,82,0.16)]" />
+
+          {/* Hero Content */}
+          <div className="relative z-10">
+            <HeroBasic
+            // bgUrl={insightBgPattern}
+            title="Exploring Insights"
+            paragraph={heroParagraph}
+          />
+          </div>
+        </div>
 
       <div className="bg-white">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pt-5 pb-3.5 md:pb-5 md:pt-10 lg:pt-16 lg:pb-6">
