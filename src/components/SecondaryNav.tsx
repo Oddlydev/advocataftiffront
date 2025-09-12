@@ -37,7 +37,7 @@ export default function SecondaryNav({
     <div className={["secondary-nav bg-transparent", className].join(" ")}>
       <div className="secondary-nav-wrapper">
         <div className="secondary-nav-flyout flex justify-center items-center">
-          <div className="secondary-nav-flyout-content flex space-x-4 overflow-x-auto overflow-y-hidden px-0 pt-4 pb-0"> {/* no-scrollbar momentum */}
+          <div className="secondary-nav-flyout-content flex space-x-4 overflow-x-auto overflow-y-hidden px-0 pt-4 pb-0 no-scrollbar momentum">
             
             {items.map((it, idx) => {
               const hrefPathNorm = normalizePath(it.href || "");
