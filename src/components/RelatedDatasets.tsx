@@ -73,7 +73,9 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
           item: "h-full",
           title: "hidden",
         },
-        limit: 3,
+        transformItems(items) {
+          return items.slice(0, 3);
+        },
         templates: {
           header: "",
           item(hit: any) {
