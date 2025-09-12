@@ -22,11 +22,17 @@ const PAGE_QUERY = gql`
         opengraphDescription
         opengraphUrl
         opengraphSiteName
-        opengraphImage { sourceUrl }
+        opengraphImage {
+          sourceUrl
+        }
         twitterTitle
         twitterDescription
-        twitterImage { sourceUrl }
-        schema { raw }
+        twitterImage {
+          sourceUrl
+        }
+        schema {
+          raw
+        }
       }
     }
     insights(first: 100) {
@@ -142,10 +148,21 @@ export default function InsightsPage({ data }: InsightsPageProps) {
     return m;
   }, [rawCats]);
 
-  const categories = useMemo(
-    () => ["All", ...rawCats.map((c) => c.name ?? "").filter(Boolean)],
-    [rawCats]
-  );
+  const categories = useMemo(() => {
+    const validCategoryIds = new Set(
+      (data?.insights?.nodes ?? []).flatMap(
+        (ds) => ds.insightsCategories?.nodes?.map((c) => c.id) ?? []
+      )
+    );
+
+    const filtered = rawCats
+      .filter((c) => validCategoryIds.has(c.id))
+      .map((c) => c.name ?? "")
+      .filter(Boolean);
+
+    // Always prepend "All"
+    return ["All", ...filtered];
+  }, [rawCats, data?.insights?.nodes]);
 
   const isListingView = React.useCallback(() => {
     const clean = router.asPath.split("?")[0].split("#")[0];

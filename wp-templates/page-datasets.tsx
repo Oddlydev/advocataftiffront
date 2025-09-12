@@ -169,10 +169,13 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
       )
     );
 
-    return rawCats
+    const filtered = rawCats
       .filter((c) => validCategoryIds.has(c.id))
       .map((c) => c.name ?? "")
       .filter(Boolean);
+
+    // Always prepend "All"
+    return ["All", ...filtered];
   }, [rawCats, data?.dataSets?.nodes]);
 
   // Route detection: /datasets or /datasets/<category>
