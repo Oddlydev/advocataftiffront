@@ -294,14 +294,16 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       </div>
 
       {/* Hero */}
-      <HeroWhite
+      <div>
+        <HeroWhite
         title="State Owned Enterprises"
         paragraph="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         items={[{ label: "State Owned Dashboard" }]}
       />
+      </div>
 
       {/* Filters */}
-      <section className="bg-white py-3.5 md:py-5 xl:py-6">
+      <section className="bg-white">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           <div className="lg:flex gap-2 items-center justify-between pb-9">
             {/* Search */}

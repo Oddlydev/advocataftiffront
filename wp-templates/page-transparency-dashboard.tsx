@@ -284,8 +284,8 @@ export default function PageTransparencyDashboard(): JSX.Element {
             </div>
 
             {/* Dropdowns */}
-            <div className="grid md:flex gap-3 items-center w-full lg:w-[31%] mt-4 xl:mt-0">
-              <span className="text-slate-800 font-medium text-lg/7">
+            <div className="grid md:flex gap-3 items-center md:justify-end w-full lg:w-1/2 mt-4 xl:mt-0">
+              <span className="text-slate-800 font-medium text-lg/7 font-family-sourcecodepro md:flex md:justify-items-end mt-3 md:mt-0">
                 Filter by :
               </span>
 
