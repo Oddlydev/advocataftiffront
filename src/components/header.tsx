@@ -405,7 +405,6 @@ const dashboardIcons: React.ReactNode[] = [
     />
   </svg>,
 ];
-
 const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
   imageUrl,
   items = [],
@@ -422,10 +421,19 @@ const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
+  const anyChildActive =
+    typeof window !== "undefined" &&
+    items.some((child: any) => window.location.pathname === child.uri);
+
   return (
     <div ref={containerRef} className="relative">
       <button
-        className="dropdown-btn nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase text-slate-50/60 py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none flex items-center"
+        className={`dropdown-btn nav-link text-lg leading-snug font-family-sourcecodepro uppercase py-2.5 px-3.5 rounded-md transition flex items-center
+    ${
+      anyChildActive
+        ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
+        : "text-slate-50/60 font-normal hover:bg-white/10 hover:text-brand-white hover:font-medium"
+    }`}
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={(e) => {
@@ -518,6 +526,11 @@ const MobileMenu: React.FC<{
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
+  // 👇 Add this line
+  const anyChildActive =
+    typeof window !== "undefined" &&
+    dashboardItems.some((child) => window.location.pathname === child.uri);
+
   return (
     <div className="lg:hidden flex items-center gap-3.5">
       {/* Mobile Search */}
@@ -606,7 +619,12 @@ const MobileMenu: React.FC<{
         {/* Clickable Dropdown (mobile) */}
         <div className="relative">
           <button
-            className="dropdown-btn nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase text-slate-50/60 py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none flex items-center"
+            className={`dropdown-btn nav-link text-lg leading-snug font-family-sourcecodepro uppercase py-2.5 px-3.5 rounded-md transition flex items-center
+    ${
+      anyChildActive
+        ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
+        : "text-slate-50/60 font-normal hover:bg-white/10 hover:text-brand-white hover:font-medium"
+    }`}
             aria-expanded={dropdownOpen}
             onClick={(e) => {
               e.stopPropagation();
