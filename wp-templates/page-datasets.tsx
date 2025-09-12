@@ -289,6 +289,7 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
           bgUrl={datasetBgPattern}
           title="Research Datasets"
           paragraph={heroParagraph}
+          overlay={null}
         />
       </section>
 
