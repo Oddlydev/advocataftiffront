@@ -573,7 +573,7 @@ const MobileMenu: React.FC<{
       <div
         id="mobile-menu-panel"
         ref={ref}
-        className={`mobile-menu px-4 pb-6 space-y-4 grid overflow-y-scroll lg:hidden absolute inset-0 top-13 h-screen w-full bg-brand-black border-t border-gray-300 z-50 flex flex-col gap-4 px-6 py-6 ${open ? "" : "hidden"}`}
+        className={`mobile-menu px-4 pb-6 space-y-4 grid overflow-y-scroll lg:hidden absolute inset-0 top-13 h-screen w-full bg-brand-black border-t border-gray-300 z-50 gap-4 py-6 ${open ? "" : "hidden"}`}
       >
         {topLevelItems.map((item) => (
           <a
