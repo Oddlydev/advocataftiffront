@@ -575,15 +575,23 @@ const MobileMenu: React.FC<{
         ref={ref}
         className={`mobile-menu lg:hidden absolute inset-0 top-12 h-screen w-full bg-brand-black border-t border-gray-300 z-50 flex flex-col gap-4 px-6 py-6 ${open ? "" : "hidden"}`}
       >
-        {topLevelItems.map((item) => (
-          <a
-            key={item.id}
-            href={item.uri ?? "#"}
-            className="nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none"
-          >
-            {item.label}
-          </a>
-        ))}
+        {topLevelItems.map((item) => {
+          const isActive = usePathname() === item.uri;
+          return (
+            <a
+              key={item.id}
+              href={item.uri ?? "#"}
+              className={`nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase py-2.5 px-3.5 rounded-md transition
+                ${
+                  isActive
+                    ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
+                    : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
+                }`}
+            >
+              {item.label}
+            </a>
+          );
+        })}
 
         {/* Clickable Dropdown (mobile) */}
         <div className="relative">
