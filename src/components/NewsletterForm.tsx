@@ -90,7 +90,7 @@ export default function NewsletterForm({
           className={
             variant === "desktop"
               ? "text-xl/7 md:text-2xl/snug tracking-normal font-family-montserrat font-normal text-brand-white"
-              : "footer-heading text-xl/7 md:text-2xl/snug"
+              : "footer-heading text-2xl/snug tracking-normal font-family-montserrat font-normal text-brand-white"
           }
         >
           Newsletter Subscription

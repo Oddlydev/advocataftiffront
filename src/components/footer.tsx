@@ -4,6 +4,7 @@ import { useState, FormEvent, JSX } from "react";
 import { useQuery } from "@apollo/client";
 import { FOOTER_MENU_QUERY } from "@/queries/MenuQueries";
 import NewsletterForm from "./NewsletterForm";
+import { usePathname } from "next/navigation";
 
 type FooterMenuItem = {
   id: string;
@@ -11,10 +12,10 @@ type FooterMenuItem = {
   uri?: string | null;
   parentId?: string | null;
 };
-
 export default function Footer(): JSX.Element {
   const [openQuick, setOpenQuick] = useState(false);
   const [openDashboards, setOpenDashboards] = useState(false);
+  const pathname = usePathname();
 
   const { data } = useQuery(FOOTER_MENU_QUERY);
   const allItems: FooterMenuItem[] = data?.menu?.menuItems?.nodes ?? [];
@@ -61,16 +62,24 @@ export default function Footer(): JSX.Element {
                 Quick Links
               </h3>
               <ul role="list" className="mt-6 space-y-4">
-                {quickLinks.map((item) => (
-                  <li key={item.id}>
-                    <a
-                      href={item.uri ?? "#"}
-                      className="footer-link text-base/6 text-brand-white/80 font-normal font-family-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline"
-                    >
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
+                {quickLinks.map((item) => {
+                  const isActive = pathname === item.uri; // exact match
+                  return (
+                    <li key={item.id}>
+                      <a
+                        href={item.uri ?? "#"}
+                        className={[
+                          "footer-link text-base/6 font-normal font-family-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline",
+                          isActive
+                            ? "text-brand-white font-medium hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline" // Active link style
+                            : "text-brand-white/80",
+                        ].join(" ")}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
@@ -82,7 +91,7 @@ export default function Footer(): JSX.Element {
               <h3 className="footer-heading text-2xl/snug tracking-normal font-family-montserrat font-normal text-brand-white">
                 Dashboards
               </h3>
-              <ul role="list" className="mt-7 space-y-6 grid grid-cols-2">
+              <ul role="list" className="mt-7 space-y-6 grid xl:grid-cols-2">
                 {dashboards.map((item) => (
                   <li key={item.id}>
                     <a
@@ -128,7 +137,7 @@ export default function Footer(): JSX.Element {
                 </svg>
               </button>
               <ul
-                className={`mt-7 space-y-6 grid grid-cols-2 ${openQuick ? "block" : "hidden"}`}
+                className={`mt-7 space-y-6 grid xl:grid-cols-2 ${openQuick ? "block" : "hidden"}`}
               >
                 {quickLinks.map((item) => (
                   <li key={item.id}>
@@ -170,7 +179,7 @@ export default function Footer(): JSX.Element {
                 </svg>
               </button>
               <ul
-                className={`mt-7 space-y-6 grid grid-cols-2 ${openDashboards ? "block" : "hidden"}`}
+                className={`mt-7 space-y-6 grid xl:grid-cols-2 ${openDashboards ? "block" : "hidden"}`}
               >
                 {dashboards.map((item) => (
                   <li key={item.id}>
