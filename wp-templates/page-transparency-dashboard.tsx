@@ -49,7 +49,9 @@ async function fetchPageSEOByUri(uri: string): Promise<any | null> {
   const data = await gql<{ nodeByUri?: { __typename?: string; seo?: any } }>(
     `query GetSeoByUri {\n  nodeByUri(uri: "${encoded}") {\n    __typename\n    ... on Page {\n      seo {\n        title\n        metaDesc\n        canonical\n        opengraphTitle\n        opengraphDescription\n        opengraphUrl\n        opengraphSiteName\n        opengraphImage { sourceUrl }\n        twitterTitle\n        twitterDescription\n        twitterImage { sourceUrl }\n        schema { raw }\n      }\n    }\n  }\n}`
   );
-  return data?.nodeByUri && (data.nodeByUri as any).seo ? (data.nodeByUri as any).seo : null;
+  return data?.nodeByUri && (data.nodeByUri as any).seo
+    ? (data.nodeByUri as any).seo
+    : null;
 }
 
 async function fetchTransparencyYears(): Promise<TaxNode[]> {
@@ -151,7 +153,9 @@ export default function PageTransparencyDashboard(): JSX.Element {
     async function load() {
       try {
         try {
-          const s = await fetchPageSEOByUri(pathname || "/transparency-dashboard/");
+          const s = await fetchPageSEOByUri(
+            pathname || "/transparency-dashboard/"
+          );
           setSeo(s);
         } catch (e) {
           console.warn("SEO fetch failed", e);
@@ -289,10 +293,8 @@ export default function PageTransparencyDashboard(): JSX.Element {
                 idKey="one"
                 label={
                   industry
-                    ? `Industry: ${
-                        industryOptions.find((i) => i.slug === industry)
-                          ?.name ?? ""
-                      }`
+                    ? (industryOptions.find((i) => i.slug === industry)?.name ??
+                      "Industry")
                     : "Industry"
                 }
                 items={[
@@ -311,9 +313,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
                 idKey="two"
                 label={
                   year
-                    ? `Year: ${
-                        yearOptions.find((y) => y.slug === year)?.name ?? ""
-                      }`
+                    ? (yearOptions.find((y) => y.slug === year)?.name ?? "Year")
                     : "Year"
                 }
                 items={yearOptions.map((y) => ({
@@ -340,7 +340,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
       </section>
 
       {/* Pagination */}
-      <section className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pt-6 md:pt-9 pb-16">
+      <section className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pt-6 md:pt-9 pb-16 hidden">
         <Pagination
           currentPage={currentPage}
           totalItems={filteredPosts.length}
