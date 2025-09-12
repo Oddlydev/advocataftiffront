@@ -5,24 +5,32 @@ type HeroBasicProps = {
   bgUrl?: string;
   title: string;
   paragraph: string;
+  overlay?: string | null; // new prop: pass a CSS gradient/color, or null to disable
 };
 
 export default function HeroBasic({
-  // bgUrl = "/assets/images/hero-basic-bg.jpg",
+  bgUrl = "/assets/images/hero-basic-bg.jpg",
   title,
   paragraph,
+  overlay = "linear-gradient(0deg, rgba(235, 26, 82, 0.16) 0%, rgba(235, 26, 82, 0.16) 100%)",
 }: HeroBasicProps): JSX.Element {
   return (
     <section
-      className="hero-block-container hero-basic mx-auto xl:px-16 py-12 md:py-16 xl:py-20 px-5 md:px-10 lg:px-16"
+      className="relative hero-block-container hero-basic px-5 md:px-10 xl:px-16 py-12 md:py-16 xl:py-20"
       style={{
-        // backgroundImage: `url(${bgUrl})`,
+        backgroundImage: `url(${bgUrl})`,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
       }}
     >
-      <div className="hero-block grid grid-cols-1 lg:grid-cols-2 gap-8 hero-block text-start mx-auto max-w-6xl items-center">
+      {/* Overlay (only render if not null) */}
+      {overlay && (
+        <div className="absolute inset-0" style={{ background: overlay }} />
+      )}
+
+      {/* Content */}
+      <div className="relative hero-block text-start mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-5 items-center">
         <h1 className="hero-title mb-5 md:mb-0 text-slate-50 text-4xl md:text-5xl xl:text-6xl leading-snug font-family-montserrat font-bold max-w-5 xl:max-w-sm">
           {title}
         </h1>
