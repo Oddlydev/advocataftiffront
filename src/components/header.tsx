@@ -1,7 +1,10 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { HEADER_MENU_QUERY } from "@/queries/MenuQueries";
 import searchClient from "../lib/algolia";
+import { usePathname } from "next/navigation";
 
 export type HeaderNavProps = {
   /** Brand logo URL */
@@ -667,6 +670,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
   siteUrl,
 }) => {
   const { data } = useQuery(HEADER_MENU_QUERY);
+  const pathname = usePathname(); // ✅ now defined
 
   const baseUrl =
     siteUrl || (typeof window !== "undefined" ? window.location.origin : "/");
@@ -688,6 +692,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
       : topLevelOrdered;
   const itemsAfterDashboard: MenuItem[] =
     dashboardIndex > -1 ? topLevelOrdered.slice(dashboardIndex + 1) : [];
+
   return (
     <header
       className={`${className ?? ""} navbar bg-brand-black relative z-30`}
@@ -709,30 +714,48 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
         <div className="flex items-center gap-10">
           {/* Desktop Nav */}
           <nav className="nav hidden lg:flex items-center space-x-2">
-            {itemsBeforeDashboard.map((item) => (
-              <a
-                key={item.id}
-                href={item.uri ?? "#"}
-                className="nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none"
-              >
-                {item.label}
-              </a>
-            ))}
+            {itemsBeforeDashboard.map((item) => {
+              const isActive = pathname === item.uri;
+              return (
+                <a
+                  key={item.id}
+                  href={item.uri ?? "#"}
+                  className={`nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase py-2.5 px-3.5 rounded-md transition
+                ${
+                  isActive
+                    ? "bg-white/10 text-brand-white font-medium"
+                    : "text-slate-50 opacity-60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
+                }`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
+
             {dashboardsItem && (
               <DashboardDropdown
                 imageUrl={navDropdownImage}
                 items={dashboardChildren}
               />
             )}
-            {itemsAfterDashboard.map((item) => (
-              <a
-                key={item.id}
-                href={item.uri ?? "#"}
-                className="nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none"
-              >
-                {item.label}
-              </a>
-            ))}
+
+            {itemsAfterDashboard.map((item) => {
+              const isActive = pathname === item.uri;
+              return (
+                <a
+                  key={item.id}
+                  href={item.uri ?? "#"}
+                  className={`nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase py-2.5 px-3.5 rounded-md transition
+                ${
+                  isActive
+                    ? "bg-white/10 text-brand-white font-medium"
+                    : "text-slate-50 opacity-60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
+                }`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </nav>
 
           {/* Desktop Search */}

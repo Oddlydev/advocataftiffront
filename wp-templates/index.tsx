@@ -3,7 +3,6 @@ import page from "./page";
 import single from "./single";
 import archive from "./archive";
 import AboutPage from "./page-about-us";
-import TestPage from "./page-test";
 import DatasetsPage from "./page-datasets";
 import InsightsPage from "./page-insights";
 import HomePage from "./page-home";
@@ -19,7 +18,6 @@ export default {
   single,
   archive,
   "page-about-us": AboutPage,
-  "page-test": TestPage,
   "page-datasets": DatasetsPage,
   "page-insights": InsightsPage,
   "page-home": HomePage,
