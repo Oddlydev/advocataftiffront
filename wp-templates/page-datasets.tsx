@@ -23,11 +23,17 @@ export const PAGE_QUERY = gql`
         opengraphDescription
         opengraphUrl
         opengraphSiteName
-        opengraphImage { sourceUrl }
+        opengraphImage {
+          sourceUrl
+        }
         twitterTitle
         twitterDescription
-        twitterImage { sourceUrl }
-        schema { raw }
+        twitterImage {
+          sourceUrl
+        }
+        schema {
+          raw
+        }
       }
     }
     dataSets(first: 100) {
@@ -66,7 +72,11 @@ export const PAGE_QUERY = gql`
 
 interface DatasetsPageProps {
   data?: {
-    page?: { title?: string | null; content?: string | null; seo?: any | null } | null;
+    page?: {
+      title?: string | null;
+      content?: string | null;
+      seo?: any | null;
+    } | null;
     dataSets?: {
       nodes?: Array<{
         id: string;
@@ -151,10 +161,19 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
     return m;
   }, [rawCats]);
 
-  const categories = useMemo(
-    () => ["All", ...rawCats.map((c) => c.name ?? "").filter(Boolean)],
-    [rawCats]
-  );
+  // Build category list, but only keep those that have datasets
+  const categories = useMemo(() => {
+    const validCategoryIds = new Set(
+      (data?.dataSets?.nodes ?? []).flatMap(
+        (ds) => ds.dataSetsCategories?.nodes?.map((c) => c.id) ?? []
+      )
+    );
+
+    return rawCats
+      .filter((c) => validCategoryIds.has(c.id))
+      .map((c) => c.name ?? "")
+      .filter(Boolean);
+  }, [rawCats, data?.dataSets?.nodes]);
 
   // Route detection: /datasets or /datasets/<category>
   const isListingView = React.useCallback(() => {
@@ -260,8 +279,11 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
 
   return (
     <main>
-      <SEO yoast={data?.page?.seo as any} title={data?.page?.title ?? undefined} />
-      <section className="dataset-hero relative"> 
+      <SEO
+        yoast={data?.page?.seo as any}
+        title={data?.page?.title ?? undefined}
+      />
+      <section className="dataset-hero relative">
         <div className="absolute inset-0 -z-10" />
         <HeroBasic
           bgUrl={datasetBgPattern}
