@@ -121,7 +121,7 @@ export default function DefaultDropdown({
           {items.map((it, idx) => {
             const common = {
               className:
-                "default-dropdown-item block px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-family-sourcecodepro font-normal",
+                "default-dropdown-item block w-full text-left px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-family-sourcecodepro font-normal",
               role: "menuitem" as const,
               key: idx,
             };
