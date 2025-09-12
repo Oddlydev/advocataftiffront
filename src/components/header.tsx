@@ -23,10 +23,16 @@ const SidebarItem: React.FC<{
   href?: string;
   icon: React.ReactNode;
   label: string;
-}> = ({ href = "#", icon, label }) => (
+  isActive?: boolean;
+}> = ({ href = "#", icon, label, isActive = false }) => (
   <a
     href={href}
-    className="sidebar-item group items-center flex gap-x-3 rounded-md py-2 px-2.5 text-sm/6 font-medium font-family-sourcecodepro text-slate-800 hover:text-slate-800 hover:bg-brand-1-50 focus:bg-brand-1-950 focus:text-white focus:outline-0 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent"
+    className={`sidebar-item group flex items-center gap-x-3 rounded-md py-2 px-2.5 text-sm/6 font-medium font-family-sourcecodepro 
+      ${
+        isActive
+          ? "bg-brand-1-950 text-white"
+          : "text-slate-800 hover:text-slate-800 hover:bg-brand-1-50"
+      }`}
   >
     <span className="sidebar-item-icon size-6 shrink-0">{icon}</span>
     {label}
@@ -454,15 +460,21 @@ const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
             </span>
             <nav className="sidebar-fill pt-4" aria-label="Sidebar">
               <ul role="list" className="space-y-1">
-                {items.map((item, index) => (
-                  <li key={item.id}>
-                    <SidebarItem
-                      href={item.uri ?? "#"}
-                      label={item.label}
-                      icon={dashboardIcons[index % dashboardIcons.length]}
-                    />
-                  </li>
-                ))}
+                {items.map((item, index) => {
+                  const isActive =
+                    typeof window !== "undefined" &&
+                    window.location.pathname === item.uri;
+                  return (
+                    <li key={item.id}>
+                      <SidebarItem
+                        href={item.uri ?? "#"}
+                        label={item.label}
+                        icon={dashboardIcons[index % dashboardIcons.length]}
+                        isActive={isActive}
+                      />
+                    </li>
+                  );
+                })}
               </ul>
             </nav>
           </div>
@@ -476,10 +488,7 @@ const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
             }}
           >
             <div className="text-3xl/10 font-family-playfair font-normal text-white">
-              <p>
-                Discover
-                Meaningful Connections
-              </p>
+              <p>Discover Meaningful Connections</p>
             </div>
           </div>
         </div>
@@ -575,7 +584,9 @@ const MobileMenu: React.FC<{
         className={`mobile-menu lg:hidden absolute inset-0 top-12 h-screen w-full bg-brand-black border-t border-gray-300 z-50 flex flex-col gap-4 px-6 py-6 ${open ? "" : "hidden"}`}
       >
         {topLevelItems.map((item) => {
-          const isActive = typeof window !== "undefined" && window.location.pathname === item.uri;
+          const isActive =
+            typeof window !== "undefined" &&
+            window.location.pathname === item.uri;
           return (
             <a
               key={item.id}
@@ -630,15 +641,21 @@ const MobileMenu: React.FC<{
                   aria-label="Sidebar"
                 >
                   <ul role="list" className="space-y-1">
-                    {dashboardItems.map((item, index) => (
-                      <li key={item.id}>
-                        <SidebarItem
-                          href={item.uri ?? "#"}
-                          label={item.label}
-                          icon={dashboardIcons[index % dashboardIcons.length]}
-                        />
-                      </li>
-                    ))}
+                    {dashboardItems.map((item, index) => {
+                      const isActive =
+                        typeof window !== "undefined" &&
+                        window.location.pathname === item.uri;
+                      return (
+                        <li key={item.id}>
+                          <SidebarItem
+                            href={item.uri ?? "#"}
+                            label={item.label}
+                            icon={dashboardIcons[index % dashboardIcons.length]}
+                            isActive={isActive}
+                          />
+                        </li>
+                      );
+                    })}
                   </ul>
                 </nav>
               </div>
