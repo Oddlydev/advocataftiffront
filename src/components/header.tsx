@@ -478,7 +478,6 @@ const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
             <div className="text-3xl/10 font-family-playfair font-normal text-white">
               <p>
                 Discover
-                <br />
                 Meaningful Connections
               </p>
             </div>
@@ -576,7 +575,7 @@ const MobileMenu: React.FC<{
         className={`mobile-menu lg:hidden absolute inset-0 top-12 h-screen w-full bg-brand-black border-t border-gray-300 z-50 flex flex-col gap-4 px-6 py-6 ${open ? "" : "hidden"}`}
       >
         {topLevelItems.map((item) => {
-          const isActive = usePathname() === item.uri;
+          const isActive = typeof window !== "undefined" && window.location.pathname === item.uri;
           return (
             <a
               key={item.id}
