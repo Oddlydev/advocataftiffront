@@ -76,11 +76,11 @@ const AboutHero: React.FC<{
   if (!image?.sourceUrl) return null;
   return (
     <div className="about-hero relative">
-      <div>
+      <div className="h-full lg:h-[500px] w-full">
         <img
           src={image.sourceUrl}
           width={1628}
-          height={700}
+          height={500}
           className="h-full w-full object-cover"
           alt={image.altText || "About hero"}
         />
@@ -148,6 +148,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ data }) => {
     <main>
       <SEO yoast={page?.seo as any} title={page?.title ?? undefined} />
       <div className="overflow-x-hidden">
+        
         {/* Intro (derived from Gutenberg) */}
         {(introTitle || introParagraphs.length > 0) && (
           <TextBlock
