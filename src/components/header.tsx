@@ -723,8 +723,8 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
                   className={`nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase py-2.5 px-3.5 rounded-md transition
                 ${
                   isActive
-                    ? "bg-white/10 text-brand-white font-medium"
-                    : "text-slate-50 opacity-60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
+                    ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
+                    : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
                 }`}
                 >
                   {item.label}
@@ -748,8 +748,8 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
                   className={`nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase py-2.5 px-3.5 rounded-md transition
                 ${
                   isActive
-                    ? "bg-white/10 text-brand-white font-medium"
-                    : "text-slate-50 opacity-60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
+                    ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
+                    : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
                 }`}
                 >
                   {item.label}
