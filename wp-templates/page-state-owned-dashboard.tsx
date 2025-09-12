@@ -50,7 +50,9 @@ async function fetchPageSEOByUri(uri: string): Promise<any | null> {
   const data = await gql<{ nodeByUri?: { __typename?: string; seo?: any } }>(
     `query GetSeoByUri {\n  nodeByUri(uri: "${encoded}") {\n    __typename\n    ... on Page {\n      seo {\n        title\n        metaDesc\n        canonical\n        opengraphTitle\n        opengraphDescription\n        opengraphUrl\n        opengraphSiteName\n        opengraphImage { sourceUrl }\n        twitterTitle\n        twitterDescription\n        twitterImage { sourceUrl }\n        schema { raw }\n      }\n    }\n  }\n}`
   );
-  return data?.nodeByUri && (data.nodeByUri as any).seo ? (data.nodeByUri as any).seo : null;
+  return data?.nodeByUri && (data.nodeByUri as any).seo
+    ? (data.nodeByUri as any).seo
+    : null;
 }
 
 async function fetchSOEYears(): Promise<TaxNode[]> {
@@ -163,7 +165,9 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       try {
         // Fetch Yoast SEO for this page by URI
         try {
-          const s = await fetchPageSEOByUri(pathname || "/state-owned-dashboard/");
+          const s = await fetchPageSEOByUri(
+            pathname || "/state-owned-dashboard/"
+          );
           setSeo(s);
         } catch (e) {
           // non-fatal if seo not available
@@ -194,7 +198,8 @@ export default function PageStateOwnedDashboard(): JSX.Element {
           if (postsForLatestYear.length > 0) {
             const first = postsForLatestYear[0];
             const defaultIndustry = first.industries?.[0]?.slug ?? null;
-            if (!industry && !industryInUrl && defaultIndustry) setIndustry(defaultIndustry);
+            if (!industry && !industryInUrl && defaultIndustry)
+              setIndustry(defaultIndustry);
             setCurrentCsvUrl(first.csvUrl ?? null);
             setCurrentPostTitle(first.title ?? "");
           }
@@ -265,7 +270,9 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                   if (industry) params.set("industry", industry);
                   if (year) params.set("year", year);
                   const qs = params.toString();
-                  return qs ? `/transparency-dashboard?${qs}` : "/transparency-dashboard";
+                  return qs
+                    ? `/transparency-dashboard?${qs}`
+                    : "/transparency-dashboard";
                 })(),
               },
               {
@@ -275,7 +282,9 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                   if (industry) params.set("industry", industry);
                   if (year) params.set("year", year);
                   const qs = params.toString();
-                  return qs ? `/state-owned-dashboard?${qs}` : "/state-owned-dashboard";
+                  return qs
+                    ? `/state-owned-dashboard?${qs}`
+                    : "/state-owned-dashboard";
                 })(),
               },
             ]}
@@ -320,7 +329,8 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                 idKey="one"
                 label={
                   industry
-                    ? `Industry: ${industryOptions.find((i) => i.slug === industry)?.name ?? ""}`
+                    ? (industryOptions.find((i) => i.slug === industry)?.name ??
+                      "Industry")
                     : "Industry"
                 }
                 items={[
@@ -340,7 +350,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                 idKey="two"
                 label={
                   year
-                    ? `Year: ${yearOptions.find((y) => y.slug === year)?.name ?? ""}`
+                    ? (yearOptions.find((y) => y.slug === year)?.name ?? "Year")
                     : "Year"
                 }
                 items={yearOptions.map((y) => ({
@@ -364,7 +374,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       </section>
 
       {/* Pagination */}
-      <section className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pt-6 md:pt-9 pb-16">
+      <section className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pt-6 md:pt-9 pb-16 hidden">
         <Pagination
           currentPage={currentPage}
           totalItems={filteredPosts.length}
