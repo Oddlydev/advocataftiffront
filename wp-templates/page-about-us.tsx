@@ -148,8 +148,6 @@ const AboutPage: React.FC<AboutPageProps> = ({ data }) => {
     <main>
       <SEO yoast={page?.seo as any} title={page?.title ?? undefined} />
       <div className="overflow-x-hidden">
-        <AboutHero image={heroImage} />
-
         {/* Intro (derived from Gutenberg) */}
         {(introTitle || introParagraphs.length > 0) && (
           <TextBlock
@@ -159,6 +157,9 @@ const AboutPage: React.FC<AboutPageProps> = ({ data }) => {
             className="mx-auto max-w-7xl px-5 md:px-10 xl:px-24 py-14 md:py-20"
           />
         )}
+
+        {/* Hero background image + overlay */}
+        <AboutHero image={heroImage} />
 
         {/* FAQ */}
         <section className="relative overflow-hidden py-24 sm:py-32 bg-brand-2-900">
