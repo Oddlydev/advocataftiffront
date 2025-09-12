@@ -21,7 +21,10 @@ const SidebarItem: React.FC<{
   icon: React.ReactNode;
   label: string;
 }> = ({ href = "#", icon, label }) => (
-  <a href={href} className="sidebar-item items-center flex gap-x-3 rounded-md py-2 px-2.5 text-sm/6 font-medium font-family-sourcecodepro text-slate-800 hover:text-slate-800 hover:bg-brand-1-50 focus:bg-brand-1-950 focus:text-white focus:outline-0 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent group">
+  <a
+    href={href}
+    className="sidebar-item items-center flex gap-x-3 rounded-md py-2 px-2.5 text-sm/6 font-medium font-family-sourcecodepro text-slate-800 hover:text-slate-800 hover:bg-brand-1-50 focus:bg-brand-1-950 focus:text-white focus:outline-0 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent group"
+  >
     <span className="sidebar-item-icon size-6 shrink-0">{icon}</span>
     {label}
   </a>
@@ -38,7 +41,7 @@ const SearchForm: React.FC<{
   const [results, setResults] = useState<any[]>([]);
   const ref = useRef<HTMLDivElement>(null);
 
-  const indexName = "wp_searchsearchable_posts";
+  const indexName = "wp_searchable_posts";
 
   // Close when clicking outside
   useEffect(() => {
@@ -445,7 +448,10 @@ const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
             <span className="text-slate-600 capitalize font-medium font-family-montserrat text-sm/5">
               dashboards
             </span>
-            <nav className="sidebar-fill flex flex-1 flex-col" aria-label="Sidebar">
+            <nav
+              className="sidebar-fill flex flex-1 flex-col"
+              aria-label="Sidebar"
+            >
               <ul role="list" className="-mx-2 space-y-2">
                 {items.map((item, index) => (
                   <li key={item.id}>
@@ -469,10 +475,7 @@ const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
             }}
           >
             <div className="text-3xl/10 font-family-montserrat font-normal text-white">
-              <p>
-                Discover
-                Meaningful Connections
-              </p>
+              <p>Discover Meaningful Connections</p>
             </div>
           </div>
         </div>
@@ -610,7 +613,10 @@ const MobileMenu: React.FC<{
                 <span className="text-slate-600 capitalize font-medium font-family-montserrat text-sm/5">
                   dashboards
                 </span>
-                <nav className="sidebar-fill flex flex-1 flex-col pt-4" aria-label="Sidebar">
+                <nav
+                  className="sidebar-fill flex flex-1 flex-col pt-4"
+                  aria-label="Sidebar"
+                >
                   <ul role="list" className="-mx-2 space-y-2">
                     {dashboardItems.map((item, index) => (
                       <li key={item.id}>
@@ -634,10 +640,7 @@ const MobileMenu: React.FC<{
                 }}
               >
                 <div className="text-3xl/10 font-family-montserrat font-normal text-white">
-                  <p>
-                    Discover
-                    Meaningful Connections
-                  </p>
+                  <p>Discover Meaningful Connections</p>
                 </div>
               </div>
             </div>

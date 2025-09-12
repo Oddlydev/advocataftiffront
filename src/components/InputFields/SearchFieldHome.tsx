@@ -20,7 +20,7 @@ export default function SearchFieldHome(): JSX.Element {
     const timer = setTimeout(async () => {
       try {
         const { hits } = await searchClient.searchSingleIndex({
-          indexName: "wp_searchsearchable_posts",
+          indexName: "wp_searchable_posts",
           searchParams: { query, hitsPerPage: 5 },
         });
         setResults(hits as any[]);

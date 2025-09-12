@@ -57,7 +57,7 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
 
     const search = instantsearch({
       searchClient,
-      indexName: "wp_searchsearchable_posts",
+      indexName: "wp_searchable_posts",
       future: { preserveSharedStateOnUnmount: true },
     });
 
@@ -73,6 +73,7 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
           item: "h-full",
           title: "hidden",
         },
+        limit: 3,
         templates: {
           header: "",
           item(hit: any) {

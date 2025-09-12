@@ -21,7 +21,10 @@ const SidebarItem: React.FC<{
   icon: React.ReactNode;
   label: string;
 }> = ({ href = "#", icon, label }) => (
-  <a href={href} className="sidebar-item group items-center flex gap-x-3 rounded-md py-2 px-2.5 text-sm/6 font-medium font-family-sourcecodepro text-slate-800 hover:text-slate-800 hover:bg-brand-1-50 focus:bg-brand-1-950 focus:text-white focus:outline-0 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent">
+  <a
+    href={href}
+    className="sidebar-item group items-center flex gap-x-3 rounded-md py-2 px-2.5 text-sm/6 font-medium font-family-sourcecodepro text-slate-800 hover:text-slate-800 hover:bg-brand-1-50 focus:bg-brand-1-950 focus:text-white focus:outline-0 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent"
+  >
     <span className="sidebar-item-icon size-6 shrink-0">{icon}</span>
     {label}
   </a>
@@ -38,7 +41,7 @@ const SearchForm: React.FC<{
   const [results, setResults] = useState<any[]>([]);
   const ref = useRef<HTMLDivElement>(null);
 
-  const indexName = "wp_searchsearchable_posts";
+  const indexName = "wp_searchable_posts";
 
   // Close when clicking outside
   useEffect(() => {
@@ -72,7 +75,8 @@ const SearchForm: React.FC<{
   }, [query]);
 
   return (
-    <div ref={ref} className="relative w-full">
+    // Hidden Search Form
+    <div ref={ref} className="relative w-full hidden">
       <button
         aria-expanded={open}
         aria-controls={id}
@@ -611,7 +615,10 @@ const MobileMenu: React.FC<{
                 <span className="text-slate-600 capitalize font-medium font-family-montserrat text-sm/5">
                   dashboards
                 </span>
-                <nav className="sidebar-fill flex flex-1 flex-col pt-4" aria-label="Sidebar">
+                <nav
+                  className="sidebar-fill flex flex-1 flex-col pt-4"
+                  aria-label="Sidebar"
+                >
                   <ul role="list" className="space-y-1">
                     {dashboardItems.map((item, index) => (
                       <li key={item.id}>
