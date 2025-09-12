@@ -83,7 +83,7 @@ export default function CsvTable({ csvUrl, filterQuery }: CsvTableProps) {
 
   return (
     <div className="bg-white py-3.5 md:py-5 xl:py-6">
-      <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
+      <div className="mx-auto max-w-7xl">
         <div className="shadow-md border p-4 border-gray-200 rounded-lg">
           {/* Table wrapper */}
           <div
