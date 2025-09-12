@@ -82,7 +82,7 @@ export default function FilterCarousel({
       items.map((label, index) => {
         const isActive = index === activeIndex;
         return (
-          <div key={`${label}-${index}`} className="inline-block align-middle">
+          <div key={`${label}-${index}`} className="slider-item inline-block align-middle">
             <button
               type="button"
               onClick={() => handleSelect(index)}
@@ -109,7 +109,7 @@ export default function FilterCarousel({
         type="button"
         aria-label="Previous"
         onClick={() => scrollByItems("prev")}
-        className="filter-carousel-arrow filter-carousel-prev-arrow absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full backdrop-blur-sm py-1 xl:py-2 text-brand-1-900 pl-0 pr-2 xl:pl-0 xl:pr-3.5 bg-gradient-to-l from-[#F3F4F6] via-white to-white"
+        className="filter-carousel-arrow filter-carousel-prev-arrow rounded-full backdrop-blur-sm py-1 xl:py-2 text-brand-1-900 absolute left-0 top-1/2 -translate-y-1/2 z-10 pl-0 pr-2 xl:pl-0 xl:pr-3.5 bg-gradient-to-l from-[#F3F4F6] via-white to-white"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

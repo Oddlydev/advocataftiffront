@@ -9,7 +9,7 @@ type HeroBasicProps = {
 };
 
 export default function HeroBasic({
-  bgUrl = "/assets/images/hero-basic-bg.jpg",
+  // bgUrl = "/assets/images/hero-basic-bg.jpg",
   title,
   paragraph,
   overlay = "linear-gradient(0deg, rgba(235, 26, 82, 0.16) 0%, rgba(235, 26, 82, 0.16) 100%)",
@@ -18,7 +18,7 @@ export default function HeroBasic({
     <section
       className="relative hero-block-container hero-basic px-5 md:px-10 xl:px-16 py-12 md:py-16 xl:py-20"
       style={{
-        backgroundImage: `url(${bgUrl})`,
+        // backgroundImage: `url(${bgUrl})`,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
