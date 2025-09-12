@@ -155,8 +155,8 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       <SEO yoast={(dataset as any)?.seo} title={dataset.title ?? undefined} />
       {/* Hero */}
       <section className="bg-white">
-        <div className="px-5 md:px-10 xl:px-16 py-12 md:py-16 xl:py-20 mx-auto w-full">
-          <div className="mx-auto max-w-6xl">
+        <div className="px-5 md:px-10 xl:px-16 mx-auto w-full">
+          <div className="">
             <HeroWhite
               title={dataset.title ?? ""}
               paragraph={heroParagraph}
@@ -177,7 +177,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
 
       {/* Preview table if CSV source is available */}
       {downloadUrl?.toLowerCase().endsWith(".csv") && (
-        <section className="bg-white py-8">
+        <section className="bg-white -mt-4 md:-mt-5 xl:-mt-8">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
             <CsvTable csvUrl={downloadUrl} />
           </div>
