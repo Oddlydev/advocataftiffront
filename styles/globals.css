@@ -19,6 +19,16 @@ button {
     cursor: pointer;
 }
 
+@layer utilities {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px theme('colors.brandBlack') inset !important;
+    -webkit-text-fill-color: theme('colors.brandWhite') !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+  }
+}
+
 /* ----------------------------------------------------------------------- 
  *  Scroll container (table wrapper) 
  * --------------------------------------------------------------------- */
