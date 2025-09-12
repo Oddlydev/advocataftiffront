@@ -221,14 +221,14 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
         description={heroDescription}
       />
       {/* Hero section */}
-      <div className="home-hero relative bg-cover bg-center bg-no-repeat text-white h-screen">
+      <div className="home-hero relative bg-cover bg-center bg-no-repeat text-white h-screen md:h-[65vh] xl:h-screen">
         {/* Background Image */}
         <div>
           <img
             src={homeHeroBg}
             width={1628}
             height={700}
-            className="h-screen w-full object-cover"
+            className="h-screen md:h-[65vh] xl:h-screen w-full object-cover"
             alt="home-hero-bg"
           />
         </div>
@@ -268,7 +268,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
       {(heroVideo || heroImage) && (
         <div className="bg-white pb-0">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-            <div className="ring-1 ring-black/10 rounded-3xl relative -top-32 md:-top-40 xl:-top-48 z-20 overflow-hidden">
+            <div className="ring-1 ring-black/10 rounded-3xl relative -top-32 md:-top-40 xl:-top-48 overflow-hidden">
               {heroVideo ? (
                 <video
                   src={heroVideo}

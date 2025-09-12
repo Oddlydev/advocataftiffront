@@ -40,12 +40,12 @@ export default function SearchFieldHome(): JSX.Element {
           type="text"
           id="search-home"
           name="search"
-          placeholder="Search..."
+          placeholder="Search Eg: Budget, Debt and Loans"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="search-input w-full rounded-full border border-white bg-brand-black py-5 pl-12 pr-28 font-family-sourcecodepro text-sm md:text-base text-slate-50/70 placeholder:text-brand-white/90 shadow-sm focus:border-brand-1-200 focus:outline-0 focus:ring-1 focus:ring-transparent"
+          className="search-input w-full rounded-full border border-white bg-brand-black py-5 px-6 md:pl-12 md:pr-28 font-family-sourcecodepro text-sm md:text-base text-slate-50/70 placeholder:text-brand-white/90 shadow-sm focus:border-brand-1-200 focus:outline-0 focus:ring-1 focus:ring-transparent"
         />
-        <div className="search-icon absolute left-3 top-1/2 -translate-y-1/2 text-slate-50">
+        <div className="search-icon hidden md:block absolute left-3 top-1/2 -translate-y-1/2 text-slate-50">
           <svg
             className="size-5 text-slate-50"
             xmlns="http://www.w3.org/2000/svg"
@@ -102,17 +102,58 @@ export default function SearchFieldHome(): JSX.Element {
       </form>
 
       {results.length > 0 && (
-        <ul className="absolute top-full left-0 mt-2 w-full bg-white shadow-lg rounded-lg z-50">
+        <ul className="absolute top-full left-0 mt-2 pt-2 pb-5 px-3.5 w-full bg-brand-black border border-brand-white/25 rounded-2xl z-50">
+          <p className="p-3 pb-4 text-slate-200/40 text-start text-base font-sourcecodepro font-normal uppercase">Recent Searches</p>
           {results.map((hit) => (
-            <li
-              key={hit.objectID}
-              className="p-3 border-b border-gray-200 hover:bg-gray-100"
-            >
-              <a href={hit.permalink} className="block text-gray-800">
-                <strong>{hit.post_title}</strong>
-                <p className="text-sm text-gray-500">{hit.post_excerpt}</p>
-              </a>
-            </li>
+            <li key={hit.objectID} className="p-3 space-y-2 hover:bg-brand-white/12 rounded-full">
+              <a
+                href={hit.permalink}
+                className="group block text-slate-200/40 font-baskervville text-start transition-colors duration-200"
+              >
+              <h4 className="flex items-center gap-2">
+                <span
+                  className="bg-brand-white/15 rounded-full p-2 text-slate-50 transition-colors duration-200 group-hover:bg-brand-white/30"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    className="size-3 opacity-80 transition-colors duration-200 group-hover:text-brand-white"
+                  >
+                    <g clipPath="url(#clip0_8051_2404)">
+                      <path
+                        d="M8 14.6666C11.6819 14.6666 14.6667 11.6819 14.6667 7.99998C14.6667 4.31808 11.6819 1.33331 8 1.33331C4.3181 1.33331 1.33333 4.31808 1.33333 7.99998C1.33333 11.6819 4.3181 14.6666 8 14.6666Z"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M8 4V8L9.66667 10.6667"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_8051_2404">
+                        <rect width="16" height="16" fill="white" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </span>
+                <span className="transition-colors duration-200 group-hover:text-white">
+                  {hit.post_title}
+                </span>
+              </h4>
+
+              {/* <p className="text-sm text-gray-500 transition-colors duration-200 group-hover:text-gray-300">
+                {hit.post_excerpt}
+              </p> */}
+            </a>
+          </li>
+
           ))}
         </ul>
       )}
