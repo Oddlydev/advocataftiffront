@@ -37,7 +37,7 @@ export default function SecondaryNav({
     <div className={["secondary-nav bg-transparent", className].join(" ")}>
       <div className="secondary-nav-wrapper">
         <div className="secondary-nav-flyout flex justify-center items-center">
-          <div className="secondary-nav-flyout-content flex space-x-4 overflow-x-auto overflow-y-hidden px-0 pt-4 pb-0"> {/* no-scrollbar momentum */}
+          <div className="secondary-nav-flyout-content flex space-x-4 overflow-x-auto overflow-y-hidden px-0 pt-4 pb-0 no-scrollbar momentum">
             
             {items.map((it, idx) => {
               const hrefPathNorm = normalizePath(it.href || "");
@@ -49,8 +49,10 @@ export default function SecondaryNav({
                   key={idx}
                   href={it.href || "#"}
                   className={[
-                    "secondary-nav-item font-family-baskervville text-slate-600 text-sm/tight font-normal border-b-2 border-transparent whitespace-nowrap hover:text-slate-800 hover:border-slate-600 focus:text-slate-950 focus:border-brand-1-500 transition-colors py-4",
-                    isActive ? "border-slate-600" : "",
+                    "secondary-nav-item font-family-baskervville text-slate-600 text-sm/tight font-normal border-b-2  whitespace-nowrap hover:text-slate-800 hover:border-slate-600 focus:text-slate-950 focus:border-brand-1-500 transition-colors py-4",
+                    isActive 
+                    ? "border-brand-1-500 text-slate-950" 
+                    : "border-transparent",
                   ].join(" ")}
                 >
                   {it.label}

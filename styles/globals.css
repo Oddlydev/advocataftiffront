@@ -29,6 +29,22 @@ button {
   }
 }
 
+/* Utilities: hide scrollbar + iOS momentum */
+@layer utilities {
+  .secondary-nav-flyout .no-scrollbar::-webkit-scrollbar { 
+    display: none; /* Chrome/Safari/Edge */
+  } 
+
+  .secondary-nav-flyout .no-scrollbar { 
+    -ms-overflow-style: none; scrollbar-width: none; /* IE/Firefox */
+  } 
+
+  .secondary-nav-flyout .momentum { 
+    -webkit-overflow-scrolling: touch; /* iOS smooth momentum */ 
+    scroll-behavior: smooth; /* desktop + modern browsers */ 
+  } 
+}
+
 /* ----------------------------------------------------------------------- 
  *  Scroll container (table wrapper) 
  * --------------------------------------------------------------------- */
@@ -84,89 +100,7 @@ button {
     }
 }
 
-/* -----------------------------------------------------------------------
- * Secondary navigation styles (component classes)
- * --------------------------------------------------------------------- */
-@layer components {
-  .secondary-nav {
-    background-color: transparent;
-  }
-  .secondary-nav-flyout {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .secondary-nav-flyout-content {
-    display: flex;
-  }
-  :where(.secondary-nav-flyout-content > :not(:last-child)) {
-    --tw-space-x-reverse: 0;
-    margin-inline-start: calc(calc(var(--spacing) * 4) * var(--tw-space-x-reverse));
-    margin-inline-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-x-reverse)));
-  }
-  .secondary-nav-flyout-content {
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-inline: calc(var(--spacing) * 0);
-    padding-top: calc(var(--spacing) * 4);
-    padding-bottom: calc(var(--spacing) * 0);
-  }
-  .secondary-nav-item {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 2px;
-    border-color: transparent;
-    padding-block: calc(var(--spacing) * 4);
-    font-family: var(--font-family-baskervville);
-    font-size: var(--text-sm);
-    line-height: var(--leading-tight);
-    --tw-font-weight: var(--font-weight-normal);
-    font-weight: var(--font-weight-normal);
-    white-space: nowrap;
-    color: var(--color-slate-600);
-    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
-    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-    transition-duration: var(--tw-duration, var(--default-transition-duration));
-  }
-  @media (hover: hover) {
-    .secondary-nav-item:hover {
-      border-color: var(--color-slate-600);
-    }
-  }
-  @media (hover: hover) {
-    .secondary-nav-item:hover {
-      color: var(--color-slate-800);
-    }
-  }
-  .secondary-nav-item:focus {
-    border-color: var(--color-brand-1-500);
-  }
-  .secondary-nav-item:focus {
-    color: var(--color-slate-950);
-  }
-}
 
-/* ----------------------------------------------------------------------- 
- *  Utility classes (manual expansion of @apply)
- * --------------------------------------------------------------------- */
-
-/* hide scrollbar (cross-browser) */
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-    /* Chrome/Safari/Edge */
-}
-
-.no-scrollbar {
-    -ms-overflow-style: none;
-    /* IE */
-    scrollbar-width: none;
-    /* Firefox */
-}
-
-/* iOS + smooth scrolling */
-.momentum {
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-}
 
 @theme {
     /* Map next/font variables to Tailwind font tokens */
