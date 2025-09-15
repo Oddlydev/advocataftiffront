@@ -511,7 +511,7 @@ export default function Footer(): JSX.Element {
         {/* site built details */}
         <div className="footer-bottom mt-10 md:mt-11 border-t border-white/50 pt-6 xl:pt-8 xl:flex xl:items-center xl:justify-between text-center xl:text-left">
           <div>
-            <p className="footer-bottom-text text-base/6 font-family-sourcecodepro font-normal text-brand-white">
+            <p className="footer-bottom-text text-sm/tight font-family-sourcecodepro font-normal text-brand-white">
               &copy; 2025 Advocata, Inc. All rights reserved.
             </p>
           </div>
