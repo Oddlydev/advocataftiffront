@@ -109,10 +109,10 @@ button {
         vertical-align: middle !important;
         text-align: center !important;
     }
-
+/* 
     #tns1 > .tns-item {
         width: calc(2.9991%) !important;
-    }
+    } */
 
     .tns-horizontal.tns-subpixel>.tns-item {
         vertical-align: middle !important;
