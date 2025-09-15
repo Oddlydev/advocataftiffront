@@ -122,11 +122,10 @@ export default function SearchFieldHome(): JSX.Element {
           {results.map((hit) => (
             <li
               key={hit.objectID}
-              className="p-3 space-y-2 hover:bg-brand-white/12 rounded-full"
-            >
+              className="p-3 space-y-2 hover:bg-brand-white/12 rounded-full group">
               <a
                 href={hit.permalink}
-                className="group block text-slate-200/40 font-baskervville text-start transition-colors duration-200"
+                className="block text-slate-200/40 font-baskervville text-start transition-colors duration-200"
               >
                 <h4 className="flex items-center gap-2">
                   <span className="bg-brand-white/15 rounded-full p-2 text-slate-50 transition-colors duration-200 group-hover:bg-brand-white/30">
@@ -165,10 +164,11 @@ export default function SearchFieldHome(): JSX.Element {
                 </h4>
 
                 {/* <p className="text-sm text-gray-500 transition-colors duration-200 group-hover:text-gray-300">
-                {hit.post_excerpt}
-              </p> */}
+                  {hit.post_excerpt}
+                </p> */}
               </a>
             </li>
+
           ))}
         </ul>
       )}
