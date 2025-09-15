@@ -15,10 +15,10 @@ export default function DropdownButton() {
   }, []);
 
   return (
-    <div ref={ref} className="relative inline-block text-left">
+    <div ref={ref} className="default-dropdown-btn-wapper relative inline-block text-left">
       <button
         onClick={() => setIsOpen((s) => !s)}
-        className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-brand-white px-4 py-2 text-sm font-family-baskervville font-normal text-gray-700 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+        className="default-dropdown-btn flex items-center gap-1 inline-flex w-full justify-center gap-x-1.5 rounded-md bg-brand-white px-4 py-2 text-lg/7 font-family-sourcecodepro font-normal text-slate-600 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
       >
         Options
         <svg
@@ -39,29 +39,29 @@ export default function DropdownButton() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 z-10 mt-2 w-48 md:w-64 origin-top-right rounded-md bg-brand-white shadow-lg ring-1 ring-black/5">
+        <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-brand-white shadow-lg ring-1 ring-black/50 ring-opacity-5 transform scale-95 opacity-0 transition-all duration-200 ease-out pointer-events-none">
           <div className="py-1">
             <a
               href="#"
-              className="block px-4 py-2.5 text-sm/tight text-gray-700 hover:bg-gray-100"
+              className="block font-family-sourcecodepro font-normal px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-family-sourcecodepro"
             >
               Account settings
             </a>
             <a
               href="#"
-              className="block px-4 py-2.5 text-sm/tight text-gray-700 hover:bg-gray-100"
+              className="block font-family-sourcecodepro font-normal px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-family-sourcecodepro"
             >
               Support
             </a>
             <a
               href="#"
-              className="block px-4 py-2.5 text-sm/tight text-gray-700 hover:bg-gray-100"
+              className="block font-family-sourcecodepro font-normal px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-family-sourcecodepro"
             >
               License
             </a>
             <button
               type="button"
-              className="w-full text-left block px-4 py-2.5 text-sm/tight text-gray-700 hover:bg-gray-100"
+              className="block w-full text-left px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-family-sourcecodepro font-normal"
             >
               Sign out
             </button>

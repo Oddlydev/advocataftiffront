@@ -20,7 +20,7 @@ export default function PrimaryButton({
     return (
       <Link
         href={{ pathname: href, query: query ?? {} }}
-        className={`${baseBtn} bg-brand-1-900 text-brand-white rounded-md shadow-sm hover:bg-brand-1-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500`}
+        className={`${baseBtn} bg-brand-1-900 text-brand-white rounded-md shadow-sm hover:bg-brand-1-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-brand-1-200 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent`}
       >
         {children}
       </Link>
@@ -30,7 +30,7 @@ export default function PrimaryButton({
   return (
     <button
       onClick={onClick}
-      className={`${baseBtn} bg-brand-1-900 text-brand-white rounded-md shadow-sm hover:bg-brand-1-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500`}
+      className={`${baseBtn} bg-brand-1-900 text-brand-white rounded-md shadow-sm hover:bg-brand-1-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-brand-1-200 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent`}
     >
       {children}
     </button>

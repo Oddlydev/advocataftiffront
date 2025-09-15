@@ -4,7 +4,7 @@ export default function WhiteIconButton() {
 
   return (
     <button
-      className={`${baseBtn} bg-brand-white border border-slate-200 text-gray-600 rounded-md shadow-sm hover:bg-slate-100 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500`}
+      className={`${baseBtn} bg-brand-white border border-slate-200 text-gray-600 rounded-md shadow-sm hover:bg-slate-100 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent`}
     >
       White With Icon
       <svg

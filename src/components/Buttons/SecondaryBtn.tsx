@@ -12,7 +12,7 @@ export default function SecondaryButton({
 
   return (
     <button
-      className={`${baseBtn} bg-brand-2-100 text-brand-2-800 rounded-md shadow-sm hover:bg-brand-1-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 ${className ?? ""}`}
+      className={`${baseBtn} bg-brand-2-100 text-brand-2-800 rounded-md shadow-sm hover:bg-brand-2-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent ${className ?? ""}`}
       {...rest}
     >
       {children}
