@@ -374,7 +374,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       </section>
 
       {/* Pagination */}
-      <section className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pt-6 md:pt-9 pb-16 hidden">
+      <section className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pt-6 md:pt-9 hidden">
         <Pagination
           currentPage={currentPage}
           totalItems={filteredPosts.length}
@@ -384,7 +384,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       </section>
 
       {/* Related datasets */}
-      <section className="bg-pink-100 py-12 md:py-16 xl:py-20">
+      <section className="bg-pink-100 py-12 md:py-16 xl:py-20 mt-16">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           <div className="max-w-2xl text-left">
             <PageSubTitle>Advocata AI Suggestions</PageSubTitle>
