@@ -82,7 +82,7 @@ export default function Pagination({
             Previous
           </button>
         ) : (
-          <span className="pagination-mobile-btn relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-family-sourcecodepro text-gray-400 uppercase opacity-50 pointer-events-none">
+          <span className="pagination-mobile-btn  relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-family-sourcecodepro text-gray-600 uppercase">
             Previous
           </span>
         )}
@@ -95,7 +95,7 @@ export default function Pagination({
             Next
           </button>
         ) : (
-          <span className="pagination-mobile-btn relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-family-sourcecodepro text-gray-400 uppercase opacity-50 pointer-events-none">
+          <span className="pagination-mobile-btn relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-family-sourcecodepro text-gray-600 uppercase">
             Next
           </span>
         )}
@@ -117,8 +117,7 @@ export default function Pagination({
             aria-label="Previous"
             disabled={!canPrev}
             className={[
-              "pagination-nav-button",
-              "relative inline-flex items-center px-2 mt-1 justify-center text-gray-500 focus:z-20 focus:outline-none rounded-xl",
+              "pagination-nav-button px-2 mt-1 relative inline-flex items-center py-2 justify-center text-gray-500 focus:z-20 focus:outline-none rounded-xl",
               !canPrev ? "opacity-50 pointer-events-none" : "",
             ].join(" ")}
           >
@@ -162,8 +161,7 @@ export default function Pagination({
             aria-label="Next"
             disabled={!canNext}
             className={[
-              "pagination-nav-button",
-              "relative inline-flex items-center px-2 mt-1 justify-center text-gray-500 focus:z-20 focus:outline-none rounded-xl",
+              "pagination-nav-buttonrelative inline-flex items-center px-2 mt-1 py-2 justify-center text-gray-500 focus:z-20 focus:outline-none rounded-xl",
               !canNext ? "opacity-50 pointer-events-none" : "",
             ].join(" ")}
           >
