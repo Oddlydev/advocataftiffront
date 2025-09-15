@@ -49,17 +49,14 @@ const CardType5: React.FC<CardType5Props> = ({
   const isoDate = toISOOrRaw(postDate);
 
   const Article = (
+    
     <article
-      className="relative h-full overflow-hidden rounded-lg border border-gray-300
-                 transition-all duration-500 ease-in-out
-                 hover:-translate-y-1.5 hover:border-brand-2-100
-                 hover:shadow-[0_0_40px_0_rgba(79,8,46,0.40)]
-                 focus:border-brand-2-100 focus:shadow-inner-lg bg-white"
+      className="card card-type-5 relative flex flex-col h-full overflow-hidden transition-all duration-500 ease-in-out cursor-pointer rounded-lg border border-gray-300 hover:border-gray-300 hover:-translate-y-1.5 hover:shadow-[0px_0px_40px_0px_rgba(79,8,46,0.40)] focus:border-gray-300 focus:bg-gray-50 focus:shadow-inner-lg"
       aria-label={title}
     >
       <div>
         <img
-          className="shrink-0 w-full h-64 object-cover aspect-[4/3]"
+          className="card-img shrink-0 w-full h-64 object-cover aspect-[4/3]"
           src={imageUrl}
           alt={title || "card-type-5 img"}
           width={100}
@@ -68,10 +65,10 @@ const CardType5: React.FC<CardType5Props> = ({
         />
       </div>
 
-      <div className="flex flex-1 flex-col justify-between p-8 pb-7">
+      <div className="card-body flex flex-1 flex-col justify-between bg-white p-8 pb-7">
         <div className="flex-1">
           {categories.length > 0 && (
-            <span className="text-sm font-family-sourcecodepro text-slate-800 uppercase pb-1">
+            <span className="card-category text-sm leading-5 md:text-base md:leading-6 font-normal border-b-2 border-transparent font-family-sourcecodepro text-slate-800 uppercase pb-1 transition-all duration-500 ease-in-out focus:border-b-2 focus:border-transparent hover:border-brand-1-500">
               {categories
                 .map((cat) => cat?.name)
                 .filter(Boolean)
@@ -79,29 +76,32 @@ const CardType5: React.FC<CardType5Props> = ({
             </span>
           )}
 
-          <h2 className="mt-3 text-xl md:text-2xl font-semibold font-family-montserrat text-slate-950 line-clamp-3">
+          <h2 className="mt-3 text-xl leading-snug md:text-2xl md:leading-snug font-semibold font-family-montserrat text-slate-950 transition-colors duration-500 ease-in-out line-clamp-3">
             {title}
           </h2>
 
           {excerpt && (
-            <p className="mt-3 text-base font-family-sourcecodepro text-slate-600 line-clamp-3">
+            <p className="mt-3 text-base leading-6 font-normal font-family-sourcecodepro text-slate-600 line-clamp-3 transition-colors duration-500 ease-in-out">
               {stripParagraphTags(excerpt)}
             </p>
           )}
         </div>
 
         {postDate && (
-          <div className="mt-9">
-            <time
-              className="text-xs font-family-baskervville text-slate-600"
-              dateTime={isoDate}
-            >
-              {formatDate(postDate)}
-            </time>
+          <div className="card-footer mt-9 flex items-center justify-between">
+            <div className="date-info flex justify-between w-full items-center space-x-1 text-xs leading-tight font-medium font-family-sourcecodepro text-slate-600">
+              <time
+                className="text-xs leading-tight font-medium font-family-baskervville text-slate-600"
+                dateTime={isoDate}
+              >
+                {formatDate(postDate)}
+              </time>
+            </div>
           </div>
         )}
       </div>
     </article>
+
   );
 
   return uri ? (
