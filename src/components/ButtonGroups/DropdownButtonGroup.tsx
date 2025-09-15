@@ -16,11 +16,11 @@ export default function DropdownButtonGroup() {
   return (
     <div
       ref={ddRef}
-      className="relative inline-flex rounded-md shadow-xs leading-tight"
+      className="dropdown-btn-group relative inline-flex rounded-md shadow-xs leading-tight"
     >
       <button
         type="button"
-        className="relative inline-flex items-center rounded-l-md bg-brand-white px-4 py-2.5 text-sm font-medium text-gray-800 ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+        className="main-action-btn-group relative inline-flex items-center rounded-l-md bg-brand-white px-4 py-2 text-sm leading-tight font-family-sourcecodepro font-medium text-slate-800 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10"
       >
         Save changes
       </button>
@@ -32,7 +32,7 @@ export default function DropdownButtonGroup() {
           e.stopPropagation();
           setOpenMenu((s) => !s);
         }}
-        className="-ml-px relative inline-flex items-center rounded-r-md bg-brand-white px-2.5 py-2.5 text-gray-500 ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+        className="dropdown-toggle relative inline-flex items-center rounded-r-md bg-brand-white px-2 py-2 text-gray-500 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-1"
       >
         <span className="sr-only">Open options</span>
         <svg
@@ -53,23 +53,23 @@ export default function DropdownButtonGroup() {
       </button>
 
       {openMenu && (
-        <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
+        <div className="dropdown-menu-group-btn absolute right-0 z-10 mt-14 w-56 origin-top-right rounded-md bg-brand-white shadow-lg ring-1 ring-black/5 focus:outline-hidden">
           <div className="py-1 text-start">
             <a
               href="#"
-              className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100"
+              className="dropdown-menu-group-btn-item block px-4 py-2 text-sm leading-tight text-gray-700 hover:bg-gray-100"
             >
               Save and schedule
             </a>
             <a
               href="#"
-              className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100"
+              className="dropdown-menu-group-btn-item block px-4 py-2 text-sm leading-tight text-gray-700 hover:bg-gray-100"
             >
               Save and publish
             </a>
             <a
               href="#"
-              className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100"
+              className="dropdown-menu-group-btn-item block px-4 py-2 text-sm leading-tight text-gray-700 hover:bg-gray-100"
             >
               Export PDF
             </a>

@@ -3,13 +3,35 @@ import React from "react";
 export default function CheckboxDropdownButton() {
   return (
     <div className="inline-flex">
-      <div className="relative inline-flex items-center justify-center rounded-l-md bg-brand-white px-3 py-2 ring-1 ring-gray-300 ring-inset hover:bg-gray-50">
-        <input
-          type="checkbox"
-          name="select-all"
-          aria-label="Select all"
-          className="size-4 appearance-none rounded border border-gray-300 bg-white checked:bg-indigo-600 checked:border-indigo-600 focus:outline-none"
-        />
+      <div className="checkbox-dropdown-btn inline-flex shrink-0 items-center rounded-l-md border border-gray-300 bg-brand-white py-2 px-3.5 leading-tight">
+        <div className="group grid size-4 grid-cols-1">
+          <input
+              type="checkbox"
+              name="select-all"
+              aria-label="Select all"
+              className="checkbox-input col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-brand-white checked:border-brand-2-900 checked:bg-brand-2-900
+              indeterminate:border-brand-2-900 indeterminate:bg-brand-2-900
+              focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-2-900
+              disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100
+              forced-colors:appearance-auto"
+            />
+            <svg className="checkbox-icon pointer-events-none col-start-1 row-start-1 size-3 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25" viewBox="0 0 14 14" fill="none">
+              <path
+              className="opacity-0 group-has-checked:opacity-100"
+              d="M3 8L6 11L11 3.5"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              />
+              <path
+              className="ogroup-has-indeterminate:opacity-100"
+              d="M3 7H11"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+                                />
+          </svg>
+        </div>
       </div>
 
       <div className="-ml-px grid grid-cols-1">
@@ -17,16 +39,16 @@ export default function CheckboxDropdownButton() {
           id="message-type"
           name="message-type"
           aria-label="Select message type"
-          className="col-start-1 row-start-1 w-full rounded-r-md bg-brand-white py-2 pr-8 pl-3 text-sm text-slate-800 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:outline-none appearance-none"
+          className="checkbox-select col-start-1 row-start-1 appearance-none w-full rounded-r-md bg-brand-white py-2 pr-8 pl-3 text-sm/tight font-medium font-family-sourcecodepro text-slate-800 outline-1 -outline-offset-1 outline-gray-300 focus:outline-1 focus:-outline-offset-1 focus:outline-gray-300"
           defaultValue="Unread messages"
         >
-          <option>Unread messages</option>
-          <option>Sent messages</option>
-          <option>All messages</option>
+          <option className="checkbox-select-item text-xs xl:text-sm leading-tight text-slate-800 hover:bg-gray-100">Unread messages</option>
+          <option className="checkbox-select-item text-xs xl:text-sm leading-tight text-slate-800 hover:bg-gray-100">Sent messages</option>
+          <option className="checkbox-select-item text-xs xl:text-sm leading-tight text-slate-800 hover:bg-gray-100">All messages</option>
         </select>
 
         <svg
-          className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-400"
+          className="checkbox-dropdown-icon pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-400"
           xmlns="http://www.w3.org/2000/svg"
           width="20"
           height="20"

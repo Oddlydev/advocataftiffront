@@ -2,10 +2,10 @@ import React from "react";
 
 export default function IconButtonGroup() {
   return (
-    <div className="isolate relative inline-flex items-center rounded-md shadow-xs leading-tight">
+    <div className="btn-group isolate relative inline-flex items-center rounded-md shadow-xs transition-all duration-500 ease-in-out cursor-pointer leading-tight">
       <button
         type="button"
-        className="rounded-l-md bg-brand-white py-2 px-2.5 text-gray-500 ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+        className="rounded-l-md icon-btn-group bg-brand-white py-2 px-2.5 text-gray-500 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10"
         aria-label="Previous"
         title="Previous"
       >
@@ -27,7 +27,7 @@ export default function IconButtonGroup() {
       </button>
       <button
         type="button"
-        className="-ml-px rounded-r-md bg-brand-white py-2 px-2.5 text-gray-500 ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+        className="-ml-px rounded-r-md icon-btn-group bg-brand-white py-2 px-2.5 text-gray-500 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10"
         aria-label="Next"
         title="Next"
       >

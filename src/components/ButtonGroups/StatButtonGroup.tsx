@@ -2,10 +2,10 @@ import React from "react";
 
 export default function StatButtonGroup() {
   return (
-    <div className="isolate relative inline-flex items-center rounded-md shadow-xs leading-tight">
+    <div className="btn-group isolate relative inline-flex items-center rounded-md shadow-xs transition-all duration-500 ease-in-out cursor-pointer leading-tight">
       <button
         type="button"
-        className="rounded-l-md relative inline-flex items-center gap-x-1.5 bg-brand-white px-4 py-2.5 text-sm font-medium text-gray-800 ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+        className="rounded-l-md stat-btn-group relative inline-flex items-center gap-x-1.5 bg-brand-white py-2 px-3 text-sm leading-tight font-family-sourcecodepro font-medium text-slate-800 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -23,7 +23,7 @@ export default function StatButtonGroup() {
       </button>
       <button
         type="button"
-        className="-ml-px rounded-r-md bg-brand-white px-4 py-[9px] text-sm font-medium text-gray-800 ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+        className="-ml-px rounded-r-md py-[9px] stat-btn-group  relative inline-flex items-center gap-x-1.5 bg-brand-white px-3 text-sm leading-tight font-family-sourcecodepro font-medium text-slate-800 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10"
       >
         12k
       </button>
