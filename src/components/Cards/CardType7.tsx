@@ -2,26 +2,28 @@ import React from "react";
 
 const CardType7: React.FC = () => {
   return (
-    <div className="my-20">
+    <div>
       <a
         href="#"
-        className="relative block rounded-xl overflow-hidden 
-             bg-white border border-slate-400 
-             transition-all duration-500 ease-in-out cursor-pointer
-             hover:border-gray-300 hover:shadow-lg hover:-translate-y-1.5 
-             focus:border-brand-2-100 focus:shadow-inner-lg"
+        className="card card-type-7 relative flex flex-col h-full overflow-hidden transition-all duration-500 ease-in-out cursor-pointer rounded-xl bg-white border border-slate-400 hover:border-gray-300 hover:shadow-lg hover:-translate-y-1.5 focus:border-brand-2-100 focus:shadow-inner-lg"
       >
-        <div className="flex flex-col p-5">
-          <h2 className="text-2xl font-semibold font-family-montserrat text-slate-800">
-            PDF
-          </h2>
-          <p className="mt-2 text-sm font-family-sourcecodepro text-slate-950">
-            You can access your file via PDF
-          </p>
+        <div className="card-body flex flex-1 flex-col justify-between bg-white p-5">
+          {/* <!-- text --> */}
+          <div className="flex-1">
+            <div>
+              <h2 className="text-2xl leading-snug font-semibold font-family-montserrat text-slate-800 transition-colors duration-500 ease-in-out line-clamp-3">
+                PDF
+              </h2>
+              <p className="mt-2 text-sm leading-tight font-normal font-family-sourcecodepro text-slate-950 line-clamp-3 transition-colors duration-500 ease-in-out">
+                You can access your file via PDF
+              </p>
+            </div>
+          </div>
 
-          <div className="absolute right-5 top-[30%] md:top-[35%]">
+          {/* <!-- download icon --> */}
+          <div className="download-icon absolute right-5 top-[30%] -translate-y-[30%] md:top-[35%] md:-translate-y-[35%]">
             <svg
-              className="size-6 text-slate-800"
+              className="icon size-6 text-slate-800"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 25"
               fill="none"
