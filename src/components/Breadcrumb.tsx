@@ -14,22 +14,22 @@ export default function Breadcrumb({
   light,
   homeHref = "/",
 }: BreadcrumbProps): JSX.Element {
-  const base = light ? "text-slate-200" : "text-slate-600";
-  const current = light ? "text-slate-200" : "text-slate-900";
+  const base = light ? "text-slate-600" : "text-slate-500";
+  const current = light ? "text-slate-500" : "text-slate-700";
 
   return (
-    <nav className="flex uppercase" aria-label="Breadcrumb">
+    <nav className="flex" aria-label="Breadcrumb">
       <ol
         role="list"
-        className="breadcrumb inline-flex items-center gap-2 text-sm font-family-sourcecodepro"
+        className="breadcrumb flex items-center space-x-2 text-sm/tight md:text-base/8 uppercase font-family-sourcecodepro font-normal text-slate-600"
       >
         <li>
           <div
-            className={`breadcrumb-item inline-flex items-center gap-2 ${base}`}
+            className={`breadcrumb-item flex items-center gap-x-1.5 ${base}`}
           >
             <a
               href={homeHref}
-              className="inline-flex items-center hover:text-slate-900 transition-colors"
+              className="text-slate-600 hover:text-slate-500"
             >
               <svg
                 viewBox="0 0 20 20"
@@ -52,7 +52,7 @@ export default function Breadcrumb({
         {items.map((item, i) => (
           <li key={i}>
             <div
-              className={`breadcrumb-item inline-flex items-center gap-2 ${base}`}
+              className={`breadcrumb-item flex items-center gap-x-1.5 ${base}`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -74,14 +74,14 @@ export default function Breadcrumb({
               {item.href ? (
                 <a
                   href={item.href}
-                  className={`breadcrumb-current ${current} hover:text-slate-900 transition-colors`}
+                  className={`breadcrumb-current ${current} font-medium text-slate-500 hover:text-slate-700 transition-colors`}
                   aria-current="page"
                 >
                   {item.label}
                 </a>
               ) : (
                 <span
-                  className={`breadcrumb-current ${current}`}
+                  className={`breadcrumb-current font-medium text-slate-500 hover:text-slate-700 ${current}`}
                   aria-current="page"
                 >
                   {item.label}
