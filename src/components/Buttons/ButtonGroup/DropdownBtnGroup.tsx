@@ -56,7 +56,7 @@ export default function DropdownBtnGroup({
   return (
     <div
       className={[
-        "relative inline-flex rounded-md shadow-xs leading-tight",
+        "dropdown-btn-group relative inline-flex rounded-md shadow-xs leading-tight",
         className,
       ].join(" ")}
       ref={wrapRef}
@@ -64,7 +64,7 @@ export default function DropdownBtnGroup({
       {/* Main action button */}
       <button
         type="button"
-        className="relative inline-flex items-center rounded-l-md bg-brand-white px-4 py-2 text-sm leading-tight font-family-sourcecodepro font-medium text-slate-800 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10"
+        className="main-action-btn-group relative inline-flex items-center rounded-l-md bg-brand-white px-4 py-2 text-sm leading-tight font-family-sourcecodepro font-medium text-slate-800 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10"
         onClick={onMainClick}
         ref={mainBtnRef}
       >
@@ -97,7 +97,7 @@ export default function DropdownBtnGroup({
       <div
         ref={menuRef}
         className={[
-          "absolute right-0 z-10 mt-14 w-56 origin-top-right rounded-md bg-brand-white shadow-lg ring-1 ring-black/5 focus:outline-hidden",
+          "dropdown-menu-group-btn absolute right-0 z-10 mt-14 w-56 origin-top-right rounded-md bg-brand-white shadow-lg ring-1 ring-black/5 focus:outline-hidden",
           open ? "" : "hidden",
         ].join(" ")}
         role="menu"
@@ -110,7 +110,7 @@ export default function DropdownBtnGroup({
               <a
                 key={i}
                 href={it.href}
-                className="block px-4 py-2 text-sm leading-tight text-gray-700 hover:bg-gray-100"
+                className="dropdown-menu-group-btn-item block px-4 py-2 text-sm leading-tight text-gray-700 hover:bg-gray-100"
                 role="menuitem"
                 onClick={() => setOpen(false)}
               >

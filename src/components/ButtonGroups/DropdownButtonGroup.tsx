@@ -32,7 +32,7 @@ export default function DropdownButtonGroup() {
           e.stopPropagation();
           setOpenMenu((s) => !s);
         }}
-        className="dropdown-toggle relative inline-flex items-center rounded-r-md bg-brand-white px-2 py-2 text-gray-500 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-1"
+        className="dropdown-toggle relative inline-flex items-center rounded-r-md bg-brand-white px-2 py-2 text-gray-500 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10"
       >
         <span className="sr-only">Open options</span>
         <svg
