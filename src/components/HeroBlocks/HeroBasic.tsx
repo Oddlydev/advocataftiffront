@@ -31,11 +31,11 @@ export default function HeroBasic({
 
       {/* Content */}
       <div className="relative hero-block text-start mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-5 items-center">
-        <h1 className="hero-title mb-5 md:mb-0 text-slate-50 text-4xl md:text-5xl xl:text-6xl leading-snug font-family-montserrat font-bold max-w-5 xl:max-w-sm">
+        <h1 className="hero-title mb-5 md:mb-0 text-slate-50 text-4xl md:text-5xl xl:text-6xl leading-snug font-montserrat font-bold max-w-5 xl:max-w-sm">
           {title}
         </h1>
         <div className="space-y-2.5">
-          <p className="hero-paragraph text-slate-200 text-base/6 lg:text-lg/7 font-family-baskervville font-normal max-w-2xl">
+          <p className="hero-paragraph text-slate-200 text-base/6 lg:text-lg/7 font-baskervville font-normal max-w-2xl">
             {paragraph}
           </p>
         </div>

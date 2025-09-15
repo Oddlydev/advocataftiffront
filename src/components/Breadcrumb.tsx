@@ -21,7 +21,7 @@ export default function Breadcrumb({
     <nav className="flex" aria-label="Breadcrumb">
       <ol
         role="list"
-        className="breadcrumb flex items-center space-x-2 text-sm/tight md:text-base/8 uppercase font-family-sourcecodepro font-normal text-slate-600"
+        className="breadcrumb flex items-center space-x-2 text-sm/tight md:text-base/8 uppercase font-sourcecodepro font-normal text-slate-600"
       >
         <li>
           <div

@@ -12,10 +12,10 @@ const CardType7Loading: React.FC = () => {
           {/* <!-- text --> */}
           <div className="flex-1">
             <div>
-              <h2 className="text-2xl leading-snug font-semibold font-family-montserrat text-slate-800 transition-colors duration-500 ease-in-out line-clamp-3">
+              <h2 className="text-2xl leading-snug font-semibold font-montserrat text-slate-800 transition-colors duration-500 ease-in-out line-clamp-3">
                 PDF
               </h2>
-              <p className="mt-2 text-sm leading-tight font-normal font-family-sourcecodepro text-slate-950 line-clamp-3 transition-colors duration-500 ease-in-out">
+              <p className="mt-2 text-sm leading-tight font-normal font-sourcecodepro text-slate-950 line-clamp-3 transition-colors duration-500 ease-in-out">
                 You can access your file via PDF
               </p>
             </div>

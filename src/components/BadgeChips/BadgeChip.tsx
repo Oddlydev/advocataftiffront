@@ -19,7 +19,7 @@ export default function BadgeChip() {
           {/* GRAY */}
           <span
             className={[
-              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-family-sourcecodepro uppercase font-medium",
+              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-sourcecodepro uppercase font-medium",
               "bg-gray-300 text-slate-950",
               "badge badge-gray",
             ].join(" ")}
@@ -41,7 +41,7 @@ export default function BadgeChip() {
           {/* RED */}
           <span
             className={[
-              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-family-sourcecodepro uppercase font-medium",
+              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-sourcecodepro uppercase font-medium",
               "bg-red-300 text-red-800",
               "badge badge-red",
             ].join(" ")}
@@ -63,7 +63,7 @@ export default function BadgeChip() {
           {/* YELLOW */}
           <span
             className={[
-              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-family-sourcecodepro uppercase font-medium",
+              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-sourcecodepro uppercase font-medium",
               "bg-amber-200 text-amber-800",
               "badge badge-yellow",
             ].join(" ")}
@@ -85,7 +85,7 @@ export default function BadgeChip() {
           {/* GREEN */}
           <span
             className={[
-              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-family-sourcecodepro uppercase font-medium",
+              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-sourcecodepro uppercase font-medium",
               "bg-green-300 text-green-800",
               "badge badge-green",
             ].join(" ")}
@@ -107,7 +107,7 @@ export default function BadgeChip() {
           {/* BLUE */}
           <span
             className={[
-              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-family-sourcecodepro uppercase font-medium",
+              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-sourcecodepro uppercase font-medium",
               "bg-blue-100 text-blue-800",
               "badge badge-blue",
             ].join(" ")}
@@ -129,7 +129,7 @@ export default function BadgeChip() {
           {/* INDIGO */}
           <span
             className={[
-              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-family-sourcecodepro uppercase font-medium",
+              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-sourcecodepro uppercase font-medium",
               "bg-indigo-100 text-indigo-800",
               "badge badge-indigo",
             ].join(" ")}
@@ -151,7 +151,7 @@ export default function BadgeChip() {
           {/* PURPLE */}
           <span
             className={[
-              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-family-sourcecodepro uppercase font-medium",
+              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-sourcecodepro uppercase font-medium",
               "bg-purple-100 text-purple-800",
               "badge badge-purple",
             ].join(" ")}
@@ -173,7 +173,7 @@ export default function BadgeChip() {
           {/* PINK */}
           <span
             className={[
-              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-family-sourcecodepro uppercase font-medium",
+              "inline-flex items-center gap-x-1.5 rounded-md px-2.5 py-1 lg:px-3 lg:py-1 text-xs lg:text-sm leading-4 xl:leading-tight font-sourcecodepro uppercase font-medium",
               "bg-pink-100 text-pink-800",
               "badge badge-pink",
             ].join(" ")}
@@ -203,7 +203,7 @@ export default function BadgeChip() {
             href="#"
             className={[
               // .chip
-              "text-sm/tight xl:text-base/6 font-normal font-family-sourcecodepro text-slate-800 bg-transparent hover:bg-brand-1-50 hover:border hover:border-brand-1-700 focus:text-slate-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent uppercase",
+              "text-sm/tight xl:text-base/6 font-normal font-sourcecodepro text-slate-800 bg-transparent hover:bg-brand-1-50 hover:border hover:border-brand-1-700 focus:text-slate-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent uppercase",
               // .chip-pill
               "py-2 px-3.5 md:py-2 md:px-6 rounded-full border border-transparent focus:border-brand-1-800 focus:bg-brand-1-500",
               "chip chip-pill chip-pressed",
@@ -223,7 +223,7 @@ export default function BadgeChip() {
             href="#"
             className={[
               // .chip
-              "text-sm/tight xl:text-base/6 font-normal font-family-sourcecodepro text-slate-800 bg-transparent hover:bg-brand-1-50 hover:border hover:border-brand-1-700 focus:text-slate-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent uppercase",
+              "text-sm/tight xl:text-base/6 font-normal font-sourcecodepro text-slate-800 bg-transparent hover:bg-brand-1-50 hover:border hover:border-brand-1-700 focus:text-slate-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent uppercase",
               // .chip-box
               "py-2 px-3 md:py-2 md:px-7 rounded-lg border border-gray-400 focus:border-brand-1-950 focus:bg-brand-1-950",
               "chip chip-box chip-pressed",

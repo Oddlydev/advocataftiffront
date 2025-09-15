@@ -81,7 +81,7 @@ export default function DefaultDropdown({
           ref={btnRef}
           type="button"
           id={btnId}
-          className={["default-dropdown-btn inline-flex w-full justify-center gap-x-1.5 rounded-md bg-brand-white px-4 py-2 text-lg/7 font-family-sourcecodepro font-normal text-slate-600 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 items-center gap-1", buttonClassName].join(" ")}
+          className={["default-dropdown-btn inline-flex w-full justify-center gap-x-1.5 rounded-md bg-brand-white px-4 py-2 text-lg/7 font-sourcecodepro font-normal text-slate-600 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 items-center gap-1", buttonClassName].join(" ")}
           aria-expanded={isOpen}
           aria-haspopup="true"
           aria-controls={menuId}
@@ -121,7 +121,7 @@ export default function DefaultDropdown({
           {items.map((it, idx) => {
             const common = {
               className:
-                "default-dropdown-item block w-full text-left px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-family-sourcecodepro font-normal",
+                "default-dropdown-item block w-full text-left px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-sourcecodepro font-normal",
               role: "menuitem" as const,
               key: idx,
             };

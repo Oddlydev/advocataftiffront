@@ -64,10 +64,10 @@ export default function Alerts() {
                 </div>
 
                 <div className="ml-3.5 text-start">
-                  <p className="alert-title text-sm font-medium leading-tight font-family-montserrat text-slate-950 text-start">
+                  <p className="alert-title text-sm font-medium leading-tight font-montserrat text-slate-950 text-start">
                     Successfully uploaded
                   </p>
-                  <p className="alert-text mt-1 text-sm leading-tight font-family-baskervville text-slate-600 text-start">
+                  <p className="alert-text mt-1 text-sm leading-tight font-baskervville text-slate-600 text-start">
                     Anyone with a link can now view this file.
                   </p>
                 </div>
@@ -122,7 +122,7 @@ export default function Alerts() {
             >
               <div className="flex items-center">
                 <div className="text-start">
-                  <p className="notification-title text-sm font-normal leading-tight font-family-baskervville text-slate-950 text-start">
+                  <p className="notification-title text-sm font-normal leading-tight font-baskervville text-slate-950 text-start">
                     Discussion archived
                   </p>
                 </div>
@@ -209,10 +209,10 @@ export default function Alerts() {
                 </div>
 
                 <div className="ml-3.5 text-start">
-                  <p className="toast-title text-sm font-medium leading-tight font-family-montserrat text-slate-950 text-start">
+                  <p className="toast-title text-sm font-medium leading-tight font-montserrat text-slate-950 text-start">
                     Discussion moved
                   </p>
-                  <p className="toast-text mt-1 text-sm leading-tight font-family-baskervville text-slate-600 text-start">
+                  <p className="toast-text mt-1 text-sm leading-tight font-baskervville text-slate-600 text-start">
                     Lorem ipsum dolor sit amet consectetur adipisicing elit
                     oluptatum tenetur.
                   </p>
@@ -304,7 +304,7 @@ export default function Alerts() {
                 </div>
 
                 <div className="ml-3.5 text-start">
-                  <p className="banner-title text-sm/tight md:text-base/6 font-medium font-family-sourcecodepro text-start">
+                  <p className="banner-title text-sm/tight md:text-base/6 font-medium font-sourcecodepro text-start">
                     <span className="hidden md:block">
                       Big news! We&apos;re excited to announce a brand new
                       product.

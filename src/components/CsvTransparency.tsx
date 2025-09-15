@@ -88,7 +88,7 @@ export default function CsvTransparency({
         >
           <circle cx="6" cy="6" r="6" fill={color} />
         </svg>
-        <span className="text-gray-500 font-family-sourcecodepro text-base/6 font-medium">
+        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
           {value}
         </span>
       </div>

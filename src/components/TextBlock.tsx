@@ -19,12 +19,12 @@ export default function TextBlock({
     >
       <div className="text-block text-start mx-auto max-w-6xl">
         {subtitle && (
-          <span className="text-sub-title mb-1 text-slate-950 text-sm/5 md:text-base/6 font-family-sourcecodepro font-medium uppercase">
+          <span className="text-sub-title mb-1 text-slate-950 text-sm/5 md:text-base/6 font-sourcecodepro font-medium uppercase">
             {subtitle}
           </span>
         )}
 
-        <h3 className="text-title mb-3.5 md:mb-5 text-slate-950 text-4xl md:text-5xl xl:text-6xl leading-snug font-family-montserrat font-bold max-w-2xl">
+        <h3 className="text-title mb-3.5 md:mb-5 text-slate-950 text-4xl md:text-5xl xl:text-6xl leading-snug font-montserrat font-bold max-w-2xl">
           {title}
         </h3>
 
@@ -32,7 +32,7 @@ export default function TextBlock({
           {paragraphs.map((p, i) => (
             <p
               key={i}
-              className="text-paragraph text-slate-800 text-base/6 lg:text-lg/7 font-family-baskervville font-normal max-w-2xl"
+              className="text-paragraph text-slate-800 text-base/6 lg:text-lg/7 font-baskervville font-normal max-w-2xl"
             >
               {p}
             </p>

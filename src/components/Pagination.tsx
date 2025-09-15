@@ -69,7 +69,7 @@ export default function Pagination({
     <div
       className={[
         "pagination-container",
-        "flex items-center justify-between border-t border-gray-200 py-3 font-family-sourcecodepro",
+        "flex items-center justify-between border-t border-gray-200 py-3 font-sourcecodepro",
         className,
       ].join(" ")}
     >
@@ -77,12 +77,12 @@ export default function Pagination({
         {canPrev ? (
           <button
             onClick={() => onPageChange(currentPage - 1)}
-            className="pagination-mobile-btn relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-family-sourcecodepro text-gray-600 uppercase"
+            className="pagination-mobile-btn relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-sourcecodepro text-gray-600 uppercase"
           >
             Previous
           </button>
         ) : (
-          <span className="pagination-mobile-btn  relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-family-sourcecodepro text-gray-600 uppercase">
+          <span className="pagination-mobile-btn  relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-sourcecodepro text-gray-600 uppercase">
             Previous
           </span>
         )}
@@ -90,18 +90,18 @@ export default function Pagination({
         {canNext ? (
           <button
             onClick={() => onPageChange(currentPage + 1)}
-            className="pagination-mobile-btn relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-family-sourcecodepro text-gray-600 uppercase"
+            className="pagination-mobile-btn relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-sourcecodepro text-gray-600 uppercase"
           >
             Next
           </button>
         ) : (
-          <span className="pagination-mobile-btn relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-family-sourcecodepro text-gray-600 uppercase">
+          <span className="pagination-mobile-btn relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-sourcecodepro text-gray-600 uppercase">
             Next
           </span>
         )}
       </div>
 
-      <div className="pagination-desktop hidden sm:flex sm:flex-1 sm:items-center sm:justify-between font-family-sourcecodepro font-medium uppercase">
+      <div className="pagination-desktop hidden sm:flex sm:flex-1 sm:items-center sm:justify-between font-sourcecodepro font-medium uppercase">
         <p className="text-sm text-gray-700">
           Showing <span className="font-medium">{start}</span> to{" "}
           <span className="font-medium">{end}</span> of{" "}
@@ -136,7 +136,7 @@ export default function Pagination({
             p === DOTS ? (
               <span
                 key={`dots-${i}`}
-                className="pagination-nav-ellipsis relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium font-family-sourcecodepro text-gray-500 focus:outline-none"
+                className="pagination-nav-ellipsis relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium font-sourcecodepro text-gray-500 focus:outline-none"
               >
                 ...
               </span>
@@ -147,8 +147,8 @@ export default function Pagination({
                 aria-current={currentPage === p ? "page" : undefined}
                 className={
                   currentPage === p
-                    ? "pagination-nav-page-current relative z-10 inline-flex items-center justify-center px-4 py-2 text-sm font-medium font-family-sourcecodepro text-slate-50 bg-brand-1-800 hover:bg-brand-1-800 focus:z-20 focus:outline-none rounded-xl"
-                    : "pagination-nav-page relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium font-family-sourcecodepro text-gray-500 focus:z-20 focus:outline-none rounded-xl focus:border-0"
+                    ? "pagination-nav-page-current relative z-10 inline-flex items-center justify-center px-4 py-2 text-sm font-medium font-sourcecodepro text-slate-50 bg-brand-1-800 hover:bg-brand-1-800 focus:z-20 focus:outline-none rounded-xl"
+                    : "pagination-nav-page relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium font-sourcecodepro text-gray-500 focus:z-20 focus:outline-none rounded-xl focus:border-0"
                 }
               >
                 {p}

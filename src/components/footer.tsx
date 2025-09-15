@@ -42,7 +42,7 @@ export default function Footer(): JSX.Element {
 
   return (
     <footer
-      className="footer bg-brand-black font-family-baskervville"
+      className="footer bg-brand-black font-baskervville"
       aria-labelledby="footer-heading"
     >
       <h2 id="footer-heading" className="sr-only">
@@ -58,7 +58,7 @@ export default function Footer(): JSX.Element {
               <div className="mb-3.5">
                 <span className="block w-10 border-t-4 border-brand-white" />
               </div>
-              <h3 className="footer-heading text-2xl/snug tracking-normal font-family-montserrat font-normal text-brand-white">
+              <h3 className="footer-heading text-2xl/snug tracking-normal font-montserrat font-normal text-brand-white">
                 Quick Links
               </h3>
               <ul role="list" className="mt-6 space-y-4">
@@ -69,7 +69,7 @@ export default function Footer(): JSX.Element {
                       <a
                         href={item.uri ?? "#"}
                         className={[
-                          "footer-link text-base/6 font-normal font-family-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline",
+                          "footer-link text-base/6 font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline",
                           isActive
                             ? "text-brand-white font-medium hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline" // Active link style
                             : "text-brand-white/80",
@@ -88,7 +88,7 @@ export default function Footer(): JSX.Element {
               <div className="mb-3.5">
                 <span className="block w-10 border-t-4 border-brand-white" />
               </div>
-              <h3 className="footer-heading text-2xl/snug tracking-normal font-family-montserrat font-normal text-brand-white">
+              <h3 className="footer-heading text-2xl/snug tracking-normal font-montserrat font-normal text-brand-white">
                 Dashboards
               </h3>
               <ul role="list" className="mt-7 space-y-6 grid xl:grid-cols-2">
@@ -96,7 +96,7 @@ export default function Footer(): JSX.Element {
                   <li key={item.id}>
                     <a
                       href={item.uri ?? "#"}
-                      className="footer-link text-base/6 text-brand-white/80 font-normal font-family-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline"
+                      className="footer-link text-base/6 text-brand-white/80 font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline"
                     >
                       {item.label}
                     </a>
@@ -115,7 +115,7 @@ export default function Footer(): JSX.Element {
               <button
                 type="button"
                 onClick={() => setOpenQuick((v) => !v)}
-                className="footer-toggle w-full text-left flex justify-between items-center border-b border-white/60 pb-7 text-2xl/snug tracking-normal font-family-montserrat font-normal text-brand-white"
+                className="footer-toggle w-full text-left flex justify-between items-center border-b border-white/60 pb-7 text-2xl/snug tracking-normal font-montserrat font-normal text-brand-white"
               >
                 <div className="flex gap-3.5 items-center">
                   <span className="block w-8 border-t-4 border-brand-white" />
@@ -143,7 +143,7 @@ export default function Footer(): JSX.Element {
                   <li key={item.id}>
                     <a
                       href={item.uri ?? "#"}
-                      className="footer-link text-base/6 text-brand-white/80 font-normal font-family-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline"
+                      className="footer-link text-base/6 text-brand-white/80 font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline"
                     >
                       {item.label}
                     </a>
@@ -157,7 +157,7 @@ export default function Footer(): JSX.Element {
               <button
                 type="button"
                 onClick={() => setOpenDashboards((v) => !v)}
-                className="footer-toggle w-full text-left flex justify-between items-center border-b border-white/60 pb-7 text-2xl/snug tracking-normal font-family-montserrat font-normal text-brand-white"
+                className="footer-toggle w-full text-left flex justify-between items-center border-b border-white/60 pb-7 text-2xl/snug tracking-normal font-montserrat font-normal text-brand-white"
               >
                 <div className="flex gap-3.5 items-center">
                   <span className="block w-8 border-t-4 border-brand-white" />
@@ -185,7 +185,7 @@ export default function Footer(): JSX.Element {
                   <li key={item.id}>
                     <a
                       href={item.uri ?? "#"}
-                      className="footer-link text-base/6 text-brand-white/80 font-normal font-family-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline"
+                      className="footer-link text-base/6 text-brand-white/80 font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline"
                     >
                       {item.label}
                     </a>
@@ -490,7 +490,7 @@ export default function Footer(): JSX.Element {
                 <li>
                   <a
                     href="#"
-                    className="footer-link text-sm/5 text-brand-white/60 hover:underline font-normal font-family-sourcecodepro transform transition-all duration-300 ease-in-out hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%]"
+                    className="footer-link text-sm/5 text-brand-white/60 hover:underline font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%]"
                   >
                     Privacy Policy
                   </a>
@@ -498,7 +498,7 @@ export default function Footer(): JSX.Element {
                 <li>
                   <a
                     href="#"
-                    className="footer-link text-sm/5 text-brand-white/60 hover:underline font-normal font-family-sourcecodepro transform transition-all duration-300 ease-in-out hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%]"
+                    className="footer-link text-sm/5 text-brand-white/60 hover:underline font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%]"
                   >
                     Terms &amp; Conditions
                   </a>
@@ -511,12 +511,12 @@ export default function Footer(): JSX.Element {
         {/* site built details */}
         <div className="footer-bottom mt-10 md:mt-11 border-t border-white/50 pt-6 xl:pt-8 xl:flex xl:items-center xl:justify-between text-center xl:text-left">
           <div>
-            <p className="footer-bottom-text text-sm/tight font-family-sourcecodepro font-normal text-brand-white">
+            <p className="footer-bottom-text text-sm/tight font-sourcecodepro font-normal text-brand-white">
               &copy; 2025 Advocata, Inc. All rights reserved.
             </p>
           </div>
           <div>
-            <p className="text-sm/tight font-family-sourcecodepro font-normal text-brand-white/60 mt-3.5 xl:mt-0">
+            <p className="text-sm/tight font-sourcecodepro font-normal text-brand-white/60 mt-3.5 xl:mt-0">
               Built by{" "}
               <a
                 href="https://oddly.lk"

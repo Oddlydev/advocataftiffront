@@ -98,7 +98,7 @@ export default function CsvTable({ csvUrl, filterQuery }: CsvTableProps) {
                     {headers.map((header, i) => (
                       <th
                         key={i}
-                        className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-family-sourcecodepro uppercase text-brand-white bg-brand-1-700
+                        className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700
           ${i === 0 ? "sticky top-0 left-0 z-20 rounded-tl-lg" : ""}
           ${i === headers.length - 1 ? "rounded-tr-lg" : ""}
           w-[160px] md:w-[225px] xl:w-[288px]`}
@@ -113,7 +113,7 @@ export default function CsvTable({ csvUrl, filterQuery }: CsvTableProps) {
                   {visibleRows.length === 0 && (
                     <tr>
                       <td
-                        className="px-3 py-3.5 text-left text-base/6 font-medium font-family-sourcecodepro text-gray-500"
+                        className="px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro text-gray-500"
                         colSpan={headers.length}
                       >
                         {tokens.length ? "No matching results." : "No data available."}
@@ -125,7 +125,7 @@ export default function CsvTable({ csvUrl, filterQuery }: CsvTableProps) {
                       {row.map((cell, cellIndex) => (
                         <td
                           key={cellIndex}
-                          className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-family-sourcecodepro 
+                          className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro 
                             ${
                               cellIndex === 0
                                 ? "sticky left-0 text-brand-black md:whitespace-nowrap"

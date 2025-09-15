@@ -18,7 +18,7 @@ export default function DropdownButton() {
     <div ref={ref} className="default-dropdown-btn-wapper relative inline-block text-left">
       <button
         onClick={() => setIsOpen((s) => !s)}
-        className="default-dropdown-btn flex items-center gap-1 inline-flex w-full justify-center gap-x-1.5 rounded-md bg-brand-white px-4 py-2 text-lg/7 font-family-sourcecodepro font-normal text-slate-600 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+        className="default-dropdown-btn flex items-center gap-1 inline-flex w-full justify-center gap-x-1.5 rounded-md bg-brand-white px-4 py-2 text-lg/7 font-sourcecodepro font-normal text-slate-600 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
       >
         Options
         <svg
@@ -43,25 +43,25 @@ export default function DropdownButton() {
           <div className="py-1">
             <a
               href="#"
-              className="block font-family-sourcecodepro font-normal px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-family-sourcecodepro"
+              className="block font-sourcecodepro font-normal px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-sourcecodepro"
             >
               Account settings
             </a>
             <a
               href="#"
-              className="block font-family-sourcecodepro font-normal px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-family-sourcecodepro"
+              className="block font-sourcecodepro font-normal px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-sourcecodepro"
             >
               Support
             </a>
             <a
               href="#"
-              className="block font-family-sourcecodepro font-normal px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-family-sourcecodepro"
+              className="block font-sourcecodepro font-normal px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-sourcecodepro"
             >
               License
             </a>
             <button
               type="button"
-              className="block w-full text-left px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-family-sourcecodepro font-normal"
+              className="block w-full text-left px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-sourcecodepro font-normal"
             >
               Sign out
             </button>

@@ -43,7 +43,7 @@ export default function Notification({
     >
       <div className="flex items-center">
         <div className="text-start">
-          <p className="notification-title text-sm font-normal leading-tight font-family-baskervville text-slate-950 text-start">
+          <p className="notification-title text-sm font-normal leading-tight font-baskervville text-slate-950 text-start">
             {message}
           </p>
         </div>

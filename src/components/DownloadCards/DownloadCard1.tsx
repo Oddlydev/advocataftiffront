@@ -12,10 +12,10 @@ const DownloadCard1: React.FC = () => {
     >
       <div className="flex flex-1 flex-col justify-between bg-white p-5">
         <div>
-          <h2 className="text-2xl leading-snug font-semibold font-family-montserrat text-slate-800 line-clamp-3">
+          <h2 className="text-2xl leading-snug font-semibold font-montserrat text-slate-800 line-clamp-3">
             PDF
           </h2>
-          <p className="mt-2 text-sm leading-tight font-normal font-family-sourcecodepro text-slate-950 line-clamp-3">
+          <p className="mt-2 text-sm leading-tight font-normal font-sourcecodepro text-slate-950 line-clamp-3">
             You can access your file via PDF
           </p>
         </div>

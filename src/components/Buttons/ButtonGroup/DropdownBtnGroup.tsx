@@ -64,7 +64,7 @@ export default function DropdownBtnGroup({
       {/* Main action button */}
       <button
         type="button"
-        className="main-action-btn-group relative inline-flex items-center rounded-l-md bg-brand-white px-4 py-2 text-sm leading-tight font-family-sourcecodepro font-medium text-slate-800 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10"
+        className="main-action-btn-group relative inline-flex items-center rounded-l-md bg-brand-white px-4 py-2 text-sm leading-tight font-sourcecodepro font-medium text-slate-800 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-10"
         onClick={onMainClick}
         ref={mainBtnRef}
       >

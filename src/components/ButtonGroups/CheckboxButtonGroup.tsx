@@ -39,7 +39,7 @@ export default function CheckboxDropdownButton() {
           id="message-type"
           name="message-type"
           aria-label="Select message type"
-          className="checkbox-select col-start-1 row-start-1 appearance-none w-full rounded-r-md bg-brand-white py-2 pr-8 pl-3 text-sm/tight font-medium font-family-sourcecodepro text-slate-800 outline-1 -outline-offset-1 outline-gray-300 focus:outline-1 focus:-outline-offset-1 focus:outline-gray-300"
+          className="checkbox-select col-start-1 row-start-1 appearance-none w-full rounded-r-md bg-brand-white py-2 pr-8 pl-3 text-sm/tight font-medium font-sourcecodepro text-slate-800 outline-1 -outline-offset-1 outline-gray-300 focus:outline-1 focus:-outline-offset-1 focus:outline-gray-300"
           defaultValue="Unread messages"
         >
           <option className="checkbox-select-item text-xs xl:text-sm leading-tight text-slate-800 hover:bg-gray-100">Unread messages</option>

@@ -245,13 +245,13 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           <div className="hero-block-container px-5 md:px-16 xl:px-20 pt-10 pb-28 md:pt-16 md:pb-16 xl:pt-32 xl:pb-72 relative z-10 mx-auto">
             <div className="hero-block-center text-center mx-auto max-w-6xl grid justify-center">
               {heroTitle && (
-                <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-[80px] leading-snug font-family-montserrat font-extrabold max-w-4xl">
+                <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-[80px] leading-snug font-montserrat font-extrabold max-w-4xl">
                   {heroTitle}
                 </h1>
               )}
               {heroDescription && (
                 <div className="space-y-2.5">
-                  <p className="hero-paragraph text-slate-200 text-base/6 lg:text-lg/7 font-family-montserrat font-normal max-w-3xl mx-auto">
+                  <p className="hero-paragraph text-slate-200 text-base/6 lg:text-lg/7 font-montserrat font-normal max-w-3xl mx-auto">
                     {heroDescription}
                   </p>
                 </div>
@@ -341,12 +341,12 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
             <div className="lg:pt-4 lg:pr-4 lg:w-2xl">
               <div className="max-w-lg lg:max-w-none">
                 {data?.page?.homeAiSection?.aiTitle && (
-                  <span className="text-xs font-semibold text-white bg-white/25 py-2 px-3 rounded-full uppercase font-family-sourcecodepro">
+                  <span className="text-xs font-semibold text-white bg-white/25 py-2 px-3 rounded-full uppercase font-sourcecodepro">
                     {data.page.homeAiSection.aiTitle}
                   </span>
                 )}
                 {data?.page?.homeAiSection?.aiDescription && (
-                  <h3 className="mt-5 xl:text-6xl sm:text-5xl text-3xl leading-9 md:leading-14 xl:leading-16 font-normal font-family-montserrat text-pretty text-white">
+                  <h3 className="mt-5 xl:text-6xl sm:text-5xl text-3xl leading-9 md:leading-14 xl:leading-16 font-normal font-montserrat text-pretty text-white">
                     {data.page.homeAiSection.aiDescription}
                   </h3>
                 )}

@@ -68,7 +68,7 @@ const CardType5: React.FC<CardType5Props> = ({
       <div className="card-body flex flex-1 flex-col justify-between bg-white p-8 pb-7">
         <div className="flex-1">
           {categories.length > 0 && (
-            <span className="card-category text-sm leading-5 md:text-base md:leading-6 font-normal border-b-2 border-transparent font-family-sourcecodepro text-slate-800 uppercase pb-1 transition-all duration-500 ease-in-out focus:border-b-2 focus:border-transparent hover:border-brand-1-500">
+            <span className="card-category text-sm leading-5 md:text-base md:leading-6 font-normal border-b-2 border-transparent font-sourcecodepro text-slate-800 uppercase pb-1 transition-all duration-500 ease-in-out focus:border-b-2 focus:border-transparent hover:border-brand-1-500">
               {categories
                 .map((cat) => cat?.name)
                 .filter(Boolean)
@@ -76,12 +76,12 @@ const CardType5: React.FC<CardType5Props> = ({
             </span>
           )}
 
-          <h2 className="mt-3 text-xl leading-snug md:text-2xl md:leading-snug font-semibold font-family-montserrat text-slate-950 transition-colors duration-500 ease-in-out line-clamp-3">
+          <h2 className="mt-3 text-xl leading-snug md:text-2xl md:leading-snug font-semibold font-montserrat text-slate-950 transition-colors duration-500 ease-in-out line-clamp-3">
             {title}
           </h2>
 
           {excerpt && (
-            <p className="mt-3 text-base leading-6 font-normal font-family-sourcecodepro text-slate-600 line-clamp-3 transition-colors duration-500 ease-in-out">
+            <p className="mt-3 text-base leading-6 font-normal font-sourcecodepro text-slate-600 line-clamp-3 transition-colors duration-500 ease-in-out">
               {stripParagraphTags(excerpt)}
             </p>
           )}
@@ -89,9 +89,9 @@ const CardType5: React.FC<CardType5Props> = ({
 
         {postDate && (
           <div className="card-footer mt-9 flex items-center justify-between">
-            <div className="date-info flex justify-between w-full items-center space-x-1 text-xs leading-tight font-medium font-family-sourcecodepro text-slate-600">
+            <div className="date-info flex justify-between w-full items-center space-x-1 text-xs leading-tight font-medium font-sourcecodepro text-slate-600">
               <time
-                className="text-xs leading-tight font-medium font-family-baskervville text-slate-600"
+                className="text-xs leading-tight font-medium font-baskervville text-slate-600"
                 dateTime={isoDate}
               >
                 {formatDate(postDate)}

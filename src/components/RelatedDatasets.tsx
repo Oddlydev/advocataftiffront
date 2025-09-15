@@ -98,15 +98,15 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
                 }
                 <div class="card-body flex flex-1 flex-col justify-between bg-white px-6 py-5">
                   <div class="flex-1">
-                    <h2 class="mt-2 cursor-pointer text-2xl leading-snug font-semibold font-family-montserrat text-slate-800">
+                    <h2 class="mt-2 cursor-pointer text-2xl leading-snug font-semibold font-montserrat text-slate-800">
                       ${title}
                     </h2>
-                    <div class="mt-2 text-base/6 font-normal font-family-sourcecodepro text-slate-600 line-clamp-3">
+                    <div class="mt-2 text-base/6 font-normal font-sourcecodepro text-slate-600 line-clamp-3">
                       ${stripParagraphTags(excerpt)}
                     </div>
                   </div>
                   <div class="card-footer mt-6 flex items-center justify-between">
-                    <time class="text-xs/tight font-medium font-family-sourcecodepro text-slate-600">
+                    <time class="text-xs/tight font-medium font-sourcecodepro text-slate-600">
                       ${formatDate(postDate)}
                     </time>
                   </div>

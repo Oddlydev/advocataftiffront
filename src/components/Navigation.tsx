@@ -23,7 +23,7 @@ const SidebarItem: React.FC<{
 }> = ({ href = "#", icon, label }) => (
   <a
     href={href}
-    className="sidebar-item items-center flex gap-x-3 rounded-md py-2 px-2.5 text-sm/6 font-medium font-family-sourcecodepro text-slate-800 hover:text-slate-800 hover:bg-brand-1-50 focus:bg-brand-1-950 focus:text-white focus:outline-0 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent group"
+    className="sidebar-item items-center flex gap-x-3 rounded-md py-2 px-2.5 text-sm/6 font-medium font-sourcecodepro text-slate-800 hover:text-slate-800 hover:bg-brand-1-50 focus:bg-brand-1-950 focus:text-white focus:outline-0 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent group"
   >
     <span className="sidebar-item-icon size-6 shrink-0">{icon}</span>
     {label}
@@ -415,7 +415,7 @@ const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
   return (
     <div ref={containerRef} className="relative">
       <button
-        className="dropdown-btn nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none flex items-center"
+        className="dropdown-btn nav-link text-lg leading-snug font-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none flex items-center"
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={(e) => {
@@ -445,7 +445,7 @@ const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <span className="text-slate-600 capitalize font-medium font-family-montserrat text-sm/5">
+            <span className="text-slate-600 capitalize font-medium font-montserrat text-sm/5">
               dashboards
             </span>
             <nav
@@ -474,7 +474,7 @@ const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
               backgroundSize: "cover",
             }}
           >
-            <div className="text-3xl/10 font-family-montserrat font-normal text-white">
+            <div className="text-3xl/10 font-montserrat font-normal text-white">
               <p>Discover Meaningful Connections</p>
             </div>
           </div>
@@ -574,7 +574,7 @@ const MobileMenu: React.FC<{
           <a
             key={item.id}
             href={item.uri ?? "#"}
-            className="nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none"
+            className="nav-link text-lg leading-snug font-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none"
           >
             {item.label}
           </a>
@@ -583,7 +583,7 @@ const MobileMenu: React.FC<{
         {/* Clickable Dropdown (mobile) */}
         <div className="relative">
           <button
-            className="dropdown-btn nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none flex items-center"
+            className="dropdown-btn nav-link text-lg leading-snug font-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none flex items-center"
             aria-expanded={dropdownOpen}
             onClick={(e) => {
               e.stopPropagation();
@@ -610,7 +610,7 @@ const MobileMenu: React.FC<{
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <span className="text-slate-600 capitalize font-medium font-family-montserrat text-sm/5">
+                <span className="text-slate-600 capitalize font-medium font-montserrat text-sm/5">
                   dashboards
                 </span>
                 <nav
@@ -639,7 +639,7 @@ const MobileMenu: React.FC<{
                   backgroundSize: "cover",
                 }}
               >
-                <div className="text-3xl/10 font-family-montserrat font-normal text-white">
+                <div className="text-3xl/10 font-montserrat font-normal text-white">
                   <p>Discover Meaningful Connections</p>
                 </div>
               </div>
@@ -693,7 +693,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
           className="brand-logo text-2xl leading-snug font-bold text-gray-800 w-full sm:w-40 md:w-52 lg:w-64"
           aria-label="Homepage"
         >
-          <div className="flex space-x-3 text-white text-sm font-normal font-family-inter items-center">
+          <div className="flex space-x-3 text-white text-sm font-normal font-sourcecodepro items-center">
             <span>
               <img src={logoSrc} alt="brand-logo" height={44} width={107} />
             </span>
@@ -707,7 +707,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
               <a
                 key={item.id}
                 href={item.uri ?? "#"}
-                className="nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none"
+                className="nav-link text-lg leading-snug font-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none"
               >
                 {item.label}
               </a>
@@ -722,7 +722,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
               <a
                 key={item.id}
                 href={item.uri ?? "#"}
-                className="nav-link text-lg leading-snug font-family-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none"
+                className="nav-link text-lg leading-snug font-sourcecodepro font-normal uppercase text-slate-50 opacity-[.6] py-2.5 px-3.5 rounded-md hover:bg-white/10 hover:text-brand-white hover:font-medium focus:font-medium focus:outline-none"
               >
                 {item.label}
               </a>

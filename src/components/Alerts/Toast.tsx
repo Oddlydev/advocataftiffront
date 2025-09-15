@@ -73,10 +73,10 @@ export default function Toast({
         </div>
 
         <div className="ml-3.5 text-start">
-          <p className="toast-title text-sm font-medium leading-tight font-family-montserrat text-slate-950 text-start">
+          <p className="toast-title text-sm font-medium leading-tight font-montserrat text-slate-950 text-start">
             {title}
           </p>
-          <p className="toast-text mt-1 text-sm leading-tight font-family-baskervville text-slate-600 text-start">
+          <p className="toast-text mt-1 text-sm leading-tight font-baskervville text-slate-600 text-start">
             {description}
           </p>
 

@@ -34,10 +34,10 @@ export default function HeroCoverImage({
             <Breadcrumb light items={[{ label: "Datasets", href: "#" }]} />
           </div>
 
-          <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-6xl leading-snug font-family-montserrat font-bold max-w-6xl">
+          <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-6xl leading-snug font-montserrat font-bold max-w-6xl">
             {title}
           </h1>
-          <p className="hero-date text-slate-50 text-sm/snug md:text-base/6 xl:text-lg/7 font-family-sourcecodepro font-medium">
+          <p className="hero-date text-slate-50 text-sm/snug md:text-base/6 xl:text-lg/7 font-sourcecodepro font-medium">
             {dateText}
           </p>
         </div>

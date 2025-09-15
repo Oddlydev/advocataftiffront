@@ -62,7 +62,7 @@ export default function Banner({
         </div>
 
         <div className="ml-3.5 text-start">
-          <p className="banner-title text-sm/tight md:text-base/6 font-medium font-family-sourcecodepro text-start">
+          <p className="banner-title text-sm/tight md:text-base/6 font-medium font-sourcecodepro text-start">
             <span className="hidden md:block">{messageDesktop}</span>
             <span className="block md:hidden">{messageMobile}</span>
           </p>

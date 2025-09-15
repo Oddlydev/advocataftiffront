@@ -13,7 +13,7 @@ export default function VerticalNavigation(): JSX.Element {
             <li key={label}>
               <a
                 href="#"
-                className="sidebar-item group items-center flex gap-x-3 rounded-md py-2 px-2.5 text-sm/6 font-medium font-family-sourcecodepro text-slate-800 hover:text-slate-800 hover:bg-brand-1-50 focus:bg-brand-1-950 focus:text-white focus:outline-0 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent"
+                className="sidebar-item group items-center flex gap-x-3 rounded-md py-2 px-2.5 text-sm/6 font-medium font-sourcecodepro text-slate-800 hover:text-slate-800 hover:bg-brand-1-50 focus:bg-brand-1-950 focus:text-white focus:outline-0 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent"
               >
                 <svg
                   className="sidebar-item-icon size-6 shrink-0"

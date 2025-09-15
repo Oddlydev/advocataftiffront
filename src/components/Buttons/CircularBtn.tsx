@@ -1,6 +1,6 @@
 export default function CircularButton() {
   return (
-    <button className="inline-flex items-center justify-center px-3 py-2.5 sm:px-3.5 sm:py-2.5 md:px-4 md:py-3 lg:py-3.5 xl:px-6 xl:py-3.5 text-xs/4 sm:text-sm/tight lg:text-base/6 font-family-sourcecodepro font-medium gap-2 lg:gap-3 transition-all duration-500 ease-in-out cursor-pointer uppercase bg-brand-1-900 text-brand-white rounded-full p-1.5 sm:p-2 md:p-2.5 xl:p-3.5 shadow-sm hover:bg-brand-1-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-brand-1-200 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent">
+    <button className="inline-flex items-center justify-center px-3 py-2.5 sm:px-3.5 sm:py-2.5 md:px-4 md:py-3 lg:py-3.5 xl:px-6 xl:py-3.5 text-xs/4 sm:text-sm/tight lg:text-base/6 font-sourcecodepro font-medium gap-2 lg:gap-3 transition-all duration-500 ease-in-out cursor-pointer uppercase bg-brand-1-900 text-brand-white rounded-full p-1.5 sm:p-2 md:p-2.5 xl:p-3.5 shadow-sm hover:bg-brand-1-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-brand-1-200 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent">
       <svg className="size-5"
         xmlns="http://www.w3.org/2000/svg"
         width="20"

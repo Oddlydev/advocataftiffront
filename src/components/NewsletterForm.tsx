@@ -89,13 +89,13 @@ export default function NewsletterForm({
         <h3
           className={
             variant === "desktop"
-              ? "text-xl/7 md:text-2xl/snug tracking-normal font-family-montserrat font-normal text-brand-white"
-              : "footer-heading text-2xl/snug tracking-normal font-family-montserrat font-normal text-brand-white"
+              ? "text-xl/7 md:text-2xl/snug tracking-normal font-montserrat font-normal text-brand-white"
+              : "footer-heading text-2xl/snug tracking-normal font-montserrat font-normal text-brand-white"
           }
         >
           Newsletter Subscription
         </h3>
-        <p className="mt-3 text-base/6 md:text-lg/7 font-family-baskervville font-normal text-brand-white/80">
+        <p className="mt-3 text-base/6 md:text-lg/7 font-baskervville font-normal text-brand-white/80">
           Get exclusive economic insights and data analysis delivered to your
           inbox from Advocata&apos;s research team.
         </p>
@@ -111,14 +111,14 @@ export default function NewsletterForm({
           id={`email-address-${variant}`}
           autoComplete="email"
           required
-          className="footer-subscribe-input block w-full rounded-md shadow-sm bg-white px-3 py-3.5 text-base/6 text-gray-900 font-family-baskervville font-normal border border-gray-300 hover:border-gray-300 outline-0 outline-offset-0 outline-transparent placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-brand-2-900 focus:ring-1 focus:ring-indigo-500"
+          className="footer-subscribe-input block w-full rounded-md shadow-sm bg-white px-3 py-3.5 text-base/6 text-gray-900 font-baskervville font-normal border border-gray-300 hover:border-gray-300 outline-0 outline-offset-0 outline-transparent placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-brand-2-900 focus:ring-1 focus:ring-indigo-500"
           placeholder="Enter your email"
         />
         <div className="mt-3 sm:shrink-0">
           <button
             type="submit"
             disabled={status === "loading"}
-            className={`footer-subscribe-btn flex w-full items-center justify-center rounded-md bg-brand-1-600 px-6 py-4 text-lg/7 font-medium text-brand-white font-family-sourcecodepro shadow-sm hover:bg-brand-1-900 transform focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent transition-colors duration-300 ease-in-out cursor-pointer ${
+            className={`footer-subscribe-btn flex w-full items-center justify-center rounded-md bg-brand-1-600 px-6 py-4 text-lg/7 font-medium text-brand-white font-sourcecodepro shadow-sm hover:bg-brand-1-900 transform focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent transition-colors duration-300 ease-in-out cursor-pointer ${
               variant === "desktop"
                 ? "bg-brand-1-600 hover:bg-brand-1-900"
                 : "bg-brand-1-900 hover:bg-brand-1-950"

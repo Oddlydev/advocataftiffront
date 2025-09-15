@@ -11,13 +11,13 @@ const CardType8Loading: React.FC = () => {
         <div className="card-body flex flex-1 flex-col justify-between bg-white p-5">
           {/* <!-- text --> */}
           <div className="flex-1">
-            <span className="text-xs/4 font-medium font-family-sourcecodepro text-slate-800">
+            <span className="text-xs/4 font-medium font-sourcecodepro text-slate-800">
               Statistical release 28 September 2023
             </span>
-            <h2 className="mt-1 text-2xl leading-snug font-semibold font-family-montserrat text-slate-800 transition-colors duration-500 ease-in-out line-clamp-3">
+            <h2 className="mt-1 text-2xl leading-snug font-semibold font-montserrat text-slate-800 transition-colors duration-500 ease-in-out line-clamp-3">
               Digital Health Maturity Data 2023
             </h2>
-            <p className="mt-2 text-base/6 leading-tight font-normal font-family-sourcecodepro text-slate-950 line-clamp-3 transition-colors duration-500 ease-in-out">
+            <p className="mt-2 text-base/6 leading-tight font-normal font-sourcecodepro text-slate-950 line-clamp-3 transition-colors duration-500 ease-in-out">
               Download Country-Level Digital Health Indicators for Analysis and
               Reporting
             </p>

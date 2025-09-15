@@ -9,17 +9,17 @@ const CardType2: React.FC = () => {
           <div className="flex flex-col justify-between xl:px-12 xl:pt-12 md:px-9 md:pt-9 px-6 pt-6">
             <div className="flex-1">
               <div className="mt-1 block max-w-2xl">
-                <h2 className="text-2xl md:text-3xl xl:text-4xl leading-snug font-bold font-family-montserrat pb-2 transition-colors duration-500 ease-in-out line-clamp-3">
+                <h2 className="text-2xl md:text-3xl xl:text-4xl leading-snug font-bold font-montserrat pb-2 transition-colors duration-500 ease-in-out line-clamp-3">
                   Government Fiscal Operations
                 </h2>
-                <p className="text-base/6 font-normal font-family-sourcecodepro transition-colors duration-500 ease-in-out">
+                <p className="text-base/6 font-normal font-sourcecodepro transition-colors duration-500 ease-in-out">
                   Transparency in government institutions refers to the open and
                   accessible sharing of information about financial activities.
                 </p>
               </div>
             </div>
 
-            <div className="mt-4 mb-7 font-semibold font-family-sourcecodepro transition-all duration-500 ease-in-out">
+            <div className="mt-4 mb-7 font-semibold font-sourcecodepro transition-all duration-500 ease-in-out">
               <WhiteButton>
                 Learn more
                 <svg
