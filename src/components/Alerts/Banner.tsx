@@ -37,7 +37,7 @@ export default function Banner({
 
   return (
     <div
-      className="bg-brand-2-950 text-white p-2 md:p-3 rounded-lg shadow-lg"
+      className="banner bg-brand-2-950 text-white p-2 md:p-3 rounded-lg shadow-lg"
       role="region"
       aria-label="Site announcement"
     >
@@ -62,7 +62,7 @@ export default function Banner({
         </div>
 
         <div className="ml-3.5 text-start">
-          <p className="text-sm/tight md:text-base/6 font-medium font-sourcecodepro text-start">
+          <p className="banner-title text-sm/tight md:text-base/6 font-medium font-family-sourcecodepro text-start">
             <span className="hidden md:block">{messageDesktop}</span>
             <span className="block md:hidden">{messageMobile}</span>
           </p>
@@ -72,25 +72,22 @@ export default function Banner({
           <div className="ml-auto flex items-center gap-2">
             {/* Learn more (desktop) */}
             <button
-              className="hidden md:inline-flex items-center justify-center 
-              bg-brand-white border border-slate-200 text-gray-600 rounded-md shadow-sm 
-              py-2.5 px-4 text-sm font-medium hover:bg-slate-100 
-              focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 
-              focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent"
+              className="items-center justify-center bg-white text-slate-900 text-[10px] shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand-2950 focus:ring-offset-2 rounded py-2.5 px-4 text-brand-2950 font-medium text-sm leading-tight hidden md:block"
               onClick={() => (onLearnMore ? onLearnMore() : undefined)}
             >
               Learn more
             </button>
 
+
             {/* Dismiss */}
             <button
               type="button"
-              className="inline-flex p-1.5 text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+              className="inline-flex p-1.5 text-brand-white"
               aria-label="Dismiss banner"
               onClick={handleClose}
             >
               <svg
-                className="size-5"
+                className="banner-close text-white size-5"
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
                 height="20"
@@ -120,10 +117,9 @@ export default function Banner({
       <div className="w-full md:hidden block mt-5">
         <button
           className="w-full inline-flex items-center justify-center 
-          bg-brand-white border border-slate-200 text-gray-600 rounded-md shadow-sm 
-          py-2.5 px-4 text-sm font-medium hover:bg-slate-100 
+          bg-brand-white border border-slate-200 text-gray-600 rounded-md shadow-sm hover:bg-slate-100 
           focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 
-          focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent"
+          focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent text-brand-2950 font-medium text-sm/tight py-2.5 px-4"
           onClick={() => (onLearnMore ? onLearnMore() : undefined)}
         >
           Learn more

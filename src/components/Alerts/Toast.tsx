@@ -42,14 +42,14 @@ export default function Toast({
 
   return (
     <div
-      className="bg-white px-4 py-4 shadow-lg rounded-lg"
+      className="toast bg-white px-4 py-4 shadow-lg rounded-lg"
       role="status"
       aria-live="polite"
     >
       <div className="flex">
         <div className="shrink-0">
           <svg
-            className="size-6 text-gray-400"
+            className="toast-icon size-6 text-gray-400"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
@@ -73,16 +73,16 @@ export default function Toast({
         </div>
 
         <div className="ml-3.5 text-start">
-          <p className="text-sm font-medium leading-tight font-montserrat text-slate-950">
+          <p className="toast-title text-sm font-medium leading-tight font-family-montserrat text-slate-950 text-start">
             {title}
           </p>
-          <p className="mt-1 text-sm leading-tight font-baskervville text-slate-600">
+          <p className="toast-text mt-1 text-sm leading-tight font-family-baskervville text-slate-600 text-start">
             {description}
           </p>
 
-          <div className="md:flex md:items-center md:gap-2 mt-2.5">
+          <div className="md:flex md:items-center md:gap-2 mt-2.5 text-start">
             <button
-              className={BtnPrimary}
+              className={`${BtnPrimary} rounded py-2 px-3 text-xs leading-4`}
               onClick={() => {
                 if (onUndo) onUndo();
                 else alert("Undo clicked");
@@ -90,42 +90,48 @@ export default function Toast({
             >
               Undo
             </button>
-            <button className={BtnWhite} onClick={handleClose}>
+
+            <button
+              className={`${BtnWhite} rounded py-2 px-3 text-xs leading-4`}
+              onClick={handleClose}
+            >
               Dismiss
             </button>
           </div>
         </div>
 
-        <div className="ml-auto pl-4 -mx-1.5 -my-1.5">
-          <button
-            type="button"
-            className="inline-flex p-1.5 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
-            aria-label="Dismiss toast"
-            onClick={handleClose}
-          >
-            <svg
-              className="size-5"
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              aria-hidden="true"
+        <div className="ml-auto pl-4">
+          <div className="-mx-1.5 -my-1.5">
+            <button
+              type="button"
+              className="inline-flex p-1.5 text-brand-white"
+              aria-label="Dismiss toast"
+              onClick={handleClose}
             >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M15.5892 4.41075C15.9147 4.73618 15.9147 5.26382 15.5892 5.58926L5.58925 15.5893C5.26381 15.9147 4.73617 15.9147 4.41073 15.5893C4.0853 15.2638 4.0853 14.7362 4.41073 14.4107L14.4107 4.41075C14.7362 4.08531 15.2638 4.08531 15.5892 4.41075Z"
-                fill="currentColor"
-              />
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M4.41073 4.41075C4.73617 4.08531 5.26381 4.08531 5.58925 4.41075L15.5892 14.4107C15.9147 14.7362 15.9147 15.2638 15.5892 15.5893C15.2638 15.9147 14.7362 15.9147 14.4107 15.5893L4.41073 5.58926C4.0853 5.26382 4.0853 4.73618 4.41073 4.41075Z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
+              <svg
+                className="toast-close size-5 text-gray-400"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M15.5892 4.41075C15.9147 4.73618 15.9147 5.26382 15.5892 5.58926L5.58925 15.5893C5.26381 15.9147 4.73617 15.9147 4.41073 15.5893C4.0853 15.2638 4.0853 14.7362 4.41073 14.4107L14.4107 4.41075C14.7362 4.08531 15.2638 4.08531 15.5892 4.41075Z"
+                  fill="currentColor"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M4.41073 4.41075C4.73617 4.08531 5.26381 4.08531 5.58925 4.41075L15.5892 14.4107C15.9147 14.7362 15.9147 15.2638 15.5892 15.5893C15.2638 15.9147 14.7362 15.9147 14.4107 15.5893L4.41073 5.58926C4.0853 5.26382 4.0853 4.73618 4.41073 4.41075Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>

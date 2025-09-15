@@ -37,20 +37,21 @@ export default function Notification({
 
   return (
     <div
-      className="bg-white px-4 py-4 shadow-lg rounded-lg"
+      className="notification bg-white px-4 py-4 shadow-lg rounded-lg"
       role="status"
       aria-live="polite"
     >
       <div className="flex items-center">
         <div className="text-start">
-          <p className="text-sm font-normal leading-tight font-baskervville text-slate-950">
+          <p className="notification-title text-sm font-normal leading-tight font-family-baskervville text-slate-950 text-start">
             {message}
           </p>
         </div>
 
         <div className="ml-auto flex items-center gap-2">
+          {/* <!-- Undo Button --> */}
           <button
-            className={BtnPrimary}
+            className={`${BtnPrimary} rounded py-2 px-3 text-xs leading-4`}
             onClick={() => {
               if (onUndo) onUndo();
               else alert("Undo clicked");
@@ -59,14 +60,15 @@ export default function Notification({
             Undo
           </button>
 
+          {/* <!-- Dismiss Button --> */}
           <button
             type="button"
-            className="inline-flex p-1.5 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+            className="inline-flex p-1.5 text-brand-white"
             aria-label="Dismiss notification"
             onClick={handleClose}
           >
             <svg
-              className="size-5"
+              className="alert-close size-5 text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
               width="20"
               height="20"

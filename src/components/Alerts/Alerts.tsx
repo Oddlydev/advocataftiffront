@@ -31,14 +31,14 @@ export default function Alerts() {
           {/* Alert */}
           {alertOpen && (
             <div
-              className="bg-white px-4 py-4 shadow-lg rounded-lg"
+              className="alert bg-white px-4 py-4 shadow-lg rounded-lg"
               role="alert"
               aria-live="polite"
             >
               <div className="flex">
                 <div className="shrink-0">
                   <svg
-                    className="size-6 text-green-500"
+                    className="tick-circle size-6 text-green-500"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -64,23 +64,24 @@ export default function Alerts() {
                 </div>
 
                 <div className="ml-3.5 text-start">
-                  <p className="text-sm font-medium leading-tight font-montserrat text-slate-950">
+                  <p className="alert-title text-sm font-medium leading-tight font-family-montserrat text-slate-950 text-start">
                     Successfully uploaded
                   </p>
-                  <p className="mt-1 text-sm leading-tight font-baskervville text-slate-600">
+                  <p className="alert-text mt-1 text-sm leading-tight font-family-baskervville text-slate-600 text-start">
                     Anyone with a link can now view this file.
                   </p>
                 </div>
 
-                <div className="ml-auto pl-4 -mx-1.5 -my-1.5">
-                  <button
+                <div className="ml-auto pl-4">
+                  <div className="-mx-1.5 -my-1.5">
+                    <button
                     type="button"
-                    className="inline-flex p-1.5 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                    className="inline-flex p-1.5 text-brand-white"
                     aria-label="Dismiss alert"
                     onClick={() => setAlertOpen(false)}
                   >
                     <svg
-                      className="size-5"
+                      className="alert-close size-5 text-gray-400"
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
                       height="20"
@@ -101,7 +102,8 @@ export default function Alerts() {
                         fill="currentColor"
                       />
                     </svg>
-                  </button>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -114,13 +116,13 @@ export default function Alerts() {
           {/* Notification */}
           {notificationOpen && (
             <div
-              className="bg-white px-4 py-4 shadow-lg rounded-lg"
+              className="notification bg-white px-4 py-4 shadow-lg rounded-lg"
               role="status"
               aria-live="polite"
             >
               <div className="flex items-center">
                 <div className="text-start">
-                  <p className="text-sm font-normal leading-tight font-baskervville text-slate-950">
+                  <p className="notification-title text-sm font-normal leading-tight font-family-baskervville text-slate-950 text-start">
                     Discussion archived
                   </p>
                 </div>
@@ -128,7 +130,7 @@ export default function Alerts() {
                 <div className="ml-auto flex items-center gap-2">
                   {/* Undo */}
                   <button
-                    className={BtnPrimary}
+                    className= {`${BtnPrimary} rounded py-2 px-3 text-xs leading-4`}
                     onClick={() => alert("Undo clicked")}
                   >
                     Undo
@@ -137,12 +139,12 @@ export default function Alerts() {
                   {/* Dismiss */}
                   <button
                     type="button"
-                    className="inline-flex p-1.5 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                    className="inline-flex p-1.5 text-brand-white"
                     aria-label="Dismiss notification"
                     onClick={() => setNotificationOpen(false)}
                   >
                     <svg
-                      className="size-5"
+                      className="alert-close size-5 text-gray-400"
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
                       height="20"
@@ -176,14 +178,14 @@ export default function Alerts() {
           {/* Toast */}
           {toastOpen && (
             <div
-              className="bg-white px-4 py-4 shadow-lg rounded-lg"
+              className="toast bg-white px-4 py-4 shadow-lg rounded-lg"
               role="status"
               aria-live="polite"
             >
               <div className="flex">
                 <div className="shrink-0">
                   <svg
-                    className="size-6 text-gray-400"
+                    className="toast-icon size-6 text-gray-400"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -207,23 +209,23 @@ export default function Alerts() {
                 </div>
 
                 <div className="ml-3.5 text-start">
-                  <p className="text-sm font-medium leading-tight font-montserrat text-slate-950">
+                  <p className="toast-title text-sm font-medium leading-tight font-family-montserrat text-slate-950 text-start">
                     Discussion moved
                   </p>
-                  <p className="mt-1 text-sm leading-tight font-baskervville text-slate-600">
+                  <p className="toast-text mt-1 text-sm leading-tight font-family-baskervville text-slate-600 text-start">
                     Lorem ipsum dolor sit amet consectetur adipisicing elit
                     oluptatum tenetur.
                   </p>
 
-                  <div className="md:flex md:items-center md:gap-2 mt-2.5">
+                  <div className="md:flex md:items-center md:gap-2 mt-2.5 text-start">
                     <button
-                      className={BtnPrimary}
+                      className={`${BtnPrimary} rounded py-2 px-3 text-xs leading-4`}
                       onClick={() => alert("Undo clicked")}
                     >
                       Undo
                     </button>
                     <button
-                      className={BtnWhite}
+                      className={`${BtnWhite} rounded py-2 px-3 text-xs leading-4`}
                       onClick={() => setToastOpen(false)}
                     >
                       Dismiss
@@ -231,10 +233,11 @@ export default function Alerts() {
                   </div>
                 </div>
 
-                <div className="ml-auto pl-4 -mx-1.5 -my-1.5">
-                  <button
+                <div className="ml-auto pl-4">
+                  <div className="-mx-1.5 -my-1.5">
+                    <button
                     type="button"
-                    className="inline-flex p-1.5 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                    className="inline-flex p-1.5 text-brand-white"
                     aria-label="Dismiss toast"
                     onClick={() => setToastOpen(false)}
                   >
@@ -260,7 +263,8 @@ export default function Alerts() {
                         fill="currentColor"
                       />
                     </svg>
-                  </button>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -275,7 +279,7 @@ export default function Alerts() {
 
           {bannerOpen && (
             <div
-              className="bg-brand-2-950 text-white p-2 md:p-3 rounded-lg shadow-lg"
+              className="banner bg-brand-2-950 text-white p-2 md:p-3 rounded-lg shadow-lg"
               role="region"
               aria-label="Site announcement"
             >
@@ -300,7 +304,7 @@ export default function Alerts() {
                 </div>
 
                 <div className="ml-3.5 text-start">
-                  <p className="text-sm/tight md:text-base/6 font-medium font-sourcecodepro text-start">
+                  <p className="banner-title text-sm/tight md:text-base/6 font-medium font-family-sourcecodepro text-start">
                     <span className="hidden md:block">
                       Big news! We&apos;re excited to announce a brand new
                       product.
@@ -314,25 +318,20 @@ export default function Alerts() {
                 <div className="ml-auto pl-4">
                   <div className="ml-auto flex items-center gap-2">
                     {/* Learn more (desktop) */}
-                    {/* Learn more (desktop) */}
                     <button
-                      className="hidden md:inline-flex items-center justify-center 
-  bg-brand-white border border-slate-200 text-gray-600 rounded-md shadow-sm 
-  py-2.5 px-4 text-sm font-medium hover:bg-slate-100 
-  focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 
-  focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent"
+                      className="items-center justify-center bg-white text-slate-900 text-[10px] shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand-2950 focus:ring-offset-2 rounded py-2.5 px-4 text-brand-2950 font-medium text-sm leading-tight hidden md:block"
                     >
                       Learn more
                     </button>
                     {/* Dismiss */}
                     <button
                       type="button"
-                      className="inline-flex p-1.5 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                      className="inline-flex p-1.5 text-brand-white"
                       aria-label="Dismiss banner"
                       onClick={() => setBannerOpen(false)}
                     >
                       <svg
-                        className="size-5"
+                        className="banner-close text-white size-5"
                         xmlns="http://www.w3.org/2000/svg"
                         width="20"
                         height="20"
@@ -362,10 +361,9 @@ export default function Alerts() {
               <div className="w-full md:hidden block mt-5">
                 <button
                   className="w-full inline-flex items-center justify-center 
-    bg-brand-white border border-slate-200 text-gray-600 rounded-md shadow-sm 
-    py-2.5 px-4 text-sm font-medium hover:bg-slate-100 
-    focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 
-    focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent"
+                 bg-brand-white border border-slate-200 text-gray-600 rounded-md shadow-sm hover:bg-slate-100 
+                  focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 
+                  focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent text-brand-2950 font-medium text-sm/tight py-2.5 px-4"
                 >
                   Learn more
                 </button>
