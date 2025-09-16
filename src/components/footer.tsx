@@ -107,7 +107,7 @@ export default function Footer(): JSX.Element {
 
             {/* column 3 (desktop newsletter card) */}
             <div className="hidden xl:block">
-              <NewsletterForm listId={4} variant="desktop" />
+              <NewsletterForm variant="desktop" />
             </div>
 
             {/* mobile dropdown menu - column 1 */}
@@ -196,7 +196,7 @@ export default function Footer(): JSX.Element {
 
             {/* mobile-only newsletter card */}
             <div className="xl:hidden">
-              <NewsletterForm listId={4} variant="mobile" />
+              <NewsletterForm variant="mobile" />
             </div>
           </div>
         </div>
