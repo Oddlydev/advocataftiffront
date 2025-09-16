@@ -47,37 +47,42 @@ async function fetchPageSEOByUri(uri: string): Promise<any | null> {
   const wpUri = uri.endsWith("/") ? uri : `${uri}/`;
   const encoded = wpUri.replace(/"/g, '\\"');
   const data = await gql<{ nodeByUri?: { __typename?: string; seo?: any } }>(
-    `query GetSeoByUri {\n  nodeByUri(uri: "${encoded}") {\n    __typename\n    ... on Page {\n      seo {\n        title\n        metaDesc\n        canonical\n        opengraphTitle\n        opengraphDescription\n        opengraphUrl\n        opengraphSiteName\n        opengraphImage { sourceUrl }\n        twitterTitle\n        twitterDescription\n        twitterImage { sourceUrl }\n        schema { raw }\n      }\n    }\n  }\n}`
+    `query GetSeoByUri {
+      nodeByUri(uri: "${encoded}") {
+        __typename
+        ... on Page {
+          seo {
+            title
+            metaDesc
+            canonical
+            opengraphTitle
+            opengraphDescription
+            opengraphUrl
+            opengraphSiteName
+            opengraphImage { sourceUrl }
+            twitterTitle
+            twitterDescription
+            twitterImage { sourceUrl }
+            schema { raw }
+          }
+        }
+      }
+    }`
   );
   return data?.nodeByUri && (data.nodeByUri as any).seo
     ? (data.nodeByUri as any).seo
     : null;
 }
 
-async function fetchTransparencyYears(): Promise<TaxNode[]> {
-  const data = await gql<{ transparencyYears: { nodes: TaxNode[] } }>(`
-    query GetTransparencyYears {
-      transparencyYears(first: 100) {
-        nodes { name slug }
-      }
-    }
-  `);
-  return data?.transparencyYears?.nodes ?? [];
-}
-
-async function fetchTransparencyIndustries(): Promise<TaxNode[]> {
-  const data = await gql<{ transparanceyIndustries: { nodes: TaxNode[] } }>(`
-    query GetTransparencyIndustries {
-      transparanceyIndustries(first: 100) {
-        nodes { name slug }
-      }
-    }
-  `);
-  return data?.transparanceyIndustries?.nodes ?? [];
-}
-
-async function fetchTransparencyPosts(): Promise<TransparencyPost[]> {
+// ✅ Combined query for years, industries, and posts
+async function fetchTransparencyDashboardData(): Promise<{
+  years: TaxNode[];
+  industries: TaxNode[];
+  posts: TransparencyPost[];
+}> {
   const data = await gql<{
+    transparencyYears: { nodes: TaxNode[] };
+    transparanceyIndustries: { nodes: TaxNode[] };
     govTransparencies: {
       nodes: Array<{
         title: string;
@@ -88,7 +93,13 @@ async function fetchTransparencyPosts(): Promise<TransparencyPost[]> {
       }>;
     };
   }>(`
-    query GetTransparencyPosts {
+    query GetTransparencyDashboardData {
+      transparencyYears(first: 100) {
+        nodes { name slug }
+      }
+      transparanceyIndustries(first: 100) {
+        nodes { name slug }
+      }
       govTransparencies(first: 100) {
         nodes {
           title
@@ -103,15 +114,18 @@ async function fetchTransparencyPosts(): Promise<TransparencyPost[]> {
     }
   `);
 
-  return (
-    data?.govTransparencies?.nodes?.map((n) => ({
-      title: n.title,
-      slug: n.slug,
-      industries: n.transparanceyIndustries?.nodes ?? [],
-      years: n.transparencyYears?.nodes ?? [],
-      csvUrl: n.dataSetFields?.dataSetFile?.node?.mediaItemUrl ?? null,
-    })) ?? []
-  );
+  return {
+    years: data?.transparencyYears?.nodes ?? [],
+    industries: data?.transparanceyIndustries?.nodes ?? [],
+    posts:
+      data?.govTransparencies?.nodes?.map((n) => ({
+        title: n.title,
+        slug: n.slug,
+        industries: n.transparanceyIndustries?.nodes ?? [],
+        years: n.transparencyYears?.nodes ?? [],
+        csvUrl: n.dataSetFields?.dataSetFile?.node?.mediaItemUrl ?? null,
+      })) ?? [],
+  };
 }
 
 // ----------------------
@@ -135,7 +149,8 @@ export default function PageTransparencyDashboard(): JSX.Element {
   const [filteredPosts, setFilteredPosts] = useState<TransparencyPost[]>([]);
   const [currentCsvUrl, setCurrentCsvUrl] = useState<string | null>(null);
 
-  // removed URL syncing; no init gating
+  const [isLoading, setIsLoading] = useState(true); // ✅ loader
+
   const pageSize = 10;
 
   // Load defaults from URL
@@ -151,6 +166,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
   // Load backend data
   useEffect(() => {
     async function load() {
+      setIsLoading(true);
       try {
         try {
           const s = await fetchPageSEOByUri(
@@ -160,11 +176,9 @@ export default function PageTransparencyDashboard(): JSX.Element {
         } catch (e) {
           console.warn("SEO fetch failed", e);
         }
-        const [years, industries, posts] = await Promise.all([
-          fetchTransparencyYears(),
-          fetchTransparencyIndustries(),
-          fetchTransparencyPosts(),
-        ]);
+
+        const { years, industries, posts } =
+          await fetchTransparencyDashboardData();
 
         setYearOptions(years);
         setIndustryOptions(industries);
@@ -183,7 +197,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
       } catch (e) {
         console.error(e);
       } finally {
-        // noop
+        setIsLoading(false);
       }
     }
     load();
@@ -212,8 +226,6 @@ export default function PageTransparencyDashboard(): JSX.Element {
       setCurrentCsvUrl(null);
     }
   }, [filteredPosts]);
-
-  // URL syncing removed to avoid jank and re-renders
 
   const paginatedPosts = filteredPosts.slice(
     (currentPage - 1) * pageSize,
@@ -328,7 +340,9 @@ export default function PageTransparencyDashboard(): JSX.Element {
           </div>
 
           {/* CSV Table */}
-          {currentCsvUrl ? (
+          {isLoading ? (
+            <p className="text-gray-500">Loading dataset...</p>
+          ) : currentCsvUrl ? (
             <CsvTableTransparency
               csvUrl={currentCsvUrl}
               filterQuery={queryInput}
