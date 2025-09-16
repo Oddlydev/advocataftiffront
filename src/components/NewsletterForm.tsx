@@ -3,12 +3,10 @@
 import { useState } from "react";
 
 interface NewsletterFormProps {
-  listId?: number; // MailPoet list ID
   variant?: "desktop" | "mobile";
 }
 
 export default function NewsletterForm({
-  listId = 1,
   variant = "desktop",
 }: NewsletterFormProps) {
   const [status, setStatus] = useState<
@@ -25,18 +23,21 @@ export default function NewsletterForm({
       .value;
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/custom/v1/subscribe`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, list_id: listId }),
-        }
-      );
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
-      if (!res.ok) throw new Error("Failed to subscribe");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to subscribe");
+
       setStatus("success");
-      setMessage("Thanks for subscribing!");
+      setMessage(
+        data.status === "pending"
+          ? "Check your inbox to confirm your subscription!"
+          : "Thanks for subscribing!"
+      );
       form.reset();
     } catch (err: any) {
       setStatus("error");
@@ -44,10 +45,10 @@ export default function NewsletterForm({
     }
   }
 
-  // Shared SVG header
   const Header = () => (
     <div className="flex justify-between items-center">
       <div>
+        {/* SVG icon */}
         <svg
           className="w-5 h-4 text-brand-white"
           xmlns="http://www.w3.org/2000/svg"
@@ -111,14 +112,14 @@ export default function NewsletterForm({
           id={`email-address-${variant}`}
           autoComplete="email"
           required
-          className="footer-subscribe-input block w-full rounded-md shadow-sm bg-white px-3 py-3.5 text-base/6 text-gray-900 font-baskervville font-normal border border-gray-300 hover:border-gray-300 outline-0 outline-offset-0 outline-transparent placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-brand-2-900 focus:ring-1 focus:ring-indigo-500"
+          className="footer-subscribe-input block w-full rounded-md shadow-sm bg-white px-3 py-3.5 text-base/6 text-gray-900 font-baskervville font-normal border border-gray-300 placeholder:text-gray-500 focus:outline-2 focus:outline-brand-2-900 focus:ring-1 focus:ring-indigo-500"
           placeholder="Enter your email"
         />
         <div className="mt-3 sm:shrink-0">
           <button
             type="submit"
             disabled={status === "loading"}
-            className={`footer-subscribe-btn flex w-full items-center justify-center rounded-md bg-brand-1-600 px-6 py-4 text-lg/7 font-medium text-brand-white font-sourcecodepro shadow-sm hover:bg-brand-1-900 transform focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent transition-colors duration-300 ease-in-out cursor-pointer ${
+            className={`footer-subscribe-btn flex w-full items-center justify-center rounded-md px-6 py-4 text-lg/7 font-medium text-brand-white font-sourcecodepro shadow-sm transition-colors duration-300 ease-in-out cursor-pointer ${
               variant === "desktop"
                 ? "bg-brand-1-600 hover:bg-brand-1-900"
                 : "bg-brand-1-900 hover:bg-brand-1-950"
