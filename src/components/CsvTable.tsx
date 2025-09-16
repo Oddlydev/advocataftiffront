@@ -42,7 +42,8 @@ export default function CsvTable({ csvUrl, filterQuery }: CsvTableProps) {
   }, [csvUrl]);
 
   if (error) return <p className="text-red-500">{error}</p>;
-  if (rows.length === 0) return <p>Loading table...</p>;
+  if (rows.length === 0)
+    return <p className="text-gray-500">Loading dataset...</p>;
 
   const headers = rows[0];
   const dataRows = rows.slice(1);
@@ -55,7 +56,9 @@ export default function CsvTable({ csvUrl, filterQuery }: CsvTableProps) {
       .replace(/\u00a0/g, " ")
       .replace(/\s+/g, " ")
       .trim();
-  const tokens = norm(filterQuery ?? "").split(" ").filter(Boolean);
+  const tokens = norm(filterQuery ?? "")
+    .split(" ")
+    .filter(Boolean);
   const visibleRows = tokens.length
     ? dataRows.filter((row) =>
         tokens.every((t) => row.some((cell) => norm(cell).includes(t)))
@@ -116,7 +119,9 @@ export default function CsvTable({ csvUrl, filterQuery }: CsvTableProps) {
                         className="px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro text-gray-500"
                         colSpan={headers.length}
                       >
-                        {tokens.length ? "No matching results." : "No data available."}
+                        {tokens.length
+                          ? "No matching results."
+                          : "No data available."}
                       </td>
                     </tr>
                   )}

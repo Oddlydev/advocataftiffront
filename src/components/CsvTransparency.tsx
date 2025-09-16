@@ -44,7 +44,8 @@ export default function CsvTransparency({
   }, [csvUrl]);
 
   if (error) return <p className="text-red-500">{error}</p>;
-  if (rows.length === 0) return <p>Loading table...</p>;
+  if (rows.length === 0)
+    return <p className="text-gray-500">Loading dataset...</p>;
 
   const headers = rows[0];
   const dataRows = rows.slice(1);
@@ -58,7 +59,9 @@ export default function CsvTransparency({
       .trim();
 
   // Tokenize query by spaces; require ALL tokens to match somewhere in the row
-  const tokens = norm(filterQuery ?? "").split(" ").filter(Boolean);
+  const tokens = norm(filterQuery ?? "")
+    .split(" ")
+    .filter(Boolean);
   const visibleRows = tokens.length
     ? dataRows.filter((row) =>
         tokens.every((t) => row.some((cell) => norm(cell).includes(t)))
@@ -158,7 +161,9 @@ export default function CsvTransparency({
                     className="px-3 py-3.5 text-left text-base/6 font-medium text-gray-500"
                     colSpan={headers.length}
                   >
-                    {tokens.length ? "No matching results." : "No data available."}
+                    {tokens.length
+                      ? "No matching results."
+                      : "No data available."}
                   </td>
                 </tr>
               )}

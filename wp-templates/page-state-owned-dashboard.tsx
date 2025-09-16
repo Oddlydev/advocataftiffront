@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { JSX } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import SEO from "@/src/components/SEO";
@@ -37,7 +37,7 @@ async function gql<T>(query: string): Promise<T> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query }),
-    cache: "no-store", // client component; skip caches to avoid stale taxonomies
+    cache: "no-store",
   });
   if (!res.ok) throw new Error(`GraphQL error: ${res.status}`);
   const json = await res.json();
@@ -48,7 +48,27 @@ async function fetchPageSEOByUri(uri: string): Promise<any | null> {
   const wpUri = uri.endsWith("/") ? uri : `${uri}/`;
   const encoded = wpUri.replace(/"/g, '\\"');
   const data = await gql<{ nodeByUri?: { __typename?: string; seo?: any } }>(
-    `query GetSeoByUri {\n  nodeByUri(uri: "${encoded}") {\n    __typename\n    ... on Page {\n      seo {\n        title\n        metaDesc\n        canonical\n        opengraphTitle\n        opengraphDescription\n        opengraphUrl\n        opengraphSiteName\n        opengraphImage { sourceUrl }\n        twitterTitle\n        twitterDescription\n        twitterImage { sourceUrl }\n        schema { raw }\n      }\n    }\n  }\n}`
+    `query GetSeoByUri {
+      nodeByUri(uri: "${encoded}") {
+        __typename
+        ... on Page {
+          seo {
+            title
+            metaDesc
+            canonical
+            opengraphTitle
+            opengraphDescription
+            opengraphUrl
+            opengraphSiteName
+            opengraphImage { sourceUrl }
+            twitterTitle
+            twitterDescription
+            twitterImage { sourceUrl }
+            schema { raw }
+          }
+        }
+      }
+    }`
   );
   return data?.nodeByUri && (data.nodeByUri as any).seo
     ? (data.nodeByUri as any).seo
@@ -89,19 +109,19 @@ async function fetchSOEPosts(): Promise<SOEPost[]> {
       }>;
     };
   }>(`
-query GetSOEPosts {
-  stateOwnedEnterprises(first: 100) {
-    nodes {
-      title
-      slug
-      soeIndustries { nodes { name slug } }
-      sOEYears { nodes { name slug } }
-      dataSetFields {
-        dataSetFile { node { mediaItemUrl } }
+    query GetSOEPosts {
+      stateOwnedEnterprises(first: 100) {
+        nodes {
+          title
+          slug
+          soeIndustries { nodes { name slug } }
+          sOEYears { nodes { name slug } }
+          dataSetFields {
+            dataSetFile { node { mediaItemUrl } }
+          }
+        }
       }
     }
-  }
-}
   `);
 
   return (
@@ -133,7 +153,6 @@ export default function PageStateOwnedDashboard(): JSX.Element {
   const pathname = usePathname();
   const [seo, setSeo] = useState<any | null>(null);
 
-  // Search input vs applied search
   const [queryInput, setQueryInput] = useState("");
   const [industry, setIndustry] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
@@ -147,9 +166,11 @@ export default function PageStateOwnedDashboard(): JSX.Element {
   const [currentCsvUrl, setCurrentCsvUrl] = useState<string | null>(null);
   const [currentPostTitle, setCurrentPostTitle] = useState("");
 
+  const [isLoading, setIsLoading] = useState(true); // ✅ loader state
+
   const pageSize = 10;
 
-  // Load defaults from URL (query params)
+  // Load defaults from URL
   useEffect(() => {
     const q = searchParams.get("q") || "";
     const ind = searchParams.get("industry");
@@ -159,18 +180,17 @@ export default function PageStateOwnedDashboard(): JSX.Element {
     setYear(yr);
   }, [searchParams]);
 
-  // Load SOE data once on mount; avoid re-fetching on query changes
+  // Load SOE data once
   useEffect(() => {
     async function load() {
+      setIsLoading(true);
       try {
-        // Fetch Yoast SEO for this page by URI
         try {
           const s = await fetchPageSEOByUri(
             pathname || "/state-owned-dashboard/"
           );
           setSeo(s);
         } catch (e) {
-          // non-fatal if seo not available
           console.warn("SEO fetch failed", e);
         }
 
@@ -207,32 +227,28 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       } catch (e) {
         console.error(e);
       } finally {
-        // noop
+        setIsLoading(false);
       }
     }
     load();
   }, []);
 
-  // Filter posts whenever filters change (industry/year)
-  // Note: query is applied within the CSV table, not to dataset selection
+  // Filter posts
   useEffect(() => {
     let results = soePosts;
-
     if (industry) {
       results = results.filter((p) =>
         p.industries.some((ind) => ind.slug === industry)
       );
     }
-
     if (year) {
       results = results.filter((p) => p.years.some((y) => y.slug === year));
     }
-
     setFilteredPosts(results);
     setCurrentPage(1);
   }, [industry, year, soePosts]);
 
-  // Pick current CSV from the first filtered post
+  // Pick current CSV
   useEffect(() => {
     if (filteredPosts.length > 0) {
       const post = filteredPosts[0];
@@ -244,14 +260,10 @@ export default function PageStateOwnedDashboard(): JSX.Element {
     }
   }, [filteredPosts]);
 
-  // URL syncing removed to keep dropdown interactions instant and jank-free
-
-  // Pagination slice
   const paginatedPosts = filteredPosts.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
-
   return (
     <main>
       <SEO yoast={seo as any} title="State Owned Enterprises" />
@@ -296,10 +308,10 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       {/* Hero */}
       <div>
         <HeroWhite
-        title="State Owned Enterprises"
-        paragraph="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-        items={[{ label: "State Owned Dashboard" }]}
-      />
+          title="State Owned Enterprises"
+          paragraph="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          items={[{ label: "State Owned Dashboard" }]}
+        />
       </div>
 
       {/* Filters */}
@@ -365,7 +377,9 @@ export default function PageStateOwnedDashboard(): JSX.Element {
           </div>
 
           {/* CSV Table */}
-          {currentCsvUrl ? (
+          {isLoading ? (
+            <p className="text-gray-500">Loading dataset...</p>
+          ) : currentCsvUrl ? (
             <CsvTable csvUrl={currentCsvUrl} filterQuery={queryInput} />
           ) : (
             <p className="text-gray-500">No dataset found for selection.</p>
