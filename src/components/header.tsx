@@ -405,10 +405,11 @@ const dashboardIcons: React.ReactNode[] = [
     />
   </svg>,
 ];
-const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
-  imageUrl,
-  items = [],
-}) => {
+const DashboardDropdown: React.FC<{
+  imageUrl: string;
+  items?: MenuItem[];
+  parentItem?: MenuItem | null;
+}> = ({ imageUrl, items = [], parentItem = null }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -441,7 +442,17 @@ const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
           setOpen((v) => !v);
         }}
       >
-        Dashboard
+        <span
+          onClick={(e) => {
+            // Navigate to parent menu item URI when clicking the label
+            e.stopPropagation();
+            if (parentItem?.uri) {
+              window.location.href = parentItem.uri;
+            }
+          }}
+        >
+          {parentItem?.label ?? "Dashboard"}
+        </span>
         <svg
           className="ml-1 w-3 h-3 text-slate-50"
           xmlns="http://www.w3.org/2000/svg"
@@ -509,7 +520,8 @@ const MobileMenu: React.FC<{
   imageUrl: string;
   topLevelItems?: MenuItem[];
   dashboardItems?: MenuItem[];
-}> = ({ imageUrl, topLevelItems = [], dashboardItems = [] }) => {
+  parentDashboardItem?: MenuItem | null;
+}> = ({ imageUrl, topLevelItems = [], dashboardItems = [], parentDashboardItem = null }) => {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -631,7 +643,17 @@ const MobileMenu: React.FC<{
               setDropdownOpen((v) => !v);
             }}
           >
-            Dashboard
+            <span
+              onClick={(e) => {
+                // Navigate to parent menu item URI when clicking the label on mobile
+                e.stopPropagation();
+                if (parentDashboardItem?.uri) {
+                  window.location.href = parentDashboardItem.uri;
+                }
+              }}
+            >
+              {parentDashboardItem?.label ?? "Dashboard"}
+            </span>
             <svg
               className="ml-1.5 w-3 h-3 text-slate-50"
               xmlns="http://www.w3.org/2000/svg"
@@ -778,6 +800,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
               <DashboardDropdown
                 imageUrl={navDropdownImage}
                 items={dashboardChildren}
+                parentItem={dashboardsItem}
               />
             )}
 
@@ -815,6 +838,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
           imageUrl={navDropdownImage}
           topLevelItems={topLevelOrdered}
           dashboardItems={dashboardChildren}
+          parentDashboardItem={dashboardsItem}
         />
       </div>
     </header>
