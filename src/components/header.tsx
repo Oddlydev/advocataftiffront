@@ -608,117 +608,149 @@ const MobileMenu: React.FC<{
         ref={ref}
         className={`mobile-menu lg:hidden absolute inset-0 top-12 h-screen w-full bg-brand-black border-t border-gray-300 z-50 flex flex-col gap-4 px-6 py-6 ${open ? "" : "hidden"}`}
       >
-        {topLevelItems.map((item) => {
-          const isActive =
-            typeof window !== "undefined" &&
-            window.location.pathname === item.uri;
+        {(() => {
+          const filteredTop = parentDashboardItem
+            ? topLevelItems.filter((it) => it.id !== parentDashboardItem.id)
+            : topLevelItems;
+          const firstRow = filteredTop.slice(0, 1);
+          const restRows = filteredTop.slice(1);
           return (
-            <a
-              key={item.id}
-              href={item.uri ?? "#"}
-              className={`nav-link text-lg leading-snug font-sourcecodepro font-normal uppercase py-2.5 px-3.5 rounded-md transition
+            <>
+              {firstRow.map((item) => {
+                const isActive =
+                  typeof window !== "undefined" &&
+                  window.location.pathname === item.uri;
+                return (
+                  <a
+                    key={item.id}
+                    href={item.uri ?? "#"}
+                    className={`nav-link text-lg leading-snug font-sourcecodepro font-normal uppercase py-2.5 px-3.5 rounded-md transition
                 ${
                   isActive
                     ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
                     : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
                 }`}
-            >
-              {item.label}
-            </a>
-          );
-        })}
+                  >
+                    {item.label}
+                  </a>
+                );
+              })}
 
-        {/* Clickable Dropdown (mobile) */}
-        <div className="relative">
-          <button
-            className={`dropdown-btn nav-link text-lg leading-snug font-sourcecodepro uppercase py-2.5 px-3.5 rounded-md transition flex items-center
+              {/* Dropdown moved to 2nd row */}
+              {parentDashboardItem && (
+                <div className="relative" key={parentDashboardItem.id + "-dropdown"}>
+                  <button
+                    className={`dropdown-btn nav-link text-lg leading-snug font-sourcecodepro uppercase py-2.5 px-3.5 rounded-md transition flex items-center
     ${
       anyChildActive
         ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
         : "text-slate-50/60 font-normal hover:bg-white/10 hover:text-brand-white hover:font-medium"
     }`}
-            aria-expanded={dropdownOpen}
-            onClick={(e) => {
-              e.stopPropagation();
-              setDropdownOpen((v) => !v);
-            }}
-          >
-            <span
-              onClick={(e) => {
-                // Navigate to parent menu item URI when clicking the label on mobile
-                e.stopPropagation();
-                if (parentDashboardItem?.uri) {
-                  window.location.href = parentDashboardItem.uri;
-                }
-              }}
-            >
-              {parentDashboardItem?.label ?? "Dashboard"}
-            </span>
-            <svg
-              className="ml-1.5 w-3 h-3 text-slate-50"
-              xmlns="http://www.w3.org/2000/svg"
-              width="12"
-              height="6"
-              viewBox="0 0 12 6"
-              fill="none"
-            >
-              <path
-                d="M5.99758 4.38275L10.0506 0.329999C10.1806 0.199833 10.3398 0.133166 10.5283 0.129999C10.7168 0.126666 10.8819 0.193332 11.0236 0.329999C11.1652 0.466499 11.2382 0.628666 11.2423 0.8165C11.2465 1.00433 11.1762 1.16908 11.0313 1.31075L6.59758 5.74425C6.51224 5.83275 6.41974 5.8975 6.32008 5.9385C6.22041 5.9795 6.11291 6 5.99758 6C5.88224 6 5.77474 5.9795 5.67508 5.9385C5.57541 5.8975 5.48133 5.83275 5.39283 5.74425L0.959076 1.31075C0.823909 1.17542 0.756742 1.01225 0.757576 0.82125C0.758576 0.63025 0.829909 0.466499 0.971576 0.329999C1.11324 0.193333 1.27674 0.125 1.46208 0.125C1.64724 0.125 1.80808 0.193333 1.94458 0.329999L5.99758 4.38275Z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
-          <div
-            className={`${dropdownOpen ? "" : "hidden"} dropdown-menu space-y-2 grid ml-4 px-4 py-2 left-0 mt-2 w-[96%] xl:w-full bg-white border-0 rounded-md shadow-lg`}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <span className="text-slate-600 capitalize font-medium font-montserrat text-sm/5">
-                  dashboards
-                </span>
-                <nav
-                  className="sidebar-fill flex flex-1 flex-col pt-4"
-                  aria-label="Sidebar"
-                >
-                  <ul role="list" className="space-y-1">
-                    {dashboardItems.map((item, index) => {
-                      const isActive =
-                        typeof window !== "undefined" &&
-                        window.location.pathname === item.uri;
-                      return (
-                        <li key={item.id}>
-                          <SidebarItem
-                            href={item.uri ?? "#"}
-                            label={item.label}
-                            icon={dashboardIcons[index % dashboardIcons.length]}
-                            isActive={isActive}
-                          />
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </nav>
-              </div>
-              <div
-                className="px-3 py-5 rounded bg-no-repeat bg-center bg-cover"
-                style={{
-                  background: `url('${imageUrl}')`,
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover",
-                }}
-              >
-                <div className="text-3xl/10 font-montserrat font-normal text-white">
-                  <p>
-                    Discover
-                    <br />
-                    Meaningful Connections
-                  </p>
+                    aria-expanded={dropdownOpen}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDropdownOpen((v) => !v);
+                    }}
+                  >
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (parentDashboardItem?.uri) {
+                          window.location.href = parentDashboardItem.uri;
+                        }
+                      }}
+                    >
+                      {parentDashboardItem?.label ?? "Dashboard"}
+                    </span>
+                    <svg
+                      className="ml-1.5 w-3 h-3 text-slate-50"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="6"
+                      viewBox="0 0 12 6"
+                      fill="none"
+                    >
+                      <path
+                        d="M5.99758 4.38275L10.0506 0.329999C10.1806 0.199833 10.3398 0.133166 10.5283 0.129999C10.7168 0.126666 10.8819 0.193332 11.0236 0.329999C11.1652 0.466499 11.2382 0.628666 11.2423 0.8165C11.2465 1.00433 11.1762 1.16908 11.0313 1.31075L6.59758 5.74425C6.51224 5.83275 6.41974 5.8975 6.32008 5.9385C6.22041 5.9795 6.11291 6 5.99758 6C5.88224 6 5.77474 5.9795 5.67508 5.9385C5.57541 5.8975 5.48133 5.83275 5.39283 5.74425L0.959076 1.31075C0.823909 1.17542 0.756742 1.01225 0.757576 0.82125C0.758576 0.63025 0.829909 0.466499 0.971576 0.329999C1.11324 0.193333 1.27674 0.125 1.46208 0.125C1.64724 0.125 1.80808 0.193333 1.94458 0.329999L5.99758 4.38275Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </button>
+                  <div
+                    className={`${dropdownOpen ? "" : "hidden"} dropdown-menu space-y-2 grid ml-4 px-4 py-2 left-0 mt-2 w-[96%] xl:w-full bg-white border-0 rounded-md shadow-lg`}
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <span className="text-slate-600 capitalize font-medium font-montserrat text-sm/5">
+                          dashboards
+                        </span>
+                        <nav
+                          className="sidebar-fill flex flex-1 flex-col pt-4"
+                          aria-label="Sidebar"
+                        >
+                          <ul role="list" className="space-y-1">
+                            {dashboardItems.map((item, index) => {
+                              const isActive =
+                                typeof window !== "undefined" &&
+                                window.location.pathname === item.uri;
+                              return (
+                                <li key={item.id}>
+                                  <SidebarItem
+                                    href={item.uri ?? "#"}
+                                    label={item.label}
+                                    icon={dashboardIcons[index % dashboardIcons.length]}
+                                    isActive={isActive}
+                                  />
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </nav>
+                      </div>
+                      <div
+                        className="px-3 py-5 rounded bg-no-repeat bg-center bg-cover"
+                        style={{
+                          background: `url('${imageUrl}')`,
+                          backgroundPosition: "center",
+                          backgroundRepeat: "no-repeat",
+                          backgroundSize: "cover",
+                        }}
+                      >
+                        <div className="text-3xl/10 font-montserrat font-normal text-white">
+                          <p>
+                            Discover
+                            <br />
+                            Meaningful Connections
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
+              )}
+
+              {restRows.map((item) => {
+                const isActive =
+                  typeof window !== "undefined" &&
+                  window.location.pathname === item.uri;
+                return (
+                  <a
+                    key={item.id}
+                    href={item.uri ?? "#"}
+                    className={`nav-link text-lg leading-snug font-sourcecodepro font-normal uppercase py-2.5 px-3.5 rounded-md transition
+                ${
+                  isActive
+                    ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
+                    : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
+                }`}
+                  >
+                    {item.label}
+                  </a>
+                );
+              })}
+            </>
+          );
+        })()}
 
         {/** remaining links rendered above */}
       </div>
