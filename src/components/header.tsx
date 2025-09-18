@@ -196,6 +196,21 @@ type MenuItem = {
   parentId?: string | null;
 };
 
+// Normalize paths (remove trailing slashes) so matches are reliable
+const normalizePath = (p?: string | null) => {
+  if (!p) return "";
+  if (p === "/") return "/";
+  return String(p).replace(/\/+$/, "");
+};
+
+// True if current equals target or is a descendant of it
+const pathMatches = (current?: string | null, target?: string | null) => {
+  const c = normalizePath(current);
+  const t = normalizePath(target);
+  if (!t) return false;
+  if (t === "/") return c === "/";
+  return c === t || c.startsWith(t + "/");
+};
 // Icons used in the dashboard dropdown, preserved from the original design
 const dashboardIcons: React.ReactNode[] = [
   <svg
@@ -409,7 +424,8 @@ const DashboardDropdown: React.FC<{
   imageUrl: string;
   items?: MenuItem[];
   parentItem?: MenuItem | null;
-}> = ({ imageUrl, items = [], parentItem = null }) => {
+  currentPathname?: string;
+}> = ({ imageUrl, items = [], parentItem = null, currentPathname }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -422,16 +438,20 @@ const DashboardDropdown: React.FC<{
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
-  const anyChildActive =
-    typeof window !== "undefined" &&
-    items.some((child: any) => window.location.pathname === child.uri);
+  const isDashActive = (() => {
+    const current = currentPathname ?? (typeof window !== "undefined" ? window.location.pathname : "");
+    const parentActive = pathMatches(current, parentItem?.uri);
+    const childActive = items.some((child: any) => pathMatches(current, child.uri));
+    const implied = /dashboard/i.test(parentItem?.label ?? "") && /dashboard/i.test(current ?? "");
+    return parentActive || childActive || implied;
+  })();
 
   return (
     <div ref={containerRef} className="relative">
       <button
         className={`dropdown-btn nav-link text-lg leading-snug font-sourcecodepro uppercase py-2.5 px-3.5 rounded-md transition flex items-center
     ${
-      anyChildActive
+      isDashActive
         ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
         : "text-slate-50/60 font-normal hover:bg-white/10 hover:text-brand-white hover:font-medium"
     }`}
@@ -521,7 +541,8 @@ const MobileMenu: React.FC<{
   topLevelItems?: MenuItem[];
   dashboardItems?: MenuItem[];
   parentDashboardItem?: MenuItem | null;
-}> = ({ imageUrl, topLevelItems = [], dashboardItems = [], parentDashboardItem = null }) => {
+  currentPathname?: string;
+}> = ({ imageUrl, topLevelItems = [], dashboardItems = [], parentDashboardItem = null, currentPathname }) => {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -538,11 +559,13 @@ const MobileMenu: React.FC<{
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
-  // 👇 Add this line
-  const anyChildActive =
-    typeof window !== "undefined" &&
-    dashboardItems.some((child) => window.location.pathname === child.uri);
-
+  const isDashActive = (() => {
+    const current = currentPathname ?? (typeof window !== 'undefined' ? window.location.pathname : '');
+    const parentActive = pathMatches(current, parentDashboardItem?.uri);
+    const childActive = dashboardItems.some((child) => pathMatches(current, child.uri));
+    const implied = /dashboard/i.test(parentDashboardItem?.label ?? '') && /dashboard/i.test(current ?? '');
+    return parentActive || childActive || implied;
+  })();
   return (
     <div className="lg:hidden flex items-center gap-3.5">
       {/* Mobile Search */}
@@ -642,7 +665,7 @@ const MobileMenu: React.FC<{
                   <button
                     className={`dropdown-btn nav-link text-lg leading-snug font-sourcecodepro uppercase py-2.5 px-3.5 rounded-md transition flex items-center
     ${
-      anyChildActive
+      isDashActive
         ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
         : "text-slate-50/60 font-normal hover:bg-white/10 hover:text-brand-white hover:font-medium"
     }`}
@@ -833,6 +856,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
                 imageUrl={navDropdownImage}
                 items={dashboardChildren}
                 parentItem={dashboardsItem}
+                currentPathname={pathname}
               />
             )}
 
@@ -871,6 +895,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
           topLevelItems={topLevelOrdered}
           dashboardItems={dashboardChildren}
           parentDashboardItem={dashboardsItem}
+          currentPathname={pathname}
         />
       </div>
     </header>
@@ -878,3 +903,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
 };
 
 export default HeaderNav;
+
+
+
+
