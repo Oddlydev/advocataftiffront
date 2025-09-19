@@ -8,7 +8,7 @@ function md5(value: string) {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== "POST") return res.status(405).end();
 
-    const { email } = req.body;
+    const { email, firstName, lastName, organisation, phone } = req.body;
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
         return res.status(400).json({ error: "Invalid email address" });
     }
@@ -31,17 +31,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Basic ${Buffer.from(`anystring:${API_KEY}`).toString("base64")}`,
+            Authorization: `Basic ${Buffer.from(`anystring:${API_KEY}`).toString(
+                "base64"
+            )}`,
         },
         body: JSON.stringify({
             email_address: emailLower,
-            status_if_new: process.env.MAILCHIMP_DOUBLE_OPT_IN === "true" ? "pending" : "subscribed",
+            status_if_new: "subscribed", // direct subscription
+            merge_fields: {
+                FNAME: firstName || "",
+                LNAME: lastName || "",
+                MERGE7: organisation || "",
+                MERGE5: phone || "",
+            },
         }),
+
     });
 
     const data = await response.json();
     if (!response.ok) {
-        return res.status(response.status).json({ error: data.detail || "Mailchimp error" });
+        return res
+            .status(response.status)
+            .json({ error: data.detail || "Mailchimp error" });
     }
 
     return res.status(200).json({ success: true, status: data.status });
