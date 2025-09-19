@@ -165,7 +165,8 @@ export default function NewsletterForm({
         </div>
       </form>
 
-      {message && (
+      {/* Footer message → only show when popup is NOT open */}
+      {!showPopup && message && (
         <p
           className={`mt-3 text-sm ${
             status === "success" ? "text-green-400" : "text-red-400"
@@ -259,6 +260,15 @@ export default function NewsletterForm({
               >
                 {status === "loading" ? "Submitting..." : "Finish Subscription"}
               </button>
+              {showPopup && message && (
+                <p
+                  className={`mt-3 text-sm text-center ${
+                    status === "success" ? "text-green-600" : "text-red-600"
+                  }`}
+                >
+                  {message}
+                </p>
+              )}
             </form>
           </div>
         </div>
