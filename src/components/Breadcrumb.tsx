@@ -50,7 +50,7 @@ export default function Breadcrumb({
         </li>
         
         <li>
-            <div className="breadcrumb-item">
+            <div className="breadcrumb-item flex items-center gap-x-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <path d="M7.425 16.6L12.8583 11.1667C13.5 10.525 13.5 9.475 12.8583 8.83333L7.425 3.4" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
