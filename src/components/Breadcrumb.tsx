@@ -14,8 +14,8 @@ export default function Breadcrumb({
   light,
   homeHref = "/",
 }: BreadcrumbProps): JSX.Element {
-  const base = light ? "text-slate-600" : "text-slate-500";
-  const current = light ? "text-slate-500" : "text-slate-700";
+  const base = light ? "text-slate-600" : "text-slate-600";
+  const current = light ? "text-slate-600" : "text-slate-600";
 
   return (
     <nav className="flex" aria-label="Breadcrumb">
@@ -90,7 +90,7 @@ export default function Breadcrumb({
                 </a>
               ) : (
                 <span
-                  className={`breadcrumb-current font-medium text-slate-600 hover:text-slate-700 ${current}`}
+                  className={`breadcrumb-current text-slate-600 hover:text-slate-700 ${current}`}
                   aria-current="page"
                 >
                   {item.label}
