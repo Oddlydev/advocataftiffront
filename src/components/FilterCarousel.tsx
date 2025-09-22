@@ -65,10 +65,7 @@ export default function FilterCarousel({
     }
   }, []);
 
-  const handleSelect = (index: number) => {
-    setActiveIndex(index);
-    onChangeActive?.(items[index], index);
-  };
+  const handleSelect = (index: number) => { setActiveIndex(index); onChangeActive?.(items[index], index); };
 
   return (
     <div className={"filter-carousel w-full relative" + (className || "")}>
