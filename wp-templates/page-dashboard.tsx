@@ -116,9 +116,8 @@ const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
       </div>
 
       {/* Dynamic Sections from GraphQL */}
-      <section className="bg-white py-12 md:py-16 xl:py-20">
+      <section className="bg-white pb-12 md:pb-16 xl:pb-20">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-          <div className="space-y-12 md:space-y-16 xl:space-y-20">
             {page.dashboardSection?.dashboards?.map((item: any, i: number) => (
               <Section
                 key={i}
@@ -129,7 +128,6 @@ const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
                 url={item?.url ?? "#"}
               />
             ))}
-          </div>
         </div>
       </section>
     </main>
@@ -155,7 +153,7 @@ const Section: React.FC<SectionProps> = ({
   url,
 }) => {
   return (
-    <Link href={url}>
+    <Link href={url} className="pt-12 md:pt-16 xl:pt-20">
       <div className="border border-slate-400 shadow-2xl rounded-lg p-3 lg:p-12 transition-all duration-300 ease-in-out hover:-translate-y-1.5">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
           {/* Left Column */}
