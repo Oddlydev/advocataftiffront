@@ -93,7 +93,7 @@ export default function FilterCarousel({
           <div className="slider-item">
             <button
               key={`${label}-${index}`}
-              className={`px-3 py-2 md:px-4 w-full rounded-full text-sm/snug xl:text-base/6 font-normal font-baskervville border border-transparent uppercase ${
+              className={`px-3 py-2 md:px-4 w-full rounded-full text-sm/snug xl:text-base/6 font-semibold font-sourcecodepro border border-transparent uppercase ${
                 index === activeIndex
                   ? "bg-brand-1-500 text-slate-50 hover:text-slate-800 hover:bg-brand-1-50 hover:border hover:border-brand-1-900"
                   : "text-slate-800 hover:bg-brand-1-50 hover:border hover:border-brand-1-900"
@@ -120,4 +120,3 @@ export default function FilterCarousel({
     </div>
   );
 }
-
