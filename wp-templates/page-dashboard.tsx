@@ -5,12 +5,25 @@ import SEO from "@/src/components/SEO";
 import Image from "next/image";
 import HeroBasic from "@/src/components/HeroBlocks/HeroBasic";
 import WhiteButton from "@/src/components/Buttons/WhiteBtn";
+import Link from "next/link";
 
 export const PAGE_QUERY = gql`
   query GetDashboardsPage($databaseId: ID!, $asPreview: Boolean = false) {
     page(id: $databaseId, idType: DATABASE_ID, asPreview: $asPreview) {
       title
       content
+      dashboardSection {
+        dashboards {
+          title
+          description
+          image {
+            node {
+              mediaItemUrl
+            }
+          }
+          url
+        }
+      }
       seo {
         title
         metaDesc
@@ -41,6 +54,14 @@ interface DashboardsPageProps {
       title?: string | null;
       content?: string | null;
       seo?: any | null;
+      dashboardSection?: {
+        dashboards?: Array<{
+          title?: string | null;
+          description?: string | null;
+          image?: { node?: { mediaItemUrl?: string | null } | null } | null;
+          url?: string | null;
+        } | null> | null;
+      } | null;
     } | null;
   };
 }
@@ -72,9 +93,12 @@ const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
 
   // Hero text: first paragraph from Gutenberg content
   const heroParagraph = firstParagraphFromHtml(page?.content);
+
   return (
     <main>
       <SEO yoast={page?.seo as any} title={page?.title ?? undefined} />
+
+      {/* Hero Section */}
       <div className="insight-hero relative">
         {/* Background Image */}
         <img
@@ -82,8 +106,6 @@ const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
           alt="hero background"
           className="absolute inset-0 h-full w-full object-cover"
         />
-
-        {/* Hero Content */}
         <div className="relative z-10">
           <HeroBasic
             title="Economic Dashboards"
@@ -92,40 +114,18 @@ const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
           />
         </div>
       </div>
-      {/* Hero Section End */}
 
-      {/* Sections */}
-      <Section
-        title="Government Fiscal Operations"
-        text="Transparency in government institutions refers to the open and accessible sharing of information about financial activities."
-        imgSrc="/assets/images/chart img/product-card.jpg"
-        imgAlt="fiscal-operations-chart-img"
-        url="#"
-      />
-
-      <Section
-        title="The Macro Economy of Sri Lanka"
-        text="Transparency in government institutions refers to the open and accessible sharing of information about financial activities."
-        imgSrc="/assets/images/chart img/chart-container.jpg"
-        imgAlt="government-institutions-chart-img"
-        url="#"
-      />
-
-      <Section
-        title="Transparency in government institutions"
-        text="Transparency in government institutions refers to the open and accessible sharing of information about financial activities."
-        imgSrc="/assets/images/chart img/transparency in-government-institutions.jpg"
-        imgAlt="government-institutions-chart-img"
-        url="/transparency-dashboard"
-      />
-
-      <Section
-        title="The Finances of State Owned Enterprises"
-        text="Transparency in government institutions refers to the open and accessible sharing of information about financial activities."
-        imgSrc="/assets/images/chart img/state-owned-enterprises.jpg"
-        imgAlt="state-owned-chart-img"
-        url="/state-owned-dashboard"
-      />
+      {/* Dynamic Sections from GraphQL */}
+      {page.dashboardSection?.dashboards?.map((item: any, i: number) => (
+        <Section
+          key={i}
+          title={item?.title ?? ""}
+          text={item?.description ?? ""}
+          imgSrc={item?.image?.node?.mediaItemUrl ?? ""}
+          imgAlt={item?.title ?? "dashboard image"}
+          url={item?.url ?? "#"}
+        />
+      ))}
     </main>
   );
 };
@@ -156,38 +156,40 @@ const Section: React.FC<SectionProps> = ({
   url,
 }) => {
   return (
-    <div className="bg-white py-12 md:py-16 xl:py-20">
-      <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-        <div className="border border-slate-400 shadow-2xl rounded-lg p-3 lg:p-12 transition-all duration-300 ease-in-out hover:-translate-y-1.5">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
-            {/* Left Column */}
-            <div>
-              <h2 className="font-family-montserrat text-slate-950 font-normal text-2xl md:text-3xl xl:text-4xl leading-snug">
-                {title}
-              </h2>
-              <p className="font-family-sourcecodepro text-slate-950 font-normal text-base/6 mt-0.5 lg:mt-2">
-                {text}
-              </p>
-              <div className="mt-4 lg:mt-5">
-                <WhiteButton url={url}>Learn more</WhiteButton>
+    <Link href={url}>
+      <div className="bg-white py-12 md:py-16 xl:py-20">
+        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
+          <div className="border border-slate-400 shadow-2xl rounded-lg p-3 lg:p-12 transition-all duration-300 ease-in-out hover:-translate-y-1.5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
+              {/* Left Column */}
+              <div>
+                <h2 className="font-family-montserrat text-slate-950 font-normal text-2xl md:text-3xl xl:text-4xl leading-snug">
+                  {title}
+                </h2>
+                <p className="font-family-sourcecodepro text-slate-950 font-normal text-base/6 mt-0.5 lg:mt-2">
+                  {text}
+                </p>
+                <div className="mt-4 lg:mt-5">
+                  <WhiteButton url={url}>Learn more</WhiteButton>
+                </div>
               </div>
-            </div>
 
-            {/* Right Column */}
-            <div>
-              <Image
-                src={imgSrc}
-                alt={imgAlt}
-                className="w-full h-full rounded-lg"
-                width={511}
-                height={503}
-                loading="lazy"
-              />
+              {/* Right Column */}
+              <div>
+                <img
+                  src={imgSrc}
+                  alt={imgAlt}
+                  className="w-full h-full rounded-lg"
+                  width={511}
+                  height={503}
+                  loading="lazy"
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
