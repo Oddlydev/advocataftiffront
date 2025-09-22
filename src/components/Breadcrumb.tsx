@@ -83,7 +83,7 @@ export default function Breadcrumb({
               {item.href ? (
                 <a
                   href={item.href}
-                  className={`breadcrumb-current ${current} font-medium text-slate-500 hover:text-slate-700 transition-colors`}
+                  className={`breadcrumb-current ${current} text-slate-500 hover:text-slate-700 transition-colors`}
                   aria-current="page"
                 >
                   {item.label}
