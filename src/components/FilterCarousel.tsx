@@ -62,7 +62,7 @@ export default function FilterCarousel({
           responsive: {
             320: { items: 2 },
             768: { items: 3 },
-            1024: { items: 4 },
+            1024: { items: 6 },
           },
         });
 
