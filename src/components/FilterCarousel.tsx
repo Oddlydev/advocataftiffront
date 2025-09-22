@@ -49,7 +49,6 @@ export default function FilterCarousel({
         autoplayButtonOutput: false,
         gutter: 10,
         loop: false,
-        center: true, // ✅ makes active slide centered
         responsive: {
           320: { items: 2 },
           768: { items: 3 },
