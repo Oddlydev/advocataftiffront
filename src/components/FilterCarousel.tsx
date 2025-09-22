@@ -69,10 +69,6 @@ export default function FilterCarousel({
   const handleSelect = (index: number) => {
     setActiveIndex(index);
     onChangeActive?.(items[index], index);
-
-    if (sliderRef.current) {
-      sliderRef.current.goTo(index); // ✅ centers on the selected
-    }
   };
 
   return (
