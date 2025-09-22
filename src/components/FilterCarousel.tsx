@@ -49,7 +49,7 @@ export default function FilterCarousel({
         responsive: {
           320: { items: 3 },
           768: { items: 7 },
-          1024: { items: 9 },
+          1024: { items: 5 },
         },
       });
 
@@ -97,7 +97,7 @@ export default function FilterCarousel({
           <div key={index} className="slider-item inline-block px-1">
             <button
               onClick={() => handleClick(index)}
-              className={`slider-btn px-3 py-2 md:px-4 rounded-full text-sm xl:text-base uppercase font-family-baskervville transition-all duration-200 ${
+              className={`slider-btn px-3 py-2 md:px-4 rounded-full text-sm xl:text-base uppercase font-semibold font-sourcecodepro transition-all duration-200 ${
                 index === activeIndex
                   ? "bg-brand-1-500 text-slate-50 hover:text-slate-800"
                   : "text-slate-800 hover:bg-brand-1-50 hover:border hover:border-brand-1-900"
