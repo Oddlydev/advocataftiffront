@@ -117,7 +117,7 @@ const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
 
       {/* Dynamic Sections from GraphQL */}
       {page.dashboardSection?.dashboards?.map((item: any, i: number) => (
-        <Section className="pb-12 md:pb-16 xl:pb-20"
+        <Section
           key={i}
           title={item?.title ?? ""}
           text={item?.description ?? ""}
