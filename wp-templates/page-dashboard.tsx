@@ -157,7 +157,7 @@ const Section: React.FC<SectionProps> = ({
 }) => {
   return (
     <Link href={url}>
-      <div className="py-12 md:py-16 xl:py-20">
+      <div className="">
         <div className="bg-white">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
             <div className="border border-slate-400 shadow-2xl rounded-lg p-3 lg:p-12 transition-all duration-300 ease-in-out hover:-translate-y-1.5">
