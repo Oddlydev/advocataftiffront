@@ -49,6 +49,7 @@ export default function FilterCarousel({
         autoplayButtonOutput: false,
         gutter: 10,
         loop: false,
+        center: true, // ✅ makes active slide centered
         responsive: {
           320: { items: 2 },
           768: { items: 3 },
@@ -68,6 +69,10 @@ export default function FilterCarousel({
   const handleSelect = (index: number) => {
     setActiveIndex(index);
     onChangeActive?.(items[index], index);
+
+    if (sliderRef.current) {
+      sliderRef.current.goTo(index); // ✅ centers on the selected
+    }
   };
 
   return (
