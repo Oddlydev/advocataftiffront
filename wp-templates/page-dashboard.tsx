@@ -117,17 +117,19 @@ const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
 
       {/* Dynamic Sections from GraphQL */}
       <section className="bg-white py-12 md:py-16 xl:py-20">
-        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 space-y-12 md:space-y-16 xl:space-y-20">
-          {page.dashboardSection?.dashboards?.map((item: any, i: number) => (
-            <Section
-              key={i}
-              title={item?.title ?? ""}
-              text={item?.description ?? ""}
-              imgSrc={item?.image?.node?.mediaItemUrl ?? ""}
-              imgAlt={item?.title ?? "dashboard image"}
-              url={item?.url ?? "#"}
-            />
-          ))}
+        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
+          <div className="space-y-12 md:space-y-16 xl:space-y-20">
+            {page.dashboardSection?.dashboards?.map((item: any, i: number) => (
+              <Section
+                key={i}
+                title={item?.title ?? ""}
+                text={item?.description ?? ""}
+                imgSrc={item?.image?.node?.mediaItemUrl ?? ""}
+                imgAlt={item?.title ?? "dashboard image"}
+                url={item?.url ?? "#"}
+              />
+            ))}
+          </div>
         </div>
       </section>
     </main>
