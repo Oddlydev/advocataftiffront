@@ -10,9 +10,8 @@ import Pagination from "@/src/components/Pagination";
 import DefaultDropdown from "@/src/components/Dropdowns/DefaultDropdown";
 import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
 import SecondaryNav from "@/src/components/SecondaryNav";
-import { PageSubTitle, InnerPageTitle } from "@/src/components/Typography";
 import CsvTable from "@/src/components/CsvTable";
-import CardType6 from "@/src/components/Cards/CardType6";
+import RelatedDatasets from "@/src/components/RelatedDatasets";
 
 // ----------------------
 // Types
@@ -20,6 +19,7 @@ import CardType6 from "@/src/components/Cards/CardType6";
 type TaxNode = { name: string; slug: string };
 
 type SOEPost = {
+  databaseId: number;
   title: string;
   slug: string;
   industries: TaxNode[];
@@ -101,6 +101,7 @@ async function fetchSOEPosts(): Promise<SOEPost[]> {
   const data = await gql<{
     stateOwnedEnterprises: {
       nodes: Array<{
+        databaseId: number;
         title: string;
         slug: string;
         soeIndustries?: { nodes: TaxNode[] };
@@ -112,6 +113,7 @@ async function fetchSOEPosts(): Promise<SOEPost[]> {
     query GetSOEPosts {
       stateOwnedEnterprises(first: 100) {
         nodes {
+          databaseId
           title
           slug
           soeIndustries { nodes { name slug } }
@@ -126,6 +128,7 @@ async function fetchSOEPosts(): Promise<SOEPost[]> {
 
   return (
     data?.stateOwnedEnterprises?.nodes?.map((node) => ({
+      databaseId: node.databaseId, // ✅ include this
       title: node.title,
       slug: node.slug,
       industries: node.soeIndustries?.nodes ?? [],
@@ -398,38 +401,12 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       </section>
 
       {/* Related datasets */}
-      <section className="bg-pink-100 py-12 md:py-16 xl:py-20 mt-16">
-        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-          <div className="max-w-2xl text-left">
-            <PageSubTitle>Advocata AI Suggestions</PageSubTitle>
-            <InnerPageTitle>Related datasets</InnerPageTitle>
-          </div>
-
-          <div className="mt-11 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <CardType6
-              title="Sri Lanka - Food Security and Nutrition Indicators"
-              excerpt="Indicators covering nutrition, food production, and resilience."
-              fileUrl=""
-              postDate="2024-08-18"
-              uri="#"
-            />
-            <CardType6
-              title="TESLA Stock Data 2024"
-              excerpt="Financial performance and global stock indicators."
-              fileUrl=""
-              postDate="2024-08-18"
-              uri="#"
-            />
-            <CardType6
-              title="Tourism Recovery and Crisis Management"
-              excerpt="How effective crisis management supports tourism recovery."
-              fileUrl=""
-              postDate="2024-08-18"
-              uri="#"
-            />
-          </div>
-        </div>
-      </section>
+      {paginatedPosts.map((post) => (
+        <RelatedDatasets
+          key={post.slug}
+          datasetId={String((post as any).databaseId)}
+        />
+      ))}
     </main>
   );
 }

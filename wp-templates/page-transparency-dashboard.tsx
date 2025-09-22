@@ -12,6 +12,7 @@ import Pagination from "@/src/components/Pagination";
 import CardType6 from "@/src/components/Cards/CardType6";
 import { PageSubTitle, InnerPageTitle } from "@/src/components/Typography";
 import CsvTableTransparency from "@/src/components/CsvTransparency";
+import RelatedDatasets from "@/src/components/RelatedDatasets";
 
 // ----------------------
 // Types
@@ -102,6 +103,7 @@ async function fetchTransparencyDashboardData(): Promise<{
       }
       govTransparencies(first: 100) {
         nodes {
+          databaseId
           title
           slug
           transparanceyIndustries { nodes { name slug } }
@@ -119,6 +121,7 @@ async function fetchTransparencyDashboardData(): Promise<{
     industries: data?.transparanceyIndustries?.nodes ?? [],
     posts:
       data?.govTransparencies?.nodes?.map((n) => ({
+        databaseId: (n as any).databaseId,
         title: n.title,
         slug: n.slug,
         industries: n.transparanceyIndustries?.nodes ?? [],
@@ -364,38 +367,12 @@ export default function PageTransparencyDashboard(): JSX.Element {
       </section>
 
       {/* Related datasets */}
-      <section className="bg-pink-100 py-12 md:py-16 xl:py-20 mt-16">
-        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-          <div className="max-w-2xl text-left">
-            <PageSubTitle>Advocata AI Suggestions</PageSubTitle>
-            <InnerPageTitle>Related datasets</InnerPageTitle>
-          </div>
-
-          <div className="mt-11 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <CardType6
-              title="Sri Lanka - Food Security and Nutrition Indicators"
-              excerpt="Indicators covering nutrition, food production, and resilience."
-              fileUrl=""
-              postDate="2024-08-18"
-              uri="#"
-            />
-            <CardType6
-              title="TESLA Stock Data 2024"
-              excerpt="Financial performance and global stock indicators."
-              fileUrl=""
-              postDate="2024-08-18"
-              uri="#"
-            />
-            <CardType6
-              title="Tourism Recovery and Crisis Management"
-              excerpt="How effective crisis management supports tourism recovery."
-              fileUrl=""
-              postDate="2024-08-18"
-              uri="#"
-            />
-          </div>
-        </div>
-      </section>
+      {paginatedPosts.map((post) => (
+        <RelatedDatasets
+          key={post.slug}
+          datasetId={String((post as any).databaseId)}
+        />
+      ))}
     </main>
   );
 }
