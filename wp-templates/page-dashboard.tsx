@@ -157,35 +157,33 @@ const Section: React.FC<SectionProps> = ({
 }) => {
   return (
     <Link href={url}>
-      <div className="">
-        <div className="bg-white">
-          <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-            <div className="border border-slate-400 shadow-2xl rounded-lg p-3 lg:p-12 transition-all duration-300 ease-in-out hover:-translate-y-1.5">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
-                {/* Left Column */}
-                <div>
-                  <h2 className="font-family-montserrat text-slate-950 font-normal text-2xl md:text-3xl xl:text-4xl leading-snug">
-                    {title}
-                  </h2>
-                  <p className="font-family-sourcecodepro text-slate-950 font-normal text-base/6 mt-0.5 lg:mt-2">
-                    {text}
-                  </p>
-                  <div className="mt-4 lg:mt-5">
-                    <WhiteButton url={url}>Learn more</WhiteButton>
-                  </div>
+      <div className="bg-white pt-12 md:pt-16 xl:pt-20">
+        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
+          <div className="border border-slate-400 shadow-2xl rounded-lg p-3 lg:p-12 transition-all duration-300 ease-in-out hover:-translate-y-1.5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
+              {/* Left Column */}
+              <div>
+                <h2 className="font-family-montserrat text-slate-950 font-normal text-2xl md:text-3xl xl:text-4xl leading-snug">
+                  {title}
+                </h2>
+                <p className="font-family-sourcecodepro text-slate-950 font-normal text-base/6 mt-0.5 lg:mt-2">
+                  {text}
+                </p>
+                <div className="mt-4 lg:mt-5">
+                  <WhiteButton url={url}>Learn more</WhiteButton>
                 </div>
+              </div>
 
-                {/* Right Column */}
-                <div>
-                  <img
-                    src={imgSrc}
-                    alt={imgAlt}
-                    className="w-full h-full rounded-lg"
-                    width={511}
-                    height={503}
-                    loading="lazy"
-                  />
-                </div>
+              {/* Right Column */}
+              <div>
+                <img
+                  src={imgSrc}
+                  alt={imgAlt}
+                  className="w-full h-full rounded-lg"
+                  width={511}
+                  height={503}
+                  loading="lazy"
+                />
               </div>
             </div>
           </div>
