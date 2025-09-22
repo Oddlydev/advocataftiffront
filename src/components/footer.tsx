@@ -42,7 +42,7 @@ export default function Footer(): JSX.Element {
 
   return (
     <footer
-      className="footer bg-brand-black font-baskervville"
+      className="footer bg-brand-black font-sourcecodepro"
       aria-labelledby="footer-heading"
     >
       <h2 id="footer-heading" className="sr-only">
