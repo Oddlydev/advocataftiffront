@@ -92,16 +92,24 @@ export default function Footer(): JSX.Element {
                 Dashboards
               </h3>
               <ul role="list" className="mt-7 space-y-6 grid xl:grid-cols-2">
-                {dashboards.map((item) => (
-                  <li key={item.id}>
-                    <a
-                      href={item.uri ?? "#"}
-                      className="footer-link text-base/6 text-brand-white/80 font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline"
-                    >
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
+                {dashboards.map((item) => {
+                  const isActive = pathname === item.uri;
+                  return (
+                    <li key={item.id}>
+                      <a
+                        href={item.uri ?? "#"}
+                        className={[
+                          "footer-link text-base/6 font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline",
+                          isActive
+                            ? "text-brand-white font-medium hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline" // Active link style
+                            : "text-brand-white/80",
+                        ].join(" ")}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
@@ -139,16 +147,24 @@ export default function Footer(): JSX.Element {
               <ul
                 className={`mt-7 space-y-6 grid xl:grid-cols-2 ${openQuick ? "block" : "hidden"}`}
               >
-                {quickLinks.map((item) => (
-                  <li key={item.id}>
-                    <a
-                      href={item.uri ?? "#"}
-                      className="footer-link text-base/6 text-brand-white/80 font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline"
-                    >
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
+                {quickLinks.map((item) => {
+                  const isActive = pathname === item.uri;
+                  return (
+                    <li key={item.id}>
+                      <a
+                        href={item.uri ?? "#"}
+                        className={[
+                          "footer-link text-base/6 font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline",
+                          isActive
+                            ? "text-brand-white font-medium hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline" // Active link style
+                            : "text-brand-white/80",
+                        ].join(" ")}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
@@ -181,16 +197,24 @@ export default function Footer(): JSX.Element {
               <ul
                 className={`mt-7 space-y-6 grid xl:grid-cols-2 ${openDashboards ? "block" : "hidden"}`}
               >
-                {dashboards.map((item) => (
-                  <li key={item.id}>
-                    <a
-                      href={item.uri ?? "#"}
-                      className="footer-link text-base/6 text-brand-white/80 font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline"
-                    >
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
+                {dashboards.map((item) => {
+                  const isActive = pathname === item.uri;
+                  return (
+                    <li key={item.id}>
+                      <a
+                        href={item.uri ?? "#"}
+                        className={[
+                          "footer-link text-base/6 font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline",
+                          isActive
+                            ? "text-brand-white font-medium hover:underline hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%] focus:no-underline"
+                            : "text-brand-white/80",
+                        ].join(" ")}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
