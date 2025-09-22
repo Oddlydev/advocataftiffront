@@ -1,7 +1,4 @@
-"use client";
-
 import React, { useEffect, useRef, useState } from "react";
-import "tiny-slider/dist/tiny-slider.css";
 
 type FilterCarouselProps = {
   items?: string[];
@@ -10,7 +7,8 @@ type FilterCarouselProps = {
   className?: string;
 };
 
-const DEFAULT_ITEMS = [
+const DEFAULT_ITEMS: string[] = [
+  "Provincial Councils",
   "All datasets",
   "Management",
   "Budget",
@@ -20,7 +18,6 @@ const DEFAULT_ITEMS = [
   "Revenue",
   "Debt",
   "Provincial Councils",
-  "Provincial Councils"
 ];
 
 export default function FilterCarousel({
@@ -29,17 +26,17 @@ export default function FilterCarousel({
   onChangeActive,
   className,
 }: FilterCarouselProps) {
-  const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
-  const sliderRef = useRef<any>(null);
+  const sliderRef = useRef<HTMLDivElement | null>(null);
+  const sliderInstance = useRef<any>(null);
 
   useEffect(() => {
-    if (trackRef.current && typeof window !== "undefined") {
-      // @ts-ignore
-      const { tns } = require("tiny-slider/src/tiny-slider");
-
-      sliderRef.current = tns({
-        container: trackRef.current,
+    // Dynamic import inside useEffect (client-side only)
+    const initSlider = async () => {
+      if (!sliderRef.current) return;
+      const { tns } = await import("tiny-slider/src/tiny-slider");
+      sliderInstance.current = tns({
+        container: sliderRef.current,
         items: 9,
         slideBy: 1,
         autoplay: false,
@@ -47,75 +44,78 @@ export default function FilterCarousel({
         mouseDrag: true,
         nav: false,
         autoplayButtonOutput: false,
-        gutter: 10,
+        gutter: 0,
         loop: false,
         responsive: {
-          320: { items: 2 },
-          768: { items: 3 },
-          1024: { items: 4 },
+          320: { items: 3 },
+          768: { items: 7 },
+          1024: { items: 9 },
         },
       });
 
-      // Custom prev/next buttons
-      const prevBtn = document.querySelector(".filter-carousel-prev-arrow");
-      const nextBtn = document.querySelector(".filter-carousel-next-arrow");
+      const slider = sliderInstance.current;
 
-      prevBtn?.addEventListener("click", () => sliderRef.current.goTo("prev"));
-      nextBtn?.addEventListener("click", () => sliderRef.current.goTo("next"));
-    }
-  }, []);
+      // Sync active button when slider changes
+      slider.events.on("indexChanged", (info: any) => {
+        const index = info.displayIndex - 1;
+        setActiveIndex(index);
+        onChangeActive?.(items[index], index);
+      });
+    };
 
-  const handleSelect = (index: number) => {
+    initSlider();
+
+    // Cleanup
+    return () => sliderInstance.current?.destroy();
+  }, [items, onChangeActive]);
+
+  const goToPrev = () => sliderInstance.current?.goTo("prev");
+  const goToNext = () => sliderInstance.current?.goTo("next");
+
+  const handleClick = (index: number) => {
+    sliderInstance.current?.goTo(index);
     setActiveIndex(index);
     onChangeActive?.(items[index], index);
   };
 
   return (
-    <div className={"filter-carousel w-full relative" + (className || "")}>
-      {/* Prev button */}
+    <div className={"filter-carousel w-full relative " + (className || "")}>
       <button
         type="button"
         aria-label="Previous"
-        className="filter-carousel-arrow filter-carousel-prev-arrow absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full backdrop-blur-sm py-1 xl:py-2 pl-0 pr-2 xl:pl-0 xl:pr-3.5 bg-gradient-to-l from-[#F3F4F6] via-white to-white text-brand-1-900"
+        onClick={goToPrev}
+        className="filter-carousel-arrow filter-carousel-prev-arrow absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full backdrop-blur-sm py-1 xl:py-2 text-brand-1-900 pl-0 pr-2 xl:pl-0 xl:pr-3.5 bg-gradient-to-l from-[#F3F4F6] via-white to-white"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M13.26 15.53L9.74 12L13.26 8.47" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        ‹
       </button>
 
-      {/* Slider track */}
       <div
-        ref={trackRef}
-        className="filter-carousel-slider w-full"
+        ref={sliderRef}
+        className="filter-carousel-slider flex overflow-hidden whitespace-nowrap scroll-smooth"
       >
-        {items.map((label, index) => (
-          <div className="slider-item">
+        {items.map((item, index) => (
+          <div key={index} className="slider-item inline-block px-1">
             <button
-              key={`${label}-${index}`}
-              className={`px-3 py-2 md:px-4 w-full rounded-full text-sm/snug xl:text-base/6 font-semibold font-sourcecodepro border border-transparent uppercase ${
+              onClick={() => handleClick(index)}
+              className={`slider-btn px-3 py-2 md:px-4 rounded-full text-sm xl:text-base uppercase font-family-baskervville transition-all duration-200 ${
                 index === activeIndex
-                  ? "bg-brand-1-500 text-slate-50 hover:text-slate-800 hover:bg-brand-1-50 hover:border hover:border-brand-1-900"
+                  ? "bg-brand-1-500 text-slate-50 hover:text-slate-800"
                   : "text-slate-800 hover:bg-brand-1-50 hover:border hover:border-brand-1-900"
               }`}
-              onClick={() => handleSelect(index)}
             >
-              {label}
+              {item}
             </button>
           </div>
         ))}
       </div>
 
-      {/* Next button */}
       <button
         type="button"
         aria-label="Next"
-        className="filter-carousel-arrow filter-carousel-next-arrow absolute right-0 top-1/2 -translate-y-1/2 z-10 rounded-full backdrop-blur-sm py-1 xl:py-2 pr-0 pl-2 xl:pr-0 xl:pl-3.5 bg-gradient-to-r from-white via-white to-[#F3F4F6] text-brand-1-900"
+        onClick={goToNext}
+        className="filter-carousel-arrow filter-carousel-next-arrow absolute right-0 top-1/2 -translate-y-1/2 z-10 rounded-full backdrop-blur-sm py-1 xl:py-2 text-brand-1-900 pr-0 pl-2 xl:pr-0 xl:pl-3.5 bg-gradient-to-r from-white via-white to-[#F3F4F6]"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M10.74 15.53L14.26 12L10.74 8.47" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        ›
       </button>
     </div>
   );
