@@ -63,22 +63,14 @@ export default function SEO({
   const ogDesc = (yoast?.opengraphDescription ?? theDesc) || undefined;
   const ogUrl = yoast?.opengraphUrl || theCanonical || undefined;
   const ogSiteName = computedSiteName || undefined;
-
-  // ✅ Favicon as fallback social image
+  const ogImage = yoast?.opengraphImage?.sourceUrl || undefined;
+  const twTitle = (yoast?.twitterTitle ?? theTitle) || undefined;
+  const twDesc = (yoast?.twitterDescription ?? theDesc) || undefined;
+  const twImage = yoast?.twitterImage?.sourceUrl || ogImage || undefined;
+  const schemaRaw = yoast?.schema?.raw || undefined;
   const favicon =
     (process.env.NEXT_PUBLIC_SITE_ICON_URL as string) ||
     "/assets/images/favicon.png";
-
-  const ogImage =
-    yoast?.opengraphImage?.sourceUrl ||
-    yoast?.twitterImage?.sourceUrl ||
-    favicon;
-
-  const twTitle = (yoast?.twitterTitle ?? theTitle) || undefined;
-  const twDesc = (yoast?.twitterDescription ?? theDesc) || undefined;
-  const twImage = yoast?.twitterImage?.sourceUrl || ogImage;
-
-  const schemaRaw = yoast?.schema?.raw || undefined;
 
   return (
     <Head>
@@ -94,13 +86,14 @@ export default function SEO({
       {ogUrl && <meta property="og:url" content={ogUrl} />}
       {ogSiteName && <meta property="og:site_name" content={ogSiteName} />}
       {ogImage && <meta property="og:image" content={ogImage} />}
-      <meta property="og:type" content="website" />
 
       {/* Twitter */}
-      <meta
-        name="twitter:card"
-        content={twImage ? "summary_large_image" : "summary"}
-      />
+      {(twTitle || twDesc || twImage) && (
+        <meta
+          name="twitter:card"
+          content={twImage ? "summary_large_image" : "summary"}
+        />
+      )}
       {twTitle && <meta name="twitter:title" content={twTitle} />}
       {twDesc && <meta name="twitter:description" content={twDesc} />}
       {twImage && <meta name="twitter:image" content={twImage} />}
