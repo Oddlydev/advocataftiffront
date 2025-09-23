@@ -14,15 +14,37 @@ export default function CsvTransparency({
 }: CsvTransparencyProps) {
   const [rows, setRows] = useState<string[][]>([]);
   const [error, setError] = useState<string | null>(null);
+  // simple in-memory cache to persist across mounts during session
+  const cacheKey = `csvRows:${csvUrl}`;
+  const memCache: { [key: string]: string[][] } = (globalThis as any).__csvRowsCache || ((globalThis as any).__csvRowsCache = {});
 
   useEffect(() => {
     if (!csvUrl) {
       setError("No CSV file URL provided.");
       return;
     }
+    // 1) Try memory/session cache for instant render
+    let hadCache = false;
+    if (memCache[cacheKey]) {
+      setRows(memCache[cacheKey]);
+      setError(null);
+      hadCache = true;
+    } else {
+      try {
+        const raw = sessionStorage.getItem(cacheKey);
+        if (raw) {
+          const parsed = JSON.parse(raw) as string[][];
+          memCache[cacheKey] = parsed;
+          setRows(parsed);
+          setError(null);
+          hadCache = true;
+        }
+      } catch {}
+    }
 
     const proxiedUrl = `https://corsproxy.io/?${csvUrl}`;
 
+    // 2) Fetch in background; if we had cache, we keep table visible while refreshing
     fetch(proxiedUrl)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch CSV file.");
@@ -31,15 +53,21 @@ export default function CsvTransparency({
       .then((text) => {
         const result = Papa.parse<string[]>(text, { skipEmptyLines: true });
         if (result.errors.length > 0) {
-          setError("Error parsing CSV.");
+          if (!hadCache) setError("Error parsing CSV.");
           console.error("CSV Parse Errors:", result.errors);
         } else {
-          setRows(result.data as string[][]);
+          const data = result.data as string[][];
+          memCache[cacheKey] = data;
+          try {
+            sessionStorage.setItem(cacheKey, JSON.stringify(data));
+          } catch {}
+          setRows(data);
           setError(null);
         }
       })
       .catch((err) => {
-        setError(err.message);
+        if (!hadCache) setError(err.message);
+        console.warn("CSV fetch failed", err);
       });
   }, [csvUrl]);
 

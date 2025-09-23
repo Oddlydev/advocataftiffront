@@ -15,6 +15,60 @@ import CsvTableTransparency from "@/src/components/CsvTransparency";
 import RelatedDatasets from "@/src/components/RelatedDatasets";
 
 // ----------------------
+// Utils
+// ----------------------
+function firstParagraphFromHtml(html?: string | null): string {
+  if (!html) return "";
+  const matches = html.match(/<p\b[^>]*>[\s\S]*?<\/p>/gi) || [];
+  for (const p of matches) {
+    const inner = p
+      .replace(/^<p\b[^>]*>/i, "")
+      .replace(/<\/p>$/i, "")
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/<[^>]+>/g, "")
+      .replace(/\u00a0/g, " ")
+      .replace(/\s+\n/g, "\n")
+      .replace(/\n{2,}/g, "\n")
+      .trim();
+    if (inner) return inner;
+  }
+  return "";
+}
+
+// ----------------------
+// Simple in-memory + session cache to keep data
+// when switching dashboard tabs client-side.
+// ----------------------
+type TransparencyDataCache = {
+  years: TaxNode[];
+  industries: TaxNode[];
+  posts: TransparencyPost[];
+};
+
+const TRANSPARENCY_CACHE_KEY = "transparencyDashboardData:v1";
+let transparencyDataCache: TransparencyDataCache | null = null;
+
+function saveTransparencyCache(data: TransparencyDataCache) {
+  transparencyDataCache = data;
+  try {
+    sessionStorage.setItem(TRANSPARENCY_CACHE_KEY, JSON.stringify(data));
+  } catch {}
+}
+
+function readTransparencyCache(): TransparencyDataCache | null {
+  if (transparencyDataCache) return transparencyDataCache;
+  try {
+    const raw = sessionStorage.getItem(TRANSPARENCY_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as TransparencyDataCache;
+    transparencyDataCache = parsed;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+// ----------------------
 // Types
 // ----------------------
 type TaxNode = { name: string; slug: string };
@@ -73,6 +127,26 @@ async function fetchPageSEOByUri(uri: string): Promise<any | null> {
   return data?.nodeByUri && (data.nodeByUri as any).seo
     ? (data.nodeByUri as any).seo
     : null;
+}
+
+async function fetchPageMetaByUri(
+  uri: string
+): Promise<{ title?: string | null; content?: string | null } | null> {
+  const wpUri = uri.endsWith("/") ? uri : `${uri}/`;
+  const encoded = wpUri.replace(/"/g, '\\"');
+  const data = await gql<{
+    nodeByUri?: { __typename?: string; title?: string | null; content?: string | null };
+  }>(
+    `query GetPageMetaByUri {
+      nodeByUri(uri: "${encoded}") {
+        __typename
+        ... on Page { title content }
+      }
+    }`
+  );
+  if (!data?.nodeByUri) return null;
+  const node: any = data.nodeByUri as any;
+  return { title: node?.title ?? null, content: node?.content ?? null };
 }
 
 // ✅ Combined query for years, industries, and posts
@@ -139,6 +213,8 @@ export default function PageTransparencyDashboard(): JSX.Element {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [seo, setSeo] = useState<any | null>(null);
+  const [heroTitle, setHeroTitle] = useState<string>("");
+  const [heroParagraph, setHeroParagraph] = useState<string>("");
 
   const [queryInput, setQueryInput] = useState("");
   const [industry, setIndustry] = useState<string | null>(null);
@@ -156,6 +232,39 @@ export default function PageTransparencyDashboard(): JSX.Element {
 
   const pageSize = 10;
 
+  // Instant hydrate from cache to avoid loader on tab returns
+  useEffect(() => {
+    const cached = readTransparencyCache();
+    if (!cached) return;
+
+    setYearOptions(cached.years);
+    setIndustryOptions(cached.industries);
+    setPosts(cached.posts);
+
+    const urlYear = searchParams.get("year");
+    const urlIndustry = searchParams.get("industry");
+    const effectiveYear = urlYear ?? year ?? cached.years[0]?.slug ?? null;
+    const effectiveIndustry =
+      urlIndustry ?? industry ?? cached.industries[0]?.slug ?? null;
+    if (!year && effectiveYear) setYear(effectiveYear);
+    if (!industry && effectiveIndustry) setIndustry(effectiveIndustry);
+
+    let initial = cached.posts;
+    if (effectiveIndustry) {
+      initial = initial.filter((p) =>
+        p.industries.some((ind) => ind.slug === effectiveIndustry)
+      );
+    }
+    if (effectiveYear) {
+      initial = initial.filter((p) =>
+        p.years.some((y) => y.slug === effectiveYear)
+      );
+    }
+    setFilteredPosts(initial);
+    setCurrentCsvUrl(initial[0]?.csvUrl ?? null);
+    setIsLoading(false);
+  }, []);
+
   // Load defaults from URL
   useEffect(() => {
     const q = searchParams.get("q") || "";
@@ -169,9 +278,10 @@ export default function PageTransparencyDashboard(): JSX.Element {
   // Load backend data
   useEffect(() => {
     async function load() {
-      setIsLoading(true);
+      const cached = readTransparencyCache();
+      if (!cached) setIsLoading(true);
       try {
-        const [seoRes, data] = await Promise.all([
+        const [seoRes, data, meta] = await Promise.all([
           fetchPageSEOByUri(pathname || "/transparency-dashboard/").catch(
             (e) => {
               console.warn("SEO fetch failed", e);
@@ -179,21 +289,32 @@ export default function PageTransparencyDashboard(): JSX.Element {
             }
           ),
           fetchTransparencyDashboardData(),
+          fetchPageMetaByUri(pathname || "/transparency-dashboard/").catch(
+            (e) => {
+              console.warn("Meta fetch failed", e);
+              return null as any;
+            }
+          ),
         ]);
         if (seoRes) setSeo(seoRes);
+        if (meta) {
+          setHeroTitle(meta.title ?? "");
+          setHeroParagraph(firstParagraphFromHtml(meta.content));
+        }
 
         const { years, industries, posts } = data;
 
         setYearOptions(years);
         setIndustryOptions(industries);
         setPosts(posts);
+        saveTransparencyCache({ years, industries, posts });
 
         // Prime selection and results immediately (URL > state > first available)
         const urlYear = searchParams.get("year");
         const urlIndustry = searchParams.get("industry");
-        const effectiveYear = urlYear ?? year ?? (years[0]?.slug ?? null);
+        const effectiveYear = urlYear ?? year ?? years[0]?.slug ?? null;
         const effectiveIndustry =
-          urlIndustry ?? industry ?? (industries[0]?.slug ?? null);
+          urlIndustry ?? industry ?? industries[0]?.slug ?? null;
 
         if (!year && effectiveYear) setYear(effectiveYear);
         if (!industry && effectiveIndustry) setIndustry(effectiveIndustry);
@@ -303,8 +424,12 @@ export default function PageTransparencyDashboard(): JSX.Element {
 
       {/* Hero */}
       <HeroWhite
-        title="Transparency in Government Institutions"
-        paragraph="Explore accountability and transparency datasets across institutions."
+        title={
+          heroTitle || "Transparency in Government Institutions"
+        }
+        paragraph={
+          heroParagraph || "Explore accountability and transparency datasets across institutions."
+        }
         items={[
           { label: "Dashboards", href: "/dashboard" },
           { label: "Transparency Dashboard" },

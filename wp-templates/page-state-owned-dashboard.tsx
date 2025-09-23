@@ -14,6 +14,38 @@ import CsvTable from "@/src/components/CsvTable";
 import RelatedDatasets from "@/src/components/RelatedDatasets";
 
 // ----------------------
+// Simple in-memory + session cache for SOE dashboard data
+// ----------------------
+type SOEDataCache = {
+  years: TaxNode[];
+  industries: TaxNode[];
+  posts: SOEPost[];
+};
+
+const SOE_CACHE_KEY = "soeDashboardData:v1";
+let soeDataCache: SOEDataCache | null = null;
+
+function saveSOECache(data: SOEDataCache) {
+  soeDataCache = data;
+  try {
+    sessionStorage.setItem(SOE_CACHE_KEY, JSON.stringify(data));
+  } catch {}
+}
+
+function readSOECache(): SOEDataCache | null {
+  if (soeDataCache) return soeDataCache;
+  try {
+    const raw = sessionStorage.getItem(SOE_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as SOEDataCache;
+    soeDataCache = parsed;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+// ----------------------
 // Utils
 // ----------------------
 function firstParagraphFromHtml(html?: string | null): string {
@@ -217,6 +249,40 @@ export default function PageStateOwnedDashboard(): JSX.Element {
 
   const pageSize = 10;
 
+  // Instant hydrate from cache to avoid loader on tab returns
+  useEffect(() => {
+    const cached = readSOECache();
+    if (!cached) return;
+
+    // Keep same year sort behavior
+    const yearsSorted = sortYearsDesc(cached.years);
+    setYearOptions(yearsSorted);
+    setIndustryOptions(cached.industries);
+    setSoePosts(cached.posts);
+
+    const urlYear = searchParams.get("year");
+    const urlIndustry = searchParams.get("industry");
+    const effectiveYear = urlYear ?? year ?? (yearsSorted[0]?.slug ?? null);
+    const effectiveIndustry =
+      urlIndustry ?? industry ?? (cached.industries[0]?.slug ?? null);
+    if (!year && effectiveYear) setYear(effectiveYear);
+    if (!industry && effectiveIndustry) setIndustry(effectiveIndustry);
+
+    let initial = cached.posts;
+    if (effectiveYear) {
+      initial = initial.filter((p) => p.years.some((y) => y.slug === effectiveYear));
+    }
+    if (effectiveIndustry) {
+      initial = initial.filter((p) => p.industries.some((i) => i.slug === effectiveIndustry));
+    }
+    setFilteredPosts(initial);
+    if (initial[0]) {
+      setCurrentCsvUrl(initial[0].csvUrl ?? null);
+      setCurrentPostTitle(initial[0].title ?? "");
+    }
+    setIsLoading(false);
+  }, []);
+
   // Load defaults from URL
   useEffect(() => {
     const q = searchParams.get("q") || "";
@@ -230,58 +296,65 @@ export default function PageStateOwnedDashboard(): JSX.Element {
   // Load SOE data once
   useEffect(() => {
     async function load() {
-      setIsLoading(true);
+      const cached = readSOECache();
+      if (!cached) setIsLoading(true);
       try {
-        try {
-          const s = await fetchPageSEOByUri(
-            pathname || "/state-owned-dashboard/"
-          );
-          setSeo(s);
-        } catch (e) {
-          console.warn("SEO fetch failed", e);
-        }
-
-        try {
-          const meta = await fetchPageMetaByUri(
-            pathname || "/state-owned-dashboard/"
-          );
-          if (meta) {
-            setHeroTitle(meta.title ?? "");
-            setHeroParagraph(firstParagraphFromHtml(meta.content));
-          }
-        } catch (e) {
-          console.warn("Meta fetch failed", e);
-        }
-
-        const [yearsRaw, industriesRaw, posts] = await Promise.all([
+        const [seoRes, meta, yearsRaw, industriesRaw, posts] = await Promise.all([
+          fetchPageSEOByUri(pathname || "/state-owned-dashboard/").catch((e) => {
+            console.warn("SEO fetch failed", e);
+            return null as any;
+          }),
+          fetchPageMetaByUri(pathname || "/state-owned-dashboard/").catch((e) => {
+            console.warn("Meta fetch failed", e);
+            return null as any;
+          }),
           fetchSOEYears(),
           fetchSOEIndustries(),
           fetchSOEPosts(),
         ]);
 
+        if (seoRes) setSeo(seoRes);
+        if (meta) {
+          setHeroTitle(meta.title ?? "");
+          setHeroParagraph(firstParagraphFromHtml(meta.content));
+        }
+
         const years = sortYearsDesc(yearsRaw);
         setYearOptions(years);
         setIndustryOptions(industriesRaw);
         setSoePosts(posts);
+        saveSOECache({ years, industries: industriesRaw, posts });
 
-        const yearInUrl = !!searchParams.get("year");
-        const industryInUrl = !!searchParams.get("industry");
-        if (!year && !yearInUrl && years.length > 0) {
-          const latestYearSlug = years[0].slug;
-          setYear(latestYearSlug);
-
-          const postsForLatestYear = posts.filter((p) =>
-            p.years.some((y) => y.slug === latestYearSlug)
+        // Determine effective selection and prime results before clearing loader
+        const urlYear = searchParams.get("year");
+        const urlIndustry = searchParams.get("industry");
+        const effectiveYear = urlYear ?? year ?? (years[0]?.slug ?? null);
+        // Try pick industry from first post matching the year, else first industry list
+        let effectiveIndustry = urlIndustry ?? industry ?? null;
+        if (!effectiveIndustry) {
+          const firstForYear = posts.find((p) =>
+            effectiveYear ? p.years.some((y) => y.slug === effectiveYear) : true
           );
+          effectiveIndustry = firstForYear?.industries?.[0]?.slug ?? (industriesRaw[0]?.slug ?? null);
+        }
 
-          if (postsForLatestYear.length > 0) {
-            const first = postsForLatestYear[0];
-            const defaultIndustry = first.industries?.[0]?.slug ?? null;
-            if (!industry && !industryInUrl && defaultIndustry)
-              setIndustry(defaultIndustry);
-            setCurrentCsvUrl(first.csvUrl ?? null);
-            setCurrentPostTitle(first.title ?? "");
-          }
+        if (!year && effectiveYear) setYear(effectiveYear);
+        if (!industry && effectiveIndustry) setIndustry(effectiveIndustry);
+
+        let initial = posts;
+        if (effectiveYear) {
+          initial = initial.filter((p) => p.years.some((y) => y.slug === effectiveYear));
+        }
+        if (effectiveIndustry) {
+          initial = initial.filter((p) => p.industries.some((i) => i.slug === effectiveIndustry));
+        }
+        setFilteredPosts(initial);
+        if (initial[0]) {
+          setCurrentCsvUrl(initial[0].csvUrl ?? null);
+          setCurrentPostTitle(initial[0].title ?? "");
+        } else {
+          setCurrentCsvUrl(null);
+          setCurrentPostTitle("");
         }
       } catch (e) {
         console.error(e);
