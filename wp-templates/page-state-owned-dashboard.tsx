@@ -313,7 +313,10 @@ export default function PageStateOwnedDashboard(): JSX.Element {
         <HeroWhite
           title="State Owned Enterprises"
           paragraph="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-          items={[{ label: "State Owned Dashboard" }]}
+          items={[
+            { label: "Dashboards", href: "/dashboard" },
+            { label: "State Owned Dashboard" },
+          ]}
         />
       </div>
 

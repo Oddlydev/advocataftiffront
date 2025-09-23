@@ -280,7 +280,10 @@ export default function PageTransparencyDashboard(): JSX.Element {
       <HeroWhite
         title="Transparency in Government Institutions"
         paragraph="Explore accountability and transparency datasets across institutions."
-        items={[{ label: "Transparency Dashboard" }]}
+        items={[
+          { label: "Dashboards", href: "/dashboard" },
+          { label: "Transparency Dashboard" },
+        ]}
       />
 
       {/* Filters */}
