@@ -160,7 +160,7 @@ const Section: React.FC<SectionProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
             {/* Left Column */}
             <div>
-              <h2 className="font-montserrat text-slate-950 font-normal text-2xl md:text-3xl xl:text-4xl leading-snug">
+              <h2 className="font-montserrat text-slate-950 font-bold text-2xl md:text-3xl xl:text-4xl leading-snug">
                 {title}
               </h2>
               <p className="font-sourcecodepro text-slate-950 font-normal text-base/6 mt-0.5 lg:mt-2">
