@@ -76,7 +76,7 @@ export default function SearchField({
         id="search-plain"
         name="search"
         placeholder={placeholder}
-        className={`search-input w-full rounded-full border border-gray-300 bg-white py-2.5 pl-12 pr-2.5 font-baskervville text-sm/tight md:text-base/6 text-slate-800 placeholder:text-slate-600/50 shadow-sm hover:border-brand-1-100 focus:border-brand-1-200 focus:outline-0 focus:outline-brand-1-200 focus:ring-1 focus:ring-transparent focus:shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05),0px_0px_0px_1px_#9B195F] ${showSubmitButton ? "pr-28" : "pr-2.5"} font-baskervville text-sm md:text-base text-slate-800 placeholder:text-slate-600/50 shadow-sm hover:border-brand-1-100 focus:border-brand-1-200 focus:outline-0 focus:ring-1 focus:ring-transparent`}
+        className={`search-input w-full rounded-full border border-gray-300 bg-white py-2.5 pl-12 pr-2.5 font-sourcecodepro text-sm/tight md:text-base/6 text-slate-800 placeholder:text-slate-600/50 shadow-sm hover:border-brand-1-100 focus:border-brand-1-200 focus:outline-0 focus:outline-brand-1-200 focus:ring-1 focus:ring-transparent focus:shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05),0px_0px_0px_1px_#9B195F] ${showSubmitButton ? "pr-28" : "pr-2.5"} font-sourcecodepro text-sm md:text-base text-slate-800 placeholder:text-slate-600/50 shadow-sm hover:border-brand-1-100 focus:border-brand-1-200 focus:outline-0 focus:ring-1 focus:ring-transparent`}
         value={query}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
