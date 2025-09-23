@@ -31,15 +31,28 @@ function escapeRegExp(str: string) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-export default function SEO({ title, description, canonical, yoast, siteName, separator = " | " }: Props) {
+export default function SEO({
+  title,
+  description,
+  canonical,
+  yoast,
+  siteName,
+  separator = " | ",
+}: Props) {
   // Prefer explicit page title; fall back to Yoast title
   const baseTitle = (title ?? yoast?.title) || undefined;
-  const computedSiteName = siteName || yoast?.opengraphSiteName || process.env.NEXT_PUBLIC_SITE_NAME || undefined;
+  const computedSiteName =
+    siteName ||
+    yoast?.opengraphSiteName ||
+    process.env.NEXT_PUBLIC_SITE_NAME ||
+    undefined;
 
   let finalTitle = baseTitle;
   if (baseTitle && computedSiteName) {
     const sn = String(computedSiteName).trim();
-    const alreadyHas = new RegExp(`\\b${escapeRegExp(sn)}\\b`, "i").test(baseTitle);
+    const alreadyHas = new RegExp(`\\b${escapeRegExp(sn)}\\b`, "i").test(
+      baseTitle
+    );
     if (!alreadyHas) finalTitle = `${baseTitle}${separator}${sn}`;
   }
 
@@ -50,12 +63,22 @@ export default function SEO({ title, description, canonical, yoast, siteName, se
   const ogDesc = (yoast?.opengraphDescription ?? theDesc) || undefined;
   const ogUrl = yoast?.opengraphUrl || theCanonical || undefined;
   const ogSiteName = computedSiteName || undefined;
-  const ogImage = yoast?.opengraphImage?.sourceUrl || undefined;
+
+  // ✅ Favicon as fallback social image
+  const favicon =
+    (process.env.NEXT_PUBLIC_SITE_ICON_URL as string) ||
+    "/assets/images/favicon.png";
+
+  const ogImage =
+    yoast?.opengraphImage?.sourceUrl ||
+    yoast?.twitterImage?.sourceUrl ||
+    favicon;
+
   const twTitle = (yoast?.twitterTitle ?? theTitle) || undefined;
   const twDesc = (yoast?.twitterDescription ?? theDesc) || undefined;
-  const twImage = yoast?.twitterImage?.sourceUrl || ogImage || undefined;
+  const twImage = yoast?.twitterImage?.sourceUrl || ogImage;
+
   const schemaRaw = yoast?.schema?.raw || undefined;
-  const favicon = (process.env.NEXT_PUBLIC_SITE_ICON_URL as string) || "/assets/images/favicon.png";
 
   return (
     <Head>
@@ -71,18 +94,23 @@ export default function SEO({ title, description, canonical, yoast, siteName, se
       {ogUrl && <meta property="og:url" content={ogUrl} />}
       {ogSiteName && <meta property="og:site_name" content={ogSiteName} />}
       {ogImage && <meta property="og:image" content={ogImage} />}
+      <meta property="og:type" content="website" />
 
       {/* Twitter */}
-      {(twTitle || twDesc || twImage) && (
-        <meta name="twitter:card" content={twImage ? "summary_large_image" : "summary"} />
-      )}
+      <meta
+        name="twitter:card"
+        content={twImage ? "summary_large_image" : "summary"}
+      />
       {twTitle && <meta name="twitter:title" content={twTitle} />}
       {twDesc && <meta name="twitter:description" content={twDesc} />}
       {twImage && <meta name="twitter:image" content={twImage} />}
 
       {/* Yoast JSON-LD Schema */}
       {schemaRaw && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaRaw }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: schemaRaw }}
+        />
       )}
     </Head>
   );

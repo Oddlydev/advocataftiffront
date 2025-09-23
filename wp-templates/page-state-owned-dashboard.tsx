@@ -14,6 +14,28 @@ import CsvTable from "@/src/components/CsvTable";
 import RelatedDatasets from "@/src/components/RelatedDatasets";
 
 // ----------------------
+// Utils
+// ----------------------
+function firstParagraphFromHtml(html?: string | null): string {
+  if (!html) return "";
+  // Grab all <p> blocks
+  const matches = html.match(/<p\b[^>]*>[\s\S]*?<\/p>/gi) || [];
+  for (const p of matches) {
+    const inner = p
+      .replace(/^<p\b[^>]*>/i, "")
+      .replace(/<\/p>$/i, "")
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/<[^>]+>/g, "")
+      .replace(/\u00a0/g, " ")
+      .replace(/\s+\n/g, "\n")
+      .replace(/\n{2,}/g, "\n")
+      .trim();
+    if (inner) return inner;
+  }
+  return "";
+}
+
+// ----------------------
 // Types
 // ----------------------
 type TaxNode = { name: string; slug: string };
@@ -73,6 +95,26 @@ async function fetchPageSEOByUri(uri: string): Promise<any | null> {
   return data?.nodeByUri && (data.nodeByUri as any).seo
     ? (data.nodeByUri as any).seo
     : null;
+}
+
+async function fetchPageMetaByUri(
+  uri: string
+): Promise<{ title?: string | null; content?: string | null } | null> {
+  const wpUri = uri.endsWith("/") ? uri : `${uri}/`;
+  const encoded = wpUri.replace(/"/g, '\\"');
+  const data = await gql<{
+    nodeByUri?: { __typename?: string; title?: string | null; content?: string | null };
+  }>(
+    `query GetPageMetaByUri {
+      nodeByUri(uri: "${encoded}") {
+        __typename
+        ... on Page { title content }
+      }
+    }`
+  );
+  if (!data?.nodeByUri) return null;
+  const node: any = data.nodeByUri as any;
+  return { title: node?.title ?? null, content: node?.content ?? null };
 }
 
 async function fetchSOEYears(): Promise<TaxNode[]> {
@@ -155,6 +197,8 @@ export default function PageStateOwnedDashboard(): JSX.Element {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [seo, setSeo] = useState<any | null>(null);
+  const [heroTitle, setHeroTitle] = useState<string>("");
+  const [heroParagraph, setHeroParagraph] = useState<string>("");
 
   const [queryInput, setQueryInput] = useState("");
   const [industry, setIndustry] = useState<string | null>(null);
@@ -195,6 +239,18 @@ export default function PageStateOwnedDashboard(): JSX.Element {
           setSeo(s);
         } catch (e) {
           console.warn("SEO fetch failed", e);
+        }
+
+        try {
+          const meta = await fetchPageMetaByUri(
+            pathname || "/state-owned-dashboard/"
+          );
+          if (meta) {
+            setHeroTitle(meta.title ?? "");
+            setHeroParagraph(firstParagraphFromHtml(meta.content));
+          }
+        } catch (e) {
+          console.warn("Meta fetch failed", e);
         }
 
         const [yearsRaw, industriesRaw, posts] = await Promise.all([
@@ -311,8 +367,8 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       {/* Hero */}
       <div>
         <HeroWhite
-          title="State Owned Enterprises"
-          paragraph="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          title={heroTitle || "State Owned Enterprises"}
+          paragraph={heroParagraph || ""}
           items={[
             { label: "Dashboards", href: "/dashboard" },
             { label: "State Owned Dashboard" },

@@ -171,21 +171,46 @@ export default function PageTransparencyDashboard(): JSX.Element {
     async function load() {
       setIsLoading(true);
       try {
-        try {
-          const s = await fetchPageSEOByUri(
-            pathname || "/transparency-dashboard/"
-          );
-          setSeo(s);
-        } catch (e) {
-          console.warn("SEO fetch failed", e);
-        }
+        const [seoRes, data] = await Promise.all([
+          fetchPageSEOByUri(pathname || "/transparency-dashboard/").catch(
+            (e) => {
+              console.warn("SEO fetch failed", e);
+              return null as any;
+            }
+          ),
+          fetchTransparencyDashboardData(),
+        ]);
+        if (seoRes) setSeo(seoRes);
 
-        const { years, industries, posts } =
-          await fetchTransparencyDashboardData();
+        const { years, industries, posts } = data;
 
         setYearOptions(years);
         setIndustryOptions(industries);
         setPosts(posts);
+
+        // Prime selection and results immediately (URL > state > first available)
+        const urlYear = searchParams.get("year");
+        const urlIndustry = searchParams.get("industry");
+        const effectiveYear = urlYear ?? year ?? (years[0]?.slug ?? null);
+        const effectiveIndustry =
+          urlIndustry ?? industry ?? (industries[0]?.slug ?? null);
+
+        if (!year && effectiveYear) setYear(effectiveYear);
+        if (!industry && effectiveIndustry) setIndustry(effectiveIndustry);
+
+        let initialResults = posts;
+        if (effectiveIndustry) {
+          initialResults = initialResults.filter((p) =>
+            p.industries.some((ind) => ind.slug === effectiveIndustry)
+          );
+        }
+        if (effectiveYear) {
+          initialResults = initialResults.filter((p) =>
+            p.years.some((y) => y.slug === effectiveYear)
+          );
+        }
+        setFilteredPosts(initialResults);
+        setCurrentCsvUrl(initialResults[0]?.csvUrl ?? null);
 
         // ✅ Only set defaults if nothing is chosen in the URL
         const yearInUrl = !!searchParams.get("year");
