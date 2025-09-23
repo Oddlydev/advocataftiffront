@@ -117,7 +117,7 @@ export default function SearchFieldHome(): JSX.Element {
       {results.length > 0 && (
         <ul className="absolute top-full left-0 mt-2 pt-2 pb-5 px-3.5 w-full bg-brand-black border border-brand-white/25 rounded-2xl z-50">
           <p className="p-3 pb-4 text-slate-200/40 text-start text-base font-sourcecodepro font-normal uppercase">
-            Recent Searches
+            Search Results
           </p>
           {results.map((hit) => (
             <li
@@ -125,7 +125,7 @@ export default function SearchFieldHome(): JSX.Element {
               className="p-3 space-y-2 hover:bg-brand-white/12 rounded-full group">
               <a
                 href={hit.permalink}
-                className="block text-slate-200/40 font-baskervville text-start transition-colors duration-200"
+                className="block text-slate-200/40 font-sourcecodepro text-start transition-colors duration-200"
               >
                 <h4 className="flex items-center gap-2">
                   <span className="bg-brand-white/15 rounded-full p-2 text-slate-50 transition-colors duration-200 group-hover:bg-brand-white/30">
