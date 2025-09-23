@@ -10,7 +10,7 @@ import HeaderNav from "@/src/components/header";
 import Footer from "@/src/components/footer";
 
 import BrandLogo from "@/public/assets/images/logos/brand-logo.svg";
-import navbarImg from "@/public/assets/images/nav-dropdown-img.jpg";
+import navbarImg from "@/public/assets/images/nav-bg-img.png";
 
 // 👇 Import fonts
 import {
