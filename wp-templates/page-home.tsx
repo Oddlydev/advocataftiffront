@@ -5,10 +5,7 @@ import { useRouter } from "next/router";
 import SEO from "@/src/components/SEO";
 
 // Components
-import CardType1 from "@/src/components/Cards/CardType1";
-import CardType2 from "@/src/components/Cards/CardType2";
-import CardType3 from "@/src/components/Cards/CardType3";
-import CardType4 from "@/src/components/Cards/CardType4";
+import Card from "@/src/components/Cards/DashboardCard";
 import CardType5 from "@/src/components/Cards/CardType5";
 import CardType6 from "@/src/components/Cards/CardType6";
 import PrimaryButton from "@/src/components/Buttons/PrimaryBtn";
@@ -23,7 +20,7 @@ interface HomePageProps {
   data?: {
     page?: {
       title?: string | null;
-      content?: string | null; // Gutenberg HTML
+      content?: string | null;
       seo?: {
         title?: string | null;
         metaDesc?: string | null;
@@ -47,6 +44,17 @@ interface HomePageProps {
           heroSectionImage?: { node?: { mediaItemUrl?: string | null } | null };
           heroSectionVideo?: { node?: { mediaItemUrl?: string | null } | null };
         } | null;
+      } | null;
+    } | null;
+
+    dashboardsPage?: {
+      dashboardSection?: {
+        dashboards?: Array<{
+          title?: string | null;
+          description?: string | null;
+          url?: string | null;
+          image?: { node?: { mediaItemUrl?: string | null } | null } | null;
+        }> | null;
       } | null;
     } | null;
 
@@ -84,9 +92,13 @@ interface HomePageProps {
   loading?: boolean;
 }
 
-/** GraphQL query for page, datasets, and insights */
+/** GraphQL query for page, dashboards, datasets, and insights */
 const PAGE_QUERY = gql`
-  query GetHomePage($databaseId: ID!, $asPreview: Boolean = false) {
+  query GetHomePage(
+    $databaseId: ID!
+    $dashboardId: ID!
+    $asPreview: Boolean = false
+  ) {
     page(id: $databaseId, idType: DATABASE_ID, asPreview: $asPreview) {
       title
       content
@@ -98,11 +110,17 @@ const PAGE_QUERY = gql`
         opengraphDescription
         opengraphUrl
         opengraphSiteName
-        opengraphImage { sourceUrl }
+        opengraphImage {
+          sourceUrl
+        }
         twitterTitle
         twitterDescription
-        twitterImage { sourceUrl }
-        schema { raw }
+        twitterImage {
+          sourceUrl
+        }
+        schema {
+          raw
+        }
       }
       homeAiSection {
         aiTitle
@@ -123,6 +141,26 @@ const PAGE_QUERY = gql`
         }
       }
     }
+
+    dashboardsPage: page(
+      id: $dashboardId
+      idType: DATABASE_ID
+      asPreview: $asPreview
+    ) {
+      dashboardSection {
+        dashboards {
+          title
+          description
+          url
+          image {
+            node {
+              mediaItemUrl
+            }
+          }
+        }
+      }
+    }
+
     dataSets(first: 6) {
       nodes {
         id
@@ -139,6 +177,7 @@ const PAGE_QUERY = gql`
         }
       }
     }
+
     insights(first: 3) {
       nodes {
         id
@@ -311,20 +350,53 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           </div>
 
           <div className="mt-10 grid grid-cols-1 gap-6 md:gap-8 xl:gap-10 sm:mt-16 xl:grid-cols-7 xl:grid-rows-2">
-            <div className="flex p-px xl:col-span-4">
-              <CardType1 />
-            </div>
-            <div className="flex p-px xl:col-span-3">
-              <CardType2 />
-            </div>
-            <div className="flex p-px xl:col-span-3">
-              <CardType3 />
-            </div>
-            <div className="flex p-px xl:col-span-4">
-              <CardType4 />
-            </div>
+            {data?.dashboardsPage?.dashboardSection?.dashboards?.map(
+              (card, i) => {
+                let variantClasses = "";
+                let colSpan = "";
+
+                // Style variants
+                switch (i) {
+                  case 0:
+                  case 3:
+                    variantClasses = "bg-white text-slate-950 border-slate-400";
+                    break;
+                  case 1:
+                    variantClasses =
+                      "bg-brand-1-900 text-slate-50 border-slate-400";
+                    break;
+                  case 2:
+                    variantClasses =
+                      "bg-brand-black text-slate-50 border-slate-400";
+                    break;
+                  default:
+                    variantClasses = "bg-white text-slate-950 border-slate-400"; // fallback
+                }
+
+                // Grid spans
+                if (i === 0 || i === 3) {
+                  colSpan = "xl:col-span-4";
+                } else {
+                  colSpan = "xl:col-span-3";
+                }
+
+                return (
+                  <div key={i} className={`flex p-px ${colSpan}`}>
+                    <Card
+                      title={card?.title ?? ""}
+                      description={card?.description ?? ""}
+                      image={
+                        card?.image?.node?.mediaItemUrl ??
+                        "/assets/images/card-imgs/card-img-1.jpg"
+                      }
+                      url={card?.url ?? "#"}
+                      className={variantClasses}
+                    />
+                  </div>
+                );
+              }
+            )}
           </div>
-          
         </div>
       </div>
 
@@ -432,7 +504,8 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
     throw new Error("PageHome.variables: missing databaseId from seed node.");
   }
   return {
-    databaseId: String(_seedNode.databaseId),
+    databaseId: String(_seedNode.databaseId), // home page id
+    dashboardId: "224", // dashboards page id
     asPreview: !!ctx?.preview,
   };
 };

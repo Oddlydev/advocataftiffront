@@ -31,15 +31,28 @@ function escapeRegExp(str: string) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-export default function SEO({ title, description, canonical, yoast, siteName, separator = " | " }: Props) {
+export default function SEO({
+  title,
+  description,
+  canonical,
+  yoast,
+  siteName,
+  separator = " | ",
+}: Props) {
   // Prefer explicit page title; fall back to Yoast title
   const baseTitle = (title ?? yoast?.title) || undefined;
-  const computedSiteName = siteName || yoast?.opengraphSiteName || process.env.NEXT_PUBLIC_SITE_NAME || undefined;
+  const computedSiteName =
+    siteName ||
+    yoast?.opengraphSiteName ||
+    process.env.NEXT_PUBLIC_SITE_NAME ||
+    undefined;
 
   let finalTitle = baseTitle;
   if (baseTitle && computedSiteName) {
     const sn = String(computedSiteName).trim();
-    const alreadyHas = new RegExp(`\\b${escapeRegExp(sn)}\\b`, "i").test(baseTitle);
+    const alreadyHas = new RegExp(`\\b${escapeRegExp(sn)}\\b`, "i").test(
+      baseTitle
+    );
     if (!alreadyHas) finalTitle = `${baseTitle}${separator}${sn}`;
   }
 
@@ -55,7 +68,9 @@ export default function SEO({ title, description, canonical, yoast, siteName, se
   const twDesc = (yoast?.twitterDescription ?? theDesc) || undefined;
   const twImage = yoast?.twitterImage?.sourceUrl || ogImage || undefined;
   const schemaRaw = yoast?.schema?.raw || undefined;
-  const favicon = (process.env.NEXT_PUBLIC_SITE_ICON_URL as string) || "/assets/images/favicon.png";
+  const favicon =
+    (process.env.NEXT_PUBLIC_SITE_ICON_URL as string) ||
+    "/assets/images/favicon.png";
 
   return (
     <Head>
@@ -74,7 +89,10 @@ export default function SEO({ title, description, canonical, yoast, siteName, se
 
       {/* Twitter */}
       {(twTitle || twDesc || twImage) && (
-        <meta name="twitter:card" content={twImage ? "summary_large_image" : "summary"} />
+        <meta
+          name="twitter:card"
+          content={twImage ? "summary_large_image" : "summary"}
+        />
       )}
       {twTitle && <meta name="twitter:title" content={twTitle} />}
       {twDesc && <meta name="twitter:description" content={twDesc} />}
@@ -82,7 +100,10 @@ export default function SEO({ title, description, canonical, yoast, siteName, se
 
       {/* Yoast JSON-LD Schema */}
       {schemaRaw && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaRaw }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: schemaRaw }}
+        />
       )}
     </Head>
   );

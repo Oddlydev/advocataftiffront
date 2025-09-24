@@ -24,7 +24,8 @@ export default function SearchFieldHome(): JSX.Element {
           searchParams: {
             query,
             hitsPerPage: 5,
-            filters: 'post_type_label:"Data Sets"', // ✅ only datasets
+            filters:
+              'post_type_label:"Data Sets" OR post_type_label:"Insights"',
             attributesToHighlight: [
               "post_title",
               "post_excerpt",
@@ -122,7 +123,8 @@ export default function SearchFieldHome(): JSX.Element {
           {results.map((hit) => (
             <li
               key={hit.objectID}
-              className="p-3 space-y-2 hover:bg-brand-white/12 rounded-full group">
+              className="p-3 space-y-2 hover:bg-brand-white/12 rounded-full group"
+            >
               <a
                 href={hit.permalink}
                 className="block text-slate-200/40 font-sourcecodepro text-start transition-colors duration-200"
@@ -168,7 +170,6 @@ export default function SearchFieldHome(): JSX.Element {
                 </p> */}
               </a>
             </li>
-
           ))}
         </ul>
       )}
