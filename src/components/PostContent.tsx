@@ -42,8 +42,8 @@ export default function PostContent({ content, variant = "single" }: Props) {
               <p
                 className={
                   variant === "single"
-                    ? "text-slate-600 font-baskervville font-normal text-base/6 py-4"
-                    : "text-slate-600 font-baskervville font-normal text-lg/7 py-6"
+                    ? "text-slate-600 font-sourcecodepro font-normal text-base/6 py-4"
+                    : "text-slate-600 font-sourcecodepro font-normal text-lg/7 py-6"
                 }
               >
                 {domToReact(domNode.children, options)}
@@ -62,14 +62,14 @@ export default function PostContent({ content, variant = "single" }: Props) {
 
           case "ol":
             return (
-              <ol className="list-decimal pl-6 ml-6 space-y-3 text-slate-600 text-lg/7 font-baskervville font-normal py-2">
+              <ol className="list-decimal pl-6 ml-6 space-y-3 text-slate-600 text-lg/7 font-sourcecodepro font-normal py-2">
                 {domToReact(domNode.children, options)}
               </ol>
             );
 
           case "ul":
             return (
-              <ul className="ml-6 space-y-3 text-slate-600 text-lg/7 font-baskervville font-normal py-2">
+              <ul className="ml-6 space-y-3 text-slate-600 text-lg/7 font-sourcecodepro font-normal py-2">
                 {domToReact(domNode.children, options)}
               </ul>
             );
@@ -87,7 +87,7 @@ export default function PostContent({ content, variant = "single" }: Props) {
                 className={
                   variant === "single"
                     ? "italic font-medium border-slate-200 border-l-4 lg:pl-8 py-3"
-                    : "text-lg/7 font-baskervville text-slate-600 font-normal border-brand-2-50 border-l-4 lg:pl-8 py-3"
+                    : "text-lg/7 font-sourcecodepro text-slate-600 font-normal border-brand-2-50 border-l-4 lg:pl-8 py-3"
                 }
               >
                 {domToReact(domNode.children, options)}
@@ -96,7 +96,7 @@ export default function PostContent({ content, variant = "single" }: Props) {
 
           case "span":
             return (
-              <span className="flex items-center gap-1 text-slate-500 text-xs leading-4 font-baskervville mb-2">
+              <span className="flex items-center gap-1 text-slate-500 text-xs leading-4 font-sourcecodepro mb-2">
                 {domToReact(domNode.children, options)}
               </span>
             );

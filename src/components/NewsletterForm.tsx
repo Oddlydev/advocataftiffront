@@ -127,7 +127,7 @@ export default function NewsletterForm({
         >
           Newsletter Subscription
         </h3>
-        <p className="mt-3 text-base/6 md:text-lg/7 font-baskervville font-normal text-brand-white/80">
+        <p className="mt-3 text-base/6 md:text-lg/7 font-sourcecodepro font-normal text-brand-white/80">
           Get exclusive economic insights and data analysis delivered to your
           inbox from Advocata&apos;s research team.
         </p>
