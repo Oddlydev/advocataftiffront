@@ -418,7 +418,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
                   </span>
                 )}
                 {data?.page?.homeAiSection?.aiDescription && (
-                  <h3 className="mt-5 xl:text-6xl sm:text-5xl text-3xl leading-9 md:leading-14 xl:leading-16 font-normal font-montserrat text-pretty text-white">
+                  <h3 className="mt-5 xl:text-6xl sm:text-5xl text-3xl leading-9 md:leading-14 xl:leading-16 font-bold font-montserrat text-pretty text-white">
                     {data.page.homeAiSection.aiDescription}
                   </h3>
                 )}
