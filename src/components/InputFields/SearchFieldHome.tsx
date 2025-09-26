@@ -115,6 +115,14 @@ export default function SearchFieldHome(): JSX.Element {
         </button>
       </form>
 
+      {query.trim().length > 0 && results.length === 0 && (
+        <div className="absolute top-full left-0 mt-2 pt-5 pb-5 px-3.5 w-full bg-brand-black border border-brand-white/25 rounded-2xl z-50">
+          <p className="text-center text-slate-200/40 text-base font-sourcecodepro font-normal">
+            No results found
+          </p>
+        </div>
+      )}
+
       {results.length > 0 && (
         <ul className="absolute top-full left-0 mt-2 pt-2 pb-5 px-3.5 w-full bg-brand-black border border-brand-white/25 rounded-2xl z-50">
           <p className="p-3 pb-4 text-slate-200/40 text-start text-base font-sourcecodepro font-normal uppercase">
@@ -131,6 +139,7 @@ export default function SearchFieldHome(): JSX.Element {
               >
                 <h4 className="flex items-center gap-2">
                   <span className="bg-brand-white/15 rounded-full p-2 text-slate-50 transition-colors duration-200 group-hover:bg-brand-white/30">
+                    {/* icon */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -164,10 +173,6 @@ export default function SearchFieldHome(): JSX.Element {
                     {hit.post_title}
                   </span>
                 </h4>
-
-                {/* <p className="text-sm text-gray-500 transition-colors duration-200 group-hover:text-gray-300">
-                  {hit.post_excerpt}
-                </p> */}
               </a>
             </li>
           ))}
