@@ -31,5 +31,5 @@ export default {
   "page-thank-you": PageThankYou,
   "page-dashboard": PageDashboard,
   "page-newsletter-confirmation": PageNewsletterConfirmation,
-  // "page-fiscal-dashboard": PageFiscalDashboard,
+  "page-fiscal-dashboard": PageFiscalDashboard,
 };
