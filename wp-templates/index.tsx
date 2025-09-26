@@ -12,6 +12,7 @@ import PageStateOwnedDashboard from "./page-state-owned-dashboard";
 import PageTransparencyDashboard from "./page-transparency-dashboard";
 import PageThankYou from "./page-thank-you";
 import PageDashboard from "./page-dashboard";
+import PageNewsletterConfirmation from "./page-newsletter-confirmation";
 
 export default {
   "front-page": frontPage,
@@ -28,4 +29,5 @@ export default {
   "page-transparency-dashboard": PageTransparencyDashboard,
   "page-thank-you": PageThankYou,
   "page-dashboard": PageDashboard,
+  "page-newsletter-confirmation": PageNewsletterConfirmation,
 };
