@@ -8,102 +8,108 @@ import * as d3 from "d3";
 import { sankey as d3Sankey, sankeyLinkHorizontal } from "d3-sankey";
 import CardType7 from "@/src/components/Cards/CardType7";
 import CardType6 from "@/src/components/Cards/CardType6";
+import DefaultDropdown from "@/src/components/Dropdowns/DefaultDropdown";
 
 export default function PageFiscalDashboard() {
   const sankeyRef = useRef<SVGSVGElement | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
-    if (!sankeyRef.current) return;
+  if (!sankeyRef.current) return;
 
-    // ---- Strong types for d3-sankey (prevents SankeyNodeMinimal<{}, {}> issues)
-    type NodeDatum = { name: string };
-    type LinkDatum = { source: number; target: number; value: number };
+  type NodeDatum = { name: string };
+  type LinkDatum = { source: number; target: number; value: number };
 
-    const sankeyData = {
-      nodes: [
-        { name: "Revenue" },
-        { name: "Recurrent Expenditure" },
-        { name: "Net Revenue" },
-        { name: "Capital Expenditure" },
-        { name: "Available Budget" },
-        { name: "Ministry Allocations" },
-        { name: "Budget Balance" },
-        { name: "Interest Payments" },
-        { name: "Infrastructure & Development" },
-        { name: "General Administration" },
-        { name: "Budget Surplus" },
-        { name: "Reserves" },
-      ] as NodeDatum[],
-      links: [
-        { source: 0, target: 2, value: 20 },
-        { source: 1, target: 3, value: 36 },
-        { source: 2, target: 4, value: 27 },
-        { source: 2, target: 5, value: 18 },
-        { source: 4, target: 6, value: 10 },
-        { source: 6, target: 7, value: 16 },
-        { source: 6, target: 10, value: 3 },
-        { source: 6, target: 11, value: 2 },
-        // (kept your data/content; duplicate link left as-is if intentional)
-        { source: 4, target: 7, value: 10 },
-        { source: 5, target: 8, value: 6 },
-        { source: 5, target: 9, value: 9 },
-      ] as LinkDatum[],
-    };
+  const sankeyData = {
+    nodes: [
+      { name: "Revenue" },
+      { name: "Recurrent Expenditure" },
+      { name: "Net Revenue" },
+      { name: "Capital Expenditure" },
+      { name: "Available Budget" },
+      { name: "Ministry Allocations" },
+      { name: "Budget Balance" },
+      { name: "Interest Payments" },
+      { name: "Infrastructure & Development" },
+      { name: "General Administration" },
+      { name: "Budget Surplus" },
+      { name: "Reserves" },
+    ] as NodeDatum[],
+    links: [
+      { source: 0, target: 2, value: 20 },
+      { source: 1, target: 3, value: 36 },
+      { source: 2, target: 4, value: 27 },
+      { source: 2, target: 5, value: 18 },
+      { source: 4, target: 6, value: 10 },
+      { source: 6, target: 7, value: 16 },
+      { source: 6, target: 10, value: 3 },
+      { source: 6, target: 11, value: 2 },
+      { source: 4, target: 7, value: 10 },
+      { source: 5, target: 8, value: 6 },
+      { source: 5, target: 9, value: 9 },
+    ] as LinkDatum[],
+  };
 
-    const nodeValues: Record<string, string> = {
-      Revenue: "₨3.2T",
-      "Recurrent Expenditure": "₨2.8T",
-      "Net Revenue": "₨400B",
-      "Capital Expenditure": "₨750B",
-      "Available Budget": "₨1.9T",
-      "Ministry Allocations": "₨850B",
-      "Budget Balance": "₨1.05T",
-      "Interest Payments": "₨150B",
-      "Infrastructure & Development": "₨420B",
-      "General Administration": "₨280B",
-      "Budget Surplus": "₨200B",
-      Reserves: "₨250B",
-    };
+  const nodeValues: Record<string, string> = {
+    Revenue: "₨3.2T",
+    "Recurrent Expenditure": "₨2.8T",
+    "Net Revenue": "₨400B",
+    "Capital Expenditure": "₨750B",
+    "Available Budget": "₨1.9T",
+    "Ministry Allocations": "₨850B",
+    "Budget Balance": "₨1.05T",
+    "Interest Payments": "₨150B",
+    "Infrastructure & Development": "₨420B",
+    "General Administration": "₨280B",
+    "Budget Surplus": "₨200B",
+    Reserves: "₨250B",
+  };
 
-    const svg = d3.select(sankeyRef.current);
-    const width = 650;
-    const height = 550;
-    const margin = { top: 35, right: 20, bottom: 20, left: 20 };
+  const svg = d3.select(sankeyRef.current);
+  const margin = { top: 35, right: 40, bottom: 20, left: 40 };
 
+  // Color scale
+  const color = d3
+    .scaleOrdinal<string>()
+    .domain(sankeyData.nodes.map((d) => d.name))
+    .range([
+      "#4B0619",
+      "#4B0619",
+      "#A90E38",
+      "#7A0A28",
+      "#A90E38",
+      "#F16087",
+      "#F16087",
+      "#1C0209",
+      "#F58FAA",
+      "#ED3A6A",
+      "#EB1A52",
+      "#ED3A6A",
+    ]);
+
+  function renderChart() {
+    const container = sankeyRef.current?.parentElement;
+    if (!container) return;
+
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    // Clear old chart
     svg.selectAll("*").remove();
 
-    // IMPORTANT: add generics so nodes have .name and computed x0/x1/y0/y1
+    // Sankey generator
     const sankeyGenerator = d3Sankey<NodeDatum, LinkDatum>()
       .nodeWidth(15)
-      .nodePadding(10)
+      .nodePadding(14)
       .extent([
         [margin.left, margin.top],
         [width - margin.right, height - margin.bottom],
       ]);
 
     const graph = sankeyGenerator({
-      nodes: sankeyData.nodes.map((d) => ({ ...d })), // fresh copies
+      nodes: sankeyData.nodes.map((d) => ({ ...d })),
       links: sankeyData.links.map((d) => ({ ...d })),
     });
-
-    const color = d3
-      .scaleOrdinal<string>()
-      .domain(graph.nodes.map((d) => d.name))
-      .range([
-        "#4B0619",
-        "#4B0619",
-        "#A90E38",
-        "#7A0A28",
-        "#A90E38",
-        "#F16087",
-        "#F16087",
-        "#1C0209",
-        "#F58FAA",
-        "#ED3A6A",
-        "#EB1A52",
-        "#ED3A6A",
-      ]);
 
     // Links
     svg
@@ -115,12 +121,11 @@ export default function PageFiscalDashboard() {
       .append("path")
       .attr("d", sankeyLinkHorizontal())
       .attr("stroke", (d) => {
-        // d.source is a node after layout; assert and read its name safely
         const src = d.source as (typeof graph.nodes)[number];
         return color(src.name);
       })
-      .attr("stroke-width", (d) => Math.max(1, d.width ?? 1)) // ensure number (no undefined)
-      .attr("stroke-opacity", 0.3);
+      .attr("stroke-width", (d) => Math.max(1, d.width ?? 1))
+      .attr("stroke-opacity", 0.35);
 
     // Nodes
     svg
@@ -129,9 +134,9 @@ export default function PageFiscalDashboard() {
       .data(graph.nodes)
       .enter()
       .append("rect")
-      .attr("x", (d) => d.x0!) // computed by layout; non-null assertion
+      .attr("x", (d) => d.x0!)
       .attr("y", (d) => d.y0!)
-      .attr("height", (d) => Math.max(1, d.y1! - d.y0!)) // avoid undefined
+      .attr("height", (d) => Math.max(1, d.y1! - d.y0!))
       .attr("width", (d) => Math.max(1, d.x1! - d.x0!))
       .attr("fill", (d) => color(d.name))
       .attr("stroke", "none");
@@ -144,45 +149,48 @@ export default function PageFiscalDashboard() {
       .enter()
       .append("text")
       .attr("class", "value-label")
-      .attr("x", (d) => d.x1! + 5)
+      .attr("x", (d) => d.x1! + 8)
       .attr("y", (d) => (d.y0! + d.y1!) / 2 - 6)
       .attr("text-anchor", "start")
       .attr("dominant-baseline", "middle")
-      .style("font-size", "10px")
-      .style("font", "Source Code Pro")
+      .style("font-size", "12px")
+      .style("font-family", "Source Code Pro, monospace")
       .style("fill", "#1A1A1A");
 
     labels
       .append("tspan")
-      .attr("x", (d) => d.x1! + 5)
+      .attr("x", (d) => d.x1! + 8)
       .attr("dy", "0em")
       .style("font-weight", "600")
       .text((d) => d.name);
 
     labels
       .append("tspan")
-      .attr("x", (d) => d.x1! + 5)
+      .attr("x", (d) => d.x1! + 8)
       .attr("dy", "1.2em")
       .style("font-weight", "400")
       .style("fill", "#475569")
       .text((d) => nodeValues[d.name] ?? "");
+  }
 
-    // Responsive viewBox update (kept your behavior)
-    const handleResize = () => {
-      const container = sankeyRef.current?.parentElement;
-      const cw = container?.clientWidth ?? width;
-      const ch = container?.clientHeight ?? height;
-      svg.attr("viewBox", `0 0 ${cw} ${ch}`);
-    };
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  renderChart();
+  window.addEventListener("resize", renderChart);
+  return () => window.removeEventListener("resize", renderChart);
+}, []);
+
 
   // ---------------------------- PAGE MARKUP (unchanged styles) ----------------------------
   const industry = "";
-  const year = "";
+  const [year, setYear] = useState<string>("");
+  const [openId, setOpenId] = useState<string | null>(null);
   const pathname = "";
+
+  // Define yearOptions for the dropdown
+  const yearOptions = [
+    { slug: "2024", name: "2024" },
+    { slug: "2025", name: "2025" },
+    { slug: "2026", name: "2026" },
+  ];
 
   return (
     <main>
@@ -268,55 +276,30 @@ export default function PageFiscalDashboard() {
               <span className="text-slate-800 font-medium text-lg/7 font-sourcecodepro md:flex md:justify-items-end mt-3 md:mt-0">
                 Filter by :
               </span>
-              <div className="default-dropdown-btn-wapper relative inline-block text-left">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setDropdownOpen((o) => !o);
-                  }}
-                  className="default-dropdown-btn flex items-center gap-1"
-                  aria-expanded={dropdownOpen}
-                >
-                  Year
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M5.29289 7.29289C5.68342 6.90237 6.31658 6.90237 6.7071 7.29289L9.99999 10.5858L13.2929 7.29289C13.6834 6.90237 14.3166 6.90237 14.7071 7.29289C15.0976 7.68342 15.0976 8.31658 14.7071 8.70711L10.7071 12.7071C10.3166 13.0976 9.68341 13.0976 9.29289 12.7071L5.29289 8.70711C4.90237 8.31658 4.90237 7.68342 5.29289 7.29289Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </button>
-                {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-brand-white shadow-lg ring-1 ring-black/50 z-30">
-                    <div className="py-1">
-                      {["2024", "2025", "2026"].map((y, i) => (
-                        <a
-                          key={i}
-                          href="#"
-                          className="default-dropdown-item block px-4 py-2.5 text-slate-600 hover:bg-slate-100"
-                        >
-                          {y}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+              
+              <DefaultDropdown
+                idKey="two"
+                label={
+                  year
+                    ? (yearOptions.find((y) => y.slug === year)?.name ?? "Year")
+                    : "Year"
+                }
+                items={yearOptions.map((y) => ({
+                  label: y.name,
+                  onClick: () => setYear(y.slug),
+                }))}
+                
+                align="right"
+                open={openId === "two"}
+                onOpenChange={(v: boolean) => setOpenId(v ? "two" : null)}
+              />
             </div>
           </div>
 
           {/* Sankey Chart */}
           <div
-            className="relative w-full pb-20 pt-6 min-h-auto md:min-h-[550px] xl:min-h-[550px]"
-            style={{ paddingBottom: "66.67%" }}
+            className="relative w-full h-[400px] md:h-[700px] xl:h-[450px]"
+            // style={{ paddingBottom: "40.67%" }}
           >
             <div id="sankeyChartContainer" className="absolute inset-0">
               <svg
@@ -327,14 +310,16 @@ export default function PageFiscalDashboard() {
               ></svg>
             </div>
           </div>
+        </div>
+      </div>
 
           {/* Card Section */}
           <div className="bg-pink-100 py-12 md:py-16 xl:py-20">
             <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
               {/* Title */}
               <div className="max-w-2xl text-left">
-                <span className="page-sub-title">Advocata ai suggestions</span>
-                <h2 className="inner-page-title">Related datasets</h2>
+                <span className="mb-2 text-sm/8 md:text-base/6 font-medium font-sourcecodepro text-slate-900 uppercase">Advocata ai suggestions</span>
+                <h2 className="text-2xl md:text-3xl leading-snug xl:text-4xl text-slate-900 font-montserrat font-bold mb-8">Related datasets</h2>
               </div>
 
               {/* Cards */}
@@ -365,8 +350,6 @@ export default function PageFiscalDashboard() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
     </main>
   );
 }
