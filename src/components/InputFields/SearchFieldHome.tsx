@@ -116,11 +116,47 @@ export default function SearchFieldHome(): JSX.Element {
       </form>
 
       {query.trim().length > 0 && results.length === 0 && (
-        <div className="absolute top-full left-0 mt-2 pt-5 pb-5 px-3.5 w-full bg-brand-black border border-brand-white/25 rounded-2xl z-50">
-          <p className="text-center text-slate-200/40 text-base font-sourcecodepro font-normal">
-            No results found
-          </p>
+        <div className="absolute top-full left-0 mt-2 py-20 px-3.5 w-full bg-brand-black border border-brand-white/25 rounded-2xl z-50">
+          <div className="grid items-center gap-3 text-slate-200/40 text-base font-sourcecodepro font-normal">
+            {/* SVG */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 48 48"
+              fill="none"
+              className="justify-self-center size-8 mb-2"
+            >
+              <g opacity="0.3">
+                <path
+                  d="M42 41.9999L33.32 33.3199"
+                  stroke="white"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M22 38C30.8366 38 38 30.8366 38 22C38 13.1634 30.8366 6 22 6C13.1634 6 6 13.1634 6 22C6 30.8366 13.1634 38 22 38Z"
+                  stroke="white"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </g>
+            </svg>
+
+            {/* Text */}
+            <div className="flex flex-col justify-center">
+              <p className="text-slate-50 font-sourcecodepro font-medium text-base/6 mb-2">
+                No results found
+              </p>
+              <p className="text-slate-50 font-sourcecodepro font-normal text-sm/tight">
+                Try refining your search with different terms or topics
+              </p>
+            </div>
+          </div>
         </div>
+
       )}
 
       {results.length > 0 && (

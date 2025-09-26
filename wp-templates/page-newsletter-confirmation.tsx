@@ -164,47 +164,50 @@ export default function PageNewsletterConfirmation() {
                     >
                       Contact Number <span className="text-brand-1-500">*</span>
                     </label>
-                    <div className="mt-2">
+                   <div className="mt-2">
                       <div
                         className="flex rounded-md bg-white outline-1 -outline-offset-1 outline-gray-200
-                      has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-brand-1-200
-                      w-full px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400
-                      focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200"
+                          has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-brand-1-200
+                          w-full px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400
+                          focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200"
                       >
-                        <div className="grid shrink-0 grid-cols-1 focus-within:relative">
+                        {/* Country Code Select with Arrow */}
+                        <div className="relative flex items-center">
                           <select
                             id="country"
                             name="country"
                             autoComplete="country"
                             aria-label="Country"
-                            className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white pr-7 pl-3 text-base text-gray-500 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-transparent"
+                            className="appearance-none rounded-md bg-white pr-7 pl-3 text-base text-gray-500 focus:outline-none"
                           >
                             <option>+94</option>
                             <option>+95</option>
                             <option>+96</option>
                           </select>
+                          {/* Dropdown Arrow */}
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
+                            className="pointer-events-none absolute right-2 h-5 w-5 text-gray-500"
                             viewBox="0 0 20 20"
                             fill="none"
                           >
                             <path
-                              fill-rule="evenodd"
-                              clip-rule="evenodd"
+                              fillRule="evenodd"
+                              clipRule="evenodd"
                               d="M5.29289 7.29289C5.68342 6.90237 6.31658 6.90237 6.7071 7.29289L9.99999 10.5858L13.2929 7.29289C13.6834 6.90237 14.3166 6.90237 14.7071 7.29289C15.0976 7.68342 15.0976 8.31658 14.7071 8.70711L10.7071 12.7071C10.3166 13.0976 9.68341 13.0976 9.29289 12.7071L5.29289 8.70711C4.90237 8.31658 4.90237 7.68342 5.29289 7.29289Z"
                               fill="#1E293B"
                             />
                           </svg>
                         </div>
+
+                        {/* Phone Number Input */}
                         <div className="flex -ml-px">
                           <input
                             id="phone-number"
                             type="text"
                             name="phone-number"
                             placeholder="11 234 5678"
-                            className="block min-w-0 grow bg-white pr-3 pl-1 text-base text-slate-800 font-sourcecodepro placeholder:text-gray-400 focus:outline-none"
+                            className="block min-w-0 grow bg-white pr-3 pl-2 text-base text-slate-800 font-sourcecodepro placeholder:text-gray-400 focus:outline-none"
                           />
                         </div>
                       </div>
