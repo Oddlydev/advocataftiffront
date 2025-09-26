@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent, JSX } from "react";
+import { useState, JSX } from "react";
 import { useQuery } from "@apollo/client";
 import { FOOTER_MENU_QUERY } from "@/queries/MenuQueries";
 import NewsletterForm from "./NewsletterForm";
@@ -35,10 +35,6 @@ export default function Footer(): JSX.Element {
     ? allItems.filter((n) => n.parentId === dashboardsParent.id)
     : [];
 
-  function onSubscribe(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    // TODO: hook up subscription logic
-  }
 
   return (
     <footer

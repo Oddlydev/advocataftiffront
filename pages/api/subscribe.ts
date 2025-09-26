@@ -5,6 +5,14 @@ function md5(value: string) {
     return crypto.createHash("md5").update(value).digest("hex");
 }
 
+async function parseJsonSafe<T>(response: Response): Promise<T | null> {
+    try {
+        return (await response.json()) as T;
+    } catch (err) {
+        return null;
+    }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== "POST") return res.status(405).end();
 
@@ -26,14 +34,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const subscriberHash = md5(emailLower);
 
     const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${AUDIENCE_ID}/members/${subscriberHash}`;
+    const authHeader = `Basic ${Buffer.from(`anystring:${API_KEY}`).toString("base64")}`;
+
+    // Check if the contact already exists and is subscribed
+    const existingResponse = await fetch(url, {
+        method: "GET",
+        headers: {
+            Authorization: authHeader,
+        },
+    });
+
+    if (existingResponse.ok) {
+        const existingData = await parseJsonSafe<{ status?: string }>(existingResponse);
+        if (existingData?.status === "subscribed") {
+            return res.status(409).json({ error: "You have already subscribed" });
+        }
+    } else if (existingResponse.status !== 404) {
+        const errorData = await parseJsonSafe<{ detail?: string }>(existingResponse);
+        return res
+            .status(existingResponse.status)
+            .json({ error: errorData?.detail || "Mailchimp error" });
+    }
 
     const response = await fetch(url, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Basic ${Buffer.from(`anystring:${API_KEY}`).toString(
-                "base64"
-            )}`,
+            Authorization: authHeader,
         },
         body: JSON.stringify({
             email_address: emailLower,
@@ -45,15 +72,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 MERGE5: phone || "",
             },
         }),
-
     });
 
-    const data = await response.json();
+    const data = await parseJsonSafe<{ status?: string; detail?: string }>(response);
     if (!response.ok) {
         return res
             .status(response.status)
-            .json({ error: data.detail || "Mailchimp error" });
+            .json({ error: data?.detail || "Mailchimp error" });
     }
 
-    return res.status(200).json({ success: true, status: data.status });
+    return res.status(200).json({ success: true, status: data?.status });
 }

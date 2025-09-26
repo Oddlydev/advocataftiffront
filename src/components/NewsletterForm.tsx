@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 
 interface NewsletterFormProps {
   variant?: "desktop" | "mobile";
@@ -9,72 +10,27 @@ interface NewsletterFormProps {
 export default function NewsletterForm({
   variant = "desktop",
 }: NewsletterFormProps) {
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("idle");
+  const router = useRouter();
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
-  const [savedEmail, setSavedEmail] = useState("");
+  const emailInputId = `email-address-${variant}`;
 
-  // Close popup with ESC key
-  useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setShowPopup(false);
-    }
-    if (showPopup) window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [showPopup]);
-
-  // Step 1 → Capture email from footer
-  function onFooterSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const form = e.currentTarget;
-    const email = (form.elements.namedItem("email-address") as HTMLInputElement)
-      .value;
-    setSavedEmail(email);
-    setShowPopup(true); // open modal
-  }
+    const emailInput = e.currentTarget.elements.namedItem(
+      "email-address"
+    ) as HTMLInputElement | null;
+    const email = emailInput?.value.trim() ?? "";
 
-  // Step 2 → Handle popup submit
-  async function onPopupSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setStatus("loading");
-
-    const form = e.currentTarget;
-    const payload = {
-      email: savedEmail,
-      firstName: (form.elements.namedItem("firstName") as HTMLInputElement)
-        .value,
-      lastName: (form.elements.namedItem("lastName") as HTMLInputElement).value,
-      organisation: (
-        form.elements.namedItem("organisation") as HTMLInputElement
-      ).value,
-      phone: (form.elements.namedItem("phone") as HTMLInputElement).value,
-    };
-
-    try {
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to subscribe");
-
-      setStatus("success");
-      setMessage("Thank you for subscribing! 🎉");
-      setShowPopup(false);
-
-      // clear footer form email input
-      const footerForm = document.querySelector<HTMLFormElement>(
-        "form#newsletter-footer-form"
-      );
-      footerForm?.reset();
-    } catch (err: any) {
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
       setStatus("error");
-      setMessage(err.message || "Something went wrong");
+      setMessage("Please enter a valid email address.");
+      return;
     }
+
+    setStatus("success");
+    setMessage("");
+    router.push(`/newsletter-confirmation?email=${encodeURIComponent(email)}`);
   }
 
   const Header = () => (
@@ -128,8 +84,8 @@ export default function NewsletterForm({
           Newsletter Subscription
         </h3>
         <p className="mt-3 text-base/6 md:text-lg/7 font-sourcecodepro font-normal text-brand-white/80">
-          Get exclusive economic insights and data analysis delivered to your
-          inbox from Advocata&apos;s research team.
+          Get exclusive economic insights and data analysis delivered to your inbox
+          from Advocata&apos;s research team.
         </p>
       </div>
 
@@ -137,15 +93,15 @@ export default function NewsletterForm({
       <form
         className="mt-7 grid"
         id="newsletter-footer-form"
-        onSubmit={onFooterSubmit}
+        onSubmit={handleSubmit}
       >
-        <label htmlFor={`email-address-${variant}`} className="sr-only">
+        <label htmlFor={emailInputId} className="sr-only">
           Email address
         </label>
         <input
           type="email"
           name="email-address"
-          id={`email-address-${variant}`}
+          id={emailInputId}
           autoComplete="email"
           required
           className="footer-subscribe-input block w-full rounded-md shadow-sm bg-white px-3 py-3.5 text-base/6 text-gray-900"
@@ -165,8 +121,8 @@ export default function NewsletterForm({
         </div>
       </form>
 
-      {/* Footer message → only show when popup is NOT open */}
-      {!showPopup && message && (
+      {/* Footer message */}
+      {message && (
         <p
           className={`mt-3 text-sm ${
             status === "success" ? "text-green-400" : "text-red-400"
@@ -174,104 +130,6 @@ export default function NewsletterForm({
         >
           {message}
         </p>
-      )}
-
-      {/* Fullscreen Modal Form */}
-      {showPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-          <div className="relative bg-white rounded-xl shadow-xl w-full max-w-2xl p-8">
-            <button
-              onClick={() => setShowPopup(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl"
-            >
-              ✕
-            </button>
-
-            <h2 className="text-2xl font-bold mb-6 text-gray-900">
-              Complete your subscription
-            </h2>
-
-            <form onSubmit={onPopupSubmit} className="grid gap-5">
-              {/* Pre-filled email */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={savedEmail}
-                  readOnly
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 px-3 py-2"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    name="firstName"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    name="lastName"
-                    required
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Organisation
-                </label>
-                <input
-                  type="text"
-                  name="organisation"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Phone
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={status === "loading"}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-md transition-colors"
-              >
-                {status === "loading" ? "Submitting..." : "Finish Subscription"}
-              </button>
-              {showPopup && message && (
-                <p
-                  className={`mt-3 text-sm text-center ${
-                    status === "success" ? "text-green-600" : "text-red-600"
-                  }`}
-                >
-                  {message}
-                </p>
-              )}
-            </form>
-          </div>
-        </div>
       )}
     </div>
   );
