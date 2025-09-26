@@ -1,8 +1,11 @@
+// pages/newsletter-confirmation.tsx
 import React from "react";
+import SEO from "@/src/components/SEO";
 
 export default function PageNewsletterConfirmation() {
   return (
-    <>
+    <main>
+      <SEO title="Newsletter Confirmation" />
       {/* Newsletter Subscription Section */}
       <div className="bg-white py-16 sm:py-24 lg:py-32">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-5 md:px-10 xl:px-16 lg:grid-cols-12 lg:gap-12">
@@ -73,10 +76,12 @@ export default function PageNewsletterConfirmation() {
                     Contact Number <span className="text-brand-1-500">*</span>
                   </label>
                   <div className="mt-2">
-                    <div className="flex rounded-md bg-white outline-1 -outline-offset-1 outline-gray-200
+                    <div
+                      className="flex rounded-md bg-white outline-1 -outline-offset-1 outline-gray-200
                       has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-brand-1-200
                       w-full px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400
-                      focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200">
+                      focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200"
+                    >
                       <div className="grid shrink-0 grid-cols-1 focus-within:relative">
                         <select
                           id="country"
@@ -233,6 +238,6 @@ export default function PageNewsletterConfirmation() {
           </div>
         </div>
       </div>
-    </>
+    </main>
   );
 }

@@ -13,6 +13,7 @@ import PageTransparencyDashboard from "./page-transparency-dashboard";
 import PageThankYou from "./page-thank-you";
 import PageDashboard from "./page-dashboard";
 import PageNewsletterConfirmation from "./page-newsletter-confirmation";
+import PageFiscalDashboard from "./page-fiscal-dashboard";
 
 export default {
   "front-page": frontPage,
@@ -30,4 +31,5 @@ export default {
   "page-thank-you": PageThankYou,
   "page-dashboard": PageDashboard,
   "page-newsletter-confirmation": PageNewsletterConfirmation,
+  // "page-fiscal-dashboard": PageFiscalDashboard,
 };
