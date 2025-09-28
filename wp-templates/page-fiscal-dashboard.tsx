@@ -9,12 +9,16 @@ import { sankey as d3Sankey, sankeyLinkHorizontal } from "d3-sankey";
 import CardType7 from "@/src/components/Cards/CardType7";
 import CardType6 from "@/src/components/Cards/CardType6";
 import DefaultDropdown from "@/src/components/Dropdowns/DefaultDropdown";
+import { usePathname } from "next/navigation";
 
 export default function PageFiscalDashboard() {
   const sankeyRef = useRef<SVGSVGElement | null>(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [year, setYear] = useState<string>("");
+  const [industry, setIndustry] = useState<string>("");
+  const [openId, setOpenId] = useState<string | null>(null);
+  const pathname = usePathname();
 
-  useEffect(() => {
+useEffect(() => {
   if (!sankeyRef.current) return;
 
   type NodeDatum = { name: string };
@@ -66,9 +70,7 @@ export default function PageFiscalDashboard() {
   };
 
   const svg = d3.select(sankeyRef.current);
-  const margin = { top: 35, right: 40, bottom: 20, left: 40 };
 
-  // Color scale
   const color = d3
     .scaleOrdinal<string>()
     .domain(sankeyData.nodes.map((d) => d.name))
@@ -94,10 +96,18 @@ export default function PageFiscalDashboard() {
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    // Clear old chart
+    const isMobile = window.innerWidth < 640;
+    const isTablet = window.innerWidth >= 640 && window.innerWidth < 1024;
+
+    const margin = {
+      top: 35,
+      right: isMobile ? 120 : isTablet ? 150 : 200, // enough space for labels
+      bottom: 20,
+      left: 10,
+    };
+
     svg.selectAll("*").remove();
 
-    // Sankey generator
     const sankeyGenerator = d3Sankey<NodeDatum, LinkDatum>()
       .nodeWidth(15)
       .nodePadding(14)
@@ -111,7 +121,7 @@ export default function PageFiscalDashboard() {
       links: sankeyData.links.map((d) => ({ ...d })),
     });
 
-    // Links
+    // Draw links
     svg
       .append("g")
       .attr("fill", "none")
@@ -127,12 +137,15 @@ export default function PageFiscalDashboard() {
       .attr("stroke-width", (d) => Math.max(1, d.width ?? 1))
       .attr("stroke-opacity", 0.35);
 
-    // Nodes
-    svg
+    // Draw nodes
+    const nodeGroup = svg
       .append("g")
-      .selectAll("rect")
+      .selectAll("g")
       .data(graph.nodes)
       .enter()
+      .append("g");
+
+    nodeGroup
       .append("rect")
       .attr("x", (d) => d.x0!)
       .attr("y", (d) => d.y0!)
@@ -141,30 +154,19 @@ export default function PageFiscalDashboard() {
       .attr("fill", (d) => color(d.name))
       .attr("stroke", "none");
 
-    // Labels
-    const labels = svg
-      .append("g")
-      .selectAll(".value-label")
-      .data(graph.nodes)
-      .enter()
+    // Add right-side labels
+    const fontSize = isMobile ? 7 : isTablet ? 10 : 12;
+    nodeGroup
       .append("text")
-      .attr("class", "value-label")
-      .attr("x", (d) => d.x1! + 8)
-      .attr("y", (d) => (d.y0! + d.y1!) / 2 - 6)
+      .attr("x", (d) => d.x1! + 8) // always right side
+      .attr("y", (d) => (d.y0! + d.y1!) / 2)
       .attr("text-anchor", "start")
       .attr("dominant-baseline", "middle")
-      .style("font-size", "12px")
-      .style("font-family", "Source Code Pro, monospace")
-      .style("fill", "#1A1A1A");
-
-    labels
-      .append("tspan")
-      .attr("x", (d) => d.x1! + 8)
-      .attr("dy", "0em")
+      .style("font-size", `${fontSize}px`)
       .style("font-weight", "600")
-      .text((d) => d.name);
-
-    labels
+      .style("font-family", "Source Code Pro, monospace")
+      .style("fill", "#1A1A1A")
+      .text((d) => d.name)
       .append("tspan")
       .attr("x", (d) => d.x1! + 8)
       .attr("dy", "1.2em")
@@ -178,14 +180,7 @@ export default function PageFiscalDashboard() {
   return () => window.removeEventListener("resize", renderChart);
 }, []);
 
-
-  // ---------------------------- PAGE MARKUP (unchanged styles) ----------------------------
-  const industry = "";
-  const [year, setYear] = useState<string>("");
-  const [openId, setOpenId] = useState<string | null>(null);
-  const pathname = "";
-
-  // Define yearOptions for the dropdown
+  // Dropdown year options
   const yearOptions = [
     { slug: "2024", name: "2024" },
     { slug: "2025", name: "2025" },
@@ -248,7 +243,6 @@ export default function PageFiscalDashboard() {
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           {/* Chip-box & Dropdown-Button */}
           <div className="lg:flex gap-2 items-center justify-between pb-16">
-            {/* Chip-box */}
             <div className="relative w-full xl:w-2/3">
               <div className="grid xl:grid-cols-4 md:flex xl:items-center gap-2.5 md:gap-1.5">
                 {[
@@ -262,7 +256,7 @@ export default function PageFiscalDashboard() {
                   >
                     <a
                       href="#"
-                      className="text-sm/tight xl:text-base/6 py-2 px-3 text-slate-800 border border-gray-400 bg-white rounded-lg font-semibold font-sourcecodepro uppercase hover:bg-brand-2-50 hover:text-slate-800  focus:bg-brand-2-950 focus:text-brand-white focus:border-brand-2-950 w-full text-center xl:w-auto transition-colors duration-200"
+                      className="text-sm/tight xl:text-base/6 py-2 px-3 text-slate-800 border border-gray-400 bg-white rounded-lg font-semibold font-sourcecodepro uppercase hover:bg-brand-2-50 hover:text-slate-800 focus:bg-brand-2-950 focus:text-brand-white focus:border-brand-2-950 w-full text-center xl:w-auto transition-colors duration-200"
                     >
                       {label}
                     </a>
@@ -276,7 +270,6 @@ export default function PageFiscalDashboard() {
               <span className="text-slate-800 font-medium text-lg/7 font-sourcecodepro md:flex md:justify-items-end mt-3 md:mt-0">
                 Filter by :
               </span>
-              
               <DefaultDropdown
                 idKey="two"
                 label={
@@ -288,7 +281,6 @@ export default function PageFiscalDashboard() {
                   label: y.name,
                   onClick: () => setYear(y.slug),
                 }))}
-                
                 align="right"
                 open={openId === "two"}
                 onOpenChange={(v: boolean) => setOpenId(v ? "two" : null)}
@@ -297,24 +289,23 @@ export default function PageFiscalDashboard() {
           </div>
 
           {/* Sankey Chart */}
-          <div
-            className="relative w-full h-[400px] md:h-[700px] xl:h-[450px]"
-            // style={{ paddingBottom: "40.67%" }}
-          >
-            <div id="sankeyChartContainer" className="absolute inset-0">
+          <div className="relative w-full">
+            <div
+              id="sankeyChartContainer"
+              className="relative w-full h-[500px] sm:h-[600px] md:h-[700px] xl:h-[500px] overflow-visible"
+            >
               <svg
                 ref={sankeyRef}
-                className="w-full h-full"
-                viewBox="0 0 650 550"
+                className="w-full h-full overflow-visible"
                 preserveAspectRatio="xMinYMin meet"
               ></svg>
             </div>
           </div>
         </div>
       </div>
-
-          {/* Card Section */}
-          <div className="bg-pink-100 py-12 md:py-16 xl:py-20">
+      
+      {/* Card Section */}
+      <div className="bg-pink-100 py-12 md:py-16 xl:py-20">
             <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
               {/* Title */}
               <div className="max-w-2xl text-left">
@@ -349,7 +340,7 @@ export default function PageFiscalDashboard() {
                 />
               </div>
             </div>
-          </div>
+      </div>
     </main>
   );
 }
