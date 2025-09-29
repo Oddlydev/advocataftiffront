@@ -365,7 +365,7 @@ export default function PageForeignExchange(): JSX.Element {
       </div>
 
       {/* Line Chart */}
-      <div className="bg-white py-3.5 md:py-5 xl:pt-6 xl:pb-20">
+      <div className="bg-white pt-3.5 md:pt-5 xl:pt-6">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-10 md:pb-20">
           <div className="border border-gray-200 rounded-xl py-6 px-5">
             <div className="mb-10">

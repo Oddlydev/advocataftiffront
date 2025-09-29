@@ -13,18 +13,18 @@ const UnemploymentChart = () => {
 
   useEffect(() => {
     const data = [
-        { year: 2013, ORA: 13.0 },
-        { year: 2014, ORA: 5.1 },
-        { year: 2015, ORA: 8.6 },
-        { year: 2016, ORA: 4.0 },
-        { year: 2017, ORA: 6.6 },
-        { year: 2018, ORA: 4.3 },
-        { year: 2019, ORA: 3.5 },
-        { year: 2020, ORA: 4.6 },
-        { year: 2021, ORA: 6.0 },
-        { year: 2022, ORA: 10.2 },
-        { year: 2023, ORA: 8.0 },
-        { year: 2024, ORA: 5.5 },
+        { year: 2013, UnemploymentRate: 13.0 },
+        { year: 2014, UnemploymentRate: 5.1 },
+        { year: 2015, UnemploymentRate: 8.6 },
+        { year: 2016, UnemploymentRate: 4.0 },
+        { year: 2017, UnemploymentRate: 6.6 },
+        { year: 2018, UnemploymentRate: 4.3 },
+        { year: 2019, UnemploymentRate: 3.5 },
+        { year: 2020, UnemploymentRate: 4.6 },
+        { year: 2021, UnemploymentRate: 6.0 },
+        { year: 2022, UnemploymentRate: 10.2 },
+        { year: 2023, UnemploymentRate: 8.0 },
+        { year: 2024, UnemploymentRate: 5.5 },
     ];
 
     const color = "#CF1244"; // single line color
@@ -47,7 +47,7 @@ const UnemploymentChart = () => {
 
     // X & Y scales
     const x = d3.scalePoint().domain(data.map(d => d.year)).range([0, width]).padding(0.5);
-    const yMax = d3.max(data, d => d.ORA);
+    const yMax = d3.max(data, d => d.UnemploymentRate);
     const y = d3.scaleLinear().domain([0, yMax + 2]).range([height, 0]);
         
     // X-axis
@@ -91,7 +91,7 @@ const UnemploymentChart = () => {
     const lineGen = d3
       .line()
       .x(d => x(d.year))
-      .y(d => y(d.ORA))
+      .y(d => y(d.UnemploymentRate))
       .curve(d3.curveMonotoneX);
 
     // Draw single line
@@ -108,7 +108,7 @@ const UnemploymentChart = () => {
       svg
         .append("circle")
         .attr("cx", x(d.year))
-        .attr("cy", y(d.ORA))
+        .attr("cy", y(d.UnemploymentRate))
         .attr("r", 4)
         .attr("fill", color)
         .on("mouseover", () => {
@@ -120,9 +120,9 @@ const UnemploymentChart = () => {
                 <div class="flex items-center justify-between gap-2">
                   <div class="flex items-center gap-1">
                     <span style="width:10px;height:10px;background:${color};border-radius:50%;display:inline-block;"></span>
-                    <span class="text-slate-600">ORA:</span>
+                    <span class="text-slate-600">Unemployment Rate:</span>
                   </div>
-                  <span style="color:${color}; font-weight: 600;">${d.ORA}%</span>
+                  <span style="color:${color}; font-weight: 600;">${d.UnemploymentRate}%</span>
                 </div>
               </div>
             `);
@@ -362,7 +362,7 @@ export default function PageUnemployment(): JSX.Element {
       </div>
 
       {/* Line Chart */}
-      <div className="bg-white py-3.5 md:py-5 xl:pt-6 xl:pb-20">
+      <div className="bg-white pt-3.5 md:pt-5 xl:pt-6">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-10 md:pb-20">
           <div className="border border-gray-200 rounded-xl py-6 px-5">
             <div className="mb-10">

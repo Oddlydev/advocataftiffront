@@ -7,24 +7,24 @@ import "tiny-slider/dist/tiny-slider.css";
 import * as d3 from "d3";
 
 // ---- Chart Component ----
-const ForeignReservesChart = () => {
+const NationalDebtChart = () => {
   const chartRef = useRef(null);
   const tooltipRef = useRef(null);
 
   useEffect(() => {
     const data = [
-        { year: 2013, ORA: 13.0 },
-        { year: 2014, ORA: 5.1 },
-        { year: 2015, ORA: 8.6 },
-        { year: 2016, ORA: 4.0 },
-        { year: 2017, ORA: 6.6 },
-        { year: 2018, ORA: 4.3 },
-        { year: 2019, ORA: 3.5 },
-        { year: 2020, ORA: 4.6 },
-        { year: 2021, ORA: 6.0 },
-        { year: 2022, ORA: 10.2 },
-        { year: 2023, ORA: 8.0 },
-        { year: 2024, ORA: 5.5 },
+        { year: 2013, GDP: 13.0 },
+        { year: 2014, GDP: 5.1 },
+        { year: 2015, GDP: 8.6 },
+        { year: 2016, GDP: 4.0 },
+        { year: 2017, GDP: 6.6 },
+        { year: 2018, GDP: 4.3 },
+        { year: 2019, GDP: 3.5 },
+        { year: 2020, GDP: 4.6 },
+        { year: 2021, GDP: 6.0 },
+        { year: 2022, GDP: 10.2 },
+        { year: 2023, GDP: 8.0 },
+        { year: 2024, GDP: 5.5 },
     ];
 
     const color = "#CF1244"; // single line color
@@ -47,7 +47,7 @@ const ForeignReservesChart = () => {
 
     // X & Y scales
     const x = d3.scalePoint().domain(data.map(d => d.year)).range([0, width]).padding(0.5);
-    const yMax = d3.max(data, d => d.ORA);
+    const yMax = d3.max(data, d => d.GDP);
     const y = d3.scaleLinear().domain([0, yMax + 2]).range([height, 0]);
         
     // X-axis
@@ -69,7 +69,7 @@ const ForeignReservesChart = () => {
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
       .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
-      .text("Balance of Payments (USD Mn.)");
+      .text("GDP Growth Rate (%)");
 
     // Horizontal grid lines
     svg.append("g")
@@ -91,7 +91,7 @@ const ForeignReservesChart = () => {
     const lineGen = d3
       .line()
       .x(d => x(d.year))
-      .y(d => y(d.ORA))
+      .y(d => y(d.GDP))
       .curve(d3.curveMonotoneX);
 
     // Draw single line
@@ -108,7 +108,7 @@ const ForeignReservesChart = () => {
       svg
         .append("circle")
         .attr("cx", x(d.year))
-        .attr("cy", y(d.ORA))
+        .attr("cy", y(d.GDP))
         .attr("r", 4)
         .attr("fill", color)
         .on("mouseover", () => {
@@ -120,9 +120,9 @@ const ForeignReservesChart = () => {
                 <div class="flex items-center justify-between gap-2">
                   <div class="flex items-center gap-1">
                     <span style="width:10px;height:10px;background:${color};border-radius:50%;display:inline-block;"></span>
-                    <span class="text-slate-600">ORA:</span>
+                    <span class="text-slate-600">GDP Growth Rate:</span>
                   </div>
-                  <span style="color:${color}; font-weight: 600;">${d.ORA}%</span>
+                  <span style="color:${color}; font-weight: 600;">${d.GDP}%</span>
                 </div>
               </div>
             `);
@@ -299,7 +299,7 @@ MacroFilterSliderProps) {
 }
 
 // ---- Page Component ----
-export default function PageForeignReserves(): JSX.Element { 
+export default function PageNationalDebt(): JSX.Element { 
 
   const [industry, setIndustry] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
@@ -367,10 +367,10 @@ export default function PageForeignReserves(): JSX.Element {
           <div className="border border-gray-200 rounded-xl py-6 px-5">
             <div className="mb-10">
               <h4 className="text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
-                Total Annual Foreign Reserves
+                Total Government Debt Per Person
               </h4>
               <p className="text-base/6 font-baskervville font-normal text-slate-950">
-                Official Reserve Assets in USD Millions (2013-2024)
+                Government Debt Owed by Each Individual in Rs. (2010-2024)
               </p>
             </div>
 
@@ -400,7 +400,7 @@ export default function PageForeignReserves(): JSX.Element {
                       </svg>
                   </button>
               </div>
-              <ForeignReservesChart />
+              <NationalDebtChart />
             </div>
 
             {/* Legend & Data Source */}
@@ -417,7 +417,7 @@ export default function PageForeignReserves(): JSX.Element {
                     <div
                     className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
                     >
-                    <p>Foreign Reserves 2013 - 2024</p>
+                    <p>Government Debt 2010 - 2024</p>
                     </div>
                 </div>
                 </div>
@@ -435,7 +435,7 @@ export default function PageForeignReserves(): JSX.Element {
             <div className="px-6 py-7">
               <div className="mb-10">
                 <h5 className="text-2xl font-montserrat font-bold text-slate-950 mb-1.5">
-                  Understanding Foreign Reserves Metrics
+                  Understanding National Debt Metrics
                 </h5>
                 <p className="text-lg font-baskervville font-normal text-slate-950">
                   Advanced Economic Analysis Framework
@@ -445,14 +445,13 @@ export default function PageForeignReserves(): JSX.Element {
                 <div className="border-b border-brand-1-100 pb-4 md:border-b-0 md:border-r md:pr-4">
                   <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Definition</h3>
                             <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
-                                <p className="text-slate-800 text-base/6 font-baskervville font-normal">Total Annual Foreign Reserves represent the cumulative reserve asset position of the Central Bank of Sri Lanka as of 31st December each year, expressed in millions of US dollars. It includes international reserves held by the government and central monetary authority.</p>
-                                <p className="text-slate-800 text-base/6 font-baskervville font-normal">Foreign reserves are critical for economic stability, exchange rate management, international trade, and confidence in national financial resilience. Adequate reserves support government capacity to meet external obligations and manage economic shocks.</p>
+                                <p className="text-slate-800 text-base/6 font-baskervville font-normal">Total Government Debt Per Person represents the amount of government debt owed by each individual within the country, calculated by dividing the Total Government Debt (expressed in millions of Rupees) by the total population for each year. Total Government Debt reflects the cumulative amount of outstanding debt obligations incurred by the national government as of the end of each respective year, expressed in millions of Sri Lankan Rupees.</p>
                             </div>
                 </div>
                 <div className="mt-6 md:mt-0">
                             <h3 className="text-lg/7 font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Statistical Concept and Methodology</h3>
                             <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
-                                <p className="text-slate-800 text-base/6 font-baskervville font-normal">Foreign reserves include assets such as foreign currencies, gold reserves, Special Drawing Rights (SDRs), and other reserve assets maintained by the Central Bank of Sri Lanka. The value is reported annually based on asset valuation as of the 31st December.</p>
+                                <p className="text-slate-800 text-base/6 font-baskervville font-normal">Total Government Debt comprises TD outstanding financial obligations incurred by the central government, including domestic and external borrowing, as officiTDy reported at the close of each calendar year. Debt per person is computed annuTDy by dividing total government debt (converted from millions of Rupees to actual Rupees by multiplying by 1,000,000) by the total population for that year, providing a per capita measure of debt burden.</p>
                             </div>
                 </div>
               </div>
