@@ -135,7 +135,11 @@ async function fetchPageMetaByUri(
   const wpUri = uri.endsWith("/") ? uri : `${uri}/`;
   const encoded = wpUri.replace(/"/g, '\\"');
   const data = await gql<{
-    nodeByUri?: { __typename?: string; title?: string | null; content?: string | null };
+    nodeByUri?: {
+      __typename?: string;
+      title?: string | null;
+      content?: string | null;
+    };
   }>(
     `query GetPageMetaByUri {
       nodeByUri(uri: "${encoded}") {
@@ -390,8 +394,11 @@ export default function PageTransparencyDashboard(): JSX.Element {
           <SecondaryNav
             className="!font-baskervville"
             items={[
-              { label: "Macro Economy", href: "#" },
-              { label: "Government Fiscal Operations", href: "#" },
+              { label: "Macro Economy", href: "/macro-landing" },
+              {
+                label: "Government Fiscal Operations",
+                href: "/fiscal-dashboard",
+              },
               {
                 label: "Transparency in government Institutions",
                 href: (() => {
@@ -424,11 +431,10 @@ export default function PageTransparencyDashboard(): JSX.Element {
 
       {/* Hero */}
       <HeroWhite
-        title={
-          heroTitle || "Transparency in Government Institutions"
-        }
+        title={heroTitle || "Transparency in Government Institutions"}
         paragraph={
-          heroParagraph || "Explore accountability and transparency datasets across institutions."
+          heroParagraph ||
+          "Explore accountability and transparency datasets across institutions."
         }
         items={[
           { label: "Dashboards", href: "/dashboard" },
