@@ -16,8 +16,8 @@ export default function PostContent({ content, variant = "single" }: Props) {
               <h2
                 className={
                   variant === "single"
-                    ? "text-slate-950 font-montserrat font-normal text-2xl leading-8 lg:leading-10 lg:text-3xl mb-6"
-                    : "text-slate-950 font-montserrat font-bold text-2xl lg:text-5xl leading-snug mb-6"
+                    ? "text-slate-950 font-montserrat font-bold text-2xl leading-8 lg:leading-10 lg:text-3xl mt-6"
+                    : "text-slate-950 font-montserrat font-bold text-2xl lg:text-3xl leading-snug mb-6"
                 }
               >
                 {domToReact(domNode.children, options)}
@@ -42,8 +42,8 @@ export default function PostContent({ content, variant = "single" }: Props) {
               <p
                 className={
                   variant === "single"
-                    ? "text-slate-600 font-sourcecodepro font-normal text-base/6 py-4"
-                    : "text-slate-600 font-sourcecodepro font-normal text-lg/7 py-6"
+                    ? "text-slate-600 font-baskervville font-normal text-base/6 py-4"
+                    : "text-slate-600 font-baskervville font-normal text-lg/7 py-6"
                 }
               >
                 {domToReact(domNode.children, options)}

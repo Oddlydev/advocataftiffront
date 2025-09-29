@@ -136,12 +136,12 @@ export default function Accordion({
                 </h3>
 
                 {item.content ? (
-                  <div className="text-base leading-6 md:text-lg md:leading-7 pt-4 max-w-full md:max-w-4xl font-normal font-sourcecodepro">
+                  <div className="text-base leading-6 md:text-lg md:leading-7 max-w-full md:max-w-4xl font-normal font-sourcecodepro">
                     {item.content}
                   </div>
                 ) : item.html ? (
                   <div
-                    className="text-base leading-6 md:text-lg md:leading-7 pt-4 max-w-full md:max-w-4xl font-normal font-sourcecodepro"
+                    className="text-base leading-6 md:text-lg md:leading-7 max-w-full md:max-w-4xl font-normal font-sourcecodepro"
                     dangerouslySetInnerHTML={{ __html: item.html }}
                   />
                 ) : null}

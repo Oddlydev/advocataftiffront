@@ -474,7 +474,7 @@ const DashboardDropdown: React.FC<{ imageUrl: string; items?: MenuItem[] }> = ({
               backgroundSize: "cover",
             }}
           >
-            <div className="text-3xl/10 font-montserrat font-normal text-white">
+            <div className="text-2xl xl:text-3xl leading-snug font-montserrat font-bold text-white">
               <p>Discover Meaningful Connections</p>
             </div>
           </div>
@@ -639,7 +639,7 @@ const MobileMenu: React.FC<{
                   backgroundSize: "cover",
                 }}
               >
-                <div className="text-3xl/10 font-montserrat font-normal text-white">
+                <div className="text-2xl xl:text-3xl leading-snug font-montserrat font-bold text-white">
                   <p>Discover Meaningful Connections</p>
                 </div>
               </div>

@@ -24,7 +24,7 @@ export default function TextBlock({
           </span>
         )}
 
-        <h3 className="text-title mb-3.5 md:mb-5 text-slate-950 text-4xl md:text-5xl xl:text-6xl leading-snug font-montserrat font-bold max-w-2xl">
+        <h3 className="text-title mb-3.5 md:mb-5 text-slate-950 text-4xl md:text-5xl xl:text-6xl leading-snug font-montserrat font-bold max-w-4xl">
           {title}
         </h3>
 
