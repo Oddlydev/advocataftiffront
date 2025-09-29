@@ -51,35 +51,43 @@ const AverageAnnualInflationChart = () => {
     const x = d3.scalePoint().domain(data.map(d => d.year)).range([0, width]).padding(0.5);
     const yMax = d3.max(data, d => Math.max(d.all, d.food, d.nonFood));
     const y = d3.scaleLinear().domain([0, yMax + 2]).range([height, 0]);
-
+    
     // X-axis
-    svg
-      .append("g")
-      .attr("transform", `translate(0, ${height})`)
-      .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+    svg.append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(d3.axisBottom(x).tickFormat(d3.format("d")))
+    .selectAll("text")
+    .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
     // Y-axis
-    svg.append("g").call(d3.axisLeft(y).ticks(5));
+    svg.append("g")
+    .call(d3.axisLeft(y).ticks(5))
+    .selectAll("text")
+    .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
     // Y-axis label
     svg
       .append("text")
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
       .text("Inflation Rate (%)");
 
     // Horizontal grid lines
-    svg
-      .append("g")
-      .call(
+    svg.append("g")
+    .attr("class", "grid")
+    .call(
         d3.axisLeft(y)
-          .tickSize(-width)
-          .tickFormat("")
-      )
-      .selectAll("line")
-      .attr("stroke", "#CBD5E1")
-      .attr("stroke-width", 1)
-      .attr("stroke-dasharray", "4,4");
+        .tickSize(-width)
+        .tickFormat("")
+    )
+    .selectAll("line")
+    .attr("stroke", "#CBD5E1")
+    .attr("stroke-width", 1)
+    .attr("stroke-dasharray", "4,4");
+        
+    svg.select(".grid line").remove(); // remove axis line
+    svg.select(".grid path").remove();
 
     // Line generator
     const lineGen = key =>
@@ -190,9 +198,6 @@ const AverageAnnualInflationChart = () => {
     </div>
   );
 };
-
-// export default AverageAnnualInflationChart;
-
 
 type MacroFilterSliderProps = {
   items?: string[];
@@ -407,11 +412,11 @@ export default function PageInflationDashboard(): JSX.Element {
       </div>
 
       {/* Line Chart */}
-      <div>
+      <div className="bg-white py-3.5 md:py-5 xl:pt-6 xl:pb-20">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-10 md:pb-20">
-          <div className="border border-gray-200 bg-white rounded-xl p-6 md:p-10">
+          <div className="border border-gray-200 rounded-xl py-6 px-5">
             <div className="mb-10">
-              <h4 className="text-lg font-montserrat font-bold text-slate-950">
+              <h4 className="text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
                 Average Annual Inflation
               </h4>
               <p className="text-base/6 font-baskervville font-normal text-slate-950">
@@ -456,7 +461,7 @@ export default function PageInflationDashboard(): JSX.Element {
                     className="w-1.5 h-1.5 bg-brand-1-900 inset-shadow-brand-1-950 rounded-full inline-block"
                     ></span>
                     <span
-                    className="text-base/6 font-normal font-family-baskervville text-slate-600"
+                    className="text-base/6 font-normal font-baskervville text-slate-600"
                     >All Items</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -464,7 +469,7 @@ export default function PageInflationDashboard(): JSX.Element {
                     className="w-1.5 h-1.5 bg-brand-1-500 rounded-full inline-block"
                     ></span>
                     <span
-                    className="text-base/6 font-normal font-family-baskervville text-slate-600"
+                    className="text-base/6 font-normal font-baskervville text-slate-600"
                     >Food & Non-Alcoholic Beverages</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -472,7 +477,7 @@ export default function PageInflationDashboard(): JSX.Element {
                     className="w-1.5 h-1.5 bg-brand-1-200 rounded-full inline-block"
                     ></span>
                     <span
-                    className="text-base/6 font-normal font-family-baskervville text-slate-600"
+                    className="text-base/6 font-normal font-baskervville text-slate-600"
                     >Non - Food Items</span>
                 </div>
                 </div>
@@ -481,15 +486,15 @@ export default function PageInflationDashboard(): JSX.Element {
             <div className="mt-10">
                 <div className="bg-gray-50 rounded-lg px-6 py-3.5">
                 <div
-                    className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-family-sourcecodepro"
+                    className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro"
                 >
                     <div
-                    className="text-slate-600 text-xs/4 font-normal font-family-sourcecodepro flex items-center gap-2"
+                    className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
                     >
                     <p>Data Source: Department of Census and Statistics, Sri Lanka</p>
                     </div>
                     <div
-                    className="text-slate-600 text-xs/4 font-normal font-family-sourcecodepro flex items-center gap-2"
+                    className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
                     >
                     <p>Average Annual Inflation 2015 - 2024</p>
                     </div>
@@ -518,17 +523,21 @@ export default function PageInflationDashboard(): JSX.Element {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border-b border-brand-1-100 pb-4 md:border-b-0 md:border-r md:pr-4">
                   <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Definition</h3>
-                  <p className="text-slate-800 text-base font-baskervville font-normal">
-                    The Average Annual Inflation measures the percentage change in prices for a typical basket of consumer goods and services purchased by households nationwide, using the National Consumer Price Index (NCPI).
-                  </p>
+                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
+                    <p className="text-slate-800 text-base font-baskervville font-normal">
+                      The Average Annual Inflation measures the percentage change in prices for a typical basket of consumer goods and services purchased by households nationwide, using the National Consumer Price Index (NCPI).
+                    </p>
+                  </div>
                 </div>
                 <div className="mt-6 md:mt-0">
                   <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
                     Statistical Concept and Methodology
                   </h3>
-                  <p className="text-slate-800 text-base font-baskervville font-normal">
-                    The NCPI calculates inflation rates based on the price changes observed in a standard consumer basket, categorized mainly into Food & Non-Alcoholic Beverages and Non-Food items.
-                  </p>
+                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
+                    <p className="text-slate-800 text-base font-baskervville font-normal">
+                      The NCPI calculates inflation rates based on the price changes observed in a standard consumer basket, categorized mainly into Food & Non-Alcoholic Beverages and Non-Food items.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

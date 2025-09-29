@@ -281,7 +281,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           }}
         />
         <div className="absolute inset-0 flex items-center">
-          <div className="hero-block-container px-5 md:px-16 xl:px-20 pt-10 pb-28 md:pt-16 md:pb-16 xl:pt-32 xl:pb-72 relative z-10 mx-auto">
+          <div className="hero-block-container px-5 md:px-16 xl:px-20 pt-10 pb-24 sm:pb-28 md:pt-16 md:pb-16 xl:pt-32 xl:pb-72 relative z-10 mx-auto">
             <div className="hero-block-center text-center mx-auto max-w-6xl grid justify-center">
               {heroTitle && (
                 <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-[80px] leading-snug font-montserrat font-extrabold max-w-4xl">
@@ -307,7 +307,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
       {(heroVideo || heroImage) && (
         <div className="bg-white pb-0">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-            <div className="ring-1 ring-black/10 rounded-3xl relative -top-32 md:-top-40 xl:-top-48 overflow-hidden">
+            <div className="ring-1 ring-black/10 rounded-3xl relative -top-32 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-hidden">
               {heroVideo ? (
                 <video
                   src={heroVideo}

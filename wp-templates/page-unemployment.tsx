@@ -7,27 +7,24 @@ import "tiny-slider/dist/tiny-slider.css";
 import * as d3 from "d3";
 
 // ---- Chart Component ----
-const ForeignExchangeChart = () => {
+const UnemploymentChart = () => {
   const chartRef = useRef(null);
   const tooltipRef = useRef(null);
 
   useEffect(() => {
     const data = [
-        { year: 2010, BOP: 0 },
-        { year: 2011, BOP: 1 },
-        { year: 2012, BOP: 3.1 },
-        { year: 2013, BOP: 13.0 },
-        { year: 2014, BOP: 5.1 },
-        { year: 2015, BOP: 8.6 },
-        { year: 2016, BOP: 4.0 },
-        { year: 2017, BOP: 6.6 },
-        { year: 2018, BOP: 4.3 },
-        { year: 2019, BOP: 3.5 },
-        { year: 2020, BOP: 4.6 },
-        { year: 2021, BOP: 6.0 },
-        { year: 2022, BOP: 10.2 },
-        { year: 2023, BOP: 8.0 },
-        { year: 2024, BOP: 5.5 },
+        { year: 2013, ORA: 13.0 },
+        { year: 2014, ORA: 5.1 },
+        { year: 2015, ORA: 8.6 },
+        { year: 2016, ORA: 4.0 },
+        { year: 2017, ORA: 6.6 },
+        { year: 2018, ORA: 4.3 },
+        { year: 2019, ORA: 3.5 },
+        { year: 2020, ORA: 4.6 },
+        { year: 2021, ORA: 6.0 },
+        { year: 2022, ORA: 10.2 },
+        { year: 2023, ORA: 8.0 },
+        { year: 2024, ORA: 5.5 },
     ];
 
     const color = "#CF1244"; // single line color
@@ -50,7 +47,7 @@ const ForeignExchangeChart = () => {
 
     // X & Y scales
     const x = d3.scalePoint().domain(data.map(d => d.year)).range([0, width]).padding(0.5);
-    const yMax = d3.max(data, d => d.BOP);
+    const yMax = d3.max(data, d => d.ORA);
     const y = d3.scaleLinear().domain([0, yMax + 2]).range([height, 0]);
         
     // X-axis
@@ -72,7 +69,7 @@ const ForeignExchangeChart = () => {
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
       .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
-      .text("Balance of Payments (USD Mn.)");
+      .text("Unemployment Rate (%)");
 
     // Horizontal grid lines
     svg.append("g")
@@ -94,7 +91,7 @@ const ForeignExchangeChart = () => {
     const lineGen = d3
       .line()
       .x(d => x(d.year))
-      .y(d => y(d.BOP))
+      .y(d => y(d.ORA))
       .curve(d3.curveMonotoneX);
 
     // Draw single line
@@ -111,7 +108,7 @@ const ForeignExchangeChart = () => {
       svg
         .append("circle")
         .attr("cx", x(d.year))
-        .attr("cy", y(d.BOP))
+        .attr("cy", y(d.ORA))
         .attr("r", 4)
         .attr("fill", color)
         .on("mouseover", () => {
@@ -123,9 +120,9 @@ const ForeignExchangeChart = () => {
                 <div class="flex items-center justify-between gap-2">
                   <div class="flex items-center gap-1">
                     <span style="width:10px;height:10px;background:${color};border-radius:50%;display:inline-block;"></span>
-                    <span class="text-slate-600">BOP:</span>
+                    <span class="text-slate-600">ORA:</span>
                   </div>
-                  <span style="color:${color}; font-weight: 600;">${d.BOP}%</span>
+                  <span style="color:${color}; font-weight: 600;">${d.ORA}%</span>
                 </div>
               </div>
             `);
@@ -302,7 +299,7 @@ MacroFilterSliderProps) {
 }
 
 // ---- Page Component ----
-export default function PageForeignExchange(): JSX.Element { 
+export default function PageUnemployment(): JSX.Element { 
 
   const [industry, setIndustry] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
@@ -370,10 +367,10 @@ export default function PageForeignExchange(): JSX.Element {
           <div className="border border-gray-200 rounded-xl py-6 px-5">
             <div className="mb-10">
               <h4 className="text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
-                Foreign Exchange Inflows and Outflows
+                Annual Unemployment Rate
               </h4>
               <p className="text-base/6 font-baskervville font-normal text-slate-950">
-                Balance of Payment (BOP) 2010 - 2024 (USD Millions)
+                Annual Unemployment Rate (%) (2009-2023)
               </p>
             </div>
 
@@ -403,7 +400,7 @@ export default function PageForeignExchange(): JSX.Element {
                       </svg>
                   </button>
               </div>
-              <ForeignExchangeChart />
+              <UnemploymentChart />
             </div>
 
             {/* Legend & Data Source */}
@@ -415,12 +412,12 @@ export default function PageForeignExchange(): JSX.Element {
                     <div
                     className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
                     >
-                    <p>Data Source: Central Bank of Sri Lanka</p>
+                    <p>Data Source: Department of Census and Statistics, Sri Lanka</p>
                     </div>
                     <div
                     className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
                     >
-                    <p>Sri Lanka's Balance of Payment (BOP) 2010 - 2024</p>
+                    <p>Annual Unemployment Rate 2009 - 2023</p>
                     </div>
                 </div>
                 </div>
@@ -438,7 +435,7 @@ export default function PageForeignExchange(): JSX.Element {
             <div className="px-6 py-7">
               <div className="mb-10">
                 <h5 className="text-2xl font-montserrat font-bold text-slate-950 mb-1.5">
-                  Understanding Foreign Exchange Metrics
+                  Understanding Unemployment Metrics
                 </h5>
                 <p className="text-lg font-baskervville font-normal text-slate-950">
                   Advanced Economic Analysis Framework
@@ -447,21 +444,15 @@ export default function PageForeignExchange(): JSX.Element {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border-b border-brand-1-100 pb-4 md:border-b-0 md:border-r md:pr-4">
                   <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Definition</h3>
-                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
-                    <p className="text-slate-800 text-base font-baskervville font-normal">
-                    Forex Inflows and Outflows represent the annual net foreign exchange movement (inflows minus outflows) captured under the Balance of Payments (BOP), measured in millions of US dollars (USD). This indicator shows the net impact of international transactions on the country's foreign exchange reserves. Tracking Forex Inflows and Outflows is essential to evaluate the country's external financial health, sustainability of its foreign currency reserves, exchange rate stability, and overBOP economic stability. It aids policymakers in decision-making regarding exchange rate management, external borrowing, and investment policies.
-                  </p>
-                  </div>
+                            <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
+                                <p className="text-slate-800 text-base/6 font-baskervville font-normal">The Annual Unemployment Rate represents the percentage of the total labor force that is unemployed and actively seeking employment within Sri Lanka, averaged annually. It reflects the proportion of individuals within the labor market who are willing and able to work but do not have employment.</p>
+                            </div>
                 </div>
                 <div className="mt-6 md:mt-0">
-                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
-                    Statistical Concept and Methodology
-                  </h3>
-                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
-                    <p className="text-slate-800 text-base font-baskervville font-normal">
-                      The Balance of Payments (BOP) summarizes BOP economic transactions between residents and non-residents over a specific period, including trade in goods and services, primary and secondary income, and financial flows. Forex inflows reflect the receipt of foreign currency through exports, foreign investments, loans, and remittances, whereas outflows represent payments made for imports, loan repayments, repatriation of profits, and outward investments.
-                    </p>
-                  </div>
+                            <h3 className="text-lg/7 font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Statistical Concept and Methodology</h3>
+                            <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
+                                <p className="text-slate-800 text-base/6 font-baskervville font-normal">The unemployment rate is calculated by dividing the number of unemployed persons by the total labor force and multiplying by 100. An unemployed person is defined as someone who is actively seeking and available for work but unable to find employment during the reference period of the survey.</p>
+                            </div>
                 </div>
               </div>
             </div>

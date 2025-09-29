@@ -17,6 +17,8 @@ import PageFiscalDashboard from "./page-fiscal-dashboard";
 import PageMacroLanding from "./page-macro-landing"; 
 import PageInflationDashboard from "./page-inflation-dashboard";
 import PageForeignExchange from "./page-foreign-exchange";
+import PageForeignReserves from "./page-foreign-reserves";
+import PageUnemployment from "./page-unemployment";
 
 export default {
   "front-page": frontPage,
@@ -38,4 +40,6 @@ export default {
   "page-macro-landing": PageMacroLanding,
   "page-inflation-dashboard": PageInflationDashboard,
   "page-foreign-exchange": PageForeignExchange,
+  "page-foreign-reserves": PageForeignReserves,
+  "page-unemployment": PageUnemployment,
 };

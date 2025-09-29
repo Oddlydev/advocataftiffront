@@ -21,7 +21,7 @@ export default function HeroWhite({
           <Breadcrumb items={items} />
         </div>
 
-        <h1 className="hero-title mb-5 text-slate-950 text-4xl md:text-5xl xl:text-6xl leading-snug font-montserrat font-bold max-w-lg xl:max-w-4xl">
+        <h1 className="hero-title mb-5 text-slate-950 text-4xl md:text-5xl xl:text-6xl leading-snug font-montserrat font-bold max-w-lg xl:max-w-3xl">
           {title}
         </h1>
         {paragraph && (
