@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { gql } from "@apollo/client";
+import type { GetStaticPropsContext } from "next";
 import SecondaryNav from "@/src/components/SecondaryNav";
 import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
 import * as d3 from "d3";
@@ -11,7 +12,11 @@ import DefaultDropdown from "@/src/components/Dropdowns/DefaultDropdown";
 import { usePathname } from "next/navigation";
 
 export const PAGE_QUERY = gql`
-  query GetFiscalDashboardData {
+  query GetFiscalDashboardData($databaseId: ID!, $asPreview: Boolean = false) {
+    page(id: $databaseId, idType: DATABASE_ID, asPreview: $asPreview) {
+      title
+      content
+    }
     governmentFiscals(first: 100) {
       nodes {
         databaseId
@@ -41,6 +46,10 @@ interface FiscalDatasetNode {
 }
 interface PageFiscalDashboardProps {
   data?: {
+    page?: {
+      title?: string | null;
+      content?: string | null;
+    } | null;
     governmentFiscals?: {
       nodes?: Array<FiscalDatasetNode | null> | null;
     } | null;
@@ -90,6 +99,9 @@ const COLOR_PALETTE = [
   "#A90E38",
 ];
 
+const DEFAULT_HERO_PARAGRAPH =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam condimentum consequat mi. Maecenas congue enim non dui iaculis condimentum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur lobortis, mi et facilisis euismod, lacus ligula suscipit nibh, vitae blandit dui dolor vitae sapien. Fusce iaculis urna ligula, nec aliquet nisi consectetur euismod. Nunc dapibus dignissim nulla at tincidunt.";
+
 const YEAR_COLUMN_REGEX = /^\d{4}$/;
 
 function extractCode(value: string): string | null {
@@ -131,6 +143,25 @@ function formatNumber(value: number): string {
     minimumFractionDigits: 0,
     maximumFractionDigits,
   });
+}
+
+function firstParagraphFromHtml(html?: string | null): string {
+  if (!html) {
+    return "";
+  }
+  const match = html.match(/<p\b[^>]*>[\s\S]*?<\/p>/i);
+  if (!match) {
+    return "";
+  }
+  return match[0]
+    .replace(/^<p\b[^>]*>/i, "")
+    .replace(/<\/p>$/i, "")
+    .replace(/<br\s*\/?>(\s*<br\s*\/?>)*/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/\u00a0/g, " ")
+    .replace(/\s+\n/g, "\n")
+    .replace(/\n{2,}/g, "\n")
+    .trim();
 }
 
 interface BuildSankeyParams {
@@ -252,6 +283,13 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
   const [chartData, setChartData] = useState<SankeyChartData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  const page = data?.page ?? null;
+  const heroTitle = (() => {
+    const raw = page?.title ?? "";
+    return raw.trim() || "Government Fiscal Operations";
+  })();
+  const heroParagraph = firstParagraphFromHtml(page?.content) || DEFAULT_HERO_PARAGRAPH;
 
   const fiscalNodes = useMemo(
     () =>
@@ -595,12 +633,11 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
 
       {/* Hero */}
       <HeroWhite
-        title="Government Fiscal Operations"
-        paragraph={` 
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam condimentum consequat mi. Maecenas congue enim non dui iaculis condimentum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur lobortis, mi et facilisis euismod, lacus ligula suscipit nibh, vitae blandit dui dolor vitae sapien. Fusce iaculis urna ligula, nec aliquet nisi consectetur euismod. Nunc dapibus dignissim nulla at tincidunt.`}
+        title={heroTitle}
+        paragraph={heroParagraph}
         items={[
           { label: "Dashboards", href: "/dashboard" },
-          { label: "Government Fiscal Operations" },
+          { label: heroTitle },
         ]}
       />
 
@@ -721,6 +758,27 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
 export default PageFiscalDashboard;
 
 (PageFiscalDashboard as any).query = PAGE_QUERY;
-(PageFiscalDashboard as any).variables = () => ({});
+(PageFiscalDashboard as any).variables = (
+  seedNode: { databaseId?: number | string } = {},
+  ctx: GetStaticPropsContext
+) => {
+  const databaseId = seedNode?.databaseId;
+  if (!databaseId) {
+    throw new Error(
+      "PageFiscalDashboard.variables: missing databaseId from seed node."
+    );
+  }
+  return {
+    databaseId: String(databaseId),
+    asPreview: !!ctx?.preview,
+  };
+};
+
+
+
+
+
+
+
 
 
