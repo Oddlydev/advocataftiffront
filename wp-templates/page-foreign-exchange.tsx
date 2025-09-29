@@ -344,7 +344,7 @@ MacroFilterSliderProps) {
 }
 
 // ---- Page Component ----
-export default function PageInflationDashboard(): JSX.Element { 
+export default function PageForeignExchange(): JSX.Element { 
 
   const [industry, setIndustry] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
@@ -412,10 +412,10 @@ export default function PageInflationDashboard(): JSX.Element {
           <div className="border border-gray-200 bg-white rounded-xl p-6 md:p-10">
             <div className="mb-10">
               <h4 className="text-lg font-montserrat font-bold text-slate-950">
-                Average Annual Inflation
+                Foreign Exchange Inflows and Outflows
               </h4>
               <p className="text-base/6 font-baskervville font-normal text-slate-950">
-                Percentage change in prices for consumer goods and services (2015-2024)
+                Balance of Payment (BOP) 2010 - 2024 (USD Millions)
               </p>
             </div>
 

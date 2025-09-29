@@ -78,7 +78,7 @@ export default function Breadcrumb({
                 </a>
               ) : (
                 <span
-                  className={`breadcrumb-current text-slate-600 hover:text-slate-700 ${current}`}
+                  className={`breadcrumb-current text-slate-600 hover:text-slate-700 font-medium ${current}`}
                   aria-current="page"
                 >
                   {item.label}
