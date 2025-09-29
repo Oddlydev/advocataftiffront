@@ -92,14 +92,17 @@ export default function PageFiscalDashboard() {
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           {/* Chart Header */}
           <div className="mb-10">
-            <h5 className="text-2xl font-bold text-slate-950 mb-1.5">Average Annual Inflation</h5>
+            <h5 className="text-2xl font-bold text-slate-950 mb-1.5">
+              Average Annual Inflation
+            </h5>
             <p className="text-base text-slate-950">
-              Percentage change in prices for consumer goods and services (2015-2024)
+              Percentage change in prices for consumer goods and services
+              (2015-2024)
             </p>
           </div>
 
           {/* Render the LineChart component */}
-          <LineChart />
+          {/* <LineChart /> */}
         </div>
       </div>
     </main>
