@@ -7,12 +7,12 @@ import "tiny-slider/dist/tiny-slider.css";
 import * as d3 from "d3";
 
 // ---- Chart Component ----
-const InterestRatesChart = () => {
+const AverageAnnualInflationChart = () => {
   const chartRef = useRef(null);
   const tooltipRef = useRef(null);
 
   useEffect(() => {
-const data = [
+    const data = [
                 { year: 2010, AWNFDR: 3.1, AWNDR: 4.5, AWNLR: 2.2, AWPLR: 1.5 },
                 { year: 2011, AWNFDR: 4.0, AWNDR: 5.2, AWNLR: 3.0, AWPLR: 2.0 },
                 { year: 2012, AWNFDR: 6.6, AWNDR: 7.1, AWNLR: 6.2, AWPLR: 3.5 },
@@ -28,105 +28,113 @@ const data = [
                 { year: 2022, AWNFDR: 10.2, AWNDR: 13.5, AWNLR: 8.1, AWPLR: 4.5 },
                 { year: 2023, AWNFDR: 8.0, AWNDR: 9.2, AWNLR: 7.1, AWPLR: 5.0 },
                 { year: 2024, AWNFDR: 5.5, AWNDR: 6.4, AWNLR: 4.9, AWPLR: 3.8 },
-            ];
+    ];
 
-            const colors = {
+    const colors = {
                 AWNFDR: "#F58FAA",
                 AWNDR: "#1C0209",
                 AWNLR: "#A90E38",
                 AWPLR: "#ea1a52",
-            };
+    };
+    
+    const container = chartRef.current;
+    const tooltip = d3.select(tooltipRef.current)
+          .style("display", "none")
+          .style("border-radius", "var(--border-radius-rounded-md, 6px)")
+          .style("border", "1px solid var(--slate-200, #E2E8F0)")
+          .style("background", "var(--white, #FFF)")
+          .style("box-shadow", "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)")
+          .style("padding", "10px");
 
-            const container = document.querySelector("#lineChart");
-            const tooltip = d3.select("#lineTooltip")
-                .style("border-radius", "var(--border-radius-rounded-md, 6px)")
-                .style("border", "1px solid var(--slate-200, #E2E8F0)")
-                .style("background", "var(--white, #FFF)")
-                .style("box-shadow", "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)")
-                .style("padding", "10px");
+    // Clear any existing svg content
+    d3.select(container).selectAll("*").remove();
 
-            const margin = { top: 40, right: 40, bottom: 60, left: 70 };
-            const width = container.clientWidth - margin.left - margin.right;
-            const height = container.clientHeight - margin.top - margin.bottom;
+    const margin = { top: 40, right: 40, bottom: 60, left: 70 };
+    const width = container.clientWidth - margin.left - margin.right;
+    const height = container.clientHeight - margin.top - margin.bottom;
 
-            const svg = d3.select(container)
-                .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
-                .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
+    const svg = d3
+      .select(container)
+      .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
 
-            // X scale
-            const x = d3.scalePoint()
-                .domain(data.map(d => d.year))
-                .range([0, width])
-                .padding(0.5);
+    // X scale
+    const x = d3.scalePoint()
+        .domain(data.map(d => d.year))
+        .range([0, width])
+        .padding(0.5);
 
-            // Y scale (automatic)
-            const y = d3.scaleLinear()
-                .domain([0, d3.max(data, d => Math.max(d.AWNFDR, d.AWNDR, d.AWNLR, d.AWPLR)) * 1.1])
-                .range([height, 0]);
+    // Y scale (automatic)
+    const y = d3.scaleLinear()
+        .domain([0, d3.max(data, d => Math.max(d.AWNFDR, d.AWNDR, d.AWNLR, d.AWPLR)) * 1.1])
+        .range([height, 0]);
+    
+    // X-axis
+    svg.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(x).tickFormat(d3.format("d")))
+        .selectAll("text")
+        .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
-            // X-axis
-            svg.append("g")
-                .attr("transform", `translate(0, ${height})`)
-                .call(d3.axisBottom(x).tickFormat(d3.format("d")))
-                .selectAll("text")
-                .attr("class", "font-family-sourcecodepro text-slate-600 text-lg font-normal");
+    // Y-axis
+    svg.append("g")
+        .call(d3.axisLeft(y))
+        .selectAll("text")
+        .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
-            // Y-axis
-            svg.append("g")
-                .call(d3.axisLeft(y))
-                .selectAll("text")
-                .attr("class", "font-family-sourcecodepro text-slate-600 text-lg font-normal");
+    // Y-axis label
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
+        .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
+        .text("Interest Rate (%)");
 
-            // Y-axis label
-            svg.append("text")
-                .attr("text-anchor", "middle")
-                .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
-                .attr("class", "font-family-sourcecodepro text-slate-600 text-lg font-normal")
-                .text("Interest Rate (%)");
+    // Horizontal grid lines
+    svg.append("g")
+    .attr("class", "grid")
+    .call(
+        d3.axisLeft(y)
+        .tickSize(-width)
+        .tickFormat("")
+    )
+    .selectAll("line")
+    .attr("stroke", "#CBD5E1")
+    .attr("stroke-width", 1)
+    .attr("stroke-dasharray", "4,4");
+        
+    svg.select(".grid line").remove(); // remove axis line
+    svg.select(".grid path").remove();
 
-            // Horizontal grid lines
-            svg.append("g")
-                .attr("class", "grid")
-                .call(
-                    d3.axisLeft(y)
-                        .tickSize(-width)
-                        .tickFormat("")
-                )
-                .selectAll("line")
-                .attr("stroke", "#CBD5E1")
-                .attr("stroke-width", 1)
-                .attr("stroke-dasharray", "4,4");
+    // Line generator
+    const lineGen = key => d3.line()
+        .x(d => x(d.year))
+        .y(d => y(d[key]))
+        .curve(d3.curveMonotoneX);
 
-            svg.select(".grid path").remove();
+    // Draw lines
+    Object.keys(colors).forEach(key => {
+        svg.append("path")
+            .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", colors[key])
+            .attr("stroke-width", 2.5)
+            .attr("d", lineGen(key));
+    });
 
-            // Line generator
-            const lineGen = key => d3.line()
-                .x(d => x(d.year))
-                .y(d => y(d[key]))
-                .curve(d3.curveMonotoneX);
-
-            // Draw lines
-            Object.keys(colors).forEach(key => {
-                svg.append("path")
-                    .datum(data)
-                    .attr("fill", "none")
-                    .attr("stroke", colors[key])
-                    .attr("stroke-width", 2.5)
-                    .attr("d", lineGen(key));
-            });
-
-            // Dots & Tooltip (show all series)
-            data.forEach(d => {
-                    Object.keys(colors).forEach(key => {
-                        svg.append("circle")
-                            .attr("cx", x(d.year))
-                            .attr("cy", y(d[key]))
-                            .attr("r", 4)
-                            .attr("fill", colors[key])
-                            .on("mouseover", () => {
-                                tooltip.style("display", "block")
-                                    .html(`
+    // Dots & Tooltip
+    data.forEach(d => {
+      Object.keys(colors).forEach(key => {
+        svg
+          .append("circle")
+          .attr("cx", x(d.year))
+          .attr("cy", y(d[key]))
+          .attr("r", 4)
+          .attr("fill", colors[key])
+          .on("mouseover", () => {
+            tooltip
+              .style("display", "block")
+              .html(`
                                     <div class="flex flex-col gap-1">
                                         <div class="font-bold text-slate-800">Year: ${d.year}</div>
                                         <div class="flex items-center justify-between gap-2">
@@ -166,22 +174,20 @@ const data = [
                                             <span style="color:${colors.AWPLR}; font-weight: 600;">${d.AWPLR}%</span>
                                         </div>
                                     </div>
-                                    `);
-                            })
-                            .on("mousemove", (event) => {
-                                const containerRect = container.getBoundingClientRect();
-                                tooltip
-                                    .style("left", event.clientX - containerRect.left + 15 + "px")
-                                    .style("top", event.clientY - containerRect.top - 50 + "px");
-                            })
-                            .on("mouseout", () => {
-                                tooltip.style("display", "none");
-                            });
-                    });
-                });
+              `);
+          })
+          .on("mousemove", event => {
+            const rect = container.getBoundingClientRect();
+            tooltip
+              .style("left", event.clientX - rect.left + 15 + "px")
+              .style("top", event.clientY - rect.top - 50 + "px");
+          })
+          .on("mouseout", () => tooltip.style("display", "none"));
+      });
+    });
 
     // -------------------
-    // Zoom buttons
+    // Zoom Buttons Logic
     // -------------------
     let currentScale = 1;
     const scaleStep = 1.2;
@@ -190,20 +196,34 @@ const data = [
       svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
     };
 
-    const zoomInBtn = document.querySelector("#zoomInBtn");
-    const zoomOutBtn = document.querySelector("#zoomOutBtn");
-    const resetZoomBtn = document.querySelector("#resetZoomBtn");
+    const zoomInBtn = document.getElementById("zoomInBtn");
+    const zoomOutBtn = document.getElementById("zoomOutBtn");
+    const resetZoomBtn = document.getElementById("resetZoomBtn");
 
-    zoomInBtn?.addEventListener("click", () => { currentScale *= scaleStep; applyZoom(); });
-    zoomOutBtn?.addEventListener("click", () => { currentScale /= scaleStep; applyZoom(); });
-    resetZoomBtn?.addEventListener("click", () => { currentScale = 1; applyZoom(); });
+    zoomInBtn?.addEventListener("click", () => {
+      currentScale *= scaleStep;
+      applyZoom();
+    });
 
+    zoomOutBtn?.addEventListener("click", () => {
+      currentScale /= scaleStep;
+      applyZoom();
+    });
+
+    resetZoomBtn?.addEventListener("click", () => {
+      currentScale = 1;
+      applyZoom();
+    });
   }, []);
 
   return (
     <div className="relative w-full h-[300px] md:h-[300px] xl:h-[500px]">
       <svg ref={chartRef} className="w-full h-full"></svg>
-      <div ref={tooltipRef} className="absolute hidden pointer-events-none bg-white p-2 rounded shadow-lg border border-slate-200 text-sm text-slate-800"></div>
+      <div
+        ref={tooltipRef}
+        className="absolute hidden bg-white text-sm text-slate-800 py-2 px-3 rounded shadow-lg pointer-events-none"
+        style={{ border: "1px solid #E2E8F0" }}
+      ></div>
     </div>
   );
 };
@@ -358,7 +378,7 @@ MacroFilterSliderProps) {
 }
 
 // ---- Page Component ----
-export default function PageInterestRates(): JSX.Element { 
+export default function PageInflationDashboard(): JSX.Element { 
 
   const [industry, setIndustry] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
@@ -459,7 +479,7 @@ export default function PageInterestRates(): JSX.Element {
                       </svg>
                   </button>
               </div>
-              <InterestRatesChart />
+              <AverageAnnualInflationChart />
             </div>
 
             {/* Legend & Data Source */}
@@ -483,7 +503,6 @@ export default function PageInterestRates(): JSX.Element {
                     </div>
                 </div>
             </div>
-
 
             <div className="mt-10">
                 <div className="bg-gray-50 rounded-lg px-6 py-3.5">
@@ -519,27 +538,36 @@ export default function PageInterestRates(): JSX.Element {
                   Understanding Interest Rates Metrics
                 </h5>
                 <p className="text-lg font-baskervville font-normal text-slate-950">
-                    Advanced Economic Analysis Framework
+                  Advanced Economic Analysis Framework
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border-b border-brand-1-100 pb-4 md:border-b-0 md:border-r md:pr-4">
                   <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Definition</h3>
-                           <div className="space-y-5 text-slate-800 text-base/6 font-baskervville">
-                                <p className="text-slate-800 text-base/6 font-baskervville">The annual trends in key interest rates ( Commercial Bank Annual Interest Rates) in Sri Lanka from 2010 to 2024. It depicts the yearly fluctuations in rates offered on deposits (fixed and total) and charged on loans (general and prime), providing a comprehensive overview of how the cost of borrowing and the return on savings have evolved over time. Reflects the cost banks pay to attract savings and funds, the cost of borrowing for individuals and businesses, and indicates the lowest cost of borrowing in the market. The interest rates that have been depicted include:</p>
-                                <p className="text-slate-800 text-base/6 font-baskervville"><span className="font-medium font-sourcecodepro">Average Weighted New Fixed Deposit Rates:</span>
-                                <div>The Average Weighted New Fixed Deposit Rate (AWNFDR) is calculated by the Central Bank monthly, based on interest rates pertaining to all new interest bearing rupee time deposits mobilised by LCBs during a particular month.</div></p>
-                                <p className="text-slate-800 text-base/6 font-baskervville"><span className="font-medium font-sourcecodepro">Average Weighted New Deposit Rates :</span>
-                                <div>The Average Weighted New Deposit Rate (AWNDR) is calculated by the Central Bank monthly, based on interest rates pertaining to all new interest bearing rupee deposits mobilised by LCBs during a particular month.</div></p>
-                                <p className="text-slate-800 text-base/6 font-baskervville"><span className="font-medium font-sourcecodepro">Average Weighted New Lending Rates :</span>
-                                <div>The Average Weighted New Lending Rate (AWNLR) is calculated by the Central Bank monthly, based on interest rates pertaining to all new rupee loans and advances extended by LCBs during a particular month.</div></p>
-                            </div>
+                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
+                     <div className="text-slate-800 text-base">
+                      <h6 className="font-sourcecodepro font-medium">Average Weighted New Fixed Deposit Rates:</h6>
+                      <p className="font-baskervville font-normal">The Average Weighted New Fixed Deposit Rate (AWNFDR) is calculated by the Central Bank monthly, based on interest rates pertaining to all new interest bearing rupee time deposits mobilised by LCBs during a particular month.</p>
+                    </div>
+                     <div className="text-slate-800 text-base">
+                      <h6 className="font-sourcecodepro font-medium">Average Weighted New Deposit Rates :</h6>
+                      <p className="font-baskervville font-normal">The Average Weighted New Deposit Rate (AWNDR) is calculated by the Central Bank monthly, based on interest rates pertaining to all new interest bearing rupee deposits mobilised by LCBs during a particular month.</p>
+                    </div>
+                     <div className="text-slate-800 text-base">
+                      <h6 className="font-sourcecodepro font-medium">Average Weighted New Lending Rates :</h6>
+                      <p className="font-baskervville font-normal">The Average Weighted New Lending Rate (AWNLR) is calculated by the Central Bank monthly, based on interest rates pertaining to all new rupee loans and advances extended by LCBs during a particular month.</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="mt-6 md:mt-0">
-                            <h3 className="text-lg/7 font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Statistical Concept and Methodology</h3>
-                            <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
-                                <p className="text-slate-800 text-base/6 font-baskervville font-normal">The Central Bank of Sri Lanka calculates weighted average interest rates. These averages are derived from the interest rates offered by commercial banks, weighted by the volume of deposits (for deposit rates) and the volume of loans (for lending rates).</p>
-                            </div>
+                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
+                    Statistical Concept and Methodology
+                  </h3>
+                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
+                    <p className="text-slate-800 text-base font-baskervville font-normal">
+                      The Central Bank of Sri Lanka calculates weighted average interest rates. These averages are derived from the interest rates offered by commercial banks, weighted by the volume of deposits (for deposit rates) and the volume of loans (for lending rates).
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

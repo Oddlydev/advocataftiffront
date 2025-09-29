@@ -65,19 +65,19 @@ const NationalDebtChart = () => {
       .attr("transform", `translate(0, ${height})`)
       .call(d3.axisBottom(x).tickFormat(d3.format("d")))
       .selectAll("text")
-      .attr("class", "font-family-sourcecodepro text-slate-600 text-lg font-normal");
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
     // Left Y-axis
     svg.append("g")
       .call(d3.axisLeft(y).ticks(5))
       .selectAll("text")
-      .attr("class", "font-family-sourcecodepro text-slate-600 text-lg font-normal");
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
     // Left Y-axis label
     svg.append("text")
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
-      .attr("class", "font-family-sourcecodepro text-slate-600 text-lg font-normal")
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
       .text("Total Debt (Rs. Mn.)");
 
     // Right Y-axis
@@ -85,13 +85,13 @@ const NationalDebtChart = () => {
       .attr("transform", `translate(${width},0)`)
       .call(d3.axisRight(y).ticks(5))
       .selectAll("text")
-      .attr("class", "font-family-sourcecodepro text-slate-600 text-lg font-normal");
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
     // Right Y-axis label
     svg.append("text")
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${width + 50},${height / 2})rotate(-90)`)
-      .attr("class", "font-family-sourcecodepro text-slate-600 text-lg font-normal")
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
       .text("Debt Per Person (Rs.)");
 
     // Horizontal grid lines
@@ -456,14 +456,14 @@ export default function PageNationalDebt(): JSX.Element {
                     <span
                     className="w-1.5 h-1.5 bg-brand-1-900 inset-shadow-brand-1-950 rounded-full inline-block"></span>
                     <span
-                    className="text-base/6 font-normal font-family-baskervville text-slate-600"
+                    className="text-base/6 font-normal font-baskervville text-slate-600"
                     >Total Debt (Rs. Mn)</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <span
                     className="w-1.5 h-1.5 bg-brand-1-500 rounded-full inline-block"></span>
                     <span
-                    className="text-base/6 font-normal font-family-baskervville text-slate-600"
+                    className="text-base/6 font-normal font-baskervville text-slate-600"
                     >Debt Per Person (Rs.)</span>
                 </div>
               </div>
@@ -472,15 +472,15 @@ export default function PageNationalDebt(): JSX.Element {
             <div className="mt-10">
               <div className="bg-gray-50 rounded-lg px-6 py-3.5">
               <div
-                  className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-family-sourcecodepro"
+                  className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro"
               >
                   <div
-                  className="text-slate-600 text-xs/4 font-normal font-family-sourcecodepro flex items-center gap-2"
+                  className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
                   >
                   <p>Data Source: Central Bank of Sri Lanka</p>
                   </div>
                   <div
-                  className="text-slate-600 text-xs/4 font-normal font-family-sourcecodepro flex items-center gap-2"
+                  className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
                   >
                   <p>Government Debt 2010 - 2024</p>
                   </div>

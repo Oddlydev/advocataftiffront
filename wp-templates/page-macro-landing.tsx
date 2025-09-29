@@ -88,7 +88,7 @@ export default function PageMacroLanding() {
                                     <div className="px-6 pt-8 pb-3 sm:px-6 sm:pt-10 sm:pb-0 relative z-10">
                                         <div className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full text-slate-50 
                                                     bg-white/10 backdrop-blur-lg border border-white/20 shadow-inner
-                                                    text-sm xl:text-base font-semibold font-family-montserrat tracking-tight max-lg:text-center">
+                                                    text-sm xl:text-base font-semibold font-montserrat tracking-tight max-lg:text-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
                                                 <path d="M21 21.5H10C6.70017 21.5 5.05025 21.5 4.02513 20.4749C3 19.4497 3 17.7998 3 14.5V3.5" stroke="#F8FAFC" stroke-width="1.5" stroke-linecap="round"/>
                                                 <path d="M7 4.5H8" stroke="#F8FAFC" stroke-width="1.5" stroke-linecap="round"/>
@@ -98,7 +98,7 @@ export default function PageMacroLanding() {
                                             <span>Inflation</span>
                                         </div>
 
-                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-family-sourcecodepro max-lg:text-center">Consumer price index and inflation trends across key sectors</p>
+                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-sourcecodepro max-lg:text-center">Consumer price index and inflation trends across key sectors</p>
                                     </div>
                                     <div className="@container relative min-h-45 w-full grow max-lg:mx-auto max-lg:max-w-sm z-10">
                                         <div className="absolute bottom-0 overflow-hidden flex items-start justify-start px-6 pt-8 pb-8 sm:px-6 sm:py-10">
@@ -133,7 +133,7 @@ export default function PageMacroLanding() {
                                     <div className="px-6 pt-8 pb-3 sm:px-6 sm:pt-10 sm:pb-0 relative z-10">
                                         <div className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full text-slate-50 
                                                     bg-white/10 backdrop-blur-lg border border-white/20 shadow-inner
-                                                    text-sm xl:text-base font-semibold font-family-montserrat tracking-tight max-lg:text-center">
+                                                    text-sm xl:text-base font-semibold font-montserrat tracking-tight max-lg:text-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
                                                 <path d="M14.5 11C14.5 12.3807 13.3807 13.5 12 13.5C10.6192 13.5 9.5 12.3807 9.5 11C9.5 9.61929 10.6192 8.5 12 8.5C13.3807 8.5 14.5 9.61929 14.5 11Z" stroke="#F8FAFC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                                 <path d="M22 11V5.92705C22 5.35889 21.6756 4.84452 21.1329 4.67632C20.1903 4.38421 18.4794 4 16 4C11.4209 4 10.1967 5.67747 3.87798 4.42361C2.92079 4.23366 2 4.94531 2 5.92116V15.9382C2 16.6265 2.47265 17.231 3.1448 17.3792C8.71199 18.6069 10.5572 17.6995 13.5 17.2859" stroke="#F8FAFC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -143,7 +143,7 @@ export default function PageMacroLanding() {
                                             <span>Foreign Exchange</span>
                                         </div>
 
-                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-family-sourcecodepro max-lg:text-center">USD/LKR exchange rates and currency market analysis</p>
+                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-sourcecodepro max-lg:text-center">USD/LKR exchange rates and currency market analysis</p>
                                     </div>
                                     <div className="@container relative min-h-45 w-full grow max-lg:mx-auto max-lg:max-w-sm z-10">
                                         <div className="absolute bottom-0 overflow-hidden flex items-start justify-start px-6 pt-8 pb-8 sm:px-6 sm:py-10">
@@ -182,7 +182,7 @@ export default function PageMacroLanding() {
                                     <div className="px-6 pt-8 pb-3 sm:px-6 sm:pt-10 sm:pb-0">
                                         <div className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full text-slate-50 
                                                     bg-white/10 backdrop-blur-lg border border-white/20 shadow-inner
-                                                    text-sm xl:text-base font-semibold font-family-montserrat tracking-tight max-lg:text-center">
+                                                    text-sm xl:text-base font-semibold font-montserrat tracking-tight max-lg:text-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
                                                 <path d="M15.5 13.5C19.0899 13.5 22 12.6046 22 11.5C22 10.3954 19.0899 9.5 15.5 9.5C11.9101 9.5 9 10.3954 9 11.5C9 12.6046 11.9101 13.5 15.5 13.5Z" stroke="#F8FAFC" stroke-width="1.5"/>
                                                 <path d="M22 16C22 17.1046 19.0899 18 15.5 18C11.9101 18 9 17.1046 9 16" stroke="#F8FAFC" stroke-width="1.5"/>
@@ -195,7 +195,7 @@ export default function PageMacroLanding() {
                                             <span>Foreign Reserves</span>
                                         </div>
 
-                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-family-sourcecodepro max-lg:text-center">
+                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-sourcecodepro max-lg:text-center">
                                             Central bank reserves and foreign currency holdings
                                         </p>
                                     </div>
@@ -230,7 +230,7 @@ export default function PageMacroLanding() {
                                     <div className="px-6 pt-8 pb-3 sm:px-6 sm:pt-10 sm:pb-0">
                                         <div className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full text-slate-50 
                                                     bg-white/10 backdrop-blur-lg border border-white/20 shadow-inner
-                                                    text-sm xl:text-base font-semibold font-family-montserrat tracking-tight max-lg:text-center">
+                                                    text-sm xl:text-base font-semibold font-montserrat tracking-tight max-lg:text-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
                                                 <path d="M8 16.5L16 8.5M10 9.5C10 10.0523 9.55228 10.5 9 10.5C8.44772 10.5 8 10.0523 8 9.5C8 8.94772 8.44772 8.5 9 8.5C9.55228 8.5 10 8.94772 10 9.5ZM16 15.3284C16 15.8807 15.5523 16.3284 15 16.3284C14.4477 16.3284 14 15.8807 14 15.3284C14 14.7761 14.4477 14.3284 15 14.3284C15.5523 14.3284 16 14.7761 16 15.3284Z" stroke="#F8FAFC" stroke-width="1.5" stroke-linecap="round"/>
                                                 <path d="M12 22.5C17.5228 22.5 22 18.0228 22 12.5C22 6.97715 17.5228 2.5 12 2.5C6.47715 2.5 2 6.97715 2 12.5C2 18.0228 6.47715 22.5 12 22.5Z" stroke="#F8FAFC" stroke-width="1.5"/>
@@ -238,7 +238,7 @@ export default function PageMacroLanding() {
                                             <span>Interest Rates</span>
                                         </div>
 
-                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-family-sourcecodepro max-lg:text-center">
+                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-sourcecodepro max-lg:text-center">
                                             Central bank policy rates and lending benchmarks
                                         </p>
                                     </div>
@@ -273,7 +273,7 @@ export default function PageMacroLanding() {
                                     <div className="px-6 pt-8 pb-3 sm:px-6 sm:pt-10 sm:pb-0">
                                         <div className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full text-slate-50 
                                                     bg-white/10 backdrop-blur-lg border border-white/20 shadow-inner
-                                                    text-sm xl:text-base font-semibold font-family-montserrat tracking-tight max-lg:text-center">
+                                                    text-sm xl:text-base font-semibold font-montserrat tracking-tight max-lg:text-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
                                                 <path d="M21 21.5H10C6.70017 21.5 5.05025 21.5 4.02513 20.4749C3 19.4497 3 17.7998 3 14.5V3.5" stroke="#F8FAFC" stroke-width="1.5" stroke-linecap="round"/>
                                                 <path d="M7.99707 17.499C11.5286 17.499 18.9122 16.0348 18.6979 6.93269M16.4886 8.54302L18.3721 6.64612C18.5656 6.45127 18.8798 6.44981 19.0751 6.64286L20.9971 8.54302" stroke="#F8FAFC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -281,7 +281,7 @@ export default function PageMacroLanding() {
                                             <span>GDP Growth</span>
                                         </div>
 
-                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-family-sourcecodepro max-lg:text-center">
+                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-sourcecodepro max-lg:text-center">
                                             Gross domestic product growth and economic output
                                         </p>
                                     </div>
@@ -323,7 +323,7 @@ export default function PageMacroLanding() {
                                     <div className="px-6 pt-8 pb-3 sm:px-6 sm:pt-10 sm:pb-0 relative z-10">
                                         <div className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full text-slate-50 
                                                     bg-white/10 backdrop-blur-lg border border-white/20 shadow-inner
-                                                    text-sm xl:text-base font-semibold font-family-montserrat tracking-tight max-lg:text-center">
+                                                    text-sm xl:text-base font-semibold font-montserrat tracking-tight max-lg:text-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
                                                 <path d="M2 9.06907C2 7.87289 2.48238 7.13982 3.48063 6.58428L7.58987 4.29744C9.7431 3.09915 10.8197 2.5 12 2.5C13.1803 2.5 14.2569 3.09915 16.4101 4.29744L20.5194 6.58428C21.5176 7.13982 22 7.8729 22 9.06907C22 9.39343 22 9.55561 21.9646 9.68894C21.7785 10.3895 21.1437 10.5 20.5307 10.5H3.46928C2.85627 10.5 2.22152 10.3894 2.03542 9.68894C2 9.55561 2 9.39343 2 9.06907Z" stroke="#F8FAFC" stroke-width="1.5"/>
                                                 <path d="M11.9961 7.5H12.0051" stroke="#F8FAFC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -334,7 +334,7 @@ export default function PageMacroLanding() {
                                             <span>National Debt</span>
                                         </div>
 
-                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-family-sourcecodepro max-lg:text-center">Government debt levels and debt-to-GDP ratios</p>
+                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-sourcecodepro max-lg:text-center">Government debt levels and debt-to-GDP ratios</p>
                                     </div>
                                     <div className="@container relative min-h-51 w-full grow max-lg:mx-auto max-lg:max-w-sm z-10">
                                         <div className="absolute bottom-0 overflow-hidden flex items-start justify-start px-6 pt-8 pb-8 sm:px-6 sm:py-10">
@@ -369,7 +369,7 @@ export default function PageMacroLanding() {
                                     <div className="px-6 pt-8 pb-3 sm:px-6 sm:pt-10 sm:pb-0 relative z-10">
                                         <div className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full text-slate-50 
                                                     bg-white/10 backdrop-blur-lg border border-white/20 shadow-inner
-                                                    text-sm xl:text-base font-semibold font-family-montserrat tracking-tight max-lg:text-center">
+                                                    text-sm xl:text-base font-semibold font-montserrat tracking-tight max-lg:text-center">
                                             {/* <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
                                                 <path d="M21 21.5H10C6.70017 21.5 5.05025 21.5 4.02513 20.4749C3 19.4497 3 17.7998 3 14.5V3.5" stroke="#F8FAFC" stroke-width="1.5" stroke-linecap="round"/>
                                                 <path d="M7 4.5H8" stroke="#F8FAFC" stroke-width="1.5" stroke-linecap="round"/>
@@ -380,7 +380,7 @@ export default function PageMacroLanding() {
                                             <span>Unemployment</span>
                                         </div>
 
-                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-family-sourcecodepro max-lg:text-center">Labor market statistics and employment trends</p>
+                                        <p className="mt-2 max-w-lg text-base/6 text-slate-50 font-normal font-sourcecodepro max-lg:text-center">Labor market statistics and employment trends</p>
                                     </div>
                                     <div className="@container relative min-h-51 w-full grow max-lg:mx-auto max-lg:max-w-sm z-10">
                                         <div className="absolute bottom-0 overflow-hidden flex items-start justify-start px-6 pt-8 pb-8 sm:px-6 sm:py-10">
