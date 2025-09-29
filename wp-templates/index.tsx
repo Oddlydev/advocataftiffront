@@ -15,6 +15,7 @@ import PageDashboard from "./page-dashboard";
 import PageNewsletterConfirmation from "./page-newsletter-confirmation";
 import PageFiscalDashboard from "./page-fiscal-dashboard";
 import PageMacroLanding from "./page-macro-landing"; 
+import PageInflationDashboard from "./page-inflation-dashboard";
 
 export default {
   "front-page": frontPage,
@@ -34,4 +35,5 @@ export default {
   "page-newsletter-confirmation": PageNewsletterConfirmation,
   "page-fiscal-dashboard": PageFiscalDashboard,
   "page-macro-landing": PageMacroLanding,
+  "page-inflation-dashboard": PageInflationDashboard,
 };
