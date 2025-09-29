@@ -19,8 +19,9 @@ import PageInflationDashboard from "./page-inflation-dashboard";
 import PageForeignExchange from "./page-foreign-exchange";
 import PageForeignReserves from "./page-foreign-reserves";
 import PageUnemployment from "./page-unemployment";
-import PageGDPGrowth from "./page-gdp-growth";
+import PageGDPGrowth from "./page-GDP-growth";
 import PageNationalDebt from "./page-national-debt";
+import PageInterestRates from "./page-interest-rates";
 
 export default {
   "front-page": frontPage,
@@ -46,4 +47,5 @@ export default {
   "page-unemployment": PageUnemployment,
   "page-gdp-growth": PageGDPGrowth,
   "page-national-debt": PageNationalDebt,
+  "page-interest-rates": PageInterestRates,
 };

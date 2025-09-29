@@ -135,6 +135,25 @@ const UnemploymentChart = () => {
         })
         .on("mouseout", () => tooltip.style("display", "none"));
     });
+
+    // -------------------
+    // Zoom buttons
+    // -------------------
+    let currentScale = 1;
+    const scaleStep = 1.2;
+
+    const applyZoom = () => {
+      svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
+    };
+
+    const zoomInBtn = document.querySelector("#zoomInBtn");
+    const zoomOutBtn = document.querySelector("#zoomOutBtn");
+    const resetZoomBtn = document.querySelector("#resetZoomBtn");
+
+    zoomInBtn?.addEventListener("click", () => { currentScale *= scaleStep; applyZoom(); });
+    zoomOutBtn?.addEventListener("click", () => { currentScale /= scaleStep; applyZoom(); });
+    resetZoomBtn?.addEventListener("click", () => { currentScale = 1; applyZoom(); });
+    
   }, []);
 
   return (
