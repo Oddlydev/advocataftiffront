@@ -135,7 +135,11 @@ async function fetchPageMetaByUri(
   const wpUri = uri.endsWith("/") ? uri : `${uri}/`;
   const encoded = wpUri.replace(/"/g, '\\"');
   const data = await gql<{
-    nodeByUri?: { __typename?: string; title?: string | null; content?: string | null };
+    nodeByUri?: {
+      __typename?: string;
+      title?: string | null;
+      content?: string | null;
+    };
   }>(
     `query GetPageMetaByUri {
       nodeByUri(uri: "${encoded}") {
@@ -262,18 +266,22 @@ export default function PageStateOwnedDashboard(): JSX.Element {
 
     const urlYear = searchParams.get("year");
     const urlIndustry = searchParams.get("industry");
-    const effectiveYear = urlYear ?? year ?? (yearsSorted[0]?.slug ?? null);
+    const effectiveYear = urlYear ?? year ?? yearsSorted[0]?.slug ?? null;
     const effectiveIndustry =
-      urlIndustry ?? industry ?? (cached.industries[0]?.slug ?? null);
+      urlIndustry ?? industry ?? cached.industries[0]?.slug ?? null;
     if (!year && effectiveYear) setYear(effectiveYear);
     if (!industry && effectiveIndustry) setIndustry(effectiveIndustry);
 
     let initial = cached.posts;
     if (effectiveYear) {
-      initial = initial.filter((p) => p.years.some((y) => y.slug === effectiveYear));
+      initial = initial.filter((p) =>
+        p.years.some((y) => y.slug === effectiveYear)
+      );
     }
     if (effectiveIndustry) {
-      initial = initial.filter((p) => p.industries.some((i) => i.slug === effectiveIndustry));
+      initial = initial.filter((p) =>
+        p.industries.some((i) => i.slug === effectiveIndustry)
+      );
     }
     setFilteredPosts(initial);
     if (initial[0]) {
@@ -299,19 +307,24 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       const cached = readSOECache();
       if (!cached) setIsLoading(true);
       try {
-        const [seoRes, meta, yearsRaw, industriesRaw, posts] = await Promise.all([
-          fetchPageSEOByUri(pathname || "/state-owned-dashboard/").catch((e) => {
-            console.warn("SEO fetch failed", e);
-            return null as any;
-          }),
-          fetchPageMetaByUri(pathname || "/state-owned-dashboard/").catch((e) => {
-            console.warn("Meta fetch failed", e);
-            return null as any;
-          }),
-          fetchSOEYears(),
-          fetchSOEIndustries(),
-          fetchSOEPosts(),
-        ]);
+        const [seoRes, meta, yearsRaw, industriesRaw, posts] =
+          await Promise.all([
+            fetchPageSEOByUri(pathname || "/state-owned-dashboard/").catch(
+              (e) => {
+                console.warn("SEO fetch failed", e);
+                return null as any;
+              }
+            ),
+            fetchPageMetaByUri(pathname || "/state-owned-dashboard/").catch(
+              (e) => {
+                console.warn("Meta fetch failed", e);
+                return null as any;
+              }
+            ),
+            fetchSOEYears(),
+            fetchSOEIndustries(),
+            fetchSOEPosts(),
+          ]);
 
         if (seoRes) setSeo(seoRes);
         if (meta) {
@@ -328,14 +341,17 @@ export default function PageStateOwnedDashboard(): JSX.Element {
         // Determine effective selection and prime results before clearing loader
         const urlYear = searchParams.get("year");
         const urlIndustry = searchParams.get("industry");
-        const effectiveYear = urlYear ?? year ?? (years[0]?.slug ?? null);
+        const effectiveYear = urlYear ?? year ?? years[0]?.slug ?? null;
         // Try pick industry from first post matching the year, else first industry list
         let effectiveIndustry = urlIndustry ?? industry ?? null;
         if (!effectiveIndustry) {
           const firstForYear = posts.find((p) =>
             effectiveYear ? p.years.some((y) => y.slug === effectiveYear) : true
           );
-          effectiveIndustry = firstForYear?.industries?.[0]?.slug ?? (industriesRaw[0]?.slug ?? null);
+          effectiveIndustry =
+            firstForYear?.industries?.[0]?.slug ??
+            industriesRaw[0]?.slug ??
+            null;
         }
 
         if (!year && effectiveYear) setYear(effectiveYear);
@@ -343,10 +359,14 @@ export default function PageStateOwnedDashboard(): JSX.Element {
 
         let initial = posts;
         if (effectiveYear) {
-          initial = initial.filter((p) => p.years.some((y) => y.slug === effectiveYear));
+          initial = initial.filter((p) =>
+            p.years.some((y) => y.slug === effectiveYear)
+          );
         }
         if (effectiveIndustry) {
-          initial = initial.filter((p) => p.industries.some((i) => i.slug === effectiveIndustry));
+          initial = initial.filter((p) =>
+            p.industries.some((i) => i.slug === effectiveIndustry)
+          );
         }
         setFilteredPosts(initial);
         if (initial[0]) {
@@ -405,8 +425,11 @@ export default function PageStateOwnedDashboard(): JSX.Element {
           <SecondaryNav
             className="!font-baskervville"
             items={[
-              { label: "Macro Economy", href: "#" },
-              { label: "Government Fiscal Operations", href: "#" },
+              { label: "Macro Economy", href: "/macro-landing" },
+              {
+                label: "Government Fiscal Operations",
+                href: "/fiscal-dashboard",
+              },
               {
                 label: "Transparency in government Institutions",
                 href: (() => {

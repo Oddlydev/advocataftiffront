@@ -5,9 +5,9 @@ import { gql } from "@apollo/client";
 import type { GetStaticPropsContext } from "next";
 import SecondaryNav from "@/src/components/SecondaryNav";
 import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
+import RelatedDatasets from "@/src/components/RelatedDatasets";
 import * as d3 from "d3";
 import { sankey as d3Sankey, sankeyLinkHorizontal } from "d3-sankey";
-import CardType6 from "@/src/components/Cards/CardType6";
 import DefaultDropdown from "@/src/components/Dropdowns/DefaultDropdown";
 import { usePathname } from "next/navigation";
 
@@ -164,13 +164,34 @@ function firstParagraphFromHtml(html?: string | null): string {
     .trim();
 }
 
+function datasetPathSegment(node: FiscalDatasetNode): string {
+  const rawSlug = (node.slug ?? "").trim().toLowerCase();
+  if (rawSlug && /[a-z]/.test(rawSlug)) {
+    return rawSlug;
+  }
+  const title = (node.title ?? "").trim().toLowerCase();
+  if (title) {
+    const slugified = title
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .replace(/-{2,}/g, "-");
+    if (slugified) {
+      return slugified;
+    }
+  }
+  return `dataset-${node.databaseId}`;
+}
 interface BuildSankeyParams {
   rows: Array<Record<string, string>>;
   year: string;
   rootLabel: string;
 }
 
-function buildSankeyData({ rows, year, rootLabel }: BuildSankeyParams): SankeyChartData | null {
+function buildSankeyData({
+  rows,
+  year,
+  rootLabel,
+}: BuildSankeyParams): SankeyChartData | null {
   if (!year) {
     return null;
   }
@@ -237,7 +258,9 @@ function buildSankeyData({ rows, year, rootLabel }: BuildSankeyParams): SankeyCh
 
     const parentCode = getParentCode(code);
     const parentKey = parentCode ? `node-${parentCode}` : ROOT_KEY;
-    const parentLabel = parentCode ? codeToLabel.get(parentCode) ?? parentCode : rootLabel;
+    const parentLabel = parentCode
+      ? (codeToLabel.get(parentCode) ?? parentCode)
+      : rootLabel;
     const parentIdx = ensureNode(parentKey, parentLabel);
 
     if (parentIdx === rootIndex) {
@@ -274,12 +297,44 @@ function buildSankeyData({ rows, year, rootLabel }: BuildSankeyParams): SankeyCh
 function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
   const sankeyRef = useRef<SVGSVGElement | null>(null);
   const pathname = usePathname();
+
+  const pathInfo = useMemo(() => {
+    const currentPath = pathname || "/";
+    const segments = currentPath.split("/").filter(Boolean);
+    const baseSegments = [...segments];
+
+    let yearFromPath = "";
+    if (baseSegments.length > 0) {
+      const last = baseSegments[baseSegments.length - 1];
+      if (YEAR_COLUMN_REGEX.test(last)) {
+        yearFromPath = last;
+        baseSegments.pop();
+      }
+    }
+
+    let datasetFromPath = "";
+    if (baseSegments.length > 1) {
+      datasetFromPath = baseSegments[baseSegments.length - 1].toLowerCase();
+      baseSegments.pop();
+    }
+
+    const basePath = `/${baseSegments.join("/")}`;
+    return {
+      basePath: basePath === "" ? "/" : basePath,
+      datasetSlug: datasetFromPath,
+      year: yearFromPath,
+    };
+  }, [pathname]);
+
   const [openId, setOpenId] = useState<string | null>(null);
-  const [year, setYear] = useState<string>("");
+  const [year, setYear] = useState<string>(pathInfo.year);
   const [yearOptions, setYearOptions] = useState<string[]>([]);
-  const [selectedDatasetKey, setSelectedDatasetKey] = useState<string>("");
-  const [industry, setIndustry] = useState<string>("");
-  const [datasetCache, setDatasetCache] = useState<Record<string, ParsedDataset>>({});
+  const [selectedDatasetKey, setSelectedDatasetKey] = useState<string>(
+    pathInfo.datasetSlug
+  );
+  const [datasetCache, setDatasetCache] = useState<
+    Record<string, ParsedDataset>
+  >({});
   const [chartData, setChartData] = useState<SankeyChartData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -289,7 +344,15 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
     const raw = page?.title ?? "";
     return raw.trim() || "Government Fiscal Operations";
   })();
-  const heroParagraph = firstParagraphFromHtml(page?.content) || DEFAULT_HERO_PARAGRAPH;
+  const heroParagraph =
+    firstParagraphFromHtml(page?.content) || DEFAULT_HERO_PARAGRAPH;
+
+  useEffect(() => {
+    if (!pathInfo.year) {
+      return;
+    }
+    setYear((current) => (current === pathInfo.year ? current : pathInfo.year));
+  }, [pathInfo.year]);
 
   const fiscalNodes = useMemo(
     () =>
@@ -299,16 +362,41 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
     [data]
   );
 
-  const datasets = useMemo(
-    () =>
-      fiscalNodes.map((node) => ({
-        key: node.slug || String(node.databaseId),
+  const datasets = useMemo(() => {
+    const seen = new Set<string>();
+    return fiscalNodes.map((node) => {
+      const baseSlug = datasetPathSegment(node);
+      let slug = baseSlug;
+      let counter = 1;
+      while (seen.has(slug)) {
+        slug = `${baseSlug}-${counter++}`;
+      }
+      seen.add(slug);
+      return {
+        key: slug,
+        pathSegment: slug,
+        rawSlug: (node.slug ?? "").trim().toLowerCase(),
         node,
         title: node.title ?? "Untitled",
-      })),
-    [fiscalNodes]
-  );
+      };
+    });
+  }, [fiscalNodes]);
 
+  useEffect(() => {
+    if (!pathInfo.datasetSlug) {
+      return;
+    }
+    const slugFromPath = pathInfo.datasetSlug;
+    const match = datasets.find(
+      (item) => item.key === slugFromPath || item.rawSlug === slugFromPath
+    );
+    if (!match) {
+      return;
+    }
+    setSelectedDatasetKey((current) =>
+      current === match.key ? current : match.key
+    );
+  }, [datasets, pathInfo.datasetSlug]);
   useEffect(() => {
     if (datasets.length === 0) {
       setSelectedDatasetKey("");
@@ -317,7 +405,10 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
       return;
     }
 
-    if (!selectedDatasetKey || !datasets.some((item) => item.key === selectedDatasetKey)) {
+    if (
+      !selectedDatasetKey ||
+      !datasets.some((item) => item.key === selectedDatasetKey)
+    ) {
       setSelectedDatasetKey(datasets[0].key);
     }
   }, [datasets, selectedDatasetKey]);
@@ -326,15 +417,14 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
     if (datasets.length === 0) {
       return null;
     }
-    return datasets.find((item) => item.key === selectedDatasetKey) ?? datasets[0];
+    return (
+      datasets.find((item) => item.key === selectedDatasetKey) ?? datasets[0]
+    );
   }, [datasets, selectedDatasetKey]);
 
-  useEffect(() => {
-    if (activeDataset?.node?.slug) {
-      setIndustry(activeDataset.node.slug);
-    }
-  }, [activeDataset]);
-
+  const activeDatasetId = activeDataset?.node?.databaseId
+    ? String(activeDataset.node.databaseId)
+    : null;
   useEffect(() => {
     if (!activeDataset) {
       setChartData(null);
@@ -343,7 +433,8 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
     }
 
     const datasetKey = activeDataset.key;
-    const csvUrl = activeDataset.node.dataSetFields?.dataSetFile?.node?.mediaItemUrl;
+    const csvUrl =
+      activeDataset.node.dataSetFields?.dataSetFile?.node?.mediaItemUrl;
 
     if (!csvUrl) {
       setError("Dataset does not include a data file.");
@@ -356,12 +447,11 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
     if (cached) {
       setYearOptions(cached.yearColumns);
       if (cached.yearColumns.length > 0) {
-        setYear((current) => {
-          if (current && cached.yearColumns.includes(current)) {
-            return current;
-          }
-          return cached.yearColumns.length > 0 ? cached.yearColumns[0] : "";
-        });
+        setYear((current) =>
+          current && cached.yearColumns.includes(current)
+            ? current
+            : cached.yearColumns[0]
+        );
       }
       setLoading(false);
       setError(null);
@@ -391,14 +481,17 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
         const parsed = d3.csvParse(normalized);
         const columns = (parsed.columns ?? []).map((col) => col.trim());
         const yearCols = columns.filter((col) => YEAR_COLUMN_REGEX.test(col));
-        const sortedYearCols = [...yearCols].sort((a, b) => Number(b) - Number(a));
+        const sortedYearCols = [...yearCols].sort(
+          (a, b) => Number(b) - Number(a)
+        );
         const rows = parsed.map((row) => {
           const entry: Record<string, string> = {};
           Object.entries(row).forEach(([key, value]) => {
             if (!key) {
               return;
             }
-            entry[key.trim()] = typeof value === "string" ? value.trim() : value ?? "";
+            entry[key.trim()] =
+              typeof value === "string" ? value.trim() : (value ?? "");
           });
           return entry;
         });
@@ -470,6 +563,24 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
   }, [activeDataset, datasetCache, year]);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    if (!selectedDatasetKey || !year) {
+      return;
+    }
+
+    const baseSegments = (pathInfo.basePath || "/").split("/").filter(Boolean);
+    const nextSegments = [...baseSegments, selectedDatasetKey, year];
+    const nextPath = `/${nextSegments.join("/")}`;
+
+    if (window.location.pathname !== nextPath) {
+      window.history.replaceState(null, "", nextPath);
+    }
+  }, [pathInfo.basePath, selectedDatasetKey, year]);
+
+  useEffect(() => {
     if (!sankeyRef.current || !chartData) {
       return;
     }
@@ -502,7 +613,10 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
         .nodePadding(18)
         .extent([
           [margin.left, margin.top],
-          [Math.max(width - margin.right, margin.left + 1), Math.max(height - margin.bottom, margin.top + 1)],
+          [
+            Math.max(width - margin.right, margin.left + 1),
+            Math.max(height - margin.bottom, margin.top + 1),
+          ],
         ]);
 
       const graph = sankeyGenerator({
@@ -599,31 +713,18 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
           <SecondaryNav
             className="!font-baskervville"
             items={[
-              { label: "Macro Economy", href: "#" },
-              { label: "Government Fiscal Operations", href: "#" },
+              { label: "Macro Economy", href: "/macro-landing" },
+              {
+                label: "Government Fiscal Operations",
+                href: "/fiscal-dashboard",
+              },
               {
                 label: "Transparency in government Institutions",
-                href: (() => {
-                  const params = new URLSearchParams();
-                  if (industry) params.set("industry", industry);
-                  if (year) params.set("year", year);
-                  const qs = params.toString();
-                  return qs
-                    ? `/transparency-dashboard?${qs}`
-                    : "/transparency-dashboard";
-                })(),
+                href: "/transparency-dashboard",
               },
               {
                 label: "State Owned Enterprises",
-                href: (() => {
-                  const params = new URLSearchParams();
-                  if (industry) params.set("industry", industry);
-                  if (year) params.set("year", year);
-                  const qs = params.toString();
-                  return qs
-                    ? `/state-owned-dashboard?${qs}`
-                    : "/state-owned-dashboard";
-                })(),
+                href: "/state-owned-dashboard",
               },
             ]}
             activePath={pathname}
@@ -651,7 +752,10 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
                 {datasets.map((item) => {
                   const isActive = item.key === (activeDataset?.key ?? "");
                   return (
-                    <div key={item.key} className="flex flex-wrap xl:justify-center gap-4">
+                    <div
+                      key={item.key}
+                      className="flex flex-wrap xl:justify-center gap-4"
+                    >
                       <button
                         type="button"
                         onClick={() => setSelectedDatasetKey(item.key)}
@@ -704,7 +808,9 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
               ></svg>
               {statusMessage ? (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-sm font-medium text-slate-600">{statusMessage}</p>
+                  <p className="text-sm font-medium text-slate-600">
+                    {statusMessage}
+                  </p>
                 </div>
               ) : null}
             </div>
@@ -712,45 +818,7 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
         </div>
       </div>
 
-      {/* Card Section */}
-      <div className="bg-pink-100 py-12 md:py-16 xl:py-20">
-        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-          {/* Title */}
-          <div className="max-w-2xl text-left">
-            <span className="mb-2 text-sm/8 md:text-base/6 font-medium font-sourcecodepro text-slate-900 uppercase">
-              Advocata ai suggestions
-            </span>
-            <h2 className="text-2xl md:text-3xl leading-snug xl:text-4xl text-slate-900 font-montserrat font-bold mb-8">
-              Related datasets
-            </h2>
-          </div>
-
-          {/* Cards */}
-          <div className="mt-11 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <CardType6
-              title={"Sri Lanka - Food Security and Nutrition Indicators"}
-              excerpt={
-                "By comparison, just before the nation’s independence nearly 250 years ago, the 13 colonies had about 2.5 million residents. The projected world population on January 1, 2025, is 8,092,034,511, up 71,178,087 (0.89%) from New Year’s Day 2024. During January 2025, 4.2 births and 2.0 deaths are expected worldwide every second."
-              }
-              fileUrl={"#"}
-            />
-            <CardType6
-              title={"Effective crisis management leads Sri Lanka’s tourism."}
-              excerpt={
-                "By comparison, just before the nation’s independence nearly 250 years ago, the 13 colonies had about 2.5 million residents. The projected world population on January 1, 2025, is 8,092,034,511, up 71,178,087 (0.89%) from New Year’s Day 2024. During January 2025, 4.2 births and 2.0 deaths are expected worldwide every second."
-              }
-              fileUrl={"#"}
-            />
-            <CardType6
-              title={"TESLA Stock Data 2024"}
-              excerpt={
-                "By comparison, just before the nation’s independence nearly 250 years ago, the 13 colonies had about 2.5 million residents. The projected world population on January 1, 2025, is 8,092,034,511, up 71,178,087 (0.89%) from New Year’s Day 2024. During January 2025, 4.2 births and 2.0 deaths are expected worldwide every second."
-              }
-              fileUrl={"#"}
-            />
-          </div>
-        </div>
-      </div>
+      {activeDatasetId ? <RelatedDatasets datasetId={activeDatasetId} /> : null}
     </main>
   );
 }
@@ -773,12 +841,3 @@ export default PageFiscalDashboard;
     asPreview: !!ctx?.preview,
   };
 };
-
-
-
-
-
-
-
-
-
