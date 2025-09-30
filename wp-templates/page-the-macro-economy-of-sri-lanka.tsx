@@ -15,6 +15,11 @@ const MACRO_QUERY = gql`
         title
         excerpt
         uri
+        featuredImage {
+          node {
+            sourceUrl
+          }
+        }
       }
     }
   }
@@ -26,6 +31,11 @@ interface MacroPost {
   title: string;
   excerpt: string;
   uri: string;
+  featuredImage?: {
+    node?: {
+      sourceUrl?: string;
+    };
+  };
 }
 
 export default function PageMacroEconomyLanding() {
@@ -124,16 +134,19 @@ function MacroCard({
   post: MacroPost;
   gradient?: string;
 }) {
+  const featuredImg = post.featuredImage?.node?.sourceUrl;
+
   return (
     <div className="relative">
-      {/* Background */}
+      {/* Background with overlay */}
       <div
         className={`absolute inset-0 rounded-lg shadow-lg ${gradient}`}
         style={{
-          background:
-            "linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), " +
-            "linear-gradient(0deg, rgba(235,26,82,0.5), rgba(235,26,82,0.5)), " +
-            "url('/assets/images/card-imgs/mid-1.jpg') center/cover no-repeat",
+          background: `
+            linear-gradient(0deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+            linear-gradient(0deg, rgba(235,26,82,0.4), rgba(235,26,82,0.4)),
+            url(${featuredImg || "/assets/images/card-imgs/mid-1.jpg"}) center/cover no-repeat
+          `,
         }}
       ></div>
 
