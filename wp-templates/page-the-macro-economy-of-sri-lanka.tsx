@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { gql, useQuery } from "@apollo/client";
 import SecondaryNav from "@/src/components/SecondaryNav";
@@ -275,7 +275,108 @@ const ICONS: Record<string, JSX.Element> = {
 
 // Get slug from URI
 function getSlug(uri: string): string {
-  return uri?.split("/").filter(Boolean).pop() || "";
+  return uri?.split("/")?.filter(Boolean)?.pop() || "";
+}
+
+const MACRO_CACHE_KEY = "macroEconomyPostsCache:v1";
+let macroPostsCache: MacroPost[] | null = null;
+
+function saveMacroCache(posts: MacroPost[]) {
+  macroPostsCache = posts;
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.setItem(MACRO_CACHE_KEY, JSON.stringify(posts));
+  } catch {
+    // ignore storage failures
+  }
+}
+
+function readMacroCache(): MacroPost[] | null {
+  if (macroPostsCache) {
+    return macroPostsCache;
+  }
+  if (typeof window === "undefined") {
+    return null;
+  }
+  try {
+    const raw = window.sessionStorage.getItem(MACRO_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as MacroPost[];
+    if (Array.isArray(parsed)) {
+      macroPostsCache = parsed;
+      return parsed;
+    }
+  } catch {
+    // ignore parse errors
+  }
+  return null;
+}
+
+function useMacroEconomyPosts() {
+  const [posts, setPosts] = useState<MacroPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    const cached = readMacroCache();
+    if (cached && cached.length) {
+      setPosts(cached);
+      setLoading(false);
+    }
+
+    async function load() {
+      const endpoint = process.env.NEXT_PUBLIC_WORDPRESS_URL;
+      if (!endpoint) {
+        if (!cancelled) {
+          setError("WordPress endpoint is not configured.");
+          setLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: MACRO_QUERY }),
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load posts (" + response.status + ").");
+        }
+
+        const result = await response.json();
+        const nodes = result?.data?.macroEconomies?.nodes;
+        if (!Array.isArray(nodes)) {
+          throw new Error("Unexpected response structure.");
+        }
+
+        const nextPosts: MacroPost[] = nodes.filter(Boolean);
+
+        if (!cancelled) {
+          setPosts(nextPosts);
+          setError(null);
+          setLoading(false);
+          saveMacroCache(nextPosts);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Failed to load macro economy posts.");
+          setLoading(false);
+        }
+      }
+    }
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return { posts, loading, error };
 }
 
 export default function PageMacroEconomyLanding() {
