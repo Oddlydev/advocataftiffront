@@ -32,7 +32,7 @@ button {
   .search-input:-webkit-autofill,
   .search-input:-webkit-autofill:hover,
   .search-input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0px 1000px theme('colors.brandWhite') inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px theme('colors.white') inset !important;
   }
 
 }
