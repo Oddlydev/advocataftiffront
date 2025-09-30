@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { gql } from "@apollo/client";
@@ -44,7 +44,7 @@ interface FiscalDatasetNode {
   slug?: string | null;
   dataSetFields?: FiscalDatasetFields | null;
 }
-interface PageFiscalDashboardProps {
+interface PageFiscalOperationsProps {
   data?: {
     page?: {
       title?: string | null;
@@ -294,7 +294,7 @@ function buildSankeyData({
   };
 }
 
-function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
+function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
   const sankeyRef = useRef<SVGSVGElement | null>(null);
   const pathname = usePathname();
 
@@ -823,17 +823,17 @@ function PageFiscalDashboard({ data }: PageFiscalDashboardProps) {
   );
 }
 
-export default PageFiscalDashboard;
+export default PageFiscalOperations;
 
-(PageFiscalDashboard as any).query = PAGE_QUERY;
-(PageFiscalDashboard as any).variables = (
+(PageFiscalOperations as any).query = PAGE_QUERY;
+(PageFiscalOperations as any).variables = (
   seedNode: { databaseId?: number | string } = {},
   ctx: GetStaticPropsContext
 ) => {
   const databaseId = seedNode?.databaseId;
   if (!databaseId) {
     throw new Error(
-      "PageFiscalDashboard.variables: missing databaseId from seed node."
+      "PageFiscalOperations.variables: missing databaseId from seed node."
     );
   }
   return {
