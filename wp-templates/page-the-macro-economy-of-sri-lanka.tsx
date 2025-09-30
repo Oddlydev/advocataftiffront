@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { usePathname } from "next/navigation";
 import SecondaryNav from "@/src/components/SecondaryNav";
@@ -53,11 +53,11 @@ function MacroCard({ post }: { post: MacroPost }) {
             bg-white/10 backdrop-blur-lg border border-white/20 shadow-inner
             text-sm xl:text-base font-semibold font-montserrat tracking-tight"
           >
-            {/* Dynamic Icon only */}
+            {/* Dynamic Icon */}
             {post.macroDashboardsCardIcon && (
               <img
                 src={post.macroDashboardsCardIcon}
-                alt=""
+                alt={`${post.title} icon`}
                 className="w-6 h-6 object-contain"
               />
             )}
