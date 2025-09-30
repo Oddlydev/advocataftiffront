@@ -2,12 +2,11 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
-import { gql, useQuery } from "@apollo/client";
 import SecondaryNav from "@/src/components/SecondaryNav";
 import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
 
 // GraphQL query
-const MACRO_QUERY = gql`
+const MACRO_QUERY = `
   query GetMacroEconomyPosts {
     macroEconomies(first: 10) {
       nodes {
@@ -24,6 +23,7 @@ const MACRO_QUERY = gql`
     }
   }
 `;
+
 
 // Define type for posts
 interface MacroPost {
@@ -381,17 +381,19 @@ function useMacroEconomyPosts() {
 
 export default function PageMacroEconomyLanding() {
   const pathname = usePathname();
-  const { data, loading, error } = useQuery(MACRO_QUERY);
+  const { posts, loading, error } = useMacroEconomyPosts();
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading macro economy data</p>;
+  const { col1, col2, col3 } = useMemo(() => {
+    return {
+      col1: posts.slice(0, 2),
+      col2: posts.slice(2, 5),
+      col3: posts.slice(5, 7),
+    };
+  }, [posts]);
 
-  const posts: MacroPost[] = data?.macroEconomies?.nodes ?? [];
-
-  // keep the same 2-3-2 grid layout
-  const col1: MacroPost[] = posts.slice(0, 2);
-  const col2: MacroPost[] = posts.slice(2, 5);
-  const col3: MacroPost[] = posts.slice(5, 7);
+  const hasPosts = posts.length > 0;
+  const showPlaceholder = loading && !hasPosts;
+  const showError = !!error && !hasPosts;
 
   return (
     <main>
