@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Papa from "papaparse";
+import { color } from "d3";
 
 interface CsvTransparencyProps {
   csvUrl: string;
@@ -73,7 +74,7 @@ export default function CsvTransparency({
 
   if (error) return <p className="text-red-500">{error}</p>;
   if (rows.length === 0)
-    return <p className="text-gray-500">Loading dataset...</p>;
+    return <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">Loading dataset...</p>;
 
   const headers = rows[0];
   const dataRows = rows.slice(1);
@@ -144,25 +145,25 @@ export default function CsvTransparency({
                   SOE
                 </th>
                 <th
-                  className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-center border-b text-lg/7 font-semibold uppercase text-brand-white/60"
+                  className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
                   colSpan={3}
                 >
                   Annual report
                 </th>
                 <th
-                  className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-center border-b text-lg/7 font-semibold uppercase text-brand-white/60"
+                  className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
                   colSpan={2}
                 >
                   Auditing Standards
                 </th>
                 <th
-                  className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-center border-b text-lg/7 font-semibold uppercase text-brand-white/60"
+                  className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
                   colSpan={2}
                 >
                   Right to Information
                 </th>
                 <th
-                  className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-center border-b text-lg/7 font-semibold uppercase text-brand-white/60"
+                  className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
                   colSpan={3}
                 >
                   Accessibility of Information
@@ -174,7 +175,7 @@ export default function CsvTransparency({
                 {headers.slice(1).map((h, i) => (
                   <th
                     key={i}
-                    className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-left text-base/6 font-semibold uppercase text-brand-white w-[160px]"
+                    className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-left text-base/6 font-semibold font-family-sourcecodepro uppercase text-brand-white w-[160px] md:w-[225px] xl:w-[250px] align-baseline"
                   >
                     {h}
                   </th>
@@ -183,6 +184,21 @@ export default function CsvTransparency({
             </thead>
 
             <tbody className="divide-y divide-gray-300">
+              {/* Sector row example */}
+              <tr className="border-gray-100">
+                <td className="sector sticky top-0 left-0 z-20 bg-brand-white text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold w-[160px] md:whitespace-nowrap">
+                    Aviation
+                </td>
+                {Array(headers.length - 1)
+                    .fill(null)
+                    .map((_, idx) => (
+                    <td
+                        key={idx}
+                        className="bg-brand-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro text-gray-500 w-[160px]"
+                    ></td>
+                  ))}
+              </tr>
+
               {visibleRows.length === 0 && (
                 <tr>
                   <td
@@ -200,7 +216,7 @@ export default function CsvTransparency({
                   {row.map((cell, i) => (
                     <td
                       key={i}
-                      className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium 
+                      className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-medium
             ${
               i === 0
                 ? "sticky left-0 text-brand-black md:whitespace-nowrap"

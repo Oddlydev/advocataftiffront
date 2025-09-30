@@ -503,14 +503,14 @@ export default function PageTransparencyDashboard(): JSX.Element {
 
           {/* CSV Table */}
           {isLoading ? (
-            <p className="text-gray-500">Loading dataset...</p>
+            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">Loading dataset...</p>
           ) : currentCsvUrl ? (
             <CsvTableTransparency
               csvUrl={currentCsvUrl}
               filterQuery={queryInput}
             />
           ) : (
-            <p className="text-gray-500">No dataset found for selection.</p>
+            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">No dataset found for selection.</p>
           )}
         </div>
       </section>

@@ -605,8 +605,8 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
       svg.selectAll("*").remove();
 
       const sankeyGenerator = d3Sankey<SankeyNodeDatum, SankeyLinkDatum>()
-        .nodeWidth(15)
-        .nodePadding(22) // increased gap
+        .nodeWidth(40)
+        .nodePadding(21) // increased gap
         .extent([
           [margin.left, margin.top],
           [
