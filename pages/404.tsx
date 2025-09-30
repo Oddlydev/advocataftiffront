@@ -24,7 +24,7 @@ const Custom404: NextPage = () => {
               <PrimaryButton href="/datasets">Search datasets</PrimaryButton>
               <WhiteIconButton
                 text="Go back home"
-                href="/"
+                link="/"
                 icon={
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
