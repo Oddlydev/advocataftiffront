@@ -100,7 +100,7 @@ export default function SearchField({
         </div>
 
         {/* Right side controls */}
-        <div className="absolute inset-y-0 right-2 flex items-center space-x-2">
+        <div className="absolute inset-y-0 right-2 pr-2 flex items-center space-x-2">
           {/* Clear Button */}
           {query && (
             <button
@@ -109,7 +109,7 @@ export default function SearchField({
                 if (!isControlled) setInternal("");
                 onChange?.("");
               }}
-              className="flex items-center text-slate-600 hover:text-slate-800"
+              className="flex items-center text-slate-600"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
