@@ -1,4 +1,6 @@
 // pages/404.tsx
+import PrimaryButton from "@/src/components/Buttons/PrimaryBtn";
+import WhiteIconButton from "@/src/components/Buttons/WhiteIconBtn";
 import { NextPage } from "next";
 import Link from "next/link";
 
@@ -27,12 +29,37 @@ const Custom404: NextPage = () => {
 
           {/* Buttons */}
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <Link href="#" className="btn btn-primary">
-              Search datasets
-            </Link>
-            <Link href="/" className="text-sm btn btn-white">
-              Go back home <span aria-hidden="true">&rarr;</span>
-            </Link>
+            <PrimaryButton href="/datasets">Search Datasets</PrimaryButton>
+            <WhiteIconButton
+              text="Go Back Home"
+              link="/"
+              icon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <path
+                    d="M12.025 4.94168L17.0834 10L12.025 15.0583"
+                    stroke="#4B5563"
+                    stroke-width="1.8"
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M2.91669 10H16.9417"
+                    stroke="#4B5563"
+                    stroke-width="1.8"
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              }
+            />
           </div>
         </div>
       </div>
