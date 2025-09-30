@@ -691,11 +691,42 @@ export default function PageMacroEconomyLanding() {
                                                 <path d="M7 7.5H11" stroke="#F8FAFC" stroke-width="1.5" stroke-linecap="round"/>
                                                 <path d="M5 20.5C6.07093 18.553 7.52279 13.5189 10.3063 13.5189C12.2301 13.5189 12.7283 15.9717 14.6136 15.9717C17.8572 15.9717 17.387 10.5 21 10.5" stroke="#F8FAFC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                             </svg> --> */}
-                    <img
-                      src="<?php echo get_template_directory_uri(); ?>/assets/images/card-imgs/briefcase.png"
-                      alt="briefcase icon"
-                      className="w-6 h-6"
-                    />
+                    <svg
+                      width="26"
+                      height="27"
+                      viewBox="0 0 26 27"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1.002 6.38892L1.00008 11.2752C0.998933 14.2094 0.998355 15.6765 1.90964 16.5881C2.82093 17.4998 4.28803 17.4998 7.22223 17.4999L12.5566 17.5C15.4894 17.5001 16.9557 17.5001 17.8669 16.5891C18.7781 15.6781 18.7785 14.2117 18.779 11.2789L18.78 6.38892"
+                        stroke="#F8FAFC"
+                        stroke-width="1.33335"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M6.77783 4.61115C6.77783 3.36272 6.77783 2.73851 7.07744 2.29011C7.20714 2.09599 7.37381 1.92932 7.56794 1.79961C8.01633 1.5 8.64055 1.5 9.889 1.5C11.1374 1.5 11.7616 1.5 12.21 1.79961C12.4041 1.92932 12.5708 2.09599 12.7005 2.29011C13.0001 2.73851 13.0001 3.36272 13.0001 4.61115"
+                        stroke="#F8FAFC"
+                        stroke-width="1.33335"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M16.9996 4.61123L2.77797 4.61108C1.79622 4.61115 1.00009 5.40725 1 6.389C1.00009 8.35255 2.59236 9.94483 4.55591 9.94501H15.2216C17.1852 9.94492 18.7774 8.35273 18.7775 6.38915C18.7774 5.40738 17.9813 4.61129 16.9996 4.61123Z"
+                        stroke="#F8FAFC"
+                        stroke-width="1.33335"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M24.9994 25.5L19 19.5M19.0006 25.5L25 19.5"
+                        stroke="#F8FAFC"
+                        stroke-width="1.50001"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
                     <span>Unemployment</span>
                   </div>
 
