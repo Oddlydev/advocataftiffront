@@ -580,109 +580,109 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
     }
   }, [pathInfo.basePath, selectedDatasetKey, year]);
 
-useEffect(() => {
-  if (!sankeyRef.current || !chartData) return;
+  useEffect(() => {
+    if (!sankeyRef.current || !chartData) return;
 
-  const svg = d3.select(sankeyRef.current);
+    const svg = d3.select(sankeyRef.current);
 
-  const renderChart = () => {
-    const container = sankeyRef.current?.parentElement;
-    if (!container) return;
+    const renderChart = () => {
+      const container = sankeyRef.current?.parentElement;
+      if (!container) return;
 
-    const width = container.clientWidth || 0;
-    const height = container.clientHeight || 0;
+      const width = container.clientWidth || 0;
+      const height = container.clientHeight || 0;
 
-    const isMobile = window.innerWidth < 640;
-    const isTablet = window.innerWidth >= 640 && window.innerWidth < 1024;
+      const isMobile = window.innerWidth < 640;
+      const isTablet = window.innerWidth >= 640 && window.innerWidth < 1024;
 
-    const margin = {
-      top: 35,
-      right: isMobile ? 150 : isTablet ? 170 : 220,
-      bottom: 20,
-      left: 16,
+      const margin = {
+        top: 35,
+        right: isMobile ? 150 : isTablet ? 170 : 220,
+        bottom: 20,
+        left: 16,
+      };
+
+      svg.selectAll("*").remove();
+
+      const sankeyGenerator = d3Sankey<SankeyNodeDatum, SankeyLinkDatum>()
+        .nodeWidth(15)
+        .nodePadding(22) // increased gap
+        .extent([
+          [margin.left, margin.top],
+          [
+            Math.max(width - margin.right, margin.left + 1),
+            Math.max(height - margin.bottom, margin.top + 1),
+          ],
+        ]);
+
+      const graph = sankeyGenerator({
+        nodes: chartData.nodes.map((node) => ({ ...node })),
+        links: chartData.links.map((link) => ({ ...link })),
+      });
+
+      const color = d3
+        .scaleOrdinal<string>()
+        .domain(graph.nodes.map((node) => node.key))
+        .range(COLOR_PALETTE);
+
+      svg
+        .append("g")
+        .attr("fill", "none")
+        .selectAll("path")
+        .data(graph.links)
+        .enter()
+        .append("path")
+        .attr("d", sankeyLinkHorizontal())
+        .attr("stroke", (d) => color((d.source as SankeyNodeDatum).key))
+        .attr("stroke-width", (d) => Math.max(1, d.width ?? 1))
+        .attr("stroke-opacity", 0.35);
+
+      const nodeGroup = svg
+        .append("g")
+        .selectAll("g")
+        .data(graph.nodes)
+        .enter()
+        .append("g");
+
+      nodeGroup
+        .append("rect")
+        .attr("x", (d) => d.x0 ?? 0)
+        .attr("y", (d) => d.y0 ?? 0)
+        .attr("height", (d) => Math.max(1, (d.y1 ?? 0) - (d.y0 ?? 0)))
+        .attr("width", (d) => Math.max(1, (d.x1 ?? 0) - (d.x0 ?? 0)))
+        .attr("fill", (d) => color(d.key))
+        .attr("stroke", "none");
+
+      const fontSize = isMobile ? 6 : isTablet ? 10 : 11;
+
+      nodeGroup
+        .append("text")
+        .attr("x", (d) => (d.x1 ?? 0) + 10)
+        .attr("y", (d) => ((d.y0 ?? 0) + (d.y1 ?? 0)) / 2)
+        .attr("text-anchor", "start")
+        .attr("dominant-baseline", "middle")
+        .style("font-size", `${fontSize}px`)
+        .style("font-weight", "600")
+        .style("font-family", "Source Code Pro, monospace")
+        .style("fill", "#1A1A1A")
+        .text((d) => d.name)
+        .append("tspan")
+        .attr("x", (d) => (d.x1 ?? 0) + 10)
+        .attr("dy", "1.2em")
+        .style("font-weight", "400")
+        .style("fill", "#475569")
+        .text((d) => {
+          if (!Number.isFinite(d.rawValue) || d.rawValue <= 0) return "";
+          const formatted = formatNumber(d.rawValue);
+          return chartData.unit ? `${formatted} ${chartData.unit}` : formatted;
+        });
     };
 
-    svg.selectAll("*").remove();
+    renderChart();
 
-    const sankeyGenerator = d3Sankey<SankeyNodeDatum, SankeyLinkDatum>()
-      .nodeWidth(15)
-      .nodePadding(22) // increased gap
-      .extent([
-        [margin.left, margin.top],
-        [
-          Math.max(width - margin.right, margin.left + 1),
-          Math.max(height - margin.bottom, margin.top + 1),
-        ],
-      ]);
-
-    const graph = sankeyGenerator({
-      nodes: chartData.nodes.map((node) => ({ ...node })),
-      links: chartData.links.map((link) => ({ ...link })),
-    });
-
-    const color = d3
-      .scaleOrdinal<string>()
-      .domain(graph.nodes.map((node) => node.key))
-      .range(COLOR_PALETTE);
-
-    svg
-      .append("g")
-      .attr("fill", "none")
-      .selectAll("path")
-      .data(graph.links)
-      .enter()
-      .append("path")
-      .attr("d", sankeyLinkHorizontal())
-      .attr("stroke", (d) => color((d.source as SankeyNodeDatum).key))
-      .attr("stroke-width", (d) => Math.max(1, d.width ?? 1))
-      .attr("stroke-opacity", 0.35);
-
-    const nodeGroup = svg
-      .append("g")
-      .selectAll("g")
-      .data(graph.nodes)
-      .enter()
-      .append("g");
-
-    nodeGroup
-      .append("rect")
-      .attr("x", (d) => d.x0 ?? 0)
-      .attr("y", (d) => d.y0 ?? 0)
-      .attr("height", (d) => Math.max(1, (d.y1 ?? 0) - (d.y0 ?? 0)))
-      .attr("width", (d) => Math.max(1, (d.x1 ?? 0) - (d.x0 ?? 0)))
-      .attr("fill", (d) => color(d.key))
-      .attr("stroke", "none");
-
-    const fontSize = isMobile ? 8 : isTablet ? 10 : 12;
-
-    nodeGroup
-      .append("text")
-      .attr("x", (d) => (d.x1 ?? 0) + 10)
-      .attr("y", (d) => ((d.y0 ?? 0) + (d.y1 ?? 0)) / 2)
-      .attr("text-anchor", "start")
-      .attr("dominant-baseline", "middle")
-      .style("font-size", `${fontSize}px`)
-      .style("font-weight", "600")
-      .style("font-family", "Source Code Pro, monospace")
-      .style("fill", "#1A1A1A")
-      .text((d) => d.name)
-      .append("tspan")
-      .attr("x", (d) => (d.x1 ?? 0) + 10)
-      .attr("dy", "1.2em")
-      .style("font-weight", "400")
-      .style("fill", "#475569")
-      .text((d) => {
-        if (!Number.isFinite(d.rawValue) || d.rawValue <= 0) return "";
-        const formatted = formatNumber(d.rawValue);
-        return chartData.unit ? `${formatted} ${chartData.unit}` : formatted;
-      });
-  };
-
-  renderChart();
-
-  window.addEventListener("resize", renderChart);
-  return () => window.removeEventListener("resize", renderChart);
-}, [chartData]);
+    window.addEventListener("resize", renderChart);
+    return () => window.removeEventListener("resize", renderChart);
+  }, [chartData]);
 
 
   const statusMessage = useMemo(() => {
