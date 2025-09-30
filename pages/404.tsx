@@ -1,25 +1,37 @@
 // pages/404.tsx
-import Link from "next/link";
 import { NextPage } from "next";
-import PrimaryButton from "@/src/components/Buttons/PrimaryBtn";
+import Link from "next/link";
 
 const Custom404: NextPage = () => {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-brand-white">
-      <div className="mx-auto max-w-2xl px-5 md:px-10 xl:px-24 text-center py-20">
-        {/* Error code */}
-        <h1 className="text-7xl font-bold font-montserrat tracking-tight text-brand-1-900 sm:text-8xl">
-          404
-        </h1>
+    <main id="main">
+      <div className="grid min-h-screen place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
+        <div className="text-center">
+          {/* Error label */}
+          <p className="text-base leading-snug font-sourcecodepro font-semibold text-brand-1-600">
+            404 error
+          </p>
 
-        {/* Message */}
-        <p className="mt-6 text-lg text-gray-600 font-sourcecodepro">
-          Oops! The page you’re looking for doesn’t exist.
-        </p>
+          {/* Heading */}
+          <h1 className="mt-4 text-4xl md:text-5xl leading-snug font-bold font-montserrat tracking-tight text-balance text-slate-950">
+            Oops! This page is missing
+          </h1>
 
-        {/* Back to home button */}
-        <div className="mt-10">
-          <PrimaryButton href="/">Back to Home</PrimaryButton>
+          {/* Description */}
+          <p className="mt-6 text-lg font-baskervville text-slate-800 max-w-xl mx-auto">
+            We couldn’t find the page you were looking for. Don’t worry—you can
+            still explore datasets and insights across our platform.
+          </p>
+
+          {/* Buttons */}
+          <div className="mt-10 flex items-center justify-center gap-x-6">
+            <Link href="#" className="btn btn-primary">
+              Search datasets
+            </Link>
+            <Link href="/" className="text-sm btn btn-white">
+              Go back home <span aria-hidden="true">&rarr;</span>
+            </Link>
+          </div>
         </div>
       </div>
     </main>
