@@ -6,13 +6,24 @@ import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
 import "tiny-slider/dist/tiny-slider.css";
 import * as d3 from "d3";
 
+type InterestRateDatum = {
+  year: number;
+  AWNFDR: number;
+  AWNDR: number;
+  AWNLR: number;
+  AWPLR: number;
+};
+
+const rateKeys = ["AWNFDR", "AWNDR", "AWNLR", "AWPLR"] as const;
+type RateKey = typeof rateKeys[number];
+
 // ---- Chart Component ----
 const AverageAnnualInflationChart = () => {
-  const chartRef = useRef(null);
-  const tooltipRef = useRef(null);
+  const chartRef = useRef<SVGSVGElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const data = [
+    const data: InterestRateDatum[] = [
                 { year: 2010, AWNFDR: 3.1, AWNDR: 4.5, AWNLR: 2.2, AWPLR: 1.5 },
                 { year: 2011, AWNFDR: 4.0, AWNDR: 5.2, AWNLR: 3.0, AWPLR: 2.0 },
                 { year: 2012, AWNFDR: 6.6, AWNDR: 7.1, AWNLR: 6.2, AWPLR: 3.5 },
@@ -30,7 +41,7 @@ const AverageAnnualInflationChart = () => {
                 { year: 2024, AWNFDR: 5.5, AWNDR: 6.4, AWNLR: 4.9, AWPLR: 3.8 },
     ];
 
-    const colors = {
+    const colors: Record<RateKey, string> = {
                 AWNFDR: "#F58FAA",
                 AWNDR: "#1C0209",
                 AWNLR: "#A90E38",
@@ -38,13 +49,20 @@ const AverageAnnualInflationChart = () => {
     };
     
     const container = chartRef.current;
-    const tooltip = d3.select(tooltipRef.current)
-          .style("display", "none")
-          .style("border-radius", "var(--border-radius-rounded-md, 6px)")
-          .style("border", "1px solid var(--slate-200, #E2E8F0)")
-          .style("background", "var(--white, #FFF)")
-          .style("box-shadow", "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)")
-          .style("padding", "10px");
+    const tooltipEl = tooltipRef.current;
+
+    if (!container || !tooltipEl) {
+      return;
+    }
+
+    const tooltip = d3
+      .select(tooltipEl)
+      .style("display", "none")
+      .style("border-radius", "var(--border-radius-rounded-md, 6px)")
+      .style("border", "1px solid var(--slate-200, #E2E8F0)")
+      .style("background", "var(--white, #FFF)")
+      .style("box-shadow", "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)")
+      .style("padding", "10px");
 
     // Clear any existing svg content
     d3.select(container).selectAll("*").remove();
@@ -60,14 +78,15 @@ const AverageAnnualInflationChart = () => {
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // X scale
-    const x = d3.scalePoint()
-        .domain(data.map(d => d.year))
+    const x = d3.scalePoint<number>()
+        .domain(data.map((d) => d.year))
         .range([0, width])
         .padding(0.5);
 
     // Y scale (automatic)
+    const yMax = d3.max(data, (d) => Math.max(d.AWNFDR, d.AWNDR, d.AWNLR, d.AWPLR)) ?? 0;
     const y = d3.scaleLinear()
-        .domain([0, d3.max(data, d => Math.max(d.AWNFDR, d.AWNDR, d.AWNLR, d.AWPLR)) * 1.1])
+        .domain([0, yMax * 1.1])
         .range([height, 0]);
     
     // X-axis
@@ -91,29 +110,31 @@ const AverageAnnualInflationChart = () => {
         .text("Interest Rate (%)");
 
     // Horizontal grid lines
-    svg.append("g")
-    .attr("class", "grid")
-    .call(
-        d3.axisLeft(y)
-        .tickSize(-width)
-        .tickFormat("")
-    )
-    .selectAll("line")
-    .attr("stroke", "#CBD5E1")
-    .attr("stroke-width", 1)
-    .attr("stroke-dasharray", "4,4");
+    const gridGroup = svg
+        .append("g")
+        .attr("class", "grid")
+        .call(
+            d3.axisLeft(y)
+            .tickSize(-width)
+            .tickFormat(() => "")
+        );
+
+    gridGroup
+        .selectAll("line")
+        .attr("stroke", "#CBD5E1")
+        .attr("stroke-width", 1)
+        .attr("stroke-dasharray", "4,4");
         
-    svg.select(".grid line").remove(); // remove axis line
-    svg.select(".grid path").remove();
+    gridGroup.select(".domain").remove();
 
     // Line generator
-    const lineGen = key => d3.line()
-        .x(d => x(d.year))
-        .y(d => y(d[key]))
+    const lineGen = (key: RateKey) => d3.line<InterestRateDatum>()
+        .x((d) => x(d.year)!)
+        .y((d) => y(d[key]))
         .curve(d3.curveMonotoneX);
 
     // Draw lines
-    Object.keys(colors).forEach(key => {
+    rateKeys.forEach((key) => {
         svg.append("path")
             .datum(data)
             .attr("fill", "none")
@@ -124,10 +145,10 @@ const AverageAnnualInflationChart = () => {
 
     // Dots & Tooltip
     data.forEach(d => {
-      Object.keys(colors).forEach(key => {
+            rateKeys.forEach((key) => {
         svg
           .append("circle")
-          .attr("cx", x(d.year))
+          .attr("cx", x(d.year)!)
           .attr("cy", y(d[key]))
           .attr("r", 4)
           .attr("fill", colors[key])
@@ -176,7 +197,7 @@ const AverageAnnualInflationChart = () => {
                                     </div>
               `);
           })
-          .on("mousemove", event => {
+          .on("mousemove", (event) => {
             const rect = container.getBoundingClientRect();
             tooltip
               .style("left", event.clientX - rect.left + 15 + "px")
@@ -196,24 +217,33 @@ const AverageAnnualInflationChart = () => {
       svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
     };
 
-    const zoomInBtn = document.getElementById("zoomInBtn");
-    const zoomOutBtn = document.getElementById("zoomOutBtn");
-    const resetZoomBtn = document.getElementById("resetZoomBtn");
+    const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn");
+    const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn");
+    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn");
 
-    zoomInBtn?.addEventListener("click", () => {
+    const onZoomIn = () => {
       currentScale *= scaleStep;
       applyZoom();
-    });
-
-    zoomOutBtn?.addEventListener("click", () => {
+    };
+    const onZoomOut = () => {
       currentScale /= scaleStep;
       applyZoom();
-    });
-
-    resetZoomBtn?.addEventListener("click", () => {
+    };
+    const onReset = () => {
       currentScale = 1;
       applyZoom();
-    });
+    };
+
+    zoomInBtn?.addEventListener("click", onZoomIn);
+    zoomOutBtn?.addEventListener("click", onZoomOut);
+    resetZoomBtn?.addEventListener("click", onReset);
+
+    return () => {
+      zoomInBtn?.removeEventListener("click", onZoomIn);
+      zoomOutBtn?.removeEventListener("click", onZoomOut);
+      resetZoomBtn?.removeEventListener("click", onReset);
+      d3.select(container).selectAll("*").remove();
+    };
   }, []);
 
   return (

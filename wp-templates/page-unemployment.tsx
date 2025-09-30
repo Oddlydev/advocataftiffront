@@ -6,13 +6,18 @@ import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
 import "tiny-slider/dist/tiny-slider.css";
 import * as d3 from "d3";
 
+type UnemploymentDatum = {
+  year: number;
+  UnemploymentRate: number;
+};
+
 // ---- Chart Component ----
 const UnemploymentChart = () => {
-  const chartRef = useRef(null);
-  const tooltipRef = useRef(null);
+  const chartRef = useRef<SVGSVGElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const data = [
+    const data: UnemploymentDatum[] = [
         { year: 2013, UnemploymentRate: 13.0 },
         { year: 2014, UnemploymentRate: 5.1 },
         { year: 2015, UnemploymentRate: 8.6 },
@@ -30,7 +35,13 @@ const UnemploymentChart = () => {
     const color = "#CF1244"; // single line color
 
     const container = chartRef.current;
-    const tooltip = d3.select(tooltipRef.current);
+    const tooltipEl = tooltipRef.current;
+
+    if (!container || !tooltipEl) {
+      return;
+    }
+
+    const tooltip = d3.select(tooltipEl);
 
     // Clear any existing svg content
     d3.select(container).selectAll("*").remove();
@@ -46,8 +57,8 @@ const UnemploymentChart = () => {
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // X & Y scales
-    const x = d3.scalePoint().domain(data.map(d => d.year)).range([0, width]).padding(0.5);
-    const yMax = d3.max(data, d => d.UnemploymentRate);
+    const x = d3.scalePoint<number>().domain(data.map((d) => d.year)).range([0, width]).padding(0.5);
+    const yMax = d3.max(data, (d) => d.UnemploymentRate) ?? 0;
     const y = d3.scaleLinear().domain([0, yMax + 2]).range([height, 0]);
         
     // X-axis
@@ -72,26 +83,29 @@ const UnemploymentChart = () => {
       .text("Unemployment Rate (%)");
 
     // Horizontal grid lines
-    svg.append("g")
-    .attr("class", "grid")
-    .call(
-        d3.axisLeft(y)
-        .tickSize(-width)
-        .tickFormat("")
-    )
-    .selectAll("line")
-    .attr("stroke", "#CBD5E1")
-    .attr("stroke-width", 1)
-    .attr("stroke-dasharray", "4,4");
-    
-    svg.select(".grid line").remove(); // remove axis line
-    svg.select(".grid path").remove();
+    const gridGroup = svg
+      .append("g")
+      .attr("class", "grid")
+      .call(
+        d3
+          .axisLeft(y)
+          .tickSize(-width)
+          .tickFormat(() => "")
+      );
+
+    gridGroup
+      .selectAll("line")
+      .attr("stroke", "#CBD5E1")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "4,4");
+
+    gridGroup.select(".domain").remove();
 
     // Line generator
     const lineGen = d3
-      .line()
-      .x(d => x(d.year))
-      .y(d => y(d.UnemploymentRate))
+      .line<UnemploymentDatum>()
+      .x((d) => x(d.year)!)
+      .y((d) => y(d.UnemploymentRate))
       .curve(d3.curveMonotoneX);
 
     // Draw single line
@@ -107,7 +121,7 @@ const UnemploymentChart = () => {
     data.forEach(d => {
       svg
         .append("circle")
-        .attr("cx", x(d.year))
+        .attr("cx", x(d.year)!)
         .attr("cy", y(d.UnemploymentRate))
         .attr("r", 4)
         .attr("fill", color)
@@ -127,7 +141,7 @@ const UnemploymentChart = () => {
               </div>
             `);
         })
-        .on("mousemove", event => {
+        .on("mousemove", (event) => {
           const rect = container.getBoundingClientRect();
           tooltip
             .style("left", event.clientX - rect.left + 15 + "px")
@@ -146,14 +160,33 @@ const UnemploymentChart = () => {
       svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
     };
 
-    const zoomInBtn = document.querySelector("#zoomInBtn");
-    const zoomOutBtn = document.querySelector("#zoomOutBtn");
-    const resetZoomBtn = document.querySelector("#resetZoomBtn");
+    const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn");
+    const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn");
+    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn");
 
-    zoomInBtn?.addEventListener("click", () => { currentScale *= scaleStep; applyZoom(); });
-    zoomOutBtn?.addEventListener("click", () => { currentScale /= scaleStep; applyZoom(); });
-    resetZoomBtn?.addEventListener("click", () => { currentScale = 1; applyZoom(); });
-    
+    const onZoomIn = () => {
+      currentScale *= scaleStep;
+      applyZoom();
+    };
+    const onZoomOut = () => {
+      currentScale /= scaleStep;
+      applyZoom();
+    };
+    const onReset = () => {
+      currentScale = 1;
+      applyZoom();
+    };
+
+    zoomInBtn?.addEventListener("click", onZoomIn);
+    zoomOutBtn?.addEventListener("click", onZoomOut);
+    resetZoomBtn?.addEventListener("click", onReset);
+
+    return () => {
+      zoomInBtn?.removeEventListener("click", onZoomIn);
+      zoomOutBtn?.removeEventListener("click", onZoomOut);
+      resetZoomBtn?.removeEventListener("click", onReset);
+      d3.select(container).selectAll("*").remove();
+    };
   }, []);
 
   return (

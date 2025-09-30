@@ -6,13 +6,23 @@ import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
 import "tiny-slider/dist/tiny-slider.css";
 import * as d3 from "d3";
 
+type InflationDatum = {
+  year: number;
+  all: number;
+  food: number;
+  nonFood: number;
+};
+
+const inflationKeys = ["all", "food", "nonFood"] as const;
+type InflationKey = typeof inflationKeys[number];
+
 // ---- Chart Component ----
 const AverageAnnualInflationChart = () => {
-  const chartRef = useRef(null);
-  const tooltipRef = useRef(null);
+  const chartRef = useRef<SVGSVGElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const data = [
+    const data: InflationDatum[] = [
       { year: 2015, all: 3.1, food: 4.5, nonFood: 2.2 },
       { year: 2016, all: 4.0, food: 5.2, nonFood: 3.0 },
       { year: 2017, all: 6.6, food: 7.1, nonFood: 6.2 },
@@ -25,14 +35,20 @@ const AverageAnnualInflationChart = () => {
       { year: 2024, all: 5.5, food: 6.4, nonFood: 4.9 },
     ];
 
-    const colors = {
+    const colors: Record<InflationKey, string> = {
       all: "#4B0619",
       food: "#EB1A52",
       nonFood: "#F58FAA",
     };
 
     const container = chartRef.current;
-    const tooltip = d3.select(tooltipRef.current);
+    const tooltipEl = tooltipRef.current;
+
+    if (!container || !tooltipEl) {
+      return;
+    }
+
+    const tooltip = d3.select(tooltipEl);
 
     // Clear any existing svg content
     d3.select(container).selectAll("*").remove();
@@ -48,8 +64,8 @@ const AverageAnnualInflationChart = () => {
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // X & Y scales
-    const x = d3.scalePoint().domain(data.map(d => d.year)).range([0, width]).padding(0.5);
-    const yMax = d3.max(data, d => Math.max(d.all, d.food, d.nonFood));
+    const x = d3.scalePoint<number>().domain(data.map((d) => d.year)).range([0, width]).padding(0.5);
+    const yMax = d3.max(data, (d) => Math.max(d.all, d.food, d.nonFood)) ?? 0;
     const y = d3.scaleLinear().domain([0, yMax + 2]).range([height, 0]);
     
     // X-axis
@@ -74,31 +90,33 @@ const AverageAnnualInflationChart = () => {
       .text("Inflation Rate (%)");
 
     // Horizontal grid lines
-    svg.append("g")
+    const gridGroup = svg
+    .append("g")
     .attr("class", "grid")
     .call(
         d3.axisLeft(y)
         .tickSize(-width)
-        .tickFormat("")
-    )
+        .tickFormat(() => "")
+    );
+
+    gridGroup
     .selectAll("line")
     .attr("stroke", "#CBD5E1")
     .attr("stroke-width", 1)
     .attr("stroke-dasharray", "4,4");
         
-    svg.select(".grid line").remove(); // remove axis line
-    svg.select(".grid path").remove();
+    gridGroup.select(".domain").remove();
 
     // Line generator
-    const lineGen = key =>
+    const lineGen = (key: InflationKey) =>
       d3
-        .line()
-        .x(d => x(d.year))
-        .y(d => y(d[key]))
+        .line<InflationDatum>()
+        .x((d) => x(d.year)!)
+        .y((d) => y(d[key]))
         .curve(d3.curveMonotoneX);
 
     // Draw lines
-    Object.keys(colors).forEach(key => {
+    inflationKeys.forEach((key) => {
       svg
         .append("path")
         .datum(data)
@@ -110,10 +128,10 @@ const AverageAnnualInflationChart = () => {
 
     // Dots & Tooltip
     data.forEach(d => {
-      Object.keys(colors).forEach(key => {
+            inflationKeys.forEach((key) => {
         svg
           .append("circle")
-          .attr("cx", x(d.year))
+          .attr("cx", x(d.year)!)
           .attr("cy", y(d[key]))
           .attr("r", 4)
           .attr("fill", colors[key])
@@ -147,7 +165,7 @@ const AverageAnnualInflationChart = () => {
                 </div>
               `);
           })
-          .on("mousemove", event => {
+          .on("mousemove", (event) => {
             const rect = container.getBoundingClientRect();
             tooltip
               .style("left", event.clientX - rect.left + 15 + "px")
@@ -167,24 +185,33 @@ const AverageAnnualInflationChart = () => {
       svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
     };
 
-    const zoomInBtn = document.getElementById("zoomInBtn");
-    const zoomOutBtn = document.getElementById("zoomOutBtn");
-    const resetZoomBtn = document.getElementById("resetZoomBtn");
+    const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn");
+    const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn");
+    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn");
 
-    zoomInBtn?.addEventListener("click", () => {
+    const onZoomIn = () => {
       currentScale *= scaleStep;
       applyZoom();
-    });
-
-    zoomOutBtn?.addEventListener("click", () => {
+    };
+    const onZoomOut = () => {
       currentScale /= scaleStep;
       applyZoom();
-    });
-
-    resetZoomBtn?.addEventListener("click", () => {
+    };
+    const onReset = () => {
       currentScale = 1;
       applyZoom();
-    });
+    };
+
+    zoomInBtn?.addEventListener("click", onZoomIn);
+    zoomOutBtn?.addEventListener("click", onZoomOut);
+    resetZoomBtn?.addEventListener("click", onReset);
+
+    return () => {
+      zoomInBtn?.removeEventListener("click", onZoomIn);
+      zoomOutBtn?.removeEventListener("click", onZoomOut);
+      resetZoomBtn?.removeEventListener("click", onReset);
+      d3.select(container).selectAll("*").remove();
+    };
   }, []);
 
   return (

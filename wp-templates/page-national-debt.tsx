@@ -6,13 +6,22 @@ import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
 import "tiny-slider/dist/tiny-slider.css";
 import * as d3 from "d3";
 
+type NationalDebtDatum = {
+  year: number;
+  TD: number;
+  DPP: number;
+};
+
+const debtKeys = ["TD", "DPP"] as const;
+type DebtKey = typeof debtKeys[number];
+
 // ---- Chart Component ----
 const NationalDebtChart = () => {
-  const chartRef = useRef(null);
-  const tooltipRef = useRef(null);
+  const chartRef = useRef<SVGSVGElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const data = [
+    const data: NationalDebtDatum[] = [
       { year: 2010, TD: 3.1, DPP: 4.5 },
       { year: 2011, TD: 4.0, DPP: 5.2 },
       { year: 2012, TD: 6.6, DPP: 7.1 },
@@ -30,10 +39,16 @@ const NationalDebtChart = () => {
       { year: 2024, TD: 5.5, DPP: 6.4 },
     ];
 
-    const colors = { TD: "#4B0619", DPP: "#EB1A52" };
+    const colors: Record<DebtKey, string> = { TD: "#4B0619", DPP: "#EB1A52" };
 
     const container = chartRef.current;
-    const tooltip = d3.select(tooltipRef.current)
+    const tooltipEl = tooltipRef.current;
+
+    if (!container || !tooltipEl) {
+      return;
+    }
+
+    const tooltip = d3.select(tooltipEl)
       .style("display", "none")
       .style("border-radius", "var(--border-radius-rounded-md, 6px)")
       .style("border", "1px solid var(--slate-200, #E2E8F0)")
@@ -51,13 +66,14 @@ const NationalDebtChart = () => {
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // X & Y scales
-    const x = d3.scalePoint()
-      .domain(data.map(d => d.year))
+    const x = d3.scalePoint<number>()
+      .domain(data.map((d) => d.year))
       .range([0, width])
       .padding(0.5);
 
+    const yMax = d3.max(data, (d) => Math.max(d.TD, d.DPP)) ?? 0;
     const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => Math.max(d.TD, d.DPP)) * 1.1])
+      .domain([0, yMax * 1.1])
       .range([height, 0]);
 
     // X-axis
@@ -95,27 +111,30 @@ const NationalDebtChart = () => {
       .text("Debt Per Person (Rs.)");
 
     // Horizontal grid lines
-    svg.append("g")
+    const gridGroup = svg
+      .append("g")
       .call(
         d3.axisLeft(y)
           .tickSize(-width)
-          .tickFormat("")
-      )
+          .tickFormat(() => "")
+      );
+
+    gridGroup
       .selectAll("line")
       .attr("stroke", "#CBD5E1")
       .attr("stroke-width", 1)
       .attr("stroke-dasharray", "4,4");
 
-    svg.selectAll(".domain").remove();
+    gridGroup.select(".domain").remove();
 
     // Line generator
-    const lineGen = key => d3.line()
-      .x(d => x(d.year))
-      .y(d => y(d[key]))
+    const lineGen = (key: DebtKey) => d3.line<NationalDebtDatum>()
+      .x((d) => x(d.year)!)
+      .y((d) => y(d[key]))
       .curve(d3.curveMonotoneX);
 
     // Draw lines
-    Object.keys(colors).forEach(key => {
+    debtKeys.forEach((key) => {
       svg.append("path")
         .datum(data)
         .attr("fill", "none")
@@ -126,9 +145,9 @@ const NationalDebtChart = () => {
 
     // Dots & tooltip
     data.forEach(d => {
-      Object.keys(colors).forEach(key => {
+            debtKeys.forEach((key) => {
         svg.append("circle")
-          .attr("cx", x(d.year))
+          .attr("cx", x(d.year)!)
           .attr("cy", y(d[key]))
           .attr("r", 4)
           .attr("fill", colors[key])
@@ -176,14 +195,33 @@ const NationalDebtChart = () => {
       svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
     };
 
-    const zoomInBtn = document.querySelector("#zoomInBtn");
-    const zoomOutBtn = document.querySelector("#zoomOutBtn");
-    const resetZoomBtn = document.querySelector("#resetZoomBtn");
+    const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn");
+    const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn");
+    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn");
 
-    zoomInBtn?.addEventListener("click", () => { currentScale *= scaleStep; applyZoom(); });
-    zoomOutBtn?.addEventListener("click", () => { currentScale /= scaleStep; applyZoom(); });
-    resetZoomBtn?.addEventListener("click", () => { currentScale = 1; applyZoom(); });
+    const onZoomIn = () => {
+      currentScale *= scaleStep;
+      applyZoom();
+    };
+    const onZoomOut = () => {
+      currentScale /= scaleStep;
+      applyZoom();
+    };
+    const onReset = () => {
+      currentScale = 1;
+      applyZoom();
+    };
 
+    zoomInBtn?.addEventListener("click", onZoomIn);
+    zoomOutBtn?.addEventListener("click", onZoomOut);
+    resetZoomBtn?.addEventListener("click", onReset);
+
+    return () => {
+      zoomInBtn?.removeEventListener("click", onZoomIn);
+      zoomOutBtn?.removeEventListener("click", onZoomOut);
+      resetZoomBtn?.removeEventListener("click", onReset);
+      d3.select(container).selectAll("*").remove();
+    };
   }, []);
 
   return (
