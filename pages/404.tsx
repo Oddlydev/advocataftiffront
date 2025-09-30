@@ -23,6 +23,7 @@ const Custom404: NextPage = () => {
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <PrimaryButton href="/datasets">Search datasets</PrimaryButton>
               <WhiteIconButton
+                text="Go back home"
                 href="/"
                 icon={
                   <svg
@@ -50,9 +51,7 @@ const Custom404: NextPage = () => {
                     />
                   </svg>
                 }
-              >
-                Go back home
-              </WhiteIconButton>
+              />
             </div>
           </div>
         </div>
