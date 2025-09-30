@@ -7,7 +7,7 @@ import WhiteButton from "@/src/components/Buttons/WhiteBtn";
 
 const Custom404: NextPage = () => {
   return (
-<section id="primary">
+        <section id="primary">
           <main id="main">
             <div className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
               <div className="text-center">
