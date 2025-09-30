@@ -27,6 +27,14 @@ button {
     -webkit-text-fill-color: theme('colors.brandWhite') !important;
     transition: background-color 5000s ease-in-out 0s !important;
   }
+
+  
+  .search-input:-webkit-autofill,
+  .search-input:-webkit-autofill:hover,
+  .search-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px theme('colors.brandWhite') inset !important;
+  }
+
 }
 
 /* Utilities: hide scrollbar + iOS momentum */
