@@ -22,6 +22,7 @@ import PageNationalDebt from "./page-national-debt";
 import PageInterestRates from "./page-interest-rates";
 import PageMacroEconomyLanding from "./page-the-macro-economy-of-sri-lanka";
 import PageFiscalOperations from "./page-government-fiscal-operations";
+import SearchResult from "./page-search-result";
 
 export default {
   "front-page": frontPage,
@@ -48,4 +49,5 @@ export default {
   "page-interest-rates": PageInterestRates,
   "page-the-macro-economy-of-sri-lanka": PageMacroEconomyLanding,
   "page-government-fiscal-operations": PageFiscalOperations,
+  "page-search-result": SearchResult,
 };
