@@ -387,7 +387,10 @@ export default function PageForeignExchange(): JSX.Element {
           <SecondaryNav
             className="!font-baskervville"
             items={[
-              { label: "Macro Economy", href: "#" },
+              {
+                label: "Macro Economy",
+                href: "/the-macro-economy-of-sri-lanka",
+              },
               { label: "Government Fiscal Operations", href: "#" },
               {
                 label: "Transparency in government Institutions",

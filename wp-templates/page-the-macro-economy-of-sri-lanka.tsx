@@ -24,7 +24,6 @@ const MACRO_QUERY = `
   }
 `;
 
-
 // Define type for posts
 interface MacroPost {
   id: string;
@@ -363,7 +362,11 @@ function useMacroEconomyPosts() {
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Failed to load macro economy posts.");
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Failed to load macro economy posts."
+          );
           setLoading(false);
         }
       }
@@ -404,8 +407,14 @@ export default function PageMacroEconomyLanding() {
             <SecondaryNav
               className="!font-baskervville"
               items={[
-                { label: "Macro Economy", href: "#" },
-                { label: "Government Fiscal Operations", href: "#" },
+                {
+                  label: "Macro Economy",
+                  href: "/the-macro-economy-of-sri-lanka",
+                },
+                {
+                  label: "Government Fiscal Operations",
+                  href: "/government-fiscal-operations",
+                },
                 {
                   label: "Transparency in government Institutions",
                   href: "/transparency-dashboard",
@@ -439,7 +448,9 @@ export default function PageMacroEconomyLanding() {
           </div>
         ) : showError ? (
           <div className="flex flex-col items-center justify-center gap-1 min-h-[200px] rounded-xl border border-red-200 bg-red-50 text-red-700 text-sm font-medium text-center px-6">
-            <span>Unable to load macro economy dashboards. Please try again later.</span>
+            <span>
+              Unable to load macro economy dashboards. Please try again later.
+            </span>
             {error ? (
               <span className="block text-xs text-red-600/80">{error}</span>
             ) : null}

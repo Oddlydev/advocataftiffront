@@ -209,8 +209,11 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
   };
 
   const secondaryNavItems = [
-    { label: "Macro Economy", href: "#" },
-    { label: "Government Fiscal Operations", href: "#" },
+    { label: "Macro Economy", href: "/the-macro-economy-of-sri-lanka" },
+    {
+      label: "Government Fiscal Operations",
+      href: "/government-fiscal-operations",
+    },
     {
       label: "Transparency in government Institutions",
       href: "/transparency-dashboard",
