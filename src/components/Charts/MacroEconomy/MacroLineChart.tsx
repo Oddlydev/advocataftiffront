@@ -25,6 +25,7 @@ export type MacroLineChartProps = {
     resetId: string;
   };
   yMaxPadding?: number;
+  /** Optional: force a minimum Y (default = auto) */
   minY?: number;
 };
 
@@ -56,8 +57,9 @@ async function fetchCsvWithFallback(url: string): Promise<string> {
   }
 }
 
-
-function coerceNumber(value: string | number | null | undefined): number | null {
+function coerceNumber(
+  value: string | number | null | undefined
+): number | null {
   if (typeof value === "number") {
     return Number.isFinite(value) ? value : null;
   }
@@ -75,7 +77,7 @@ export function MacroLineChart({
   yAxisLabel,
   controlIds,
   yMaxPadding = 2,
-  minY = 0,
+  minY, // default undefined → auto
 }: MacroLineChartProps) {
   const chartRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -124,7 +126,6 @@ export function MacroLineChart({
     }
 
     loadDataset();
-
     return () => {
       isMounted = false;
     };
@@ -133,10 +134,7 @@ export function MacroLineChart({
   useEffect(() => {
     const container = chartRef.current;
     const tooltipEl = tooltipRef.current;
-
-    if (!container || !tooltipEl || !data.length) {
-      return;
-    }
+    if (!container || !tooltipEl || !data.length) return;
 
     const tooltip = d3.select(tooltipEl);
 
@@ -172,15 +170,34 @@ export function MacroLineChart({
     const maxValue = d3.max(data, (d) =>
       d3.max(series, ({ key }) => d[key] ?? Number.NEGATIVE_INFINITY)
     );
-    const safeMax = Number.isFinite(maxValue ?? NaN)
-      ? (maxValue as number)
-      : 0;
+    const minValue = d3.min(data, (d) =>
+      d3.min(series, ({ key }) => d[key] ?? Number.POSITIVE_INFINITY)
+    );
+
+    const safeMax = Number.isFinite(maxValue ?? NaN) ? (maxValue as number) : 0;
+    const safeMin = Number.isFinite(minValue ?? NaN) ? (minValue as number) : 0;
+
+    const upperPadding = Math.max(yMaxPadding, Math.abs(safeMax) * 0.05);
+    const lowerPadding = Math.max(yMaxPadding, Math.abs(safeMin) * 0.05);
+
+    // ✅ Auto domain unless user forces minY
+    const domainMin =
+      typeof minY === "number"
+        ? Math.min(minY, safeMin - lowerPadding)
+        : safeMin - lowerPadding;
+    let domainMax = safeMax + upperPadding;
+
+    if (domainMax <= domainMin) {
+      domainMax =
+        domainMin + Math.max(upperPadding, Math.abs(domainMin) * 0.1, 1);
+    }
 
     const y = d3
       .scaleLinear()
-      .domain([minY, safeMax + yMaxPadding])
+      .domain([domainMin, domainMax])
       .range([height, 0]);
 
+    // X axis
     svg
       .append("g")
       .attr("transform", `translate(0, ${height})`)
@@ -188,12 +205,14 @@ export function MacroLineChart({
       .selectAll("text")
       .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
+    // Y axis
     svg
       .append("g")
       .call(d3.axisLeft(y).ticks(5))
       .selectAll("text")
       .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
+    // Y axis label
     svg
       .append("text")
       .attr("text-anchor", "middle")
@@ -201,6 +220,7 @@ export function MacroLineChart({
       .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
       .text(yAxisLabel);
 
+    // Grid
     const gridGroup = svg
       .append("g")
       .attr("class", "grid")
@@ -210,24 +230,14 @@ export function MacroLineChart({
           .tickSize(-width)
           .tickFormat(() => "")
       );
-
     gridGroup
       .selectAll("line")
       .attr("stroke", "#CBD5E1")
       .attr("stroke-width", 1)
       .attr("stroke-dasharray", "4,4");
-
     gridGroup.select(".domain").remove();
 
-    const formatValue = (
-      value: number | null,
-      formatter?: (v: number | null) => string
-    ) => {
-      if (formatter) return formatter(value);
-      if (value === null || Number.isNaN(value)) return "N/A";
-      return `${value}`;
-    };
-
+    // Lines
     series.forEach(({ key, color }) => {
       const line = d3
         .line<MacroLineDatum>()
@@ -248,12 +258,11 @@ export function MacroLineChart({
         .attr("d", line);
     });
 
+    // Tooltip dots
     data.forEach((datum) => {
       series.forEach((serie) => {
         const value = datum[serie.key];
-        if (value === null || !Number.isFinite(value)) {
-          return;
-        }
+        if (value === null || !Number.isFinite(value)) return;
 
         svg
           .append("circle")
@@ -271,17 +280,19 @@ export function MacroLineChart({
                       <span style="width:10px;height:10px;background:${cfg.color};border-radius:50%;display:inline-block;"></span>
                       <span class="text-slate-600">${cfg.label}:</span>
                     </div>
-                    <span style="color:${cfg.color}; font-weight: 600;">${formatValue(
-                      typeof v === "number" ? Number(v.toFixed(2)) : v,
-                      cfg.valueFormatter
-                    )}</span>
+                    <span style="color:${cfg.color}; font-weight: 600;">
+                      ${
+                        typeof v === "number"
+                          ? (cfg.valueFormatter?.(Number(v.toFixed(2))) ??
+                            v.toFixed(2))
+                          : "N/A"
+                      }
+                    </span>
                   </div>`;
               })
               .join("");
 
-            tooltip
-              .style("display", "block")
-              .html(`
+            tooltip.style("display", "block").html(`
                 <div class="flex flex-col gap-1">
                   <div class="font-bold text-slate-800">Year: ${datum.year}</div>
                   ${tooltipRows}
@@ -298,25 +309,22 @@ export function MacroLineChart({
       });
     });
 
+    // Zoom controls
     let currentScale = 1;
-
     const applyZoom = () => {
       svg.attr(
         "transform",
         `translate(${MARGIN.left},${MARGIN.top}) scale(${currentScale})`
       );
     };
-
     const onZoomIn = () => {
       currentScale = Math.min(MAX_SCALE, currentScale * SCALE_STEP);
       applyZoom();
     };
-
     const onZoomOut = () => {
       currentScale = Math.max(MIN_SCALE, currentScale / SCALE_STEP);
       applyZoom();
     };
-
     const onReset = () => {
       currentScale = 1;
       applyZoom();
@@ -325,7 +333,6 @@ export function MacroLineChart({
     const zoomInBtn = document.getElementById(controlIds.zoomInId);
     const zoomOutBtn = document.getElementById(controlIds.zoomOutId);
     const resetBtn = document.getElementById(controlIds.resetId);
-
     zoomInBtn?.addEventListener("click", onZoomIn);
     zoomOutBtn?.addEventListener("click", onZoomOut);
     resetBtn?.addEventListener("click", onReset);
@@ -350,7 +357,7 @@ export function MacroLineChart({
   );
 }
 
-export type MacroChartWrapperProps = Pick<MacroLineChartProps, "datasetUrl" | "controlIds">;
-
-
-
+export type MacroChartWrapperProps = Pick<
+  MacroLineChartProps,
+  "datasetUrl" | "controlIds"
+>;
