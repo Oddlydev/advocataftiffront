@@ -143,44 +143,76 @@ const NationalDebtChart = () => {
         .attr("d", lineGen(key));
     });
 
-    // Dots & tooltip
-    data.forEach(d => {
-            debtKeys.forEach((key) => {
-        svg.append("circle")
+    // Dots & Tooltip
+    data.forEach((d) => {
+      debtKeys.forEach((key) => {
+        const dot = svg
+          .append("circle")
           .attr("cx", x(d.year)!)
           .attr("cy", y(d[key]))
           .attr("r", 4)
-          .attr("fill", colors[key])
+          .attr("fill", colors[key]);
+
+        dot
           .on("mouseover", () => {
-            tooltip.style("display", "block")
-              .html(`
-                <div class="flex flex-col gap-1">
-                  <div class="font-bold text-slate-800">Year: ${d.year}</div>
-                  <div class="flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-1">
-                      <div><span style="width:10px;height:10px;background:${colors.TD};border-radius:50%;display:inline-block;"></span></div>
-                      <span class="text-slate-600">Total Debt:</span>
-                    </div>
-                    <span style="color:${colors.TD}; font-weight: 600;">${d.TD}%</span>
+            // Smooth fade-in
+            tooltip
+              .style("display", "block")
+              .style("opacity", "0")
+              .transition()
+              .duration(200)
+              .style("opacity", "1");
+
+            // Tooltip HTML
+            tooltip.html(`
+              <div class="flex flex-col gap-1">
+                <div class="font-bold text-slate-800">Year: ${d.year}</div>
+                
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-1">
+                    <span style="width:10px;height:10px;background:${colors.TD};border-radius:50%;display:inline-block;"></span>
+                    <span class="text-slate-600">Total Debt:</span>
                   </div>
-                  <div class="flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-1">
-                      <div><span style="width:10px;height:10px;background:${colors.DPP};border-radius:50%;display:inline-block;"></span></div>
-                      <span class="text-slate-600">Debt Per Person:</span>
-                    </div>
-                    <span style="color:${colors.DPP}; font-weight: 600;">${d.DPP}%</span>
-                  </div>
+                  <span style="color:${colors.TD}; font-weight: 600;">${d.TD}%</span>
                 </div>
-              `);
+
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-1">
+                    <span style="width:10px;height:10px;background:${colors.DPP};border-radius:50%;display:inline-block;"></span>
+                    <span class="text-slate-600">Debt Per Person:</span>
+                  </div>
+                  <span style="color:${colors.DPP}; font-weight: 600;">${d.DPP}%</span>
+                </div>
+              </div>
+            `);
+
+            // Add highlight circle
+            svg
+              .append("circle")
+              .attr("class", `hover-circle-${key}-${d.year}`)
+              .attr("cx", x(d.year)!)
+              .attr("cy", y(d[key]))
+              .attr("r", 8)
+              .attr("stroke", colors[key])
+              .attr("stroke-width", 2)
+              .attr("fill", "none");
           })
           .on("mousemove", (event) => {
-            const containerRect = container.getBoundingClientRect();
+            const rect = container.getBoundingClientRect();
             tooltip
-              .style("left", event.clientX - containerRect.left + 15 + "px")
-              .style("top", event.clientY - containerRect.top - 50 + "px");
+              .style("left", event.clientX - rect.left + 15 + "px")
+              .style("top", event.clientY - rect.top - 50 + "px");
           })
           .on("mouseout", () => {
-            tooltip.style("display", "none");
+            // Smooth fade-out
+            tooltip
+              .transition()
+              .duration(200)
+              .style("opacity", "0")
+              .on("end", () => tooltip.style("display", "none"));
+
+            // Remove highlight
+            svg.select(`.hover-circle-${key}-${d.year}`).remove();
           });
       });
     });
@@ -188,39 +220,62 @@ const NationalDebtChart = () => {
     // -------------------
     // Zoom buttons
     // -------------------
+    // Initialize zoom variables
     let currentScale = 1;
-    const scaleStep = 1.2;
+    let zoomInCount = 0;
+    let zoomOutCount = 0;
+    const maxClicks = 2; // Maximum allowed clicks for zooming in or out
 
+    // Select buttons
+    const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn")!;
+    const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn")!;
+    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn")!;
+
+    // Function to apply zoom transformation
     const applyZoom = () => {
       svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
+
+      // Disable buttons if their respective limits are reached
+      zoomInBtn.disabled = zoomInCount >= maxClicks;
+      zoomOutBtn.disabled = zoomOutCount >= maxClicks;
     };
 
-    const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn");
-    const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn");
-    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn");
-
+    // Event listener for zooming in
     const onZoomIn = () => {
-      currentScale *= scaleStep;
-      applyZoom();
+      if (zoomInCount < maxClicks) {
+        currentScale *= 1.2; // Increase scale by 20%
+        zoomInCount++;
+        applyZoom();
+      }
     };
+
+    // Event listener for zooming out
     const onZoomOut = () => {
-      currentScale /= scaleStep;
-      applyZoom();
+      if (zoomOutCount < maxClicks) {
+        currentScale /= 1.2; // Decrease scale by 20%
+        zoomOutCount++;
+        applyZoom();
+      }
     };
+
+    // Event listener for resetting zoom
     const onReset = () => {
-      currentScale = 1;
+      currentScale = 1; // Reset scale to default
+      zoomInCount = 0;
+      zoomOutCount = 0;
       applyZoom();
     };
 
-    zoomInBtn?.addEventListener("click", onZoomIn);
-    zoomOutBtn?.addEventListener("click", onZoomOut);
-    resetZoomBtn?.addEventListener("click", onReset);
+    // Attach event listeners to buttons
+    zoomInBtn.addEventListener("click", onZoomIn);
+    zoomOutBtn.addEventListener("click", onZoomOut);
+    resetZoomBtn.addEventListener("click", onReset);
 
+    // Cleanup function to remove event listeners
     return () => {
-      zoomInBtn?.removeEventListener("click", onZoomIn);
-      zoomOutBtn?.removeEventListener("click", onZoomOut);
-      resetZoomBtn?.removeEventListener("click", onReset);
-      d3.select(container).selectAll("*").remove();
+      zoomInBtn.removeEventListener("click", onZoomIn);
+      zoomOutBtn.removeEventListener("click", onZoomOut);
+      resetZoomBtn.removeEventListener("click", onReset);
     };
   }, []);
 

@@ -118,28 +118,47 @@ const ForeignReservesChart = () => {
       .attr("d", lineGen);
 
     // Dots & Tooltip
-    data.forEach(d => {
-      svg
+    data.forEach((d) => {
+      const dot = svg
         .append("circle")
         .attr("cx", x(d.year)!)
         .attr("cy", y(d.ORA))
         .attr("r", 4)
-        .attr("fill", color)
+        .attr("fill", color);
+
+      dot
         .on("mouseover", () => {
+          // Fade-in tooltip
           tooltip
             .style("display", "block")
-            .html(`
-              <div class="flex flex-col gap-1">
-                <div class="font-bold text-slate-800">Year: ${d.year}</div>
-                <div class="flex items-center justify-between gap-2">
-                  <div class="flex items-center gap-1">
-                    <span style="width:10px;height:10px;background:${color};border-radius:50%;display:inline-block;"></span>
-                    <span class="text-slate-600">ORA:</span>
-                  </div>
-                  <span style="color:${color}; font-weight: 600;">${d.ORA}%</span>
+            .style("opacity", "0")
+            .transition()
+            .duration(200)
+            .style("opacity", "1");
+
+          tooltip.html(`
+            <div class="flex flex-col gap-1">
+              <div class="font-bold text-slate-800">Year: ${d.year}</div>
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1">
+                  <span style="width:10px;height:10px;background:${color};border-radius:50%;display:inline-block;"></span>
+                  <span class="text-slate-600">ORA:</span>
                 </div>
+                <span style="color:${color}; font-weight: 600;">${d.ORA}%</span>
               </div>
-            `);
+            </div>
+          `);
+
+          // Highlight circle
+          svg
+            .append("circle")
+            .attr("class", `hover-circle-${d.year}`)
+            .attr("cx", x(d.year)!)
+            .attr("cy", y(d.ORA))
+            .attr("r", 8) // bigger circle
+            .attr("stroke", color)
+            .attr("stroke-width", 2)
+            .attr("fill", "none");
         })
         .on("mousemove", (event) => {
           const rect = container.getBoundingClientRect();
@@ -147,45 +166,78 @@ const ForeignReservesChart = () => {
             .style("left", event.clientX - rect.left + 15 + "px")
             .style("top", event.clientY - rect.top - 50 + "px");
         })
-        .on("mouseout", () => tooltip.style("display", "none"));
+        .on("mouseout", () => {
+          // Fade-out tooltip
+          tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", "0")
+            .on("end", () => tooltip.style("display", "none"));
+
+          // Remove highlight circle
+          svg.select(`.hover-circle-${d.year}`).remove();
+        });
     });
 
     // -------------------
     // Zoom buttons
     // -------------------
+    // Initialize zoom variables
     let currentScale = 1;
-    const scaleStep = 1.2;
+    let zoomInCount = 0;
+    let zoomOutCount = 0;
+    const maxClicks = 2; // Maximum allowed clicks for zooming in or out
 
+    // Select buttons
+    const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn")!;
+    const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn")!;
+    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn")!;
+
+    // Function to apply zoom transformation
     const applyZoom = () => {
       svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
+
+      // Disable buttons if their respective limits are reached
+      zoomInBtn.disabled = zoomInCount >= maxClicks;
+      zoomOutBtn.disabled = zoomOutCount >= maxClicks;
     };
 
-    const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn");
-    const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn");
-    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn");
-
+    // Event listener for zooming in
     const onZoomIn = () => {
-      currentScale *= scaleStep;
-      applyZoom();
+      if (zoomInCount < maxClicks) {
+        currentScale *= 1.2; // Increase scale by 20%
+        zoomInCount++;
+        applyZoom();
+      }
     };
+
+    // Event listener for zooming out
     const onZoomOut = () => {
-      currentScale /= scaleStep;
-      applyZoom();
+      if (zoomOutCount < maxClicks) {
+        currentScale /= 1.2; // Decrease scale by 20%
+        zoomOutCount++;
+        applyZoom();
+      }
     };
+
+    // Event listener for resetting zoom
     const onReset = () => {
-      currentScale = 1;
+      currentScale = 1; // Reset scale to default
+      zoomInCount = 0;
+      zoomOutCount = 0;
       applyZoom();
     };
 
-    zoomInBtn?.addEventListener("click", onZoomIn);
-    zoomOutBtn?.addEventListener("click", onZoomOut);
-    resetZoomBtn?.addEventListener("click", onReset);
+    // Attach event listeners to buttons
+    zoomInBtn.addEventListener("click", onZoomIn);
+    zoomOutBtn.addEventListener("click", onZoomOut);
+    resetZoomBtn.addEventListener("click", onReset);
 
+    // Cleanup function to remove event listeners
     return () => {
-      zoomInBtn?.removeEventListener("click", onZoomIn);
-      zoomOutBtn?.removeEventListener("click", onZoomOut);
-      resetZoomBtn?.removeEventListener("click", onReset);
-      d3.select(container).selectAll("*").remove();
+      zoomInBtn.removeEventListener("click", onZoomIn);
+      zoomOutBtn.removeEventListener("click", onZoomOut);
+      resetZoomBtn.removeEventListener("click", onReset);
     };
   }, []);
 
