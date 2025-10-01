@@ -684,7 +684,6 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
     return () => window.removeEventListener("resize", renderChart);
   }, [chartData]);
 
-
   const statusMessage = useMemo(() => {
     if (loading) {
       return "Loading data...";
@@ -708,10 +707,13 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
           <SecondaryNav
             className="!font-baskervville"
             items={[
-              { label: "Macro Economy", href: "/macro-landing" },
+              {
+                label: "Macro Economy",
+                href: "/the-macro-economy-of-sri-lanka",
+              },
               {
                 label: "Government Fiscal Operations",
-                href: "/fiscal-dashboard",
+                href: "/government-fiscal-operations",
               },
               {
                 label: "Transparency in government Institutions",

@@ -5,6 +5,7 @@ import SecondaryNav from "@/src/components/SecondaryNav";
 import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
 import "tiny-slider/dist/tiny-slider.css";
 import * as d3 from "d3";
+import MacroEconomySliderNav from "@/src/components/MacroEconomyNav";
 
 type InflationDatum = {
   year: number;
@@ -14,7 +15,7 @@ type InflationDatum = {
 };
 
 const inflationKeys = ["all", "food", "nonFood"] as const;
-type InflationKey = typeof inflationKeys[number];
+type InflationKey = (typeof inflationKeys)[number];
 
 // ---- Chart Component ----
 const AverageAnnualInflationChart = () => {
@@ -59,27 +60,39 @@ const AverageAnnualInflationChart = () => {
 
     const svg = d3
       .select(container)
-      .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .attr(
+        "viewBox",
+        `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`
+      )
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // X & Y scales
-    const x = d3.scalePoint<number>().domain(data.map((d) => d.year)).range([0, width]).padding(0.5);
+    const x = d3
+      .scalePoint<number>()
+      .domain(data.map((d) => d.year))
+      .range([0, width])
+      .padding(0.5);
     const yMax = d3.max(data, (d) => Math.max(d.all, d.food, d.nonFood)) ?? 0;
-    const y = d3.scaleLinear().domain([0, yMax + 2]).range([height, 0]);
-    
+    const y = d3
+      .scaleLinear()
+      .domain([0, yMax + 2])
+      .range([height, 0]);
+
     // X-axis
-    svg.append("g")
-    .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x).tickFormat(d3.format("d")))
-    .selectAll("text")
-    .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
+    svg
+      .append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .call(d3.axisBottom(x).tickFormat(d3.format("d")))
+      .selectAll("text")
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
     // Y-axis
-    svg.append("g")
-    .call(d3.axisLeft(y).ticks(5))
-    .selectAll("text")
-    .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
+    svg
+      .append("g")
+      .call(d3.axisLeft(y).ticks(5))
+      .selectAll("text")
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
     // Y-axis label
     svg
@@ -91,20 +104,21 @@ const AverageAnnualInflationChart = () => {
 
     // Horizontal grid lines
     const gridGroup = svg
-    .append("g")
-    .attr("class", "grid")
-    .call(
-        d3.axisLeft(y)
-        .tickSize(-width)
-        .tickFormat(() => "")
-    );
+      .append("g")
+      .attr("class", "grid")
+      .call(
+        d3
+          .axisLeft(y)
+          .tickSize(-width)
+          .tickFormat(() => "")
+      );
 
     gridGroup
-    .selectAll("line")
-    .attr("stroke", "#CBD5E1")
-    .attr("stroke-width", 1)
-    .attr("stroke-dasharray", "4,4");
-        
+      .selectAll("line")
+      .attr("stroke", "#CBD5E1")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "4,4");
+
     gridGroup.select(".domain").remove();
 
     // Line generator
@@ -127,8 +141,8 @@ const AverageAnnualInflationChart = () => {
     });
 
     // Dots & Tooltip
-    data.forEach(d => {
-            inflationKeys.forEach((key) => {
+    data.forEach((d) => {
+      inflationKeys.forEach((key) => {
         svg
           .append("circle")
           .attr("cx", x(d.year)!)
@@ -136,9 +150,7 @@ const AverageAnnualInflationChart = () => {
           .attr("r", 4)
           .attr("fill", colors[key])
           .on("mouseover", () => {
-            tooltip
-              .style("display", "block")
-              .html(`
+            tooltip.style("display", "block").html(`
                 <div class="flex flex-col gap-1">
                   <div class="font-bold text-slate-800">Year: ${d.year}</div>
                   <div class="flex items-center justify-between gap-2">
@@ -182,12 +194,16 @@ const AverageAnnualInflationChart = () => {
     const scaleStep = 1.2;
 
     const applyZoom = () => {
-      svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
+      svg.attr(
+        "transform",
+        `translate(${margin.left},${margin.top}) scale(${currentScale})`
+      );
     };
 
     const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn");
     const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn");
-    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn");
+    const resetZoomBtn =
+      document.querySelector<HTMLButtonElement>("#resetZoomBtn");
 
     const onZoomIn = () => {
       currentScale *= scaleStep;
@@ -226,158 +242,8 @@ const AverageAnnualInflationChart = () => {
   );
 };
 
-type MacroFilterSliderProps = {
-  items?: string[];
-  initialActiveIndex?: number;
-  onChangeActive?: (label: string, index: number) => void;
-  className?: string;
-};
-
-const DEFAULT_ITEMS = [
-  "Inflation",
-  "Foreign Exchange",
-  "Foreign Reserves",
-  "National Debt",
-  "Unemployment",
-  "GDP Growth",
-  "Interest Rates",
-];
-
-export function MacroFilterSlider({
-  items = DEFAULT_ITEMS,
-  initialActiveIndex = 0,
-  onChangeActive,
-  className = "",
-}: 
-
-MacroFilterSliderProps) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
-  const sliderRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (trackRef.current && typeof window !== "undefined") {
-      // @ts-ignore
-      const { tns } = require("tiny-slider/src/tiny-slider");
-      sliderRef.current = tns({
-        container: trackRef.current,
-        slideBy: 1,
-        autoplay: false,
-        controls: false,
-        mouseDrag: true,
-        nav: false,
-        autoplayButtonOutput: false,
-        gutter: 10,
-        loop: false,
-        responsive: {
-          320: { items: 2 },
-          768: { items: 3 },
-          1024: { items: 5 },
-        },
-      });
-
-      const prevBtn = document.querySelector(".macro-filter-prev-arrow");
-      const nextBtn = document.querySelector(".macro-filter-next-arrow");
-      prevBtn?.addEventListener("click", () => sliderRef.current.goTo("prev"));
-      nextBtn?.addEventListener("click", () => sliderRef.current.goTo("next"));
-    }
-  }, []);
-
-  const handleSelect = (index: number) => {
-    setActiveIndex(index);
-    onChangeActive?.(items[index], index);
-  };
-
-  return (
-    <div className={`macro-filter-slider w-full relative ${className}`}>
-      {/* Prev button */}
-      <button
-        type="button"
-        aria-label="Previous"
-        className="macro-filter-prev-arrow absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full backdrop-blur-sm py-1 xl:py-2 pl-0 pr-2 xl:pl-0 xl:pr-3.5 bg-gradient-to-l from-[#F3F4F6] via-white to-white text-brand-1-900"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-          <path
-            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeMiterlimit="10"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M13.26 15.53L9.74 12L13.26 8.47"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
-
-      {/* Slider track */}
-      <div ref={trackRef} className="w-full flex gap-2">
-        {items.map((label, index) => (
-          <div key={`${label}-${index}`} className="slider-item">
-              <button
-                className={`slider-btn w-full text-sm xl:text-base px-3 py-2 rounded-lg uppercase text-slate-800 border border-gray-400 bg-white font-semibold font-sourcecodepro text-center transition-colors duration-200
-                  ${
-                    index === activeIndex
-                      ? "text-slate-50 hover:text-slate-800 hover:bg-brand-1-50 hover:border focus:bg-brand-1-950 focus:text-brand-white focus:border-brand-2-950"
-                      : "hover:bg-brand-2-50 hover:text-slate-800 focus:bg-brand-1-950 focus:text-brand-white focus:border-brand-2-950"
-                  }`}
-                onClick={() => handleSelect(index)}
-                >
-                {label}
-              </button>
-
-          </div>
-        ))}
-      </div>
-
-      {/* Next button */}
-      <button
-        type="button"
-        aria-label="Next"
-        className="macro-filter-next-arrow absolute right-0 top-1/2 -translate-y-1/2 z-10 rounded-full backdrop-blur-sm py-1 xl:py-2 pr-0 pl-2 xl:pr-0 xl:pl-3.5 bg-gradient-to-r from-white via-white to-[#F3F4F6] text-brand-1-900"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-        >
-          <path
-            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeMiterlimit="10"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M10.74 15.53L14.26 12L10.74 8.47"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
-    </div>
-  );
-}
-
 // ---- Page Component ----
-export default function PageInflationDashboard(): JSX.Element { 
-
+export default function PageInflationDashboard(): JSX.Element {
   const [industry, setIndustry] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
   const [pathname, setPathname] = useState<string>("");
@@ -386,40 +252,40 @@ export default function PageInflationDashboard(): JSX.Element {
     <main>
       {/* Secondary Navigation */}
       <div className="bg-white border-b border-slate-300">
-            <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-4 lg:py-0">
-              <SecondaryNav
-                className="!font-baskervville"
-                items={[
-                  { label: "Macro Economy", href: "#" },
-                  { label: "Government Fiscal Operations", href: "#" },
-                  {
-                    label: "Transparency in government Institutions",
-                    href: (() => {
-                      const params = new URLSearchParams();
-                      if (industry) params.set("industry", industry);
-                      if (year) params.set("year", year);
-                      const qs = params.toString();
-                      return qs
-                        ? `/transparency-dashboard?${qs}`
-                        : "/transparency-dashboard";
-                    })(),
-                  },
-                  {
-                    label: "State Owned Enterprises",
-                    href: (() => {
-                      const params = new URLSearchParams();
-                      if (industry) params.set("industry", industry);
-                      if (year) params.set("year", year);
-                      const qs = params.toString();
-                      return qs
-                        ? `/state-owned-dashboard?${qs}`
-                        : "/state-owned-dashboard";
-                    })(),
-                  },
-                ]}
-                activePath={pathname}
-              />
-            </div>
+        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-4 lg:py-0">
+          <SecondaryNav
+            className="!font-baskervville"
+            items={[
+              { label: "Macro Economy", href: "#" },
+              { label: "Government Fiscal Operations", href: "#" },
+              {
+                label: "Transparency in government Institutions",
+                href: (() => {
+                  const params = new URLSearchParams();
+                  if (industry) params.set("industry", industry);
+                  if (year) params.set("year", year);
+                  const qs = params.toString();
+                  return qs
+                    ? `/transparency-dashboard?${qs}`
+                    : "/transparency-dashboard";
+                })(),
+              },
+              {
+                label: "State Owned Enterprises",
+                href: (() => {
+                  const params = new URLSearchParams();
+                  if (industry) params.set("industry", industry);
+                  if (year) params.set("year", year);
+                  const qs = params.toString();
+                  return qs
+                    ? `/state-owned-dashboard?${qs}`
+                    : "/state-owned-dashboard";
+                })(),
+              },
+            ]}
+            activePath={pathname}
+          />
+        </div>
       </div>
 
       {/* Hero Section */}
@@ -434,7 +300,7 @@ export default function PageInflationDashboard(): JSX.Element {
       {/* Filter Slider */}
       <div className="bg-white">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-3.5 md:pb-7">
-          <MacroFilterSlider />
+          <MacroEconomySliderNav />
         </div>
       </div>
 
@@ -447,7 +313,8 @@ export default function PageInflationDashboard(): JSX.Element {
                 Average Annual Inflation
               </h4>
               <p className="text-base/6 font-baskervville font-normal text-slate-950">
-                Percentage change in prices for consumer goods and services (2015-2024)
+                Percentage change in prices for consumer goods and services
+                (2015-2024)
               </p>
             </div>
 
@@ -455,80 +322,151 @@ export default function PageInflationDashboard(): JSX.Element {
             <div className="relative">
               {/* <!-- Zoom Buttons --> */}
               <div className="absolute top-2 md:top-0 right-4 md:right-10 flex gap-2 z-10">
-                  <button id="zoomInBtn" className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                          <path d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M13.9996 14.3335L11.0996 11.4335" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M7.33398 5.66681V9.66681" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M5.33398 7.66681H9.33398" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </button>
-                  <button id="zoomOutBtn" className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                          <path d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M13.9996 14.3335L11.0996 11.4335" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M5.33398 7.66681H9.33398" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </button>
-                  <button id="resetZoomBtn" className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                          <path d="M2 8.3335C2 9.52018 2.35189 10.6802 3.01118 11.6669C3.67047 12.6536 4.60754 13.4226 5.7039 13.8768C6.80026 14.3309 8.00666 14.4497 9.17054 14.2182C10.3344 13.9867 11.4035 13.4153 12.2426 12.5761C13.0818 11.737 13.6532 10.6679 13.8847 9.50404C14.1162 8.34015 13.9974 7.13375 13.5433 6.0374C13.0892 4.94104 12.3201 4.00397 11.3334 3.34468C10.3467 2.68539 9.18669 2.3335 8 2.3335C6.32263 2.33981 4.71265 2.99431 3.50667 4.16016L2 5.66683" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M2 2.3335V5.66683H5.33333" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </button>
+                <button
+                  id="zoomInBtn"
+                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path
+                      d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M13.9996 14.3335L11.0996 11.4335"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M7.33398 5.66681V9.66681"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M5.33398 7.66681H9.33398"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  id="zoomOutBtn"
+                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path
+                      d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M13.9996 14.3335L11.0996 11.4335"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M5.33398 7.66681H9.33398"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  id="resetZoomBtn"
+                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path
+                      d="M2 8.3335C2 9.52018 2.35189 10.6802 3.01118 11.6669C3.67047 12.6536 4.60754 13.4226 5.7039 13.8768C6.80026 14.3309 8.00666 14.4497 9.17054 14.2182C10.3344 13.9867 11.4035 13.4153 12.2426 12.5761C13.0818 11.737 13.6532 10.6679 13.8847 9.50404C14.1162 8.34015 13.9974 7.13375 13.5433 6.0374C13.0892 4.94104 12.3201 4.00397 11.3334 3.34468C10.3467 2.68539 9.18669 2.3335 8 2.3335C6.32263 2.33981 4.71265 2.99431 3.50667 4.16016L2 5.66683"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M2 2.3335V5.66683H5.33333"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
               </div>
               <AverageAnnualInflationChart />
             </div>
 
             {/* Legend & Data Source */}
             <div className="mt-5">
-                <div className="grid md:flex items-center justify-center gap-2 md:gap-6">
+              <div className="grid md:flex items-center justify-center gap-2 md:gap-6">
                 <div className="flex items-center gap-2">
-                    <span
-                    className="w-1.5 h-1.5 bg-brand-1-900 inset-shadow-brand-1-950 rounded-full inline-block"
-                    ></span>
-                    <span
-                    className="text-base/6 font-normal font-baskervville text-slate-600"
-                    >All Items</span>
+                  <span className="w-1.5 h-1.5 bg-brand-1-900 inset-shadow-brand-1-950 rounded-full inline-block"></span>
+                  <span className="text-base/6 font-normal font-baskervville text-slate-600">
+                    All Items
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span
-                    className="w-1.5 h-1.5 bg-brand-1-500 rounded-full inline-block"
-                    ></span>
-                    <span
-                    className="text-base/6 font-normal font-baskervville text-slate-600"
-                    >Food & Non-Alcoholic Beverages</span>
+                  <span className="w-1.5 h-1.5 bg-brand-1-500 rounded-full inline-block"></span>
+                  <span className="text-base/6 font-normal font-baskervville text-slate-600">
+                    Food & Non-Alcoholic Beverages
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span
-                    className="w-1.5 h-1.5 bg-brand-1-200 rounded-full inline-block"
-                    ></span>
-                    <span
-                    className="text-base/6 font-normal font-baskervville text-slate-600"
-                    >Non - Food Items</span>
+                  <span className="w-1.5 h-1.5 bg-brand-1-200 rounded-full inline-block"></span>
+                  <span className="text-base/6 font-normal font-baskervville text-slate-600">
+                    Non - Food Items
+                  </span>
                 </div>
-                </div>
+              </div>
             </div>
 
             <div className="mt-10">
-                <div className="bg-gray-50 rounded-lg px-6 py-3.5">
-                <div
-                    className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro"
-                >
-                    <div
-                    className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
-                    >
-                    <p>Data Source: Department of Census and Statistics, Sri Lanka</p>
-                    </div>
-                    <div
-                    className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
-                    >
+              <div className="bg-gray-50 rounded-lg px-6 py-3.5">
+                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                    <p>
+                      Data Source: Department of Census and Statistics, Sri
+                      Lanka
+                    </p>
+                  </div>
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                     <p>Average Annual Inflation 2015 - 2024</p>
-                    </div>
+                  </div>
                 </div>
-                </div>
+              </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -549,10 +487,15 @@ export default function PageInflationDashboard(): JSX.Element {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border-b border-brand-1-100 pb-4 md:border-b-0 md:border-r md:pr-4">
-                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Definition</h3>
+                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
+                    Definition
+                  </h3>
                   <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
                     <p className="text-slate-800 text-base font-baskervville font-normal">
-                      The Average Annual Inflation measures the percentage change in prices for a typical basket of consumer goods and services purchased by households nationwide, using the National Consumer Price Index (NCPI).
+                      The Average Annual Inflation measures the percentage
+                      change in prices for a typical basket of consumer goods
+                      and services purchased by households nationwide, using the
+                      National Consumer Price Index (NCPI).
                     </p>
                   </div>
                 </div>
@@ -562,7 +505,10 @@ export default function PageInflationDashboard(): JSX.Element {
                   </h3>
                   <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
                     <p className="text-slate-800 text-base font-baskervville font-normal">
-                      The NCPI calculates inflation rates based on the price changes observed in a standard consumer basket, categorized mainly into Food & Non-Alcoholic Beverages and Non-Food items.
+                      The NCPI calculates inflation rates based on the price
+                      changes observed in a standard consumer basket,
+                      categorized mainly into Food & Non-Alcoholic Beverages and
+                      Non-Food items.
                     </p>
                   </div>
                 </div>
@@ -572,7 +518,6 @@ export default function PageInflationDashboard(): JSX.Element {
         </div>
       </div>
       {/* End Information Section */}
-
     </main>
   );
 }

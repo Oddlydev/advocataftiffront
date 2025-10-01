@@ -394,10 +394,13 @@ export default function PageTransparencyDashboard(): JSX.Element {
           <SecondaryNav
             className="!font-baskervville"
             items={[
-              { label: "Macro Economy", href: "/macro-landing" },
+              {
+                label: "Macro Economy",
+                href: "/the-macro-economy-of-sri-lanka",
+              },
               {
                 label: "Government Fiscal Operations",
-                href: "/fiscal-dashboard",
+                href: "/government-fiscal-operations",
               },
               {
                 label: "Transparency in government Institutions",
@@ -503,14 +506,18 @@ export default function PageTransparencyDashboard(): JSX.Element {
 
           {/* CSV Table */}
           {isLoading ? (
-            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">Loading dataset...</p>
+            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
+              Loading dataset...
+            </p>
           ) : currentCsvUrl ? (
             <CsvTableTransparency
               csvUrl={currentCsvUrl}
               filterQuery={queryInput}
             />
           ) : (
-            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">No dataset found for selection.</p>
+            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
+              No dataset found for selection.
+            </p>
           )}
         </div>
       </section>

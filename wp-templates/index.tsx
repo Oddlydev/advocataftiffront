@@ -1,4 +1,4 @@
-import frontPage from "./front-page";
+﻿import frontPage from "./front-page";
 import page from "./page";
 import single from "./single";
 import archive from "./archive";
@@ -21,6 +21,7 @@ import PageGDPGrowth from "./page-gdp-growth";
 import PageNationalDebt from "./page-national-debt";
 import PageInterestRates from "./page-interest-rates";
 import PageMacroEconomyLanding from "./page-the-macro-economy-of-sri-lanka";
+import SingleMacroEconomy from "./single-macro-economy";
 import PageFiscalOperations from "./page-government-fiscal-operations";
 import SearchResult from "./page-search-result";
 
@@ -47,7 +48,10 @@ export default {
   "page-gdp-growth": PageGDPGrowth,
   "page-national-debt": PageNationalDebt,
   "page-interest-rates": PageInterestRates,
+  "single-macro-economy": SingleMacroEconomy,
   "page-the-macro-economy-of-sri-lanka": PageMacroEconomyLanding,
   "page-government-fiscal-operations": PageFiscalOperations,
   "page-search-result": SearchResult,
 };
+
+

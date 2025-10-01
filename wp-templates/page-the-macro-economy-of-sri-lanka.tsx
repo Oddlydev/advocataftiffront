@@ -433,38 +433,51 @@ export default function PageMacroEconomyLanding() {
 
       {/* Card Section */}
       <div className="max-w-7xl mx-auto px-5 md:px-10 xl:px-16 bg-white pb-12 md:pb-16 xl:pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 h-full">
-          {/* Column 1 */}
-          <div className="lg:col-span-3 flex flex-col gap-5 h-full">
-            {col1.map((post, i) => (
-              <MacroCard
-                key={post.id}
-                post={post}
-                gradient={i === 0 ? "lg:rounded-tl-4xl" : "lg:rounded-bl-4xl"}
-                flexGrow
-              />
-            ))}
+        {showPlaceholder ? (
+          <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-slate-200 bg-white text-slate-600 text-sm font-medium">
+            Loading macro dashboards...
           </div>
+        ) : showError ? (
+          <div className="flex flex-col items-center justify-center gap-1 min-h-[200px] rounded-xl border border-red-200 bg-red-50 text-red-700 text-sm font-medium text-center px-6">
+            <span>Unable to load macro economy dashboards. Please try again later.</span>
+            {error ? (
+              <span className="block text-xs text-red-600/80">{error}</span>
+            ) : null}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 h-full">
+            {/* Column 1 */}
+            <div className="lg:col-span-3 flex flex-col gap-5 h-full">
+              {col1.map((post, i) => (
+                <MacroCard
+                  key={post.id}
+                  post={post}
+                  gradient={i === 0 ? "lg:rounded-tl-4xl" : "lg:rounded-bl-4xl"}
+                  flexGrow
+                />
+              ))}
+            </div>
 
-          {/* Column 2 */}
-          <div className="lg:col-span-6 flex flex-col gap-5 h-full">
-            {col2.map((post) => (
-              <MacroCard key={post.id} post={post} flexGrow />
-            ))}
-          </div>
+            {/* Column 2 */}
+            <div className="lg:col-span-6 flex flex-col gap-5 h-full">
+              {col2.map((post) => (
+                <MacroCard key={post.id} post={post} flexGrow />
+              ))}
+            </div>
 
-          {/* Column 3 */}
-          <div className="lg:col-span-3 flex flex-col gap-5 h-full">
-            {col3.map((post, i) => (
-              <MacroCard
-                key={post.id}
-                post={post}
-                gradient={i === 0 ? "lg:rounded-tr-4xl" : "lg:rounded-br-4xl"}
-                flexGrow
-              />
-            ))}
+            {/* Column 3 */}
+            <div className="lg:col-span-3 flex flex-col gap-5 h-full">
+              {col3.map((post, i) => (
+                <MacroCard
+                  key={post.id}
+                  post={post}
+                  gradient={i === 0 ? "lg:rounded-tr-4xl" : "lg:rounded-br-4xl"}
+                  flexGrow
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       {/* Card Section End */}
     </main>
