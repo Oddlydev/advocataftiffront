@@ -17,7 +17,7 @@ export default function ChipBox({
       href={href}
       className={[
         // base .chip styles
-        "text-sm/tight xl:text-base/6 font-normal font-sourcecodepro text-slate-800 bg-transparent hover:bg-brand-1-50 hover:border hover:border-brand-1-700 focus:text-slate-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent uppercase",
+        "text-sm/tight xl:text-base/6 font-semibold font-sourcecodepro text-slate-800 bg-transparent hover:bg-brand-1-50 hover:border hover:border-brand-1-700 focus:text-slate-50 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent uppercase",
         // .chip-box specifics
         "py-2 px-3 md:py-2 md:px-7 rounded-lg border border-gray-400 focus:border-brand-1-950 focus:bg-brand-1-950",
         // layout

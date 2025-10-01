@@ -128,8 +128,7 @@ export default function PageNewsletterConfirmation() {
                       placeholder="kamal978@gmail.com"
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
-                      className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400
-                      focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
+                      className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -258,7 +257,7 @@ export default function PageNewsletterConfirmation() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span className="text-base font-medium text-slate-600 font-sourcecodepro">
+                    <span className="text-base font-normal text-slate-600 font-sourcecodepro">
                       I agree to Advocata's Privacy Policy and Terms of Service.
                     </span>
                   </label>
