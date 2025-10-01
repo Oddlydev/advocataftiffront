@@ -2,13 +2,18 @@
 
 import searchClient from "@/src/lib/algolia";
 import { type JSX, FormEvent, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SearchFieldHome(): JSX.Element {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
+  const router = useRouter();
 
-  function preventSubmit(e: FormEvent) {
+  function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (query.trim().length > 0) {
+      router.push(`/search-result?query=${encodeURIComponent(query)}`);
+    }
   }
 
   useEffect(() => {
@@ -48,8 +53,7 @@ export default function SearchFieldHome(): JSX.Element {
 
   return (
     <div className="relative w-full">
-      <form className="relative w-full" onSubmit={preventSubmit}>
-        {/* Your input and button markup remains unchanged */}
+      <form className="relative w-full" onSubmit={handleSubmit}>
         <input
           type="text"
           id="search-home"
@@ -118,7 +122,6 @@ export default function SearchFieldHome(): JSX.Element {
       {query.trim().length > 0 && results.length === 0 && (
         <div className="absolute top-full left-0 mt-2 py-20 px-3.5 w-full bg-brand-black border border-brand-white/25 rounded-2xl z-50">
           <div className="grid items-center gap-3 text-slate-200/40 text-base font-sourcecodepro font-normal">
-            {/* SVG */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="32"
@@ -144,8 +147,6 @@ export default function SearchFieldHome(): JSX.Element {
                 />
               </g>
             </svg>
-
-            {/* Text */}
             <div className="flex flex-col justify-center">
               <p className="text-slate-50 font-sourcecodepro font-medium text-base/6 mb-2">
                 No results found
@@ -156,7 +157,6 @@ export default function SearchFieldHome(): JSX.Element {
             </div>
           </div>
         </div>
-
       )}
 
       {results.length > 0 && (
@@ -175,7 +175,6 @@ export default function SearchFieldHome(): JSX.Element {
               >
                 <h4 className="flex items-center gap-2">
                   <span className="bg-brand-white/15 rounded-full p-2 text-slate-50 transition-colors duration-200 group-hover:bg-brand-white/30">
-                    {/* icon */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
