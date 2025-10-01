@@ -166,9 +166,7 @@ export default function PageNewsletterConfirmation() {
                    <div className="mt-2">
                       <div
                         className="flex rounded-md bg-white outline-1 -outline-offset-1 outline-gray-200
-                          has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-brand-1-200
-                          w-full px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400
-                          focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200"
+                          has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-brand-1-200 w-full px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200"
                       >
                         {/* Country Code Select with Arrow */}
                         <div className="relative flex items-center">
@@ -203,7 +201,7 @@ export default function PageNewsletterConfirmation() {
                         <div className="flex -ml-px">
                           <input
                             id="phone-number"
-                            type="text"
+                            type="number"
                             name="phone-number"
                             placeholder="11 234 5678"
                             className="block min-w-0 grow bg-white pr-3 pl-2 text-base text-slate-800 font-sourcecodepro placeholder:text-gray-400 focus:outline-none"

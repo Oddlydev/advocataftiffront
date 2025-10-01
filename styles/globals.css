@@ -28,12 +28,22 @@ button {
     transition: background-color 5000s ease-in-out 0s !important;
   }
 
-  
   .search-input:-webkit-autofill,
   .search-input:-webkit-autofill:hover,
   .search-input:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0px 1000px theme('colors.white') inset !important;
   }
+  
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-internal-autofill-selected {
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+  box-shadow: 0 0 0px 1000px transparent inset !important;
+  -webkit-text-fill-color: inherit !important; /* keep text color same as normal input */
+  background-color: transparent !important;     /* remove autofill background */
+  transition: background-color 5000s ease-in-out 0s; /* prevents browser animation */
+}    
 
 }
 
