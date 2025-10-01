@@ -1,9 +1,26 @@
-﻿import type { DSVRowString } from "d3-dsv";
+import type { DSVRowString } from "d3-dsv";
 
-const DEFAULT_YEAR_KEYS = ["year", "Year", "YEAR"] as const;
+const DEFAULT_YEAR_KEYS = [
+  "year",
+  "Year",
+  "YEAR",
+  "years",
+  "Years",
+  "YEARS",
+  "fiscal year",
+  "Fiscal Year",
+  "FISCAL YEAR",
+  "period",
+  "Period",
+  "PERIOD"
+] as const;
 
 function normalizeHeader(header: string): string {
-  return header.trim().toLowerCase().replace(/[^a-z0-9]+/g, "");
+  return header
+    .replace(/\uFEFF/g, "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
 }
 
 function resolveValue(
@@ -46,6 +63,34 @@ export function extractYear(
       return numeric;
     }
   }
+
+  const entries = Object.entries(row);
+
+  for (const [key, rawValue] of entries) {
+    if (!key) {
+      continue;
+    }
+    const normalized = normalizeHeader(key);
+    if (
+      normalized.includes("year") ||
+      normalized.includes("period") ||
+      normalized === "fy" ||
+      normalized === "fiscalyear"
+    ) {
+      const numeric = toNumber(rawValue as string | undefined);
+      if (numeric !== null) {
+        return numeric;
+      }
+    }
+  }
+
+  for (const [, rawValue] of entries) {
+    const numeric = toNumber(rawValue as string | undefined);
+    if (numeric !== null) {
+      return numeric;
+    }
+  }
+
   return null;
 }
 

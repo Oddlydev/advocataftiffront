@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
@@ -32,6 +32,30 @@ const MARGIN = { top: 40, right: 40, bottom: 60, left: 70 };
 const SCALE_STEP = 1.2;
 const MIN_SCALE = 1;
 const MAX_SCALE = 5;
+const HTTP_URL_REGEX = /^https?:\/\//i;
+
+async function fetchCsvWithFallback(url: string): Promise<string> {
+  const attempt = async (target: string) => {
+    const response = await fetch(target, { cache: "no-cache" });
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+    return response.text();
+  };
+
+  try {
+    return await attempt(url);
+  } catch (primaryError) {
+    if (HTTP_URL_REGEX.test(url)) {
+      const proxied = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+      return attempt(proxied).catch((proxyError) => {
+        throw proxyError ?? primaryError;
+      });
+    }
+    throw primaryError;
+  }
+}
+
 
 function coerceNumber(value: string | number | null | undefined): number | null {
   if (typeof value === "number") {
@@ -66,16 +90,11 @@ export function MacroLineChart({
         setData([]);
         return;
       }
-
       try {
-        const response = await fetch(datasetUrl, { cache: "no-cache" });
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
+        const text = await fetchCsvWithFallback(datasetUrl);
 
-        const text = await response.text();
         const parsed = d3
-          .csvParse(text, (row) => {
+          .csvParse(text.replace(/\uFEFF/g, ""), (row) => {
             const parsedRow = parseRow(row);
             if (!parsedRow) return null;
             const sanitized: MacroLineDatum = { year: parsedRow.year };
@@ -332,3 +351,6 @@ export function MacroLineChart({
 }
 
 export type MacroChartWrapperProps = Pick<MacroLineChartProps, "datasetUrl" | "controlIds">;
+
+
+
