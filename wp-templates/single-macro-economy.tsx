@@ -253,21 +253,21 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-10 md:pb-20">
           <div className="border border-gray-200 rounded-xl py-6 px-5">
             <div className="mb-10">
-              <h4 className="text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
+              <h4 className="text-xl/snug md:text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
                 {config.chartTitle}
               </h4>
-              <p className="text-base/6 font-baskervville font-normal text-slate-950">
+              <p className="text-sm/5 md:text-base/6 font-baskervville font-normal text-slate-950">
                 {config.chartSubtitle}
               </p>
             </div>
 
             <div className="relative">
-              <div className="absolute top-2 md:top-0 right-4 md:right-10 flex gap-2 z-10">
+              <div className="absolute -top-3 md:-top-6 lg:top-0 right-4 md:right-10 flex gap-2 z-10">
                 <button
                   id={controlIds.zoomInId}
-                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                  className="px-1.5 py-1 md:px-2.5 md:py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
                 >
-                  <svg
+                  <svg className="size-2 md:size-auto"
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
                     height="17"
@@ -306,9 +306,9 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                 </button>
                 <button
                   id={controlIds.zoomOutId}
-                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                  className="px-1.5 py-1 md:px-2.5 md:py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
                 >
-                  <svg
+                  <svg className="size-2 md:size-auto"
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
                     height="17"
@@ -340,9 +340,9 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                 </button>
                 <button
                   id={controlIds.resetId}
-                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                  className="px-1.5 py-1 md:px-2.5 md:py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
                 >
-                  <svg
+                  <svg className="size-2 md:size-auto"
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
                     height="17"
@@ -379,8 +379,8 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
             </div>
 
             {config.legendItems && config.legendItems.length > 0 ? (
-              <div className="mt-5">
-                <div className="grid md:flex items-center justify-center gap-2 md:gap-6">
+              <div className="mt-5 px-6">
+                <div className="grid md:flex items-center md:justify-center gap-2 md:gap-6">
                   {config.legendItems.map((item) => (
                     <div key={item.label} className="flex items-center gap-2">
                       <span
@@ -389,7 +389,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                         }`}
                         style={item.indicatorStyle}
                       ></span>
-                      <span className="text-base/6 font-normal font-baskervville text-slate-600">
+                      <span className="text-sm/tight md:text-base/6 font-normal font-baskervville text-slate-600">
                         {item.label}
                       </span>
                     </div>

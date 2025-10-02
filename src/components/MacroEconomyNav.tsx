@@ -183,7 +183,7 @@ export default function MacroEconomySliderNav({
           <div key={`${label}-${index}`} className="slider-item">
             <button
               aria-current={index === activeIndex ? "page" : undefined}
-              className={`slider-btn w-full text-sm xl:text-base px-3 py-2 rounded-lg uppercase border font-semibold font-sourcecodepro text-center transition-colors duration-200
+              className={`slider-btn w-full text-xs md:text-sm xl:text-base px-3 py-2 rounded-lg uppercase border font-semibold font-sourcecodepro text-center transition-colors duration-200
     ${
       index === activeIndex
         ? "bg-brand-1-950 text-brand-white border-brand-1-950 hover:bg-brand-2-50 hover:text-slate-800"

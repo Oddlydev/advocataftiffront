@@ -134,8 +134,11 @@ export function MacroLineChart({
 
     // Clear SVG
     d3.select(container).selectAll("*").remove();
-    const width = Math.max(container.clientWidth - MARGIN.left - MARGIN.right, 320);
-    const height = Math.max(container.clientHeight - MARGIN.top - MARGIN.bottom, 240);
+    const viewBoxWidth = 1200;
+    const viewBoxHeight = 500;
+
+    const width = viewBoxWidth - MARGIN.left - MARGIN.right;
+    const height = viewBoxHeight - MARGIN.top - MARGIN.bottom;
 
     const svg = d3.select(container)
       .attr("viewBox", `0 0 ${width + MARGIN.left + MARGIN.right} ${height + MARGIN.top + MARGIN.bottom}`)
@@ -183,28 +186,39 @@ export function MacroLineChart({
       yRight = d3.scaleLinear().domain([yRightMin, yRightMax]).range([height, 0]);
     }
 
-    // Axes
-    svg.append("g").attr("transform", `translate(0, ${height})`).call(d3.axisBottom(x).tickFormat(d3.format("d")))
-      .selectAll("text").attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
+    // X axis
+    svg.append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .call(d3.axisBottom(x).tickFormat(d3.format("d")))
+      .selectAll("text")
+      .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-normal");
 
-    svg.append("g").call(d3.axisLeft(yLeft).ticks(5))
-      .selectAll("text").attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
+    // Left Y axis
+    svg.append("g")
+      .call(d3.axisLeft(yLeft).ticks(5))
+      .selectAll("text")
+      .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-normal");
 
+    // Right Y axis
     if (useDualAxis && yRight) {
-      svg.append("g").attr("transform", `translate(${width},0)`).call(d3.axisRight(yRight).ticks(5))
-        .selectAll("text").attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
+      svg.append("g")
+        .attr("transform", `translate(${width},0)`)
+        .call(d3.axisRight(yRight).ticks(5))
+        .selectAll("text")
+        .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-normal");
 
       svg.append("text")
         .attr("text-anchor", "middle")
         .attr("transform", `translate(${width + 50},${height / 2})rotate(90)`)
-        .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
+        .attr("class", "font-sourcecodepro text-slate-600 text-base lg:text-lg font-normal")
         .text(yAxisRightLabel!);
     }
 
+    // Left axis label
     svg.append("text")
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
-      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
+      .attr("class", "font-sourcecodepro text-slate-600 text-base lg:text-lg font-normal")
       .text(leftSeries.some((s) => s.formatInMillions) ? `${yAxisLabel} (Mn)` : yAxisLabel);
 
     // Grid
@@ -267,7 +281,7 @@ export function MacroLineChart({
 
             tooltip.style("display", "block").html(`
               <div class="flex flex-col gap-1">
-                <div class="font-semibold text-slate-600 font-sourcecodepro text-xs">Year: ${d.year}</div>
+                <div class="font-semibold text-slate-600 font-sourcecodepro text-xs pb-3.5">Year: ${d.year}</div>
                 ${tooltipRows}
               </div>`);
 
