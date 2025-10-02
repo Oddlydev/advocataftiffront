@@ -25,7 +25,7 @@ const SidebarItem: React.FC<{
     href={href}
     className="sidebar-item items-center flex gap-x-3 rounded-md py-2 px-2.5 text-sm/6 font-medium font-sourcecodepro text-slate-800 hover:text-slate-800 hover:bg-brand-1-50 focus:bg-brand-1-950 focus:text-white focus:outline-0 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent group"
   >
-    <span className="sidebar-item-icon size-6 shrink-0">{icon}</span>
+    {/* <span className="sidebar-item-icon size-6 shrink-0">{icon}</span> */}
     {label}
   </a>
 );

@@ -34,7 +34,7 @@ const SidebarItem: React.FC<{
           : "text-slate-800 hover:text-slate-800 hover:bg-brand-1-50"
       }`}
   >
-    <span className="sidebar-item-icon size-6 shrink-0">{icon}</span>
+    {/* <span className="sidebar-item-icon size-6 shrink-0">{icon}</span> */}
     {label}
   </a>
 );
@@ -439,10 +439,16 @@ const DashboardDropdown: React.FC<{
   }, []);
 
   const isDashActive = (() => {
-    const current = currentPathname ?? (typeof window !== "undefined" ? window.location.pathname : "");
+    const current =
+      currentPathname ??
+      (typeof window !== "undefined" ? window.location.pathname : "");
     const parentActive = pathMatches(current, parentItem?.uri);
-    const childActive = items.some((child: any) => pathMatches(current, child.uri));
-    const implied = /dashboard/i.test(parentItem?.label ?? "") && /dashboard/i.test(current ?? "");
+    const childActive = items.some((child: any) =>
+      pathMatches(current, child.uri)
+    );
+    const implied =
+      /dashboard/i.test(parentItem?.label ?? "") &&
+      /dashboard/i.test(current ?? "");
     return parentActive || childActive || implied;
   })();
 
@@ -542,7 +548,13 @@ const MobileMenu: React.FC<{
   dashboardItems?: MenuItem[];
   parentDashboardItem?: MenuItem | null;
   currentPathname?: string;
-}> = ({ imageUrl, topLevelItems = [], dashboardItems = [], parentDashboardItem = null, currentPathname }) => {
+}> = ({
+  imageUrl,
+  topLevelItems = [],
+  dashboardItems = [],
+  parentDashboardItem = null,
+  currentPathname,
+}) => {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -560,10 +572,16 @@ const MobileMenu: React.FC<{
   }, []);
 
   const isDashActive = (() => {
-    const current = currentPathname ?? (typeof window !== 'undefined' ? window.location.pathname : '');
+    const current =
+      currentPathname ??
+      (typeof window !== "undefined" ? window.location.pathname : "");
     const parentActive = pathMatches(current, parentDashboardItem?.uri);
-    const childActive = dashboardItems.some((child) => pathMatches(current, child.uri));
-    const implied = /dashboard/i.test(parentDashboardItem?.label ?? '') && /dashboard/i.test(current ?? '');
+    const childActive = dashboardItems.some((child) =>
+      pathMatches(current, child.uri)
+    );
+    const implied =
+      /dashboard/i.test(parentDashboardItem?.label ?? "") &&
+      /dashboard/i.test(current ?? "");
     return parentActive || childActive || implied;
   })();
   return (
@@ -661,7 +679,10 @@ const MobileMenu: React.FC<{
 
               {/* Dropdown moved to 2nd row */}
               {parentDashboardItem && (
-                <div className="relative" key={parentDashboardItem.id + "-dropdown"}>
+                <div
+                  className="relative"
+                  key={parentDashboardItem.id + "-dropdown"}
+                >
                   <button
                     className={`dropdown-btn nav-link text-lg leading-snug font-sourcecodepro uppercase py-2.5 px-3.5 rounded-md transition flex items-center
     ${
@@ -721,7 +742,11 @@ const MobileMenu: React.FC<{
                                   <SidebarItem
                                     href={item.uri ?? "#"}
                                     label={item.label}
-                                    icon={dashboardIcons[index % dashboardIcons.length]}
+                                    icon={
+                                      dashboardIcons[
+                                        index % dashboardIcons.length
+                                      ]
+                                    }
                                     isActive={isActive}
                                   />
                                 </li>
@@ -903,7 +928,3 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
 };
 
 export default HeaderNav;
-
-
-
-
