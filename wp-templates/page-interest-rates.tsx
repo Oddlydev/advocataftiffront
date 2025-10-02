@@ -24,47 +24,48 @@ const AverageAnnualInflationChart = () => {
 
   useEffect(() => {
     const data: InterestRateDatum[] = [
-                { year: 2010, AWNFDR: 3.1, AWNDR: 4.5, AWNLR: 2.2, AWPLR: 1.5 },
-                { year: 2011, AWNFDR: 4.0, AWNDR: 5.2, AWNLR: 3.0, AWPLR: 2.0 },
-                { year: 2012, AWNFDR: 6.6, AWNDR: 7.1, AWNLR: 6.2, AWPLR: 3.5 },
-                { year: 2013, AWNFDR: 4.3, AWNDR: 5.0, AWNLR: 3.7, AWPLR: 2.8 },
-                { year: 2014, AWNFDR: 3.5, AWNDR: 4.0, AWNLR: 3.1, AWPLR: 2.1 },
-                { year: 2015, AWNFDR: 3.1, AWNDR: 4.5, AWNLR: 2.2, AWPLR: 1.5 },
-                { year: 2016, AWNFDR: 4.0, AWNDR: 5.2, AWNLR: 3.0, AWPLR: 2.0 },
-                { year: 2017, AWNFDR: 6.6, AWNDR: 7.1, AWNLR: 6.2, AWPLR: 3.5 },
-                { year: 2018, AWNFDR: 4.3, AWNDR: 5.0, AWNLR: 3.7, AWPLR: 2.8 },
-                { year: 2019, AWNFDR: 3.5, AWNDR: 4.0, AWNLR: 3.1, AWPLR: 2.1 },
-                { year: 2020, AWNFDR: 4.6, AWNDR: 6.3, AWNLR: 3.0, AWPLR: 2.4 },
-                { year: 2021, AWNFDR: 6.0, AWNDR: 7.5, AWNLR: 4.8, AWPLR: 3.0 },
-                { year: 2022, AWNFDR: 10.2, AWNDR: 13.5, AWNLR: 8.1, AWPLR: 4.5 },
-                { year: 2023, AWNFDR: 8.0, AWNDR: 9.2, AWNLR: 7.1, AWPLR: 5.0 },
-                { year: 2024, AWNFDR: 5.5, AWNDR: 6.4, AWNLR: 4.9, AWPLR: 3.8 },
+      { year: 2010, AWNFDR: 3.1, AWNDR: 4.5, AWNLR: 2.2, AWPLR: 1.5 },
+      { year: 2011, AWNFDR: 4.0, AWNDR: 5.2, AWNLR: 3.0, AWPLR: 2.0 },
+      { year: 2012, AWNFDR: 6.6, AWNDR: 7.1, AWNLR: 6.2, AWPLR: 3.5 },
+      { year: 2013, AWNFDR: 4.3, AWNDR: 5.0, AWNLR: 3.7, AWPLR: 2.8 },
+      { year: 2014, AWNFDR: 3.5, AWNDR: 4.0, AWNLR: 3.1, AWPLR: 2.1 },
+      { year: 2015, AWNFDR: 3.1, AWNDR: 4.5, AWNLR: 2.2, AWPLR: 1.5 },
+      { year: 2016, AWNFDR: 4.0, AWNDR: 5.2, AWNLR: 3.0, AWPLR: 2.0 },
+      { year: 2017, AWNFDR: 6.6, AWNDR: 7.1, AWNLR: 6.2, AWPLR: 3.5 },
+      { year: 2018, AWNFDR: 4.3, AWNDR: 5.0, AWNLR: 3.7, AWPLR: 2.8 },
+      { year: 2019, AWNFDR: 3.5, AWNDR: 4.0, AWNLR: 3.1, AWPLR: 2.1 },
+      { year: 2020, AWNFDR: 4.6, AWNDR: 6.3, AWNLR: 3.0, AWPLR: 2.4 },
+      { year: 2021, AWNFDR: 6.0, AWNDR: 7.5, AWNLR: 4.8, AWPLR: 3.0 },
+      { year: 2022, AWNFDR: 10.2, AWNDR: 13.5, AWNLR: 8.1, AWPLR: 4.5 },
+      { year: 2023, AWNFDR: 8.0, AWNDR: 9.2, AWNLR: 7.1, AWPLR: 5.0 },
+      { year: 2024, AWNFDR: 5.5, AWNDR: 6.4, AWNLR: 4.9, AWPLR: 3.8 },
     ];
 
     const colors: Record<RateKey, string> = {
-                AWNFDR: "#F58FAA",
-                AWNDR: "#1C0209",
-                AWNLR: "#A90E38",
-                AWPLR: "#ea1a52",
+      AWNFDR: "#F58FAA",
+      AWNDR: "#1C0209",
+      AWNLR: "#A90E38",
+      AWPLR: "#ea1a52",
     };
-    
+
     const container = chartRef.current;
     const tooltipEl = tooltipRef.current;
 
-    if (!container || !tooltipEl) {
-      return;
-    }
+    if (!container || !tooltipEl) return;
 
     const tooltip = d3
       .select(tooltipEl)
       .style("display", "none")
-      .style("border-radius", "var(--border-radius-rounded-md, 6px)")
-      .style("border", "1px solid var(--slate-200, #E2E8F0)")
-      .style("background", "var(--white, #FFF)")
-      .style("box-shadow", "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)")
+      .style("border-radius", "6px")
+      .style("border", "1px solid #E2E8F0")
+      .style("background", "#FFF")
+      .style(
+        "box-shadow",
+        "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)"
+      )
       .style("padding", "10px");
 
-    // Clear any existing svg content
+    // Clear svg
     d3.select(container).selectAll("*").remove();
 
     const margin = { top: 40, right: 40, bottom: 60, left: 70 };
@@ -127,35 +128,54 @@ const AverageAnnualInflationChart = () => {
         
     gridGroup.select(".domain").remove();
 
-    // Line generator
-    const lineGen = (key: RateKey) => d3.line<InterestRateDatum>()
+    // Animation
+    const duration = 2500;
+
+    rateKeys.forEach((key) => {
+      const line = d3
+        .line<InterestRateDatum>()
         .x((d) => x(d.year)!)
         .y((d) => y(d[key]))
         .curve(d3.curveMonotoneX);
 
-    // Draw lines
-    rateKeys.forEach((key) => {
-        svg.append("path")
-            .datum(data)
-            .attr("fill", "none")
-            .attr("stroke", colors[key])
-            .attr("stroke-width", 2.5)
-            .attr("d", lineGen(key));
-    });
+      const path = svg
+        .append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", colors[key])
+        .attr("stroke-width", 2.5)
+        .attr("d", line);
 
-    // Dots & Tooltip
-    data.forEach((d) => {
-      rateKeys.forEach((key) => {
+      const totalLength = (path.node() as SVGPathElement).getTotalLength();
+
+      path
+        .attr("stroke-dasharray", totalLength + " " + totalLength)
+        .attr("stroke-dashoffset", totalLength)
+        .transition()
+        .duration(duration)
+        .ease(d3.easeLinear)
+        .attr("stroke-dashoffset", 0);
+
+      // Animate dots in sync with line
+      data.forEach((d, j) => {
         const dot = svg
           .append("circle")
           .attr("cx", x(d.year)!)
           .attr("cy", y(d[key]))
-          .attr("r", 4)
+          .attr("r", 0)
           .attr("fill", colors[key]);
 
+        const pointPos = (j / (data.length - 1)) * totalLength;
+
+        dot.transition()
+          .delay((pointPos / totalLength) * duration)
+          .duration(300)
+          .ease(d3.easeBackOut)
+          .attr("r", 4);
+
+        // Tooltip logic
         dot
           .on("mouseover", () => {
-            // Tooltip fade in
             tooltip
               .style("display", "block")
               .style("opacity", "0")
@@ -163,46 +183,24 @@ const AverageAnnualInflationChart = () => {
               .duration(200)
               .style("opacity", "1");
 
-            // Tooltip content (all series for that year)
             tooltip.html(`
               <div class="flex flex-col gap-1">
                 <div class="font-bold text-slate-800">Year: ${d.year}</div>
-                
-                <div class="flex items-center justify-between gap-2">
-                  <div class="flex items-center gap-1">
-                    <span style="width:10px;height:10px;background:${colors.AWNFDR};border-radius:50%;display:inline-block;"></span>
-                    <span class="text-slate-600">AWNFDR:</span>
-                  </div>
-                  <span style="color:${colors.AWNFDR}; font-weight: 600;">${d.AWNFDR}%</span>
-                </div>
-
-                <div class="flex items-center justify-between gap-2">
-                  <div class="flex items-center gap-1">
-                    <span style="width:10px;height:10px;background:${colors.AWNDR};border-radius:50%;display:inline-block;"></span>
-                    <span class="text-slate-600">AWNDR:</span>
-                  </div>
-                  <span style="color:${colors.AWNDR}; font-weight: 600;">${d.AWNDR}%</span>
-                </div>
-
-                <div class="flex items-center justify-between gap-2">
-                  <div class="flex items-center gap-1">
-                    <span style="width:10px;height:10px;background:${colors.AWNLR};border-radius:50%;display:inline-block;"></span>
-                    <span class="text-slate-600">AWNLR:</span>
-                  </div>
-                  <span style="color:${colors.AWNLR}; font-weight: 600;">${d.AWNLR}%</span>
-                </div>
-
-                <div class="flex items-center justify-between gap-2">
-                  <div class="flex items-center gap-1">
-                    <span style="width:10px;height:10px;background:${colors.AWPLR};border-radius:50%;display:inline-block;"></span>
-                    <span class="text-slate-600">AWPLR:</span>
-                  </div>
-                  <span style="color:${colors.AWPLR}; font-weight: 600;">${d.AWPLR}%</span>
-                </div>
+                ${rateKeys
+                  .map(
+                    (rk) => `
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-1">
+                      <div><span style="width:10px;height:10px;background:${colors[rk]};border-radius:50%;display:inline-block;"></span></div>
+                      <span class="text-slate-600">${rk}:</span>
+                    </div>
+                    <span style="color:${colors[rk]}; font-weight:600;">${d[rk]}%</span>
+                  </div>`
+                  )
+                  .join("")}
               </div>
             `);
 
-            // Highlight hovered circle
             svg
               .append("circle")
               .attr("class", `hover-circle-${key}-${d.year}`)
@@ -220,74 +218,63 @@ const AverageAnnualInflationChart = () => {
               .style("top", event.clientY - rect.top - 50 + "px");
           })
           .on("mouseout", () => {
-            // Tooltip fade out
             tooltip
               .transition()
               .duration(200)
               .style("opacity", "0")
               .on("end", () => tooltip.style("display", "none"));
-
-            // Remove highlight
             svg.select(`.hover-circle-${key}-${d.year}`).remove();
           });
       });
     });
-    
+
     // -------------------
     // Zoom buttons
     // -------------------
-    // Initialize zoom variables
     let currentScale = 1;
     let zoomInCount = 0;
     let zoomOutCount = 0;
-    const maxClicks = 2; // Maximum allowed clicks for zooming in or out
+    const maxClicks = 2;
 
-    // Select buttons
     const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn")!;
     const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn")!;
-    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn")!;
+    const resetZoomBtn =
+      document.querySelector<HTMLButtonElement>("#resetZoomBtn")!;
 
-    // Function to apply zoom transformation
     const applyZoom = () => {
-      svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
-
-      // Disable buttons if their respective limits are reached
+      svg.attr(
+        "transform",
+        `translate(${margin.left},${margin.top}) scale(${currentScale})`
+      );
       zoomInBtn.disabled = zoomInCount >= maxClicks;
       zoomOutBtn.disabled = zoomOutCount >= maxClicks;
     };
 
-    // Event listener for zooming in
     const onZoomIn = () => {
       if (zoomInCount < maxClicks) {
-        currentScale *= 1.2; // Increase scale by 20%
+        currentScale *= 1.2;
         zoomInCount++;
         applyZoom();
       }
     };
-
-    // Event listener for zooming out
     const onZoomOut = () => {
       if (zoomOutCount < maxClicks) {
-        currentScale /= 1.2; // Decrease scale by 20%
+        currentScale /= 1.2;
         zoomOutCount++;
         applyZoom();
       }
     };
-
-    // Event listener for resetting zoom
     const onReset = () => {
-      currentScale = 1; // Reset scale to default
+      currentScale = 1;
       zoomInCount = 0;
       zoomOutCount = 0;
       applyZoom();
     };
 
-    // Attach event listeners to buttons
     zoomInBtn.addEventListener("click", onZoomIn);
     zoomOutBtn.addEventListener("click", onZoomOut);
     resetZoomBtn.addEventListener("click", onReset);
 
-    // Cleanup function to remove event listeners
     return () => {
       zoomInBtn.removeEventListener("click", onZoomIn);
       zoomOutBtn.removeEventListener("click", onZoomOut);

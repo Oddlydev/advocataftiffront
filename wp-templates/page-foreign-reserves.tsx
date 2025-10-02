@@ -11,39 +11,44 @@ type ForeignReservesDatum = {
   ORA: number;
 };
 
-// ---- Chart Component ----
 const ForeignReservesChart = () => {
   const chartRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const data: ForeignReservesDatum[] = [
-        { year: 2013, ORA: 13.0 },
-        { year: 2014, ORA: 5.1 },
-        { year: 2015, ORA: 8.6 },
-        { year: 2016, ORA: 4.0 },
-        { year: 2017, ORA: 6.6 },
-        { year: 2018, ORA: 4.3 },
-        { year: 2019, ORA: 3.5 },
-        { year: 2020, ORA: 4.6 },
-        { year: 2021, ORA: 6.0 },
-        { year: 2022, ORA: 10.2 },
-        { year: 2023, ORA: 8.0 },
-        { year: 2024, ORA: 5.5 },
+      { year: 2013, ORA: 13.0 },
+      { year: 2014, ORA: 5.1 },
+      { year: 2015, ORA: 8.6 },
+      { year: 2016, ORA: 4.0 },
+      { year: 2017, ORA: 6.6 },
+      { year: 2018, ORA: 4.3 },
+      { year: 2019, ORA: 3.5 },
+      { year: 2020, ORA: 4.6 },
+      { year: 2021, ORA: 6.0 },
+      { year: 2022, ORA: 10.2 },
+      { year: 2023, ORA: 8.0 },
+      { year: 2024, ORA: 5.5 },
     ];
 
-    const color = "#CF1244"; // single line color
-
+    const color = "#CF1244";
     const container = chartRef.current;
     const tooltipEl = tooltipRef.current;
+    if (!container || !tooltipEl) return;
 
-    if (!container || !tooltipEl) {
-      return;
-    }
+    const tooltip = d3
+      .select(tooltipEl)
+      .style("display", "none")
+      .style("border-radius", "6px")
+      .style("border", "1px solid #E2E8F0")
+      .style("background", "#FFF")
+      .style(
+        "box-shadow",
+        "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)"
+      )
+      .style("padding", "10px");
 
-    const tooltip = d3.select(tooltipEl);
-
-    // Clear any existing svg content
+    // Clear SVG
     d3.select(container).selectAll("*").remove();
 
     const margin = { top: 40, right: 40, bottom: 60, left: 70 };
@@ -52,27 +57,35 @@ const ForeignReservesChart = () => {
 
     const svg = d3
       .select(container)
-      .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .attr(
+        "viewBox",
+        `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`
+      )
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // X & Y scales
-    const x = d3.scalePoint<number>().domain(data.map((d) => d.year)).range([0, width]).padding(0.5);
+    // Scales
+    const x = d3
+      .scalePoint<number>()
+      .domain(data.map((d) => d.year))
+      .range([0, width])
+      .padding(0.5);
     const yMax = d3.max(data, (d) => d.ORA) ?? 0;
     const y = d3.scaleLinear().domain([0, yMax + 2]).range([height, 0]);
-        
-    // X-axis
-    svg.append("g")
-    .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x).tickFormat(d3.format("d")))
-    .selectAll("text")
-    .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
-    
-    // Y-axis
-    svg.append("g")
-    .call(d3.axisLeft(y).ticks(5))
-    .selectAll("text")
-    .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
+
+    // Axes
+    svg
+      .append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .call(d3.axisBottom(x).tickFormat(d3.format("d")))
+      .selectAll("text")
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
+
+    svg
+      .append("g")
+      .call(d3.axisLeft(y).ticks(5))
+      .selectAll("text")
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
     // Y-axis label
     svg
@@ -80,25 +93,18 @@ const ForeignReservesChart = () => {
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
       .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
-      .text("Balance of Payments (USD Mn.)");
+      .text("Official Reserve Assets (USD Mn.)");
 
-    // Horizontal grid lines
+    // Grid lines
     const gridGroup = svg
       .append("g")
       .attr("class", "grid")
-      .call(
-        d3
-          .axisLeft(y)
-          .tickSize(-width)
-          .tickFormat(() => "")
-      );
-
+      .call(d3.axisLeft(y).tickSize(-width).tickFormat(() => ""));
     gridGroup
       .selectAll("line")
       .attr("stroke", "#CBD5E1")
       .attr("stroke-width", 1)
       .attr("stroke-dasharray", "4,4");
-
     gridGroup.select(".domain").remove();
 
     // Line generator
@@ -108,8 +114,8 @@ const ForeignReservesChart = () => {
       .y((d) => y(d.ORA))
       .curve(d3.curveMonotoneX);
 
-    // Draw single line
-    svg
+    // Animated line
+    const path = svg
       .append("path")
       .datum(data)
       .attr("fill", "none")
@@ -117,45 +123,57 @@ const ForeignReservesChart = () => {
       .attr("stroke-width", 2.5)
       .attr("d", lineGen);
 
-    // Dots & Tooltip
-    data.forEach((d) => {
+    const totalLength = (path.node() as SVGPathElement).getTotalLength();
+    const duration = 2500;
+
+    path
+      .attr("stroke-dasharray", `${totalLength} ${totalLength}`)
+      .attr("stroke-dashoffset", totalLength)
+      .transition()
+      .duration(duration)
+      .ease(d3.easeLinear)
+      .attr("stroke-dashoffset", 0);
+
+    // Animate dots in sync
+    data.forEach((d, i) => {
       const dot = svg
         .append("circle")
         .attr("cx", x(d.year)!)
         .attr("cy", y(d.ORA))
-        .attr("r", 4)
+        .attr("r", 0)
         .attr("fill", color);
 
+      const pointPos = (i / (data.length - 1)) * totalLength;
+      dot
+        .transition()
+        .delay((pointPos / totalLength) * duration)
+        .duration(300)
+        .ease(d3.easeBackOut)
+        .attr("r", 4);
+
+      // Tooltip & hover circle
       dot
         .on("mouseover", () => {
-          // Fade-in tooltip
-          tooltip
-            .style("display", "block")
-            .style("opacity", "0")
-            .transition()
-            .duration(200)
-            .style("opacity", "1");
-
+          tooltip.style("display", "block").style("opacity", 0).transition().duration(200).style("opacity", 1);
           tooltip.html(`
             <div class="flex flex-col gap-1">
               <div class="font-bold text-slate-800">Year: ${d.year}</div>
               <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-1">
-                  <span style="width:10px;height:10px;background:${color};border-radius:50%;display:inline-block;"></span>
+                  <div><span style="width:10px;height:10px;background:${color};border-radius:50%;display:inline-block;"></span></div>
                   <span class="text-slate-600">ORA:</span>
                 </div>
-                <span style="color:${color}; font-weight: 600;">${d.ORA}%</span>
+                <span style="color:${color}; font-weight:600;">${d.ORA}%</span>
               </div>
             </div>
           `);
 
-          // Highlight circle
           svg
             .append("circle")
             .attr("class", `hover-circle-${d.year}`)
             .attr("cx", x(d.year)!)
             .attr("cy", y(d.ORA))
-            .attr("r", 8) // bigger circle
+            .attr("r", 8)
             .attr("stroke", color)
             .attr("stroke-width", 2)
             .attr("fill", "none");
@@ -167,14 +185,7 @@ const ForeignReservesChart = () => {
             .style("top", event.clientY - rect.top - 50 + "px");
         })
         .on("mouseout", () => {
-          // Fade-out tooltip
-          tooltip
-            .transition()
-            .duration(200)
-            .style("opacity", "0")
-            .on("end", () => tooltip.style("display", "none"));
-
-          // Remove highlight circle
+          tooltip.transition().duration(200).style("opacity", 0).on("end", () => tooltip.style("display", "none"));
           svg.select(`.hover-circle-${d.year}`).remove();
         });
     });
@@ -182,58 +193,27 @@ const ForeignReservesChart = () => {
     // -------------------
     // Zoom buttons
     // -------------------
-    // Initialize zoom variables
-    let currentScale = 1;
-    let zoomInCount = 0;
-    let zoomOutCount = 0;
-    const maxClicks = 2; // Maximum allowed clicks for zooming in or out
-
-    // Select buttons
+    let currentScale = 1,
+      zoomInCount = 0,
+      zoomOutCount = 0;
+    const maxClicks = 2;
     const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn")!;
     const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn")!;
     const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn")!;
 
-    // Function to apply zoom transformation
     const applyZoom = () => {
       svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
-
-      // Disable buttons if their respective limits are reached
       zoomInBtn.disabled = zoomInCount >= maxClicks;
       zoomOutBtn.disabled = zoomOutCount >= maxClicks;
     };
+    const onZoomIn = () => { if (zoomInCount < maxClicks) { currentScale *= 1.2; zoomInCount++; applyZoom(); } };
+    const onZoomOut = () => { if (zoomOutCount < maxClicks) { currentScale /= 1.2; zoomOutCount++; applyZoom(); } };
+    const onReset = () => { currentScale = 1; zoomInCount = 0; zoomOutCount = 0; applyZoom(); };
 
-    // Event listener for zooming in
-    const onZoomIn = () => {
-      if (zoomInCount < maxClicks) {
-        currentScale *= 1.2; // Increase scale by 20%
-        zoomInCount++;
-        applyZoom();
-      }
-    };
-
-    // Event listener for zooming out
-    const onZoomOut = () => {
-      if (zoomOutCount < maxClicks) {
-        currentScale /= 1.2; // Decrease scale by 20%
-        zoomOutCount++;
-        applyZoom();
-      }
-    };
-
-    // Event listener for resetting zoom
-    const onReset = () => {
-      currentScale = 1; // Reset scale to default
-      zoomInCount = 0;
-      zoomOutCount = 0;
-      applyZoom();
-    };
-
-    // Attach event listeners to buttons
     zoomInBtn.addEventListener("click", onZoomIn);
     zoomOutBtn.addEventListener("click", onZoomOut);
     resetZoomBtn.addEventListener("click", onReset);
 
-    // Cleanup function to remove event listeners
     return () => {
       zoomInBtn.removeEventListener("click", onZoomIn);
       zoomOutBtn.removeEventListener("click", onZoomOut);
@@ -252,6 +232,7 @@ const ForeignReservesChart = () => {
     </div>
   );
 };
+
 
 type MacroFilterSliderProps = {
   items?: string[];
