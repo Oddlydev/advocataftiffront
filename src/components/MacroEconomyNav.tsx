@@ -183,12 +183,12 @@ export default function MacroEconomySliderNav({
           <div key={`${label}-${index}`} className="slider-item">
             <button
               aria-current={index === activeIndex ? "page" : undefined}
-              className={`slider-btn w-full text-sm xl:text-base px-3 py-2 rounded-lg uppercase text-slate-800 border border-gray-400 bg-white font-semibold font-sourcecodepro text-center transition-colors duration-200
-                ${
-                  index === activeIndex
-                    ? "text-slate-50 hover:text-slate-800 hover:bg-brand-1-50 hover:border focus:bg-brand-1-950 focus:text-brand-white focus:border-brand-2-950 active:bg-brand-1-950 active:text-[#F8FAFC]"
-                    : "hover:bg-brand-2-50 hover:text-slate-800 focus:bg-brand-1-950 focus:text-brand-white focus:border-brand-2-950"
-                }`}
+              className={`slider-btn w-full text-sm xl:text-base px-3 py-2 rounded-lg uppercase border font-semibold font-sourcecodepro text-center transition-colors duration-200
+    ${
+      index === activeIndex
+        ? "bg-black text-white border-black"
+        : "bg-white text-slate-800 border-gray-400 hover:bg-gray-100 hover:text-black"
+    }`}
               onClick={() => handleSelect(index)}
             >
               {label}
