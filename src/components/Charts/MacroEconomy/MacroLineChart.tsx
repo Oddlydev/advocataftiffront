@@ -12,20 +12,26 @@ export type MacroSeriesConfig = {
   label: string;
   color: string;
   valueFormatter?: (value: number | null) => string;
+  /** Which axis this series belongs to. Defaults to "left". */
+  axis?: "left" | "right";
+  formatInMillions?: boolean; // ✅ new flag
 };
 
 export type MacroLineChartProps = {
   datasetUrl?: string | null;
   parseRow: (row: d3.DSVRowString<string>) => MacroLineDatum | null;
   series: MacroSeriesConfig[];
+  /** Left Y-axis label (always required) */
   yAxisLabel: string;
+  /** Optional: provide to enable a right Y-axis */
+  yAxisRightLabel?: string;
   controlIds: {
     zoomInId: string;
     zoomOutId: string;
     resetId: string;
   };
   yMaxPadding?: number;
-  /** Optional: force a minimum Y (default = auto) */
+  /** Optional: force a minimum Y for the left axis (default auto) */
   minY?: number;
 };
 
@@ -38,9 +44,8 @@ const HTTP_URL_REGEX = /^https?:\/\//i;
 async function fetchCsvWithFallback(url: string): Promise<string> {
   const attempt = async (target: string) => {
     const response = await fetch(target, { cache: "no-cache" });
-    if (!response.ok) {
+    if (!response.ok)
       throw new Error(`Request failed with status ${response.status}`);
-    }
     return response.text();
   };
 
@@ -60,9 +65,7 @@ async function fetchCsvWithFallback(url: string): Promise<string> {
 function coerceNumber(
   value: string | number | null | undefined
 ): number | null {
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? value : null;
-  }
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
   if (typeof value === "string") {
     const parsed = Number(value.replace(/[^0-9.-]+/g, ""));
     return Number.isFinite(parsed) ? parsed : null;
@@ -75,9 +78,10 @@ export function MacroLineChart({
   parseRow,
   series,
   yAxisLabel,
+  yAxisRightLabel,
   controlIds,
   yMaxPadding = 2,
-  minY, // default undefined → auto
+  minY, // left axis only
 }: MacroLineChartProps) {
   const chartRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -107,21 +111,14 @@ export function MacroLineChart({
           })
           .filter((item): item is MacroLineDatum => item !== null);
 
-        if (!parsed.length) {
-          throw new Error("Dataset did not contain any rows");
-        }
-
-        if (isMounted) {
-          setData(parsed);
-        }
+        if (!parsed.length) throw new Error("Dataset did not contain any rows");
+        if (isMounted) setData(parsed);
       } catch (error) {
         console.error(
           `[MacroLineChart] Failed to load dataset ${datasetUrl} ::`,
           error
         );
-        if (isMounted) {
-          setData([]);
-        }
+        if (isMounted) setData([]);
       }
     }
 
@@ -137,7 +134,6 @@ export function MacroLineChart({
     if (!container || !tooltipEl || !data.length) return;
 
     const tooltip = d3.select(tooltipEl);
-
     d3.select(container).selectAll("*").remove();
 
     const width = Math.max(
@@ -153,13 +149,12 @@ export function MacroLineChart({
       .select(container)
       .attr(
         "viewBox",
-        `0 0 ${width + MARGIN.left + MARGIN.right} ${
-          height + MARGIN.top + MARGIN.bottom
-        }`
+        `0 0 ${width + MARGIN.left + MARGIN.right} ${height + MARGIN.top + MARGIN.bottom}`
       )
       .append("g")
       .attr("transform", `translate(${MARGIN.left},${MARGIN.top})`);
 
+    // X scale
     const years = data.map((d) => d.year);
     const x = d3
       .scalePoint<number>()
@@ -167,35 +162,69 @@ export function MacroLineChart({
       .range([0, width])
       .padding(0.5);
 
-    const maxValue = d3.max(data, (d) =>
-      d3.max(series, ({ key }) => d[key] ?? Number.NEGATIVE_INFINITY)
-    );
-    const minValue = d3.min(data, (d) =>
-      d3.min(series, ({ key }) => d[key] ?? Number.POSITIVE_INFINITY)
-    );
+    // Split series across axes
+    const leftSeries = series.filter((s) => (s.axis ?? "left") === "left");
+    const rightSeries = series.filter((s) => (s.axis ?? "left") === "right");
+    const useDualAxis = Boolean(yAxisRightLabel && rightSeries.length);
 
-    const safeMax = Number.isFinite(maxValue ?? NaN) ? (maxValue as number) : 0;
-    const safeMin = Number.isFinite(minValue ?? NaN) ? (minValue as number) : 0;
+    function computeDomain(
+      targetSeries: MacroSeriesConfig[],
+      forcedMin?: number
+    ) {
+      const maxValue = d3.max(data, (d) =>
+        d3.max(targetSeries, ({ key }) => d[key] ?? Number.NEGATIVE_INFINITY)
+      );
+      const minValue = d3.min(data, (d) =>
+        d3.min(targetSeries, ({ key }) => d[key] ?? Number.POSITIVE_INFINITY)
+      );
 
-    const upperPadding = Math.max(yMaxPadding, Math.abs(safeMax) * 0.05);
-    const lowerPadding = Math.max(yMaxPadding, Math.abs(safeMin) * 0.05);
+      const safeMax = Number.isFinite(maxValue ?? NaN)
+        ? (maxValue as number)
+        : 0;
+      const safeMin = Number.isFinite(minValue ?? NaN)
+        ? (minValue as number)
+        : 0;
 
-    // ✅ Auto domain unless user forces minY
-    const domainMin =
-      typeof minY === "number"
-        ? Math.min(minY, safeMin - lowerPadding)
-        : safeMin - lowerPadding;
-    let domainMax = safeMax + upperPadding;
+      const upperPadding = Math.max(yMaxPadding, Math.abs(safeMax) * 0.05);
+      const lowerPadding = Math.max(yMaxPadding, Math.abs(safeMin) * 0.05);
 
-    if (domainMax <= domainMin) {
-      domainMax =
-        domainMin + Math.max(upperPadding, Math.abs(domainMin) * 0.1, 1);
+      let domainMin =
+        typeof forcedMin === "number"
+          ? Math.min(forcedMin, safeMin - lowerPadding)
+          : safeMin - lowerPadding;
+
+      let domainMax = safeMax + upperPadding;
+
+      // ✅ Ensure positive-only series don’t dip below zero
+      if (safeMin >= 0 && domainMin < 0) {
+        domainMin = 0;
+      }
+
+      if (domainMax <= domainMin) {
+        domainMax =
+          domainMin + Math.max(upperPadding, Math.abs(domainMin) * 0.1, 1);
+      }
+
+      return [domainMin, domainMax] as const;
     }
 
-    const y = d3
+    const [yLeftMin, yLeftMax] = computeDomain(
+      leftSeries.length ? leftSeries : series,
+      minY
+    );
+    const yLeft = d3
       .scaleLinear()
-      .domain([domainMin, domainMax])
+      .domain([yLeftMin, yLeftMax])
       .range([height, 0]);
+
+    let yRight: d3.ScaleLinear<number, number> | null = null;
+    if (useDualAxis) {
+      const [yRightMin, yRightMax] = computeDomain(rightSeries);
+      yRight = d3
+        .scaleLinear()
+        .domain([yRightMin, yRightMax])
+        .range([height, 0]);
+    }
 
     // X axis
     svg
@@ -205,28 +234,59 @@ export function MacroLineChart({
       .selectAll("text")
       .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
-    // Y axis
+    // Left Y axis
     svg
       .append("g")
-      .call(d3.axisLeft(y).ticks(5))
+      .call(
+        d3
+          .axisLeft(yLeft)
+          .ticks(5)
+          .tickFormat((d) => {
+            const needsMillions = leftSeries.some((s) => s.formatInMillions);
+            return needsMillions
+              ? d3.format(",")(Number(d) / 1_000_000) // ✅ divide in millions
+              : d3.format(",")(Number(d)); // normal formatting
+          })
+      )
       .selectAll("text")
       .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
-    // Y axis label
+    // Right Y axis (optional)
+    if (useDualAxis && yRight) {
+      svg
+        .append("g")
+        .attr("transform", `translate(${width},0)`)
+        .call(d3.axisRight(yRight).ticks(5))
+        .selectAll("text")
+        .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
+
+      svg
+        .append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", `translate(${width + 50},${height / 2})rotate(90)`)
+        .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
+        .text(yAxisRightLabel!);
+    }
+
+    // Left Y label
     svg
       .append("text")
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
       .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
-      .text(yAxisLabel);
+      .text(
+        leftSeries.some((s) => s.formatInMillions)
+          ? `${yAxisLabel} (Mn)`
+          : yAxisLabel
+      );
 
-    // Grid
+    // Grid (from left axis)
     const gridGroup = svg
       .append("g")
       .attr("class", "grid")
       .call(
         d3
-          .axisLeft(y)
+          .axisLeft(yLeft)
           .tickSize(-width)
           .tickFormat(() => "")
       );
@@ -238,7 +298,9 @@ export function MacroLineChart({
     gridGroup.select(".domain").remove();
 
     // Lines
-    series.forEach(({ key, color }) => {
+    series.forEach(({ key, color, axis }) => {
+      const yScale = axis === "right" && useDualAxis && yRight ? yRight : yLeft;
+
       const line = d3
         .line<MacroLineDatum>()
         .defined((d) => {
@@ -246,7 +308,7 @@ export function MacroLineChart({
           return typeof value === "number" && Number.isFinite(value);
         })
         .x((d) => x(d.year)!)
-        .y((d) => y((d[key] as number) ?? 0))
+        .y((d) => yScale((d[key] as number) ?? 0))
         .curve(d3.curveMonotoneX);
 
       svg
@@ -264,10 +326,13 @@ export function MacroLineChart({
         const value = datum[serie.key];
         if (value === null || !Number.isFinite(value)) return;
 
+        const yScale =
+          serie.axis === "right" && useDualAxis && yRight ? yRight : yLeft;
+
         svg
           .append("circle")
           .attr("cx", x(datum.year)!)
-          .attr("cy", y(value))
+          .attr("cy", yScale(value))
           .attr("r", 4)
           .attr("fill", serie.color)
           .on("mouseover", () => {
@@ -283,8 +348,8 @@ export function MacroLineChart({
                     <span style="color:${cfg.color}; font-weight: 600;">
                       ${
                         typeof v === "number"
-                          ? (cfg.valueFormatter?.(Number(v.toFixed(2))) ??
-                            v.toFixed(2))
+                          ? (cfg.valueFormatter?.(Number(v.toFixed(3))) ??
+                            v.toFixed(3))
                           : "N/A"
                       }
                     </span>
@@ -343,7 +408,15 @@ export function MacroLineChart({
       resetBtn?.removeEventListener("click", onReset);
       d3.select(container).selectAll("*").remove();
     };
-  }, [controlIds, data, series, yAxisLabel, yMaxPadding, minY]);
+  }, [
+    controlIds,
+    data,
+    series,
+    yAxisLabel,
+    yAxisRightLabel,
+    yMaxPadding,
+    minY,
+  ]);
 
   return (
     <div className="relative w-full h-[300px] md:h-[300px] xl:h-[500px]">
