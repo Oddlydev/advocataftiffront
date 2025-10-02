@@ -7,24 +7,18 @@ import searchClient from "../lib/algolia";
 import { usePathname } from "next/navigation";
 
 export type HeaderNavProps = {
-  /** Brand logo URL */
   logoSrc: string;
-  /** Background image used inside the dashboard dropdown */
   navDropdownImage: string;
-  /** Optional callback when a search is submitted */
   onSearch?: (query: string) => void;
-  /** Optional className to style the surrounding header wrapper */
   className?: string;
-  /** Optional: override site URL for logo redirect */
   siteUrl?: string;
 };
 
 const SidebarItem: React.FC<{
   href?: string;
-  icon: React.ReactNode;
   label: string;
   isActive?: boolean;
-}> = ({ href = "#", icon, label, isActive = false }) => (
+}> = ({ href = "#", label, isActive = false }) => (
   <a
     href={href}
     className={`sidebar-item group flex items-center gap-x-3 rounded-md py-2 px-2.5 text-sm/6 font-medium font-sourcecodepro 
@@ -34,7 +28,6 @@ const SidebarItem: React.FC<{
           : "text-slate-800 hover:text-slate-800 hover:bg-brand-1-50"
       }`}
   >
-    <span className="sidebar-item-icon size-6 shrink-0">{icon}</span>
     {label}
   </a>
 );
@@ -52,7 +45,7 @@ const SearchForm: React.FC<{
 
   const indexName = "wp_searchable_posts";
 
-  // Close when clicking outside
+  // Close on outside click
   useEffect(() => {
     function handle(e: MouseEvent) {
       if (!ref.current) return;
@@ -62,7 +55,7 @@ const SearchForm: React.FC<{
     return () => document.removeEventListener("click", handle);
   }, []);
 
-  // 🔎 Algolia search
+  // Algolia search
   useEffect(() => {
     if (!query.trim()) {
       setResults([]);
@@ -84,7 +77,6 @@ const SearchForm: React.FC<{
   }, [query]);
 
   return (
-    // Hidden Search Form
     <div ref={ref} className="relative w-full hidden">
       <button
         aria-expanded={open}
@@ -95,7 +87,7 @@ const SearchForm: React.FC<{
           setOpen((v) => !v);
         }}
       >
-        {/* Magnifier icon */}
+        {/* 🔍 icon */}
         <svg
           className="w-4 h-4 lg:w-6 lg:h-6 text-slate-50"
           xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +113,6 @@ const SearchForm: React.FC<{
         </svg>
       </button>
 
-      {/* Search box */}
       <form
         id={id}
         role="search"
@@ -131,7 +122,7 @@ const SearchForm: React.FC<{
         <div className="relative">
           <input
             className={`${widthClass} pr-10 px-4 py-2 rounded-full bg-white text-gray-800 placeholder-gray-400 border border-gray-300 shadow-sm 
-      focus:border-[#9B195F] focus:outline-none focus:ring-1 focus:ring-[#9B195F]`}
+              focus:border-[#9B195F] focus:outline-none focus:ring-1 focus:ring-[#9B195F]`}
             type="search"
             name="s"
             placeholder="Search..."
@@ -166,7 +157,6 @@ const SearchForm: React.FC<{
             </svg>
           </button>
 
-          {/* Dropdown results */}
           {results.length > 0 && (
             <ul className="absolute top-full left-0 mt-2 w-full max-h-60 overflow-y-auto shadow-lg rounded-md z-50 bg-brand-black text-white">
               {results.map((hit) => (
@@ -196,14 +186,13 @@ type MenuItem = {
   parentId?: string | null;
 };
 
-// Normalize paths (remove trailing slashes) so matches are reliable
+// Normalize paths
 const normalizePath = (p?: string | null) => {
   if (!p) return "";
   if (p === "/") return "/";
   return String(p).replace(/\/+$/, "");
 };
 
-// True if current equals target or is a descendant of it
 const pathMatches = (current?: string | null, target?: string | null) => {
   const c = normalizePath(current);
   const t = normalizePath(target);
@@ -211,215 +200,7 @@ const pathMatches = (current?: string | null, target?: string | null) => {
   if (t === "/") return c === "/";
   return c === t || c.startsWith(t + "/");
 };
-// Icons used in the dashboard dropdown, preserved from the original design
-const dashboardIcons: React.ReactNode[] = [
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-  >
-    <path
-      d="M12.37 2.15003L21.37 5.75C21.72 5.89 22 6.31 22 6.68V10C22 10.55 21.55 11 21 11H3C2.45 11 2 10.55 2 10V6.68C2 6.31 2.28 5.89 2.63 5.75L11.63 2.15003C11.83 2.07003 12.17 2.07003 12.37 2.15003Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M22 22H2V19C2 18.45 2.45 18 3 18H21C21.55 18 22 18.45 22 19V22Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M4 18V11"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M8 18V11"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M12 18V11"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M16 18V11"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M20 18V11"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M1 22H23"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M12 8.5C12.8284 8.5 13.5 7.82843 13.5 7C13.5 6.17157 12.8284 5.5 12 5.5C11.1716 5.5 10.5 6.17157 10.5 7C10.5 7.82843 11.1716 8.5 12 8.5Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>,
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-  >
-    <path
-      d="M17.54 8.31001C18.8986 8.31001 20 7.20863 20 5.85001C20 4.49139 18.8986 3.39001 17.54 3.39001C16.1814 3.39001 15.08 4.49139 15.08 5.85001C15.08 7.20863 16.1814 8.31001 17.54 8.31001Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M6.46001 8.31001C7.81863 8.31001 8.92 7.20863 8.92 5.85001C8.92 4.49139 7.81863 3.39001 6.46001 3.39001C5.10139 3.39001 4 4.49139 4 5.85001C4 7.20863 5.10139 8.31001 6.46001 8.31001Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M17.54 20.61C18.8986 20.61 20 19.5086 20 18.15C20 16.7914 18.8986 15.69 17.54 15.69C16.1814 15.69 15.08 16.7914 15.08 18.15C15.08 19.5086 16.1814 20.61 17.54 20.61Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M6.46001 20.61C7.81863 20.61 8.92 19.5086 8.92 18.15C8.92 16.7914 7.81863 15.69 6.46001 15.69C5.10139 15.69 4 16.7914 4 18.15C4 19.5086 5.10139 20.61 6.46001 20.61Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>,
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-  >
-    <path
-      d="M8.15998 22C3.97998 22 3.13998 19.47 4.49998 16.39L8.74998 6.74H8.44998C7.79998 6.74 7.19998 6.48 6.76998 6.05C6.32998 5.62 6.06998 5.02 6.06998 4.37C6.06998 3.07 7.12998 2 8.43998 2H15.55C16.21 2 16.8 2.27 17.23 2.7C17.79 3.26 18.07 4.08 17.86 4.95C17.59 6.03 16.55 6.74 15.44 6.74H15.28L19.5 16.4C20.85 19.48 19.97 22 15.83 22H8.15998Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M5.94 13.12C5.94 13.12 9 13 12 14C15 15 17.83 13.11 17.83 13.11"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>,
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-  >
-    <path
-      d="M13 22H5C3 22 2 21 2 19V11C2 9 3 8 5 8H10V19C10 21 11 22 13 22Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M10.11 4C10.03 4.3 10 4.63 10 5V8H5V6C5 4.9 5.9 4 7 4H10.11Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M14 8V13"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M18 8V13"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M17 17H15C14.45 17 14 17.45 14 18V22H18V18C18 17.45 17.55 17 17 17Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M6 13V17"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M10 19V5C10 3 11 2 13 2H19C21 2 22 3 22 5V19C22 21 21 22 19 22H13C11 22 10 21 10 19Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeMiterlimit="10"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>,
-];
+
 const DashboardDropdown: React.FC<{
   imageUrl: string;
   items?: MenuItem[];
@@ -439,10 +220,16 @@ const DashboardDropdown: React.FC<{
   }, []);
 
   const isDashActive = (() => {
-    const current = currentPathname ?? (typeof window !== "undefined" ? window.location.pathname : "");
+    const current =
+      currentPathname ??
+      (typeof window !== "undefined" ? window.location.pathname : "");
     const parentActive = pathMatches(current, parentItem?.uri);
-    const childActive = items.some((child: any) => pathMatches(current, child.uri));
-    const implied = /dashboard/i.test(parentItem?.label ?? "") && /dashboard/i.test(current ?? "");
+    const childActive = items.some((child: any) =>
+      pathMatches(current, child.uri)
+    );
+    const implied =
+      /dashboard/i.test(parentItem?.label ?? "") &&
+      /dashboard/i.test(current ?? "");
     return parentActive || childActive || implied;
   })();
 
@@ -450,11 +237,11 @@ const DashboardDropdown: React.FC<{
     <div ref={containerRef} className="relative">
       <button
         className={`dropdown-btn nav-link text-lg leading-snug font-sourcecodepro uppercase py-2.5 px-3.5 rounded-md transition flex items-center
-    ${
-      isDashActive
-        ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
-        : "text-slate-50/60 font-normal hover:bg-white/10 hover:text-brand-white hover:font-medium"
-    }`}
+          ${
+            isDashActive
+              ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
+              : "text-slate-50/60 font-normal hover:bg-white/10 hover:text-brand-white hover:font-medium"
+          }`}
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={(e) => {
@@ -464,7 +251,6 @@ const DashboardDropdown: React.FC<{
       >
         <span
           onClick={(e) => {
-            // Navigate to parent menu item URI when clicking the label
             e.stopPropagation();
             if (parentItem?.uri) {
               window.location.href = parentItem.uri;
@@ -499,7 +285,7 @@ const DashboardDropdown: React.FC<{
             </span>
             <nav className="sidebar-fill pt-4" aria-label="Sidebar">
               <ul role="list" className="space-y-1">
-                {items.map((item, index) => {
+                {items.map((item) => {
                   const isActive =
                     typeof window !== "undefined" &&
                     window.location.pathname === item.uri;
@@ -508,7 +294,6 @@ const DashboardDropdown: React.FC<{
                       <SidebarItem
                         href={item.uri ?? "#"}
                         label={item.label}
-                        icon={dashboardIcons[index % dashboardIcons.length]}
                         isActive={isActive}
                       />
                     </li>
@@ -542,7 +327,13 @@ const MobileMenu: React.FC<{
   dashboardItems?: MenuItem[];
   parentDashboardItem?: MenuItem | null;
   currentPathname?: string;
-}> = ({ imageUrl, topLevelItems = [], dashboardItems = [], parentDashboardItem = null, currentPathname }) => {
+}> = ({
+  imageUrl,
+  topLevelItems = [],
+  dashboardItems = [],
+  parentDashboardItem = null,
+  currentPathname,
+}) => {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -560,12 +351,19 @@ const MobileMenu: React.FC<{
   }, []);
 
   const isDashActive = (() => {
-    const current = currentPathname ?? (typeof window !== 'undefined' ? window.location.pathname : '');
+    const current =
+      currentPathname ??
+      (typeof window !== "undefined" ? window.location.pathname : "");
     const parentActive = pathMatches(current, parentDashboardItem?.uri);
-    const childActive = dashboardItems.some((child) => pathMatches(current, child.uri));
-    const implied = /dashboard/i.test(parentDashboardItem?.label ?? '') && /dashboard/i.test(current ?? '');
+    const childActive = dashboardItems.some((child) =>
+      pathMatches(current, child.uri)
+    );
+    const implied =
+      /dashboard/i.test(parentDashboardItem?.label ?? "") &&
+      /dashboard/i.test(current ?? "");
     return parentActive || childActive || implied;
   })();
+
   return (
     <div className="lg:hidden flex items-center gap-3.5">
       {/* Mobile Search */}
@@ -587,7 +385,7 @@ const MobileMenu: React.FC<{
           setOpen((v) => !v);
         }}
       >
-        {/* Hamburger Icon */}
+        {/* Hamburger */}
         <svg
           className={`icon-hamburger h-5 w-5 ${open ? "hidden" : "block"}`}
           fill="none"
@@ -601,7 +399,7 @@ const MobileMenu: React.FC<{
             d="M4 6h16M4 12h16M4 18h16"
           />
         </svg>
-        {/* Close Icon */}
+        {/* Close */}
         <svg
           className={`icon-close h-5 w-5 ${open ? "block" : "hidden"}`}
           xmlns="http://www.w3.org/2000/svg"
@@ -629,7 +427,9 @@ const MobileMenu: React.FC<{
       <div
         id="mobile-menu-panel"
         ref={ref}
-        className={`mobile-menu lg:hidden absolute inset-0 top-12 h-screen w-full bg-brand-black border-t border-gray-300 z-50 flex flex-col gap-4 px-6 py-6 ${open ? "" : "hidden"}`}
+        className={`mobile-menu lg:hidden absolute inset-0 top-12 h-screen w-full bg-brand-black border-t border-gray-300 z-50 flex flex-col gap-4 px-6 py-6 ${
+          open ? "" : "hidden"
+        }`}
       >
         {(() => {
           const filteredTop = parentDashboardItem
@@ -648,27 +448,30 @@ const MobileMenu: React.FC<{
                     key={item.id}
                     href={item.uri ?? "#"}
                     className={`nav-link text-lg leading-snug font-sourcecodepro font-normal uppercase py-2.5 px-3.5 rounded-md transition
-                ${
-                  isActive
-                    ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
-                    : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
-                }`}
+                      ${
+                        isActive
+                          ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
+                          : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
+                      }`}
                   >
                     {item.label}
                   </a>
                 );
               })}
 
-              {/* Dropdown moved to 2nd row */}
+              {/* Dropdown */}
               {parentDashboardItem && (
-                <div className="relative" key={parentDashboardItem.id + "-dropdown"}>
+                <div
+                  className="relative"
+                  key={parentDashboardItem.id + "-dropdown"}
+                >
                   <button
                     className={`dropdown-btn nav-link text-lg leading-snug font-sourcecodepro uppercase py-2.5 px-3.5 rounded-md transition flex items-center
-    ${
-      isDashActive
-        ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
-        : "text-slate-50/60 font-normal hover:bg-white/10 hover:text-brand-white hover:font-medium"
-    }`}
+                      ${
+                        isDashActive
+                          ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
+                          : "text-slate-50/60 font-normal hover:bg-white/10 hover:text-brand-white hover:font-medium"
+                      }`}
                     aria-expanded={dropdownOpen}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -700,7 +503,9 @@ const MobileMenu: React.FC<{
                     </svg>
                   </button>
                   <div
-                    className={`${dropdownOpen ? "" : "hidden"} dropdown-menu space-y-2 grid ml-4 px-4 py-2 left-0 mt-2 w-[96%] xl:w-full bg-white border-0 rounded-md shadow-lg`}
+                    className={`${
+                      dropdownOpen ? "" : "hidden"
+                    } dropdown-menu space-y-2 grid ml-4 px-4 py-2 left-0 mt-2 w-[96%] xl:w-full bg-white border-0 rounded-md shadow-lg`}
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
@@ -712,7 +517,7 @@ const MobileMenu: React.FC<{
                           aria-label="Sidebar"
                         >
                           <ul role="list" className="space-y-1">
-                            {dashboardItems.map((item, index) => {
+                            {dashboardItems.map((item) => {
                               const isActive =
                                 typeof window !== "undefined" &&
                                 window.location.pathname === item.uri;
@@ -721,7 +526,6 @@ const MobileMenu: React.FC<{
                                   <SidebarItem
                                     href={item.uri ?? "#"}
                                     label={item.label}
-                                    icon={dashboardIcons[index % dashboardIcons.length]}
                                     isActive={isActive}
                                   />
                                 </li>
@@ -761,11 +565,11 @@ const MobileMenu: React.FC<{
                     key={item.id}
                     href={item.uri ?? "#"}
                     className={`nav-link text-lg leading-snug font-sourcecodepro font-normal uppercase py-2.5 px-3.5 rounded-md transition
-                ${
-                  isActive
-                    ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
-                    : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
-                }`}
+                      ${
+                        isActive
+                          ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
+                          : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
+                      }`}
                   >
                     {item.label}
                   </a>
@@ -774,8 +578,6 @@ const MobileMenu: React.FC<{
             </>
           );
         })()}
-
-        {/** remaining links rendered above */}
       </div>
     </div>
   );
@@ -789,7 +591,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
   siteUrl,
 }) => {
   const { data } = useQuery(HEADER_MENU_QUERY);
-  const pathname = usePathname(); // ✅ now defined
+  const pathname = usePathname();
 
   const baseUrl =
     siteUrl || (typeof window !== "undefined" ? window.location.origin : "/");
@@ -840,11 +642,11 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
                   key={item.id}
                   href={item.uri ?? "#"}
                   className={`nav-link text-lg leading-snug font-sourcecodepro font-normal uppercase py-2.5 px-3.5 rounded-md transition
-                ${
-                  isActive
-                    ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
-                    : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
-                }`}
+                    ${
+                      isActive
+                        ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
+                        : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
+                    }`}
                 >
                   {item.label}
                 </a>
@@ -867,11 +669,11 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
                   key={item.id}
                   href={item.uri ?? "#"}
                   className={`nav-link text-lg leading-snug font-sourcecodepro font-normal uppercase py-2.5 px-3.5 rounded-md transition
-                ${
-                  isActive
-                    ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
-                    : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
-                }`}
+                    ${
+                      isActive
+                        ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
+                        : "text-slate-50/60 hover:bg-white/10 hover:text-brand-white hover:font-medium"
+                    }`}
                 >
                   {item.label}
                 </a>
@@ -903,7 +705,3 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
 };
 
 export default HeaderNav;
-
-
-
-
