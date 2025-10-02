@@ -324,6 +324,33 @@ export function MacroLineChart({
       .attr("stroke-width", 1)
       .attr("stroke-dasharray", "4,4");
     gridGroup.select(".domain").remove();
+    // After axes + labels are drawn
+    const outerSvg = d3.select(container);
+    const gNode = svg.node() as SVGGElement;
+
+    // Measure actual content bounding box
+    const bbox = gNode.getBBox();
+
+    // Chart visible area
+    const chartWidth = width + MARGIN.left + MARGIN.right;
+    const chartHeight = height + MARGIN.top + MARGIN.bottom;
+
+    // If bbox goes beyond container, scale down a bit
+    if (
+      bbox.x < 0 ||
+      bbox.y < 0 ||
+      bbox.x + bbox.width > chartWidth ||
+      bbox.y + bbox.height > chartHeight
+    ) {
+      const scaleX = chartWidth / (bbox.width + 20); // +padding
+      const scaleY = chartHeight / (bbox.height + 20);
+      const autoScale = Math.min(scaleX, scaleY, 1); // don’t zoom in, only zoom out
+
+      svg.attr(
+        "transform",
+        `translate(${MARGIN.left},${MARGIN.top}) scale(${autoScale})`
+      );
+    }
 
     // -------------------------
     // Draw lines + dots + tooltip
