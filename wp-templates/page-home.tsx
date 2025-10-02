@@ -15,6 +15,7 @@ import {
   PageTitleText,
 } from "@/src/components/Typography";
 import SearchFieldHome from "@/src/components/InputFields/SearchFieldHome";
+import WhiteIconButton from "@/src/components/Buttons/WhiteIconBtn";
 
 interface HomePageProps {
   data?: {
@@ -305,9 +306,44 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
 
       {/* Hero media (video or image) */}
       {(heroVideo || heroImage) && (
-        <div className="bg-white pb-0">
+        <div className="bg-white pb-0 relative z-20">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-            <div className="ring-1 ring-black/10 rounded-3xl relative -top-32 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-hidden">
+            <div className="ring-1 ring-black/10 rounded-3xl relative -top-32 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-hidden bg-brand-1-800 p-10">
+              <div className="flex items-center justify-between px-6 py-4">
+                <h3 className="text-2xl md:text-3xl xl:text-4xl leading-snug font-montserrat font-bold text-slate-50">Featured Dashboard</h3>
+                <div>
+                  <WhiteIconButton
+                      text="View All Dashboards"
+                      link="/"
+                      icon={
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                        >
+                          <path
+                              d="M12.025 4.94168L17.0834 10L12.025 15.0583"
+                              stroke="#4B5563"
+                              stroke-width="1.8"
+                              stroke-miterlimit="10"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M2.91669 10H16.9417"
+                              stroke="#4B5563"
+                              stroke-width="1.8"
+                              stroke-miterlimit="10"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                      }
+                    />
+                </div>
+              </div>
               {heroVideo ? (
                 <video
                   src={heroVideo}
@@ -315,13 +351,13 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
                   muted
                   loop
                   playsInline
-                  className="rounded-3xl h-full w-full object-cover"
+                  className="rounded-3xl h-full w-full object-cover mt-3"
                 />
               ) : (
                 heroImage && (
                   <img
                     src={heroImage}
-                    className="rounded-3xl h-full w-full object-cover"
+                    className="rounded-3xl h-full w-full object-cover mt-3"
                     width={1120}
                     height={713}
                     loading="lazy"
