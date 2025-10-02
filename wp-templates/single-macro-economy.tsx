@@ -239,7 +239,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
         title="Macro Economy Dashboards"
         items={[
           { label: "Dashboards", href: "/dashboard" },
-          { label: "Macro Economy" },
+          { label: "Macro Economy", href: "/the-macro-economy-of-sri-lanka" },
         ]}
       />
 
@@ -267,7 +267,8 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                   id={controlIds.zoomInId}
                   className="px-1.5 py-1 md:px-2.5 md:py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
                 >
-                  <svg className="size-2 md:size-auto"
+                  <svg
+                    className="size-2 md:size-auto"
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
                     height="17"
@@ -308,7 +309,8 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                   id={controlIds.zoomOutId}
                   className="px-1.5 py-1 md:px-2.5 md:py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
                 >
-                  <svg className="size-2 md:size-auto"
+                  <svg
+                    className="size-2 md:size-auto"
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
                     height="17"
@@ -342,7 +344,8 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                   id={controlIds.resetId}
                   className="px-1.5 py-1 md:px-2.5 md:py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
                 >
-                  <svg className="size-2 md:size-auto"
+                  <svg
+                    className="size-2 md:size-auto"
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
                     height="17"
