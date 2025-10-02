@@ -204,7 +204,7 @@ export default function PageNewsletterConfirmation() {
                             type="number"
                             name="phone-number"
                             placeholder="11 234 5678"
-                            className="block min-w-0 grow bg-white pr-3 pl-2 text-base text-slate-800 font-sourcecodepro placeholder:text-gray-400 focus:outline-none"
+                            className="block w-full grow bg-white pl-2 text-base text-slate-800 font-sourcecodepro placeholder:text-gray-400 focus:outline-none"
                           />
                         </div>
                       </div>
