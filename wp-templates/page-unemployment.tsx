@@ -42,7 +42,11 @@ const UnemploymentChart = () => {
       .style("border-radius", "6px")
       .style("border", "1px solid #E2E8F0")
       .style("background", "#FFF")
-      .style("padding", "10px");
+      .style(
+        "box-shadow",
+        "0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -4px rgba(0, 0, 0, 0.10)"
+      )
+      .style("padding", "14px");
 
     d3.select(container).selectAll("*").remove();
 
@@ -140,13 +144,13 @@ const UnemploymentChart = () => {
 
         tooltip.html(`
           <div class="flex flex-col gap-1">
-            <div class="font-bold text-slate-800">Year: ${d.year}</div>
+            <div class="font-semibold text-slate-600 font-sourcecodepro text-xs">Year:  ${d.year}</div>
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-1">
-                <div><span style="width:10px;height:10px;background:${color};border-radius:50%;display:inline-block;"></span></div>
-                <span class="text-slate-600">Unemployment Rate:</span>
+                <div class="flex items-center gap-1"><span style="width:6px;height:6px;background:${color};border-radius:50%;display:inline-block;"></span></div>
+                <span class="text-slate-600 font-sourcecodepro font-normal text-xs">Unemployment Rate:</span>
               </div>
-              <span style="color:${color}; font-weight:600;">${d.UnemploymentRate}%</span>
+              <span style="color:${color};" class="text-xs font-sourcecodepro font-normal">${d.UnemploymentRate}%</span>
             </div>
           </div>
         `);

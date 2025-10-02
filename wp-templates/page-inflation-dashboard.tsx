@@ -47,7 +47,16 @@ const AverageAnnualInflationChart = () => {
 
     if (!container || !tooltipEl) return;
 
-    const tooltip = d3.select(tooltipEl);
+    const tooltip = d3.select(tooltipEl)
+      .style("display", "none")
+      .style("border-radius", "6px")
+      .style("border", "1px solid #E2E8F0")
+      .style("background", "#FFF")
+      .style(
+        "box-shadow",
+        "0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -4px rgba(0, 0, 0, 0.10)"
+      )
+      .style("padding", "14px");
 
     // Clear SVG
     d3.select(container).selectAll("*").remove();
@@ -175,27 +184,27 @@ const AverageAnnualInflationChart = () => {
 
             tooltip.html(`
               <div class="flex flex-col gap-1">
-                <div class="font-bold text-slate-800">Year: ${d.year}</div>
+                <div class="font-semibold text-slate-600 font-sourcecodepro text-xs">Year:  ${d.year}</div>
                 <div class="flex items-center justify-between gap-2">
                   <div class="flex items-center gap-1">
-                    <span style="width:10px;height:10px;background:${colors.all};border-radius:50%;display:inline-block;"></span>
-                    <span class="text-slate-600">All Items:</span>
+                    <div class="flex items-center gap-1"><span style="width:6px;height:6px;background:${colors.all};border-radius:50%;display:inline-block;"></span></div>
+                    <span class="text-slate-600 font-sourcecodepro font-normal text-xs">All Items:</span>
                   </div>
-                  <span style="color:${colors.all}; font-weight:600;">${d.all}%</span>
+                  <span style="color:${colors.all};" class="text-xs font-sourcecodepro font-normal">${d.all}%</span>
                 </div>
                 <div class="flex items-center justify-between gap-2">
                   <div class="flex items-center gap-1">
-                    <span style="width:10px;height:10px;background:${colors.food};border-radius:50%;display:inline-block;"></span>
-                    <span class="text-slate-600">Food & Non-Alcoholic Beverages:</span>
+                    <div class="flex items-center gap-1"><span style="width:6px;height:6px;background:${colors.food};border-radius:50%;display:inline-block;"></span></div>
+                    <span class="text-slate-600 font-sourcecodepro font-normal text-xs">Food & Non-Alcoholic Beverages:</span>
                   </div>
-                  <span style="color:${colors.food}; font-weight:600;">${d.food}%</span>
+                  <span style="color:${colors.food};" class="text-xs font-sourcecodepro font-normal">${d.food}%</span>
                 </div>
                 <div class="flex items-center justify-between gap-2">
                   <div class="flex items-center gap-1">
-                    <span style="width:10px;height:10px;background:${colors.nonFood};border-radius:50%;display:inline-block;"></span>
-                    <span class="text-slate-600">Non-Food Items:</span>
+                    <div class="flex items-center gap-1"><span style="width:6px;height:6px;background:${colors.nonFood};border-radius:50%;display:inline-block;"></span></div>
+                    <span class="text-slate-600 font-sourcecodepro font-normal text-xs">Non-Food Items:</span>
                   </div>
-                  <span style="color:${colors.nonFood}; font-weight:600;">${d.nonFood}%</span>
+                  <span style="color:${colors.nonFood};" class="text-xs font-sourcecodepro font-normal">${d.nonFood}%</span>
                 </div>
               </div>
             `);

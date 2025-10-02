@@ -50,8 +50,11 @@ const NationalDebtChart = () => {
       .style("border-radius", "6px")
       .style("border", "1px solid #E2E8F0")
       .style("background", "#FFF")
-      .style("box-shadow", "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)")
-      .style("padding", "10px");
+      .style(
+        "box-shadow",
+        "0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -4px rgba(0, 0, 0, 0.10)"
+      )
+      .style("padding", "14px");
 
     const margin = { top: 40, right: 70, bottom: 60, left: 70 };
     const width = container.clientWidth - margin.left - margin.right;
@@ -167,20 +170,20 @@ const NationalDebtChart = () => {
 
           tooltip.html(`
             <div class="flex flex-col gap-1">
-              <div class="font-bold text-slate-800">Year: ${d.year}</div>
+              <div class="font-semibold text-slate-600 font-sourcecodepro text-xs">Year:  ${d.year}</div>
               <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-1">
-                  <div><span style="width:10px;height:10px;background:${colors.TD};border-radius:50%;display:inline-block;"></span></div>
-                  <span class="text-slate-600">Total Debt:</span>
+                  <div class="flex items-center gap-1"><span style="width:6px;height:6px;background:${colors.TD};border-radius:50%;display:inline-block;"></span></div>
+                  <span class="text-slate-600 font-sourcecodepro font-normal text-xs">Total Debt:</span>
                 </div>
-                <span style="color:${colors.TD}; font-weight: 600;">${d.TD}%</span>
+                <span style="color:${colors.TD};" class="text-xs font-sourcecodepro font-normal">${d.TD}%</span>
               </div>
               <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-1">
-                  <div><span style="width:10px;height:10px;background:${colors.DPP};border-radius:50%;display:inline-block;"></span></div>
-                  <span class="text-slate-600">Debt Per Person:</span>
+                  <div class="flex items-center gap-1"><span style="width:6px;height:6px;background:${colors.DPP};border-radius:50%;display:inline-block;"></span></div>
+                  <span class="text-slate-600 font-sourcecodepro font-normal text-xs">Debt Per Person:</span>
                 </div>
-                <span style="color:${colors.DPP}; font-weight: 600;">${d.DPP}%</span>
+                <span style="color:${colors.DPP};" class="text-xs font-sourcecodepro font-normal">${d.DPP}%</span>
               </div>
             </div>
           `);
