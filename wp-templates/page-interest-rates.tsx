@@ -15,7 +15,7 @@ type InterestRateDatum = {
 };
 
 const rateKeys = ["AWNFDR", "AWNDR", "AWNLR", "AWPLR"] as const;
-type RateKey = typeof rateKeys[number];
+type RateKey = (typeof rateKeys)[number];
 
 // ---- Chart Component ----
 const AverageAnnualInflationChart = () => {
@@ -74,58 +74,68 @@ const AverageAnnualInflationChart = () => {
 
     const svg = d3
       .select(container)
-      .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .attr(
+        "viewBox",
+        `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`
+      )
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // X scale
-    const x = d3.scalePoint<number>()
-        .domain(data.map((d) => d.year))
-        .range([0, width])
-        .padding(0.5);
+    const x = d3
+      .scalePoint<number>()
+      .domain(data.map((d) => d.year))
+      .range([0, width])
+      .padding(0.5);
 
     // Y scale (automatic)
-    const yMax = d3.max(data, (d) => Math.max(d.AWNFDR, d.AWNDR, d.AWNLR, d.AWPLR)) ?? 0;
-    const y = d3.scaleLinear()
-        .domain([0, yMax * 1.1])
-        .range([height, 0]);
-    
+    const yMax =
+      d3.max(data, (d) => Math.max(d.AWNFDR, d.AWNDR, d.AWNLR, d.AWPLR)) ?? 0;
+    const y = d3
+      .scaleLinear()
+      .domain([0, yMax * 1.1])
+      .range([height, 0]);
+
     // X-axis
-    svg.append("g")
-        .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x).tickFormat(d3.format("d")))
-        .selectAll("text")
-        .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
+    svg
+      .append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .call(d3.axisBottom(x).tickFormat(d3.format("d")))
+      .selectAll("text")
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
     // Y-axis
-    svg.append("g")
-        .call(d3.axisLeft(y))
-        .selectAll("text")
-        .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
+    svg
+      .append("g")
+      .call(d3.axisLeft(y))
+      .selectAll("text")
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
     // Y-axis label
-    svg.append("text")
-        .attr("text-anchor", "middle")
-        .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
-        .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
-        .text("Interest Rate (%)");
+    svg
+      .append("text")
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
+      .text("Interest Rate (%)");
 
     // Horizontal grid lines
     const gridGroup = svg
-        .append("g")
-        .attr("class", "grid")
-        .call(
-            d3.axisLeft(y)
-            .tickSize(-width)
-            .tickFormat(() => "")
-        );
+      .append("g")
+      .attr("class", "grid")
+      .call(
+        d3
+          .axisLeft(y)
+          .tickSize(-width)
+          .tickFormat(() => "")
+      );
 
     gridGroup
-        .selectAll("line")
-        .attr("stroke", "#CBD5E1")
-        .attr("stroke-width", 1)
-        .attr("stroke-dasharray", "4,4");
-        
+      .selectAll("line")
+      .attr("stroke", "#CBD5E1")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "4,4");
+
     gridGroup.select(".domain").remove();
 
     // Animation
@@ -167,7 +177,8 @@ const AverageAnnualInflationChart = () => {
 
         const pointPos = (j / (data.length - 1)) * totalLength;
 
-        dot.transition()
+        dot
+          .transition()
           .delay((pointPos / totalLength) * duration)
           .duration(300)
           .ease(d3.easeBackOut)
@@ -237,7 +248,8 @@ const AverageAnnualInflationChart = () => {
     const maxClicks = 2;
 
     const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn")!;
-    const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn")!;
+    const zoomOutBtn =
+      document.querySelector<HTMLButtonElement>("#zoomOutBtn")!;
     const resetZoomBtn =
       document.querySelector<HTMLButtonElement>("#resetZoomBtn")!;
 
@@ -316,9 +328,7 @@ export function MacroFilterSlider({
   initialActiveIndex = 0,
   onChangeActive,
   className = "",
-}: 
-
-MacroFilterSliderProps) {
+}: MacroFilterSliderProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
   const sliderRef = useRef<any>(null);
@@ -393,18 +403,17 @@ MacroFilterSliderProps) {
       <div ref={trackRef} className="w-full flex gap-2">
         {items.map((label, index) => (
           <div key={`${label}-${index}`} className="slider-item">
-              <button
-                className={`slider-btn w-full text-sm xl:text-base px-3 py-2 rounded-lg uppercase text-slate-800 border border-gray-400 bg-white font-semibold font-sourcecodepro text-center transition-colors duration-200
+            <button
+              className={`slider-btn w-full text-sm xl:text-base px-3 py-2 rounded-lg uppercase text-slate-800 border border-gray-400 bg-white font-semibold font-sourcecodepro text-center transition-colors duration-200
                   ${
                     index === activeIndex
                       ? "text-slate-50 hover:text-slate-800 hover:bg-brand-1-50 hover:border focus:bg-brand-1-950 focus:text-brand-white focus:border-brand-2-950"
                       : "hover:bg-brand-2-50 hover:text-slate-800 focus:bg-brand-1-950 focus:text-brand-white focus:border-brand-2-950"
                   }`}
-                onClick={() => handleSelect(index)}
-                >
-                {label}
-              </button>
-
+              onClick={() => handleSelect(index)}
+            >
+              {label}
+            </button>
           </div>
         ))}
       </div>
@@ -444,8 +453,7 @@ MacroFilterSliderProps) {
 }
 
 // ---- Page Component ----
-export default function PageInflationDashboard(): JSX.Element { 
-
+export default function PageInflationDashboard(): JSX.Element {
   const [industry, setIndustry] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
   const [pathname, setPathname] = useState<string>("");
@@ -454,40 +462,40 @@ export default function PageInflationDashboard(): JSX.Element {
     <main>
       {/* Secondary Navigation */}
       <div className="bg-white border-b border-slate-300">
-            <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-4 lg:py-0">
-              <SecondaryNav
-                className="!font-baskervville"
-                items={[
-                  { label: "Macro Economy", href: "#" },
-                  { label: "Government Fiscal Operations", href: "#" },
-                  {
-                    label: "Transparency in government Institutions",
-                    href: (() => {
-                      const params = new URLSearchParams();
-                      if (industry) params.set("industry", industry);
-                      if (year) params.set("year", year);
-                      const qs = params.toString();
-                      return qs
-                        ? `/transparency-dashboard?${qs}`
-                        : "/transparency-dashboard";
-                    })(),
-                  },
-                  {
-                    label: "State Owned Enterprises",
-                    href: (() => {
-                      const params = new URLSearchParams();
-                      if (industry) params.set("industry", industry);
-                      if (year) params.set("year", year);
-                      const qs = params.toString();
-                      return qs
-                        ? `/state-owned-dashboard?${qs}`
-                        : "/state-owned-dashboard";
-                    })(),
-                  },
-                ]}
-                activePath={pathname}
-              />
-            </div>
+        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-4 lg:py-0">
+          <SecondaryNav
+            className="!font-baskervville"
+            items={[
+              { label: "Macro Economy", href: "#" },
+              { label: "Government Fiscal Operations", href: "#" },
+              {
+                label: "Transparency in government Institutions",
+                href: (() => {
+                  const params = new URLSearchParams();
+                  if (industry) params.set("industry", industry);
+                  if (year) params.set("year", year);
+                  const qs = params.toString();
+                  return qs
+                    ? `/transparency-in-government-institutions?${qs}`
+                    : "/transparency-in-government-institutions";
+                })(),
+              },
+              {
+                label: "State Owned Enterprises",
+                href: (() => {
+                  const params = new URLSearchParams();
+                  if (industry) params.set("industry", industry);
+                  if (year) params.set("year", year);
+                  const qs = params.toString();
+                  return qs
+                    ? `/state-owned-enterprises?${qs}`
+                    : "/state-owned-enterprises";
+                })(),
+              },
+            ]}
+            activePath={pathname}
+          />
+        </div>
       </div>
 
       {/* Hero Section */}
@@ -523,72 +531,154 @@ export default function PageInflationDashboard(): JSX.Element {
             <div className="relative">
               {/* <!-- Zoom Buttons --> */}
               <div className="absolute top-2 md:top-0 right-4 md:right-10 flex gap-2 z-10">
-                  <button id="zoomInBtn" className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                          <path d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M13.9996 14.3335L11.0996 11.4335" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M7.33398 5.66681V9.66681" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M5.33398 7.66681H9.33398" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </button>
-                  <button id="zoomOutBtn" className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                          <path d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M13.9996 14.3335L11.0996 11.4335" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M5.33398 7.66681H9.33398" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </button>
-                  <button id="resetZoomBtn" className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                          <path d="M2 8.3335C2 9.52018 2.35189 10.6802 3.01118 11.6669C3.67047 12.6536 4.60754 13.4226 5.7039 13.8768C6.80026 14.3309 8.00666 14.4497 9.17054 14.2182C10.3344 13.9867 11.4035 13.4153 12.2426 12.5761C13.0818 11.737 13.6532 10.6679 13.8847 9.50404C14.1162 8.34015 13.9974 7.13375 13.5433 6.0374C13.0892 4.94104 12.3201 4.00397 11.3334 3.34468C10.3467 2.68539 9.18669 2.3335 8 2.3335C6.32263 2.33981 4.71265 2.99431 3.50667 4.16016L2 5.66683" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M2 2.3335V5.66683H5.33333" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </button>
+                <button
+                  id="zoomInBtn"
+                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path
+                      d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M13.9996 14.3335L11.0996 11.4335"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M7.33398 5.66681V9.66681"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M5.33398 7.66681H9.33398"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  id="zoomOutBtn"
+                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path
+                      d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M13.9996 14.3335L11.0996 11.4335"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M5.33398 7.66681H9.33398"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  id="resetZoomBtn"
+                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path
+                      d="M2 8.3335C2 9.52018 2.35189 10.6802 3.01118 11.6669C3.67047 12.6536 4.60754 13.4226 5.7039 13.8768C6.80026 14.3309 8.00666 14.4497 9.17054 14.2182C10.3344 13.9867 11.4035 13.4153 12.2426 12.5761C13.0818 11.737 13.6532 10.6679 13.8847 9.50404C14.1162 8.34015 13.9974 7.13375 13.5433 6.0374C13.0892 4.94104 12.3201 4.00397 11.3334 3.34468C10.3467 2.68539 9.18669 2.3335 8 2.3335C6.32263 2.33981 4.71265 2.99431 3.50667 4.16016L2 5.66683"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M2 2.3335V5.66683H5.33333"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
               </div>
               <AverageAnnualInflationChart />
             </div>
 
             {/* Legend & Data Source */}
             <div className="mt-5">
-                <div className="grid md:flex items-center justify-center gap-2 md:gap-6">
-                    <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-brand-1-200 rounded-full inline-block"></span>
-                        <span className="text-base/6 font-normal font-baskervville text-slate-600">AWNFDR</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-brand-1-950 rounded-full inline-block"></span>
-                        <span className="text-base/6 font-normal font-baskervville text-slate-600">AWNDR</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-brand-1-700 rounded-full inline-block"></span>
-                        <span className="text-base/6 font-normal font-baskervville text-slate-600">AWNLR</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-brand-1-500 rounded-full inline-block"></span>
-                        <span className="text-base/6 font-normal font-baskervville text-slate-600">AWPLR</span>
-                    </div>
+              <div className="grid md:flex items-center justify-center gap-2 md:gap-6">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-brand-1-200 rounded-full inline-block"></span>
+                  <span className="text-base/6 font-normal font-baskervville text-slate-600">
+                    AWNFDR
+                  </span>
                 </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-brand-1-950 rounded-full inline-block"></span>
+                  <span className="text-base/6 font-normal font-baskervville text-slate-600">
+                    AWNDR
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-brand-1-700 rounded-full inline-block"></span>
+                  <span className="text-base/6 font-normal font-baskervville text-slate-600">
+                    AWNLR
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-brand-1-500 rounded-full inline-block"></span>
+                  <span className="text-base/6 font-normal font-baskervville text-slate-600">
+                    AWPLR
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div className="mt-10">
-                <div className="bg-gray-50 rounded-lg px-6 py-3.5">
-                <div
-                    className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro"
-                >
-                    <div
-                    className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
-                    >
+              <div className="bg-gray-50 rounded-lg px-6 py-3.5">
+                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                     <p>Data Source: Central Bank of Sri Lanka</p>
-                    </div>
-                    <div
-                    className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
-                    >
+                  </div>
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                     <p>Annual Average Interest Rates 2010 - 2024</p>
-                    </div>
+                  </div>
                 </div>
-                </div>
+              </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -609,19 +699,44 @@ export default function PageInflationDashboard(): JSX.Element {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border-b border-brand-1-100 pb-4 md:border-b-0 md:border-r md:pr-4">
-                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Definition</h3>
+                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
+                    Definition
+                  </h3>
                   <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
-                     <div className="text-slate-800 text-base">
-                      <h6 className="font-sourcecodepro font-medium">Average Weighted New Fixed Deposit Rates:</h6>
-                      <p className="font-baskervville font-normal">The Average Weighted New Fixed Deposit Rate (AWNFDR) is calculated by the Central Bank monthly, based on interest rates pertaining to all new interest bearing rupee time deposits mobilised by LCBs during a particular month.</p>
+                    <div className="text-slate-800 text-base">
+                      <h6 className="font-sourcecodepro font-medium">
+                        Average Weighted New Fixed Deposit Rates:
+                      </h6>
+                      <p className="font-baskervville font-normal">
+                        The Average Weighted New Fixed Deposit Rate (AWNFDR) is
+                        calculated by the Central Bank monthly, based on
+                        interest rates pertaining to all new interest bearing
+                        rupee time deposits mobilised by LCBs during a
+                        particular month.
+                      </p>
                     </div>
-                     <div className="text-slate-800 text-base">
-                      <h6 className="font-sourcecodepro font-medium">Average Weighted New Deposit Rates :</h6>
-                      <p className="font-baskervville font-normal">The Average Weighted New Deposit Rate (AWNDR) is calculated by the Central Bank monthly, based on interest rates pertaining to all new interest bearing rupee deposits mobilised by LCBs during a particular month.</p>
+                    <div className="text-slate-800 text-base">
+                      <h6 className="font-sourcecodepro font-medium">
+                        Average Weighted New Deposit Rates :
+                      </h6>
+                      <p className="font-baskervville font-normal">
+                        The Average Weighted New Deposit Rate (AWNDR) is
+                        calculated by the Central Bank monthly, based on
+                        interest rates pertaining to all new interest bearing
+                        rupee deposits mobilised by LCBs during a particular
+                        month.
+                      </p>
                     </div>
-                     <div className="text-slate-800 text-base">
-                      <h6 className="font-sourcecodepro font-medium">Average Weighted New Lending Rates :</h6>
-                      <p className="font-baskervville font-normal">The Average Weighted New Lending Rate (AWNLR) is calculated by the Central Bank monthly, based on interest rates pertaining to all new rupee loans and advances extended by LCBs during a particular month.</p>
+                    <div className="text-slate-800 text-base">
+                      <h6 className="font-sourcecodepro font-medium">
+                        Average Weighted New Lending Rates :
+                      </h6>
+                      <p className="font-baskervville font-normal">
+                        The Average Weighted New Lending Rate (AWNLR) is
+                        calculated by the Central Bank monthly, based on
+                        interest rates pertaining to all new rupee loans and
+                        advances extended by LCBs during a particular month.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -631,7 +746,11 @@ export default function PageInflationDashboard(): JSX.Element {
                   </h3>
                   <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
                     <p className="text-slate-800 text-base font-baskervville font-normal">
-                      The Central Bank of Sri Lanka calculates weighted average interest rates. These averages are derived from the interest rates offered by commercial banks, weighted by the volume of deposits (for deposit rates) and the volume of loans (for lending rates).
+                      The Central Bank of Sri Lanka calculates weighted average
+                      interest rates. These averages are derived from the
+                      interest rates offered by commercial banks, weighted by
+                      the volume of deposits (for deposit rates) and the volume
+                      of loans (for lending rates).
                     </p>
                   </div>
                 </div>
@@ -641,7 +760,6 @@ export default function PageInflationDashboard(): JSX.Element {
         </div>
       </div>
       {/* End Information Section */}
-
     </main>
   );
 }

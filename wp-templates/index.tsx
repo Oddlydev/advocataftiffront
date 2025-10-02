@@ -8,8 +8,7 @@ import InsightsPage from "./page-insights";
 import HomePage from "./page-home";
 import SingleInsight from "./single-insights";
 import DatasetInnerPage from "./single-dataset";
-import PageStateOwnedDashboard from "./page-state-owned-dashboard";
-import PageTransparencyDashboard from "./page-transparency-dashboard";
+import PageStateOwnedDashboard from "./page-state-owned-enterprises";
 import PageThankYou from "./page-thank-you";
 import PageDashboard from "./page-dashboard";
 import PageNewsletterConfirmation from "./page-newsletter-confirmation";
@@ -24,6 +23,7 @@ import PageMacroEconomyLanding from "./page-the-macro-economy-of-sri-lanka";
 import SingleMacroEconomy from "./single-macro-economy";
 import PageFiscalOperations from "./page-government-fiscal-operations";
 import SearchResult from "./page-search-result";
+import PageTransparencyDashboard from "./page-transparency-in-government-institutions";
 
 export default {
   "front-page": frontPage,
@@ -36,8 +36,7 @@ export default {
   "page-home": HomePage,
   "single-insight": SingleInsight,
   "single-data-set": DatasetInnerPage,
-  "page-state-owned-dashboard": PageStateOwnedDashboard,
-  "page-transparency-dashboard": PageTransparencyDashboard,
+  "page-state-owned-enterprises": PageStateOwnedDashboard,
   "page-thank-you": PageThankYou,
   "page-dashboard": PageDashboard,
   "page-newsletter-confirmation": PageNewsletterConfirmation,
@@ -52,6 +51,5 @@ export default {
   "page-the-macro-economy-of-sri-lanka": PageMacroEconomyLanding,
   "page-government-fiscal-operations": PageFiscalOperations,
   "page-search-result": SearchResult,
+  "page-transparency-in-government-institutions": PageTransparencyDashboard,
 };
-
-

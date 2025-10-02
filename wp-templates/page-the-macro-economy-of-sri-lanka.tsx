@@ -417,11 +417,11 @@ export default function PageMacroEconomyLanding() {
                 },
                 {
                   label: "Transparency in government Institutions",
-                  href: "/transparency-dashboard",
+                  href: "/transparency-in-government-institutions",
                 },
                 {
                   label: "State Owned Enterprises",
-                  href: "/state-owned-dashboard",
+                  href: "/state-owned-enterprises",
                 },
               ]}
               activePath={pathname}

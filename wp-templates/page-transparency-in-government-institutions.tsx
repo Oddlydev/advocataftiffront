@@ -286,19 +286,19 @@ export default function PageTransparencyDashboard(): JSX.Element {
       if (!cached) setIsLoading(true);
       try {
         const [seoRes, data, meta] = await Promise.all([
-          fetchPageSEOByUri(pathname || "/transparency-dashboard/").catch(
-            (e) => {
-              console.warn("SEO fetch failed", e);
-              return null as any;
-            }
-          ),
+          fetchPageSEOByUri(
+            pathname || "/transparency-in-government-institutions/"
+          ).catch((e) => {
+            console.warn("SEO fetch failed", e);
+            return null as any;
+          }),
           fetchTransparencyDashboardData(),
-          fetchPageMetaByUri(pathname || "/transparency-dashboard/").catch(
-            (e) => {
-              console.warn("Meta fetch failed", e);
-              return null as any;
-            }
-          ),
+          fetchPageMetaByUri(
+            pathname || "/transparency-in-government-institutions/"
+          ).catch((e) => {
+            console.warn("Meta fetch failed", e);
+            return null as any;
+          }),
         ]);
         if (seoRes) setSeo(seoRes);
         if (meta) {
@@ -410,8 +410,8 @@ export default function PageTransparencyDashboard(): JSX.Element {
                   if (year) params.set("year", year);
                   const qs = params.toString();
                   return qs
-                    ? `/transparency-dashboard?${qs}`
-                    : "/transparency-dashboard";
+                    ? `/transparency-in-government-institutions?${qs}`
+                    : "/transparency-in-government-institutions";
                 })(),
               },
               {
@@ -422,8 +422,8 @@ export default function PageTransparencyDashboard(): JSX.Element {
                   if (year) params.set("year", year);
                   const qs = params.toString();
                   return qs
-                    ? `/state-owned-dashboard?${qs}`
-                    : "/state-owned-dashboard";
+                    ? `/state-owned-enterprises?${qs}`
+                    : "/state-owned-enterprises";
                 })(),
               },
             ]}

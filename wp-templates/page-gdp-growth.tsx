@@ -71,7 +71,10 @@ const GDPGrowthChart = () => {
       .range([0, width])
       .padding(0.5);
     const yMax = d3.max(data, (d) => d.GDP) ?? 0;
-    const y = d3.scaleLinear().domain([0, yMax + 2]).range([height, 0]);
+    const y = d3
+      .scaleLinear()
+      .domain([0, yMax + 2])
+      .range([height, 0]);
 
     // Axes
     svg
@@ -99,7 +102,12 @@ const GDPGrowthChart = () => {
     const gridGroup = svg
       .append("g")
       .attr("class", "grid")
-      .call(d3.axisLeft(y).tickSize(-width).tickFormat(() => ""));
+      .call(
+        d3
+          .axisLeft(y)
+          .tickSize(-width)
+          .tickFormat(() => "")
+      );
     gridGroup
       .selectAll("line")
       .attr("stroke", "#CBD5E1")
@@ -154,7 +162,12 @@ const GDPGrowthChart = () => {
       // Tooltip & hover circle
       dot
         .on("mouseover", () => {
-          tooltip.style("display", "block").style("opacity", 0).transition().duration(200).style("opacity", 1);
+          tooltip
+            .style("display", "block")
+            .style("opacity", 0)
+            .transition()
+            .duration(200)
+            .style("opacity", 1);
           tooltip.html(`
             <div class="flex flex-col gap-1">
               <div class="font-semibold text-slate-600 font-sourcecodepro text-xs">Year: ${d.year}</div>
@@ -185,7 +198,11 @@ const GDPGrowthChart = () => {
             .style("top", event.clientY - rect.top - 50 + "px");
         })
         .on("mouseout", () => {
-          tooltip.transition().duration(200).style("opacity", 0).on("end", () => tooltip.style("display", "none"));
+          tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", 0)
+            .on("end", () => tooltip.style("display", "none"));
           svg.select(`.hover-circle-${d.year}`).remove();
         });
     });
@@ -198,17 +215,39 @@ const GDPGrowthChart = () => {
       zoomOutCount = 0;
     const maxClicks = 2;
     const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn")!;
-    const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn")!;
-    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn")!;
+    const zoomOutBtn =
+      document.querySelector<HTMLButtonElement>("#zoomOutBtn")!;
+    const resetZoomBtn =
+      document.querySelector<HTMLButtonElement>("#resetZoomBtn")!;
 
     const applyZoom = () => {
-      svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
+      svg.attr(
+        "transform",
+        `translate(${margin.left},${margin.top}) scale(${currentScale})`
+      );
       zoomInBtn.disabled = zoomInCount >= maxClicks;
       zoomOutBtn.disabled = zoomOutCount >= maxClicks;
     };
-    const onZoomIn = () => { if (zoomInCount < maxClicks) { currentScale *= 1.2; zoomInCount++; applyZoom(); } };
-    const onZoomOut = () => { if (zoomOutCount < maxClicks) { currentScale /= 1.2; zoomOutCount++; applyZoom(); } };
-    const onReset = () => { currentScale = 1; zoomInCount = 0; zoomOutCount = 0; applyZoom(); };
+    const onZoomIn = () => {
+      if (zoomInCount < maxClicks) {
+        currentScale *= 1.2;
+        zoomInCount++;
+        applyZoom();
+      }
+    };
+    const onZoomOut = () => {
+      if (zoomOutCount < maxClicks) {
+        currentScale /= 1.2;
+        zoomOutCount++;
+        applyZoom();
+      }
+    };
+    const onReset = () => {
+      currentScale = 1;
+      zoomInCount = 0;
+      zoomOutCount = 0;
+      applyZoom();
+    };
 
     zoomInBtn.addEventListener("click", onZoomIn);
     zoomOutBtn.addEventListener("click", onZoomOut);
@@ -255,9 +294,7 @@ export function MacroFilterSlider({
   initialActiveIndex = 0,
   onChangeActive,
   className = "",
-}: 
-
-MacroFilterSliderProps) {
+}: MacroFilterSliderProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
   const sliderRef = useRef<any>(null);
@@ -332,18 +369,17 @@ MacroFilterSliderProps) {
       <div ref={trackRef} className="w-full flex gap-2">
         {items.map((label, index) => (
           <div key={`${label}-${index}`} className="slider-item">
-              <button
-                className={`slider-btn w-full text-sm xl:text-base px-3 py-2 rounded-lg uppercase text-slate-800 border border-gray-400 bg-white font-semibold font-sourcecodepro text-center transition-colors duration-200
+            <button
+              className={`slider-btn w-full text-sm xl:text-base px-3 py-2 rounded-lg uppercase text-slate-800 border border-gray-400 bg-white font-semibold font-sourcecodepro text-center transition-colors duration-200
                   ${
                     index === activeIndex
                       ? "text-slate-50 hover:text-slate-800 hover:bg-brand-1-50 hover:border focus:bg-brand-1-950 focus:text-brand-white focus:border-brand-2-950"
                       : "hover:bg-brand-2-50 hover:text-slate-800 focus:bg-brand-1-950 focus:text-brand-white focus:border-brand-2-950"
                   }`}
-                onClick={() => handleSelect(index)}
-                >
-                {label}
-              </button>
-
+              onClick={() => handleSelect(index)}
+            >
+              {label}
+            </button>
           </div>
         ))}
       </div>
@@ -383,8 +419,7 @@ MacroFilterSliderProps) {
 }
 
 // ---- Page Component ----
-export default function PageGDPGrowth(): JSX.Element { 
-
+export default function PageGDPGrowth(): JSX.Element {
   const [industry, setIndustry] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
   const [pathname, setPathname] = useState<string>("");
@@ -393,40 +428,40 @@ export default function PageGDPGrowth(): JSX.Element {
     <main>
       {/* Secondary Navigation */}
       <div className="bg-white border-b border-slate-300">
-            <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-4 lg:py-0">
-              <SecondaryNav
-                className="!font-baskervville"
-                items={[
-                  { label: "Macro Economy", href: "#" },
-                  { label: "Government Fiscal Operations", href: "#" },
-                  {
-                    label: "Transparency in government Institutions",
-                    href: (() => {
-                      const params = new URLSearchParams();
-                      if (industry) params.set("industry", industry);
-                      if (year) params.set("year", year);
-                      const qs = params.toString();
-                      return qs
-                        ? `/transparency-dashboard?${qs}`
-                        : "/transparency-dashboard";
-                    })(),
-                  },
-                  {
-                    label: "State Owned Enterprises",
-                    href: (() => {
-                      const params = new URLSearchParams();
-                      if (industry) params.set("industry", industry);
-                      if (year) params.set("year", year);
-                      const qs = params.toString();
-                      return qs
-                        ? `/state-owned-dashboard?${qs}`
-                        : "/state-owned-dashboard";
-                    })(),
-                  },
-                ]}
-                activePath={pathname}
-              />
-            </div>
+        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-4 lg:py-0">
+          <SecondaryNav
+            className="!font-baskervville"
+            items={[
+              { label: "Macro Economy", href: "#" },
+              { label: "Government Fiscal Operations", href: "#" },
+              {
+                label: "Transparency in government Institutions",
+                href: (() => {
+                  const params = new URLSearchParams();
+                  if (industry) params.set("industry", industry);
+                  if (year) params.set("year", year);
+                  const qs = params.toString();
+                  return qs
+                    ? `/transparency-in-government-institutions?${qs}`
+                    : "/transparency-in-government-institutions";
+                })(),
+              },
+              {
+                label: "State Owned Enterprises",
+                href: (() => {
+                  const params = new URLSearchParams();
+                  if (industry) params.set("industry", industry);
+                  if (year) params.set("year", year);
+                  const qs = params.toString();
+                  return qs
+                    ? `/state-owned-enterprises?${qs}`
+                    : "/state-owned-enterprises";
+                })(),
+              },
+            ]}
+            activePath={pathname}
+          />
+        </div>
       </div>
 
       {/* Hero Section */}
@@ -462,51 +497,125 @@ export default function PageGDPGrowth(): JSX.Element {
             <div className="relative">
               {/* <!-- Zoom Buttons --> */}
               <div className="absolute top-2 md:top-0 right-4 md:right-10 flex gap-2 z-10">
-                  <button id="zoomInBtn" className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                          <path d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M13.9996 14.3335L11.0996 11.4335" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M7.33398 5.66681V9.66681" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M5.33398 7.66681H9.33398" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </button>
-                  <button id="zoomOutBtn" className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                          <path d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M13.9996 14.3335L11.0996 11.4335" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M5.33398 7.66681H9.33398" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </button>
-                  <button id="resetZoomBtn" className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                          <path d="M2 8.3335C2 9.52018 2.35189 10.6802 3.01118 11.6669C3.67047 12.6536 4.60754 13.4226 5.7039 13.8768C6.80026 14.3309 8.00666 14.4497 9.17054 14.2182C10.3344 13.9867 11.4035 13.4153 12.2426 12.5761C13.0818 11.737 13.6532 10.6679 13.8847 9.50404C14.1162 8.34015 13.9974 7.13375 13.5433 6.0374C13.0892 4.94104 12.3201 4.00397 11.3334 3.34468C10.3467 2.68539 9.18669 2.3335 8 2.3335C6.32263 2.33981 4.71265 2.99431 3.50667 4.16016L2 5.66683" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M2 2.3335V5.66683H5.33333" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </button>
+                <button
+                  id="zoomInBtn"
+                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path
+                      d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M13.9996 14.3335L11.0996 11.4335"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M7.33398 5.66681V9.66681"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M5.33398 7.66681H9.33398"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  id="zoomOutBtn"
+                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path
+                      d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M13.9996 14.3335L11.0996 11.4335"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M5.33398 7.66681H9.33398"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  id="resetZoomBtn"
+                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path
+                      d="M2 8.3335C2 9.52018 2.35189 10.6802 3.01118 11.6669C3.67047 12.6536 4.60754 13.4226 5.7039 13.8768C6.80026 14.3309 8.00666 14.4497 9.17054 14.2182C10.3344 13.9867 11.4035 13.4153 12.2426 12.5761C13.0818 11.737 13.6532 10.6679 13.8847 9.50404C14.1162 8.34015 13.9974 7.13375 13.5433 6.0374C13.0892 4.94104 12.3201 4.00397 11.3334 3.34468C10.3467 2.68539 9.18669 2.3335 8 2.3335C6.32263 2.33981 4.71265 2.99431 3.50667 4.16016L2 5.66683"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M2 2.3335V5.66683H5.33333"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
               </div>
               <GDPGrowthChart />
             </div>
 
             {/* Legend & Data Source */}
             <div className="mt-10">
-                <div className="bg-gray-50 rounded-lg px-6 py-3.5">
-                <div
-                    className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro"
-                >
-                    <div
-                    className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
-                    >
+              <div className="bg-gray-50 rounded-lg px-6 py-3.5">
+                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                     <p>Data Source: Central Bank of Sri Lanka</p>
-                    </div>
-                    <div
-                    className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
-                    >
+                  </div>
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                     <p>GDP Growth Rate 2010 - 2024</p>
-                    </div>
+                  </div>
                 </div>
-                </div>
+              </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -527,16 +636,37 @@ export default function PageGDPGrowth(): JSX.Element {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border-b border-brand-1-100 pb-4 md:border-b-0 md:border-r md:pr-4">
-                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Definition</h3>
-                            <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
-                                <p className="text-slate-800 text-base/6 font-baskervville font-normal">GDP Growth Rate (Annual) measures the yearly percentage change in the Gross Domestic Product (GDP) of Sri Lanka, reflecting the annual economic performance and output expansion or contraction of the national economy. The GDP Growth Rate provides crucial insights into the economic health and productivity of Sri Lanka. Positive growth rates indicate economic expansion, job creation, and increased standard of living, while negative growth rates highlight economic challenges, potential recessions, or downturns.</p>
-                            </div>
+                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
+                    Definition
+                  </h3>
+                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
+                    <p className="text-slate-800 text-base/6 font-baskervville font-normal">
+                      GDP Growth Rate (Annual) measures the yearly percentage
+                      change in the Gross Domestic Product (GDP) of Sri Lanka,
+                      reflecting the annual economic performance and output
+                      expansion or contraction of the national economy. The GDP
+                      Growth Rate provides crucial insights into the economic
+                      health and productivity of Sri Lanka. Positive growth
+                      rates indicate economic expansion, job creation, and
+                      increased standard of living, while negative growth rates
+                      highlight economic challenges, potential recessions, or
+                      downturns.
+                    </p>
+                  </div>
                 </div>
                 <div className="mt-6 md:mt-0">
-                            <h3 className="text-lg/7 font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Statistical Concept and Methodology</h3>
-                            <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
-                                <p className="text-slate-800 text-base/6 font-baskervville font-normal">GDP Growth Rate indicates the annual percentage increase or decrease in the value of goods and services produced in the country. Data for 2010–2014 are computed based on the base year 2010, while data from 2015 onward use the base year 2015.</p>
-                            </div>
+                  <h3 className="text-lg/7 font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
+                    Statistical Concept and Methodology
+                  </h3>
+                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
+                    <p className="text-slate-800 text-base/6 font-baskervville font-normal">
+                      GDP Growth Rate indicates the annual percentage increase
+                      or decrease in the value of goods and services produced in
+                      the country. Data for 2010–2014 are computed based on the
+                      base year 2010, while data from 2015 onward use the base
+                      year 2015.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -544,7 +674,6 @@ export default function PageGDPGrowth(): JSX.Element {
         </div>
       </div>
       {/* End Information Section */}
-
     </main>
   );
 }
