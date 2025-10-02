@@ -186,7 +186,7 @@ export default function MacroEconomySliderNav({
               className={`slider-btn w-full text-sm xl:text-base px-3 py-2 rounded-lg uppercase border font-semibold font-sourcecodepro text-center transition-colors duration-200
     ${
       index === activeIndex
-        ? "bg-black text-white border-black"
+        ? "bg-brand-1-950 text-brand-white border-brand-1-950 hover:bg-brand-2-50 hover:text-slate-800"
         : "bg-white text-slate-800 border-gray-400 hover:bg-gray-100 hover:text-black"
     }`}
               onClick={() => handleSelect(index)}
