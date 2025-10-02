@@ -57,48 +57,75 @@ const ForeignExchangeChart = () => {
 
     const svg = d3
       .select(container)
-      .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .attr(
+        "viewBox",
+        `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`
+      )
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Scales
-    const x = d3.scalePoint<number>()
-      .domain(data.map(d => d.year))
+    const x = d3
+      .scalePoint<number>()
+      .domain(data.map((d) => d.year))
       .range([0, width])
       .padding(0.5);
 
-    const yMax = d3.max(data, d => d.ForeignExchangeRate) ?? 0;
-    const y = d3.scaleLinear().domain([0, yMax + 2]).range([height, 0]);
+    const yMax = d3.max(data, (d) => d.ForeignExchangeRate) ?? 0;
+    const y = d3
+      .scaleLinear()
+      .domain([0, yMax + 2])
+      .range([height, 0]);
 
     // Axes
-    svg.append("g").attr("transform", `translate(0, ${height})`).call(d3.axisBottom(x).tickFormat(d3.format("d")))
-      .selectAll("text").attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
-    svg.append("g").call(d3.axisLeft(y).ticks(5))
-      .selectAll("text").attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
+    svg
+      .append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .call(d3.axisBottom(x).tickFormat(d3.format("d")))
+      .selectAll("text")
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
+    svg
+      .append("g")
+      .call(d3.axisLeft(y).ticks(5))
+      .selectAll("text")
+      .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal");
 
-    svg.append("text")
+    svg
+      .append("text")
       .attr("text-anchor", "middle")
-      .attr("transform", `translate(${-50},${height/2})rotate(-90)`)
+      .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
       .attr("class", "font-sourcecodepro text-slate-600 text-lg font-normal")
       .text("Balance of Payments (USD Mn.)");
 
     // Grid
-    const gridGroup = svg.append("g")
+    const gridGroup = svg
+      .append("g")
       .attr("class", "grid")
-      .call(d3.axisLeft(y).tickSize(-width).tickFormat(() => ""));
-    gridGroup.selectAll("line").attr("stroke", "#CBD5E1").attr("stroke-width", 1).attr("stroke-dasharray", "4,4");
+      .call(
+        d3
+          .axisLeft(y)
+          .tickSize(-width)
+          .tickFormat(() => "")
+      );
+    gridGroup
+      .selectAll("line")
+      .attr("stroke", "#CBD5E1")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "4,4");
     gridGroup.select(".domain").remove();
 
     // Line generator
-    const lineGen = d3.line<ForeignExchangeDatum>()
-      .x(d => x(d.year)!)
-      .y(d => y(d.ForeignExchangeRate))
+    const lineGen = d3
+      .line<ForeignExchangeDatum>()
+      .x((d) => x(d.year)!)
+      .y((d) => y(d.ForeignExchangeRate))
       .curve(d3.curveMonotoneX);
 
     const duration = 2500;
 
     // Animated line
-    const path = svg.append("path")
+    const path = svg
+      .append("path")
       .datum(data)
       .attr("fill", "none")
       .attr("stroke", color)
@@ -117,7 +144,8 @@ const ForeignExchangeChart = () => {
 
     // Animate dots in sync with line
     data.forEach((d, i) => {
-      const dot = svg.append("circle")
+      const dot = svg
+        .append("circle")
         .attr("cx", x(d.year)!)
         .attr("cy", y(d.ForeignExchangeRate))
         .attr("r", 0)
@@ -125,17 +153,23 @@ const ForeignExchangeChart = () => {
 
       const pointPos = (i / (data.length - 1)) * totalLength;
 
-      dot.transition()
+      dot
+        .transition()
         .delay((pointPos / totalLength) * duration)
         .duration(300)
         .ease(d3.easeBackOut)
         .attr("r", 4);
 
       // Tooltip
-      dot.on("mouseover", () => {
-        tooltip.style("display", "block").style("opacity", 0)
-          .transition().duration(200).style("opacity", 1);
-        tooltip.html(`
+      dot
+        .on("mouseover", () => {
+          tooltip
+            .style("display", "block")
+            .style("opacity", 0)
+            .transition()
+            .duration(200)
+            .style("opacity", 1);
+          tooltip.html(`
           <div class="flex flex-col gap-1">
             <div class="font-bold text-slate-800">Year: ${d.year}</div>
             <div class="flex items-center justify-between gap-2">
@@ -148,42 +182,71 @@ const ForeignExchangeChart = () => {
           </div>
         `);
 
-        svg.append("circle")
-          .attr("class", `hover-circle-${d.year}`)
-          .attr("cx", x(d.year)!)
-          .attr("cy", y(d.ForeignExchangeRate))
-          .attr("r", 8)
-          .attr("stroke", color)
-          .attr("stroke-width", 2)
-          .attr("fill", "none");
-      })
-      .on("mousemove", (event) => {
-        const rect = container.getBoundingClientRect();
-        tooltip.style("left", event.clientX - rect.left + 15 + "px")
-          .style("top", event.clientY - rect.top - 50 + "px");
-      })
-      .on("mouseout", () => {
-        tooltip.transition().duration(200).style("opacity", 0)
-          .on("end", () => tooltip.style("display", "none"));
-        svg.select(`.hover-circle-${d.year}`).remove();
-      });
+          svg
+            .append("circle")
+            .attr("class", `hover-circle-${d.year}`)
+            .attr("cx", x(d.year)!)
+            .attr("cy", y(d.ForeignExchangeRate))
+            .attr("r", 8)
+            .attr("stroke", color)
+            .attr("stroke-width", 2)
+            .attr("fill", "none");
+        })
+        .on("mousemove", (event) => {
+          const rect = container.getBoundingClientRect();
+          tooltip
+            .style("left", event.clientX - rect.left + 15 + "px")
+            .style("top", event.clientY - rect.top - 50 + "px");
+        })
+        .on("mouseout", () => {
+          tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", 0)
+            .on("end", () => tooltip.style("display", "none"));
+          svg.select(`.hover-circle-${d.year}`).remove();
+        });
     });
 
     // Zoom buttons
-    let currentScale = 1, zoomInCount = 0, zoomOutCount = 0;
+    let currentScale = 1,
+      zoomInCount = 0,
+      zoomOutCount = 0;
     const maxClicks = 2;
     const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn")!;
-    const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn")!;
-    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn")!;
+    const zoomOutBtn =
+      document.querySelector<HTMLButtonElement>("#zoomOutBtn")!;
+    const resetZoomBtn =
+      document.querySelector<HTMLButtonElement>("#resetZoomBtn")!;
 
     const applyZoom = () => {
-      svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
+      svg.attr(
+        "transform",
+        `translate(${margin.left},${margin.top}) scale(${currentScale})`
+      );
       zoomInBtn.disabled = zoomInCount >= maxClicks;
       zoomOutBtn.disabled = zoomOutCount >= maxClicks;
     };
-    const onZoomIn = () => { if(zoomInCount<maxClicks){ currentScale*=1.2; zoomInCount++; applyZoom(); } };
-    const onZoomOut = () => { if(zoomOutCount<maxClicks){ currentScale/=1.2; zoomOutCount++; applyZoom(); } };
-    const onReset = () => { currentScale=1; zoomInCount=0; zoomOutCount=0; applyZoom(); };
+    const onZoomIn = () => {
+      if (zoomInCount < maxClicks) {
+        currentScale *= 1.2;
+        zoomInCount++;
+        applyZoom();
+      }
+    };
+    const onZoomOut = () => {
+      if (zoomOutCount < maxClicks) {
+        currentScale /= 1.2;
+        zoomOutCount++;
+        applyZoom();
+      }
+    };
+    const onReset = () => {
+      currentScale = 1;
+      zoomInCount = 0;
+      zoomOutCount = 0;
+      applyZoom();
+    };
 
     zoomInBtn.addEventListener("click", onZoomIn);
     zoomOutBtn.addEventListener("click", onZoomOut);
@@ -230,9 +293,7 @@ export function MacroFilterSlider({
   initialActiveIndex = 0,
   onChangeActive,
   className = "",
-}: 
-
-MacroFilterSliderProps) {
+}: MacroFilterSliderProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
   const sliderRef = useRef<any>(null);
@@ -307,18 +368,17 @@ MacroFilterSliderProps) {
       <div ref={trackRef} className="w-full flex gap-2">
         {items.map((label, index) => (
           <div key={`${label}-${index}`} className="slider-item">
-              <button
-                className={`slider-btn w-full text-sm xl:text-base px-3 py-2 rounded-lg uppercase text-slate-800 border border-gray-400 bg-white font-semibold font-sourcecodepro text-center transition-colors duration-200
+            <button
+              className={`slider-btn w-full text-sm xl:text-base px-3 py-2 rounded-lg uppercase text-slate-800 border border-gray-400 bg-white font-semibold font-sourcecodepro text-center transition-colors duration-200
                   ${
                     index === activeIndex
                       ? "text-slate-50 hover:text-slate-800 hover:bg-brand-1-50 hover:border focus:bg-brand-1-950 focus:text-brand-white focus:border-brand-2-950"
                       : "hover:bg-brand-2-50 hover:text-slate-800 focus:bg-brand-1-950 focus:text-brand-white focus:border-brand-2-950"
                   }`}
-                onClick={() => handleSelect(index)}
-                >
-                {label}
-              </button>
-
+              onClick={() => handleSelect(index)}
+            >
+              {label}
+            </button>
           </div>
         ))}
       </div>
@@ -358,8 +418,7 @@ MacroFilterSliderProps) {
 }
 
 // ---- Page Component ----
-export default function PageForeignExchange(): JSX.Element { 
-
+export default function PageForeignExchange(): JSX.Element {
   const [industry, setIndustry] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
   const [pathname, setPathname] = useState<string>("");
@@ -368,40 +427,40 @@ export default function PageForeignExchange(): JSX.Element {
     <main>
       {/* Secondary Navigation */}
       <div className="bg-white border-b border-slate-300">
-            <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-4 lg:py-0">
-              <SecondaryNav
-                className="!font-baskervville"
-                items={[
-                  { label: "Macro Economy", href: "#" },
-                  { label: "Government Fiscal Operations", href: "#" },
-                  {
-                    label: "Transparency in government Institutions",
-                    href: (() => {
-                      const params = new URLSearchParams();
-                      if (industry) params.set("industry", industry);
-                      if (year) params.set("year", year);
-                      const qs = params.toString();
-                      return qs
-                        ? `/transparency-dashboard?${qs}`
-                        : "/transparency-dashboard";
-                    })(),
-                  },
-                  {
-                    label: "State Owned Enterprises",
-                    href: (() => {
-                      const params = new URLSearchParams();
-                      if (industry) params.set("industry", industry);
-                      if (year) params.set("year", year);
-                      const qs = params.toString();
-                      return qs
-                        ? `/state-owned-dashboard?${qs}`
-                        : "/state-owned-dashboard";
-                    })(),
-                  },
-                ]}
-                activePath={pathname}
-              />
-            </div>
+        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-4 lg:py-0">
+          <SecondaryNav
+            className="!font-baskervville"
+            items={[
+              { label: "Macro Economy", href: "#" },
+              { label: "Government Fiscal Operations", href: "#" },
+              {
+                label: "Transparency in government Institutions",
+                href: (() => {
+                  const params = new URLSearchParams();
+                  if (industry) params.set("industry", industry);
+                  if (year) params.set("year", year);
+                  const qs = params.toString();
+                  return qs
+                    ? `/transparency-in-government-institutions?${qs}`
+                    : "/transparency-in-government-institutions";
+                })(),
+              },
+              {
+                label: "State Owned Enterprises",
+                href: (() => {
+                  const params = new URLSearchParams();
+                  if (industry) params.set("industry", industry);
+                  if (year) params.set("year", year);
+                  const qs = params.toString();
+                  return qs
+                    ? `/state-owned-enterprises?${qs}`
+                    : "/state-owned-enterprises";
+                })(),
+              },
+            ]}
+            activePath={pathname}
+          />
+        </div>
       </div>
 
       {/* Hero Section */}
@@ -437,51 +496,125 @@ export default function PageForeignExchange(): JSX.Element {
             <div className="relative">
               {/* <!-- Zoom Buttons --> */}
               <div className="absolute top-2 md:top-0 right-4 md:right-10 flex gap-2 z-10">
-                  <button id="zoomInBtn" className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                          <path d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M13.9996 14.3335L11.0996 11.4335" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M7.33398 5.66681V9.66681" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M5.33398 7.66681H9.33398" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </button>
-                  <button id="zoomOutBtn" className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                          <path d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M13.9996 14.3335L11.0996 11.4335" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M5.33398 7.66681H9.33398" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </button>
-                  <button id="resetZoomBtn" className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                          <path d="M2 8.3335C2 9.52018 2.35189 10.6802 3.01118 11.6669C3.67047 12.6536 4.60754 13.4226 5.7039 13.8768C6.80026 14.3309 8.00666 14.4497 9.17054 14.2182C10.3344 13.9867 11.4035 13.4153 12.2426 12.5761C13.0818 11.737 13.6532 10.6679 13.8847 9.50404C14.1162 8.34015 13.9974 7.13375 13.5433 6.0374C13.0892 4.94104 12.3201 4.00397 11.3334 3.34468C10.3467 2.68539 9.18669 2.3335 8 2.3335C6.32263 2.33981 4.71265 2.99431 3.50667 4.16016L2 5.66683" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M2 2.3335V5.66683H5.33333" stroke="#374151" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </button>
+                <button
+                  id="zoomInBtn"
+                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path
+                      d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M13.9996 14.3335L11.0996 11.4335"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M7.33398 5.66681V9.66681"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M5.33398 7.66681H9.33398"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  id="zoomOutBtn"
+                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path
+                      d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M13.9996 14.3335L11.0996 11.4335"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M5.33398 7.66681H9.33398"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  id="resetZoomBtn"
+                  className="px-2.5 py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="17"
+                    viewBox="0 0 16 17"
+                    fill="none"
+                  >
+                    <path
+                      d="M2 8.3335C2 9.52018 2.35189 10.6802 3.01118 11.6669C3.67047 12.6536 4.60754 13.4226 5.7039 13.8768C6.80026 14.3309 8.00666 14.4497 9.17054 14.2182C10.3344 13.9867 11.4035 13.4153 12.2426 12.5761C13.0818 11.737 13.6532 10.6679 13.8847 9.50404C14.1162 8.34015 13.9974 7.13375 13.5433 6.0374C13.0892 4.94104 12.3201 4.00397 11.3334 3.34468C10.3467 2.68539 9.18669 2.3335 8 2.3335C6.32263 2.33981 4.71265 2.99431 3.50667 4.16016L2 5.66683"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M2 2.3335V5.66683H5.33333"
+                      stroke="#374151"
+                      stroke-width="1.33333"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
               </div>
               <ForeignExchangeChart />
             </div>
 
             {/* Legend & Data Source */}
             <div className="mt-10">
-                <div className="bg-gray-50 rounded-lg px-6 py-3.5">
-                <div
-                    className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro"
-                >
-                    <div
-                    className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
-                    >
+              <div className="bg-gray-50 rounded-lg px-6 py-3.5">
+                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                     <p>Data Source: Central Bank of Sri Lanka</p>
-                    </div>
-                    <div
-                    className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2"
-                    >
+                  </div>
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                     <p>Sri Lanka's Balance of Payment (BOP) 2010 - 2024</p>
-                    </div>
+                  </div>
                 </div>
-                </div>
+              </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -502,16 +635,43 @@ export default function PageForeignExchange(): JSX.Element {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border-b border-brand-1-100 pb-4 md:border-b-0 md:border-r md:pr-4">
-                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Definition</h3>
-                            <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
-                                <p className="text-slate-800 text-base/6 font-baskervville font-normal">Forex Inflows and Outflows represent the annual net foreign exchange movement (inflows minus outflows) captured under the Balance of Payments (BOP), measured in millions of US dollars (USD). This indicator shows the net impact of international transactions on the country's foreign exchange reserves. Tracking Forex Inflows and Outflows is essential to evaluate the country's external financial health, sustainability of its foreign currency reserves, exchange rate stability, and overall economic stability. It aids policymakers in decision-making regarding exchange rate management, external borrowing, and investment policies.</p>
-                            </div>
+                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
+                    Definition
+                  </h3>
+                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
+                    <p className="text-slate-800 text-base/6 font-baskervville font-normal">
+                      Forex Inflows and Outflows represent the annual net
+                      foreign exchange movement (inflows minus outflows)
+                      captured under the Balance of Payments (BOP), measured in
+                      millions of US dollars (USD). This indicator shows the net
+                      impact of international transactions on the country's
+                      foreign exchange reserves. Tracking Forex Inflows and
+                      Outflows is essential to evaluate the country's external
+                      financial health, sustainability of its foreign currency
+                      reserves, exchange rate stability, and overall economic
+                      stability. It aids policymakers in decision-making
+                      regarding exchange rate management, external borrowing,
+                      and investment policies.
+                    </p>
+                  </div>
                 </div>
                 <div className="mt-6 md:mt-0">
-                            <h3 className="text-lg/7 font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">Statistical Concept and Methodology</h3>
-                            <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
-                                <p className="text-slate-800 text-base/6 font-baskervville font-normal">The Balance of Payments (BOP) summarizes economic transactions between residents and non-residents over a specific period, including trade in goods and services, primary and secondary income, and financial flows. Forex inflows reflect the receipt of foreign currency through exports, foreign investments, loans, and remittances, whereas outflows represent payments made for imports, loan repayments, repatriation of profits, and outward investments.</p>
-                            </div>
+                  <h3 className="text-lg/7 font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
+                    Statistical Concept and Methodology
+                  </h3>
+                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
+                    <p className="text-slate-800 text-base/6 font-baskervville font-normal">
+                      The Balance of Payments (BOP) summarizes economic
+                      transactions between residents and non-residents over a
+                      specific period, including trade in goods and services,
+                      primary and secondary income, and financial flows. Forex
+                      inflows reflect the receipt of foreign currency through
+                      exports, foreign investments, loans, and remittances,
+                      whereas outflows represent payments made for imports, loan
+                      repayments, repatriation of profits, and outward
+                      investments.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -519,7 +679,6 @@ export default function PageForeignExchange(): JSX.Element {
         </div>
       </div>
       {/* End Information Section */}
-
     </main>
   );
 }

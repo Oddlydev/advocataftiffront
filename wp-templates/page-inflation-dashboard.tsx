@@ -105,7 +105,10 @@ const AverageAnnualInflationChart = () => {
       .append("g")
       .attr("class", "grid")
       .call(
-        d3.axisLeft(y).tickSize(-width).tickFormat(() => "")
+        d3
+          .axisLeft(y)
+          .tickSize(-width)
+          .tickFormat(() => "")
       );
 
     gridGroup
@@ -157,7 +160,8 @@ const AverageAnnualInflationChart = () => {
 
         const pointPos = (i / (data.length - 1)) * totalLength;
 
-        dot.transition()
+        dot
+          .transition()
           .delay((pointPos / totalLength) * duration)
           .duration(300)
           .ease(d3.easeBackOut)
@@ -217,9 +221,13 @@ const AverageAnnualInflationChart = () => {
               .style("top", event.clientY - rect.top - 50 + "px");
           })
           .on("mouseout", () => {
-            tooltip.transition().duration(200).style("opacity", 0).on("end", () => {
-              tooltip.style("display", "none");
-            });
+            tooltip
+              .transition()
+              .duration(200)
+              .style("opacity", 0)
+              .on("end", () => {
+                tooltip.style("display", "none");
+              });
             svg.select(`.hover-circle-${key}-${d.year}`).remove();
           });
       });
@@ -234,11 +242,16 @@ const AverageAnnualInflationChart = () => {
     const maxClicks = 2;
 
     const zoomInBtn = document.querySelector<HTMLButtonElement>("#zoomInBtn")!;
-    const zoomOutBtn = document.querySelector<HTMLButtonElement>("#zoomOutBtn")!;
-    const resetZoomBtn = document.querySelector<HTMLButtonElement>("#resetZoomBtn")!;
+    const zoomOutBtn =
+      document.querySelector<HTMLButtonElement>("#zoomOutBtn")!;
+    const resetZoomBtn =
+      document.querySelector<HTMLButtonElement>("#resetZoomBtn")!;
 
     const applyZoom = () => {
-      svg.attr("transform", `translate(${margin.left},${margin.top}) scale(${currentScale})`);
+      svg.attr(
+        "transform",
+        `translate(${margin.left},${margin.top}) scale(${currentScale})`
+      );
       zoomInBtn.disabled = zoomInCount >= maxClicks;
       zoomOutBtn.disabled = zoomOutCount >= maxClicks;
     };
@@ -311,8 +324,8 @@ export default function PageInflationDashboard(): JSX.Element {
                   if (year) params.set("year", year);
                   const qs = params.toString();
                   return qs
-                    ? `/transparency-dashboard?${qs}`
-                    : "/transparency-dashboard";
+                    ? `/transparency-in-government-institutions?${qs}`
+                    : "/transparency-in-government-institutions";
                 })(),
               },
               {
@@ -323,8 +336,8 @@ export default function PageInflationDashboard(): JSX.Element {
                   if (year) params.set("year", year);
                   const qs = params.toString();
                   return qs
-                    ? `/state-owned-dashboard?${qs}`
-                    : "/state-owned-dashboard";
+                    ? `/state-owned-enterprises?${qs}`
+                    : "/state-owned-enterprises";
                 })(),
               },
             ]}

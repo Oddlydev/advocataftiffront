@@ -216,9 +216,9 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
     },
     {
       label: "Transparency in government Institutions",
-      href: "/transparency-dashboard",
+      href: "/transparency-in-government-institutions",
     },
-    { label: "State Owned Enterprises", href: "/state-owned-dashboard" },
+    { label: "State Owned Enterprises", href: "/state-owned-enterprises" },
   ];
 
   return (

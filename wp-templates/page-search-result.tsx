@@ -391,7 +391,7 @@ const SearchAndResults = () => {
                       <li className="border-t border-slate-600/10">
                         {/* <!-- Current: "bg-gray-50 text-indigo-600", Default: "text-gray-700 hover:text-indigo-600 hover:bg-gray-50" --> */}
                         <a
-                          href="/transparency-dashboard"
+                          href="/transparency-in-government-institutions"
                           className="sidebar-item flex gap-x-3 rounded-md px-2.5 text-sm/6 font-medium font-sourcecodepro text-slate-800 hover:text-slate-800 hover:bg-brand-1-50 focus:bg-brand-1-950 focus:text-white focus:outline-0 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent items-start group my-4 py-4 relative"
                         >
                           <div className="bg-brand-1-50 group-hover:bg-white group rounded-lg p-3">
@@ -452,7 +452,7 @@ const SearchAndResults = () => {
                       <li className="border-t border-slate-600/10">
                         {/* <!-- Current: "bg-gray-50 text-indigo-600", Default: "text-gray-700 hover:text-indigo-600 hover:bg-gray-50" --> */}
                         <a
-                          href="/state-owned-dashboard"
+                          href="/state-owned-enterprises"
                           className="sidebar-item flex gap-x-3 rounded-md px-2.5 text-sm/6 font-medium font-sourcecodepro text-slate-800 hover:text-slate-800 hover:bg-brand-1-50 focus:bg-brand-1-950 focus:text-white focus:outline-0 focus:ring-0 focus:ring-offset-0 focus:ring-offset-transparent focus:ring-transparent items-start group my-4 py-4 relative"
                         >
                           <div className="bg-brand-1-50 group-hover:bg-white group rounded-lg p-3">
