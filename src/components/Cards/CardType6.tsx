@@ -87,7 +87,7 @@ const CardType6: React.FC<CardType6Props> = ({
           <div className="card-footer mt-6 flex items-center justify-between">
             <div className="date-info flex justify-between w-full items-center space-x-1 text-xs/tight font-medium font-sourcecodepro text-slate-600">
               {/* <!-- Left section --> */}
-              <div className="pdf-btn flex items-start md:items-center space-x-1.5 text-sm leading-snug font-medium font-sourcecodepro text-slate-600">
+              {/* <div className="pdf-btn flex items-start md:items-center space-x-1.5 text-sm leading-snug font-medium font-sourcecodepro text-slate-600">
                 <svg
                   className="pdf-icon mt-1 md:mt-0 size-6 fill-slate-600"
                   xmlns="http://www.w3.org/2000/svg"
@@ -102,7 +102,7 @@ const CardType6: React.FC<CardType6Props> = ({
                   />
                 </svg>
                 <span>csv,json,xml,excel</span>
-              </div>
+              </div> */}
 
               {/* Right section */}
               <time className="text-xs/tight font-medium font-sourcecodepro text-slate-600">
