@@ -76,7 +76,7 @@ export default function FilterCarousel({
       {/* Slider track */}
       <div
         ref={trackRef}
-        className="filter-carousel-slider w-full"
+        className="filter-carousel-slider w-full px-7 md:px-8 xl:px-4"
       >
         {items.map((label, index) => (
           <div className="slider-item">
