@@ -16,83 +16,83 @@
 } */
 
 button {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 @layer utilities {
   #search-home:-webkit-autofill,
   #search-home:-webkit-autofill:hover,
   #search-home:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0px 1000px theme('colors.brandBlack') inset !important;
-    -webkit-text-fill-color: theme('colors.brandWhite') !important;
+    -webkit-box-shadow: 0 0 0px 1000px theme("colors.brandBlack") inset !important;
+    -webkit-text-fill-color: theme("colors.brandWhite") !important;
     transition: background-color 5000s ease-in-out 0s !important;
   }
 
   .search-input:-webkit-autofill,
   .search-input:-webkit-autofill:hover,
   .search-input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0px 1000px theme('colors.white') inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px theme("colors.white") inset !important;
   }
-  
+
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-internal-autofill-selected {
-  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
-  box-shadow: 0 0 0px 1000px transparent inset !important;
-  -webkit-text-fill-color: inherit !important; /* keep text color same as normal input */
-  background-color: transparent !important;     /* remove autofill background */
-  transition: background-color 5000s ease-in-out 0s; /* prevents browser animation */
-}    
-
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+    box-shadow: 0 0 0px 1000px transparent inset !important;
+    -webkit-text-fill-color: inherit !important; /* keep text color same as normal input */
+    background-color: transparent !important; /* remove autofill background */
+    transition: background-color 5000s ease-in-out 0s; /* prevents browser animation */
+  }
 }
 
 /* Utilities: hide scrollbar + iOS momentum */
 @layer utilities {
-  .secondary-nav-flyout .no-scrollbar::-webkit-scrollbar { 
+  .secondary-nav-flyout .no-scrollbar::-webkit-scrollbar {
     display: none; /* Chrome/Safari/Edge */
-  } 
+  }
 
-  .secondary-nav-flyout .no-scrollbar { 
-    -ms-overflow-style: none; scrollbar-width: none; /* IE/Firefox */
-  } 
+  .secondary-nav-flyout .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none; /* IE/Firefox */
+  }
 
-  .secondary-nav-flyout .momentum { 
-    -webkit-overflow-scrolling: touch; /* iOS smooth momentum */ 
-    scroll-behavior: smooth; /* desktop + modern browsers */ 
-  } 
+  .secondary-nav-flyout .momentum {
+    -webkit-overflow-scrolling: touch; /* iOS smooth momentum */
+    scroll-behavior: smooth; /* desktop + modern browsers */
+  }
 }
 
 /* ----------------------------------------------------------------------- 
  *  Scroll container (table wrapper) 
  * --------------------------------------------------------------------- */
 #table-wrapper {
-    background-clip: content-box;
-    /* keeps table background intact */
-    scrollbar-gutter: stable both-edges;
-    /* Chrome/Edge/Firefox */
+  background-clip: content-box;
+  /* keeps table background intact */
+  scrollbar-gutter: stable both-edges;
+  /* Chrome/Edge/Firefox */
 }
 
 #table-wrapper::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  width: 6px;
+  height: 6px;
 }
 
 #table-wrapper::-webkit-scrollbar-track {
-    background: #F1F2F2 !important;
-    /* track color */
-    border-radius: 9999px;
+  background: #f1f2f2 !important;
+  /* track color */
+  border-radius: 9999px;
 }
 
 #table-wrapper::-webkit-scrollbar-thumb {
-    background-color: #1A1A1A !important;
-    /* brand-slate-blue or brand color */
-    border-radius: 9999px;
+  background-color: #1a1a1a !important;
+  /* brand-slate-blue or brand color */
+  border-radius: 9999px;
 }
 
 #table-wrapper::-webkit-scrollbar-thumb:hover {
-    background-color: #163a46 !important;
-    /* darker shade on hover */
+  background-color: #163a46 !important;
+  /* darker shade on hover */
 }
 
 /* ----------------------------------------------------------------------- 
@@ -106,110 +106,139 @@ button {
 
 /* responsive table helper (expands @apply max-w-[9rem] sm:max-w-none whitespace-normal sm:whitespace-nowrap break-words;) */
 .mobile-col {
-    max-width: 9rem;
-    white-space: normal;
-    word-break: break-word;
+  max-width: 9rem;
+  white-space: normal;
+  word-break: break-word;
 }
 
 @media (min-width: 640px) {
-    .mobile-col {
-        max-width: none;
-        white-space: nowrap;
-    }
+  .mobile-col {
+    max-width: none;
+    white-space: nowrap;
+  }
 }
 
 /* -----------------------------------------------------------------------
   *                              Filter Carousel
   *  ---------------------------------------------------------------------
 */
-@layer components{
-    .tns-horizontal.tns-subpixel>.tns-item {
-        vertical-align: middle !important;
-        text-align: center !important;
-    }
-/* 
+@layer components {
+  .tns-horizontal.tns-subpixel > .tns-item {
+    vertical-align: middle !important;
+    text-align: center !important;
+  }
+  /* 
     #tns1 > .tns-item {
         width: calc(2.9991%) !important;
     } */
 
-    .tns-horizontal.tns-subpixel>.tns-item {
-        vertical-align: middle !important;
-    }
+  .tns-horizontal.tns-subpixel > .tns-item {
+    vertical-align: middle !important;
+  }
 }
 
-
-
 @theme {
-    /* Map next/font variables to Tailwind font tokens */
-    --font-inter: var(--font-inter);
-    /* next/font -> our token */
-    --font-manrope: var(--font-manrope);
-    --font-montserrat: var(--font-montserrat);
-    --font-sourcecodepro: var(--font-sourcecodepro);
-    --font-baskervville: var(--font-baskervville);
-    --font-playfair: var(--font-playfair);
+  /* Map next/font variables to Tailwind font tokens */
+  --font-inter: var(--font-inter);
+  /* next/font -> our token */
+  --font-manrope: var(--font-manrope);
+  --font-montserrat: var(--font-montserrat);
+  --font-sourcecodepro: var(--font-sourcecodepro);
+  --font-baskervville: var(--font-baskervville);
+  --font-playfair: var(--font-playfair);
 
-    /* Set your defaults (so utilities like font-sans work) */
-    --font-sans: var(--font-inter), ui-sans-serif, system-ui, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-serif: var(--font-playfair), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    --font-mono: var(--font-sourcecodepro), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  /* Set your defaults (so utilities like font-sans work) */
+  --font-sans:
+    var(--font-inter), ui-sans-serif, system-ui, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif:
+    var(--font-playfair), ui-serif, Georgia, Cambria, "Times New Roman", Times,
+    serif;
+  --font-mono:
+    var(--font-sourcecodepro), ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
 
-    /* Named families so you can do `font-montserrat`, `font-sourcecodepro`, etc. */
-    --font-montserrat: var(--font-montserrat);
-    --font-sourcecodepro: var(--font-sourcecodepro);
-    --font-baskervville: var(--font-baskervville);
-    --font-playfair: var(--font-playfair);
-    --font-inter: var(--font-inter);
-    --font-manrope: var(--font-manrope);
+  /* Named families so you can do `font-montserrat`, `font-sourcecodepro`, etc. */
+  --font-montserrat: var(--font-montserrat);
+  --font-sourcecodepro: var(--font-sourcecodepro);
+  --font-baskervville: var(--font-baskervville);
+  --font-playfair: var(--font-playfair);
+  --font-inter: var(--font-inter);
+  --font-manrope: var(--font-manrope);
 
-    /* ----- Your colors (unchanged) ----- */
-    --color-primary: #EB1A52;
-    --color-secondary: #1465F5;
-    --color-brand-black: #1A1A1A;
-    --color-brand-white: #F1F2F2;
+  /* ----- Your colors (unchanged) ----- */
+  --color-primary: #eb1a52;
+  --color-secondary: #1465f5;
+  --color-brand-black: #1a1a1a;
+  --color-brand-white: #f1f2f2;
 
-    --color-brand-1-50: #fdedf1;
-    --color-brand-1-100: #f9bece;
-    --color-brand-1-200: #f58faa;
-    --color-brand-1-300: #f16087;
-    --color-brand-1-400: #ed3a6a;
-    --color-brand-1-500: #ea1a52;
-    --color-brand-1-600: #cf1244;
-    --color-brand-1-700: #a90e38;
-    --color-brand-1-800: #7a0a28;
-    --color-brand-1-900: #4b0619;
-    --color-brand-1-950: #1c0209;
+  --color-brand-1-50: #fdedf1;
+  --color-brand-1-100: #f9bece;
+  --color-brand-1-200: #f58faa;
+  --color-brand-1-300: #f16087;
+  --color-brand-1-400: #ed3a6a;
+  --color-brand-1-500: #ea1a52;
+  --color-brand-1-600: #cf1244;
+  --color-brand-1-700: #a90e38;
+  --color-brand-1-800: #7a0a28;
+  --color-brand-1-900: #4b0619;
+  --color-brand-1-950: #1c0209;
 
-    --color-brand-2-50: #f0f5fe;
-    --color-brand-2-100: #bfd5fc;
-    --color-brand-2-200: #8eb5fa;
-    --color-brand-2-300: #5d95f8;
-    --color-brand-2-400: #367bf6;
-    --color-brand-2-500: #1465f5;
-    --color-brand-2-600: #0955db;
-    --color-brand-2-700: #0746b4;
-    --color-brand-2-800: #053383;
-    --color-brand-2-900: #032052;
-    --color-brand-2-950: #010d22;
+  --color-brand-2-50: #f0f5fe;
+  --color-brand-2-100: #bfd5fc;
+  --color-brand-2-200: #8eb5fa;
+  --color-brand-2-300: #5d95f8;
+  --color-brand-2-400: #367bf6;
+  --color-brand-2-500: #1465f5;
+  --color-brand-2-600: #0955db;
+  --color-brand-2-700: #0746b4;
+  --color-brand-2-800: #053383;
+  --color-brand-2-900: #032052;
+  --color-brand-2-950: #010d22;
 
-    /* Gradients & shadows (deduped a bit) */
-    --color-linear-gradient-1: linear-gradient(180deg, #270015 0%, #4c0b1b 100%);
-    --color-linear-gradient-2: linear-gradient(94deg, #fff -15.14%, rgba(255, 255, 255, 0.3) 128.27%);
-    --color-linear-gradient-3: linear-gradient(94deg, #FFF -15.14%, rgba(255, 255, 255, 0.30) 128.27%);
-    --color-linear-gradient-4: linear-gradient(90deg, #EB1A52 0%, #1465F5 100%);
-    --color-linear-gradient-5: linear-gradient(177deg, #1C0209 8.9%, #7A0A28 52.08%, #4B0619 95.26%);
-    --color-radial-gradient-1: radial-gradient(131.11% 61.3% at 48.62% 46.15%, #bb1b73 0%, #b62048 46.53%, #4f082e 100%);
-    --color-radial-gradient-2: radial-gradient(51.99% 67.19% at 50% 96.88%, rgba(76, 11, 27, 0.8) 0%, rgba(76, 11, 27, 0) 100%, rgba(76, 11, 27, 0.12) 100%), #270015;
+  /* Gradients & shadows (deduped a bit) */
+  --color-linear-gradient-1: linear-gradient(180deg, #270015 0%, #4c0b1b 100%);
+  --color-linear-gradient-2: linear-gradient(
+    94deg,
+    #fff -15.14%,
+    rgba(255, 255, 255, 0.3) 128.27%
+  );
+  --color-linear-gradient-3: linear-gradient(
+    94deg,
+    #fff -15.14%,
+    rgba(255, 255, 255, 0.3) 128.27%
+  );
+  --color-linear-gradient-4: linear-gradient(90deg, #eb1a52 0%, #1465f5 100%);
+  --color-linear-gradient-5: linear-gradient(
+    177deg,
+    #1c0209 8.9%,
+    #7a0a28 52.08%,
+    #4b0619 95.26%
+  );
+  --color-radial-gradient-1: radial-gradient(
+    131.11% 61.3% at 48.62% 46.15%,
+    #bb1b73 0%,
+    #b62048 46.53%,
+    #4f082e 100%
+  );
+  --color-radial-gradient-2:
+    radial-gradient(
+      51.99% 67.19% at 50% 96.88%,
+      rgba(76, 11, 27, 0.8) 0%,
+      rgba(76, 11, 27, 0) 100%,
+      rgba(76, 11, 27, 0.12) 100%
+    ),
+    #270015;
 
-    --shadow-custom-lg: 0px 4px 14px 0px rgba(0, 0, 0, 0.18);
-    --shadow-inner-sm: 0px 1px 3px 3px rgba(0, 0, 0, 0.24) inset;
-    --shadow-inner-md: 0px 2px 3px 2px rgba(0, 0, 0, 0.24) inset;
-    --shadow-inner-lg: 0px 4px 4px 4px rgba(0, 0, 0, 0.24) inset;
+  --shadow-custom-lg: 0px 4px 14px 0px rgba(0, 0, 0, 0.18);
+  --shadow-inner-sm: 0px 1px 3px 3px rgba(0, 0, 0, 0.24) inset;
+  --shadow-inner-md: 0px 2px 3px 2px rgba(0, 0, 0, 0.24) inset;
+  --shadow-inner-lg: 0px 4px 4px 4px rgba(0, 0, 0, 0.24) inset;
 
-    /* Custom aspect ratios */
-    --aspect-ratio-custom-lg: 4 / 3;
-    --aspect-ratio-custom-md: 3 / 1;
-    --aspect-ratio-custom-sm: 2 / 1;
+  /* Custom aspect ratios */
+  --aspect-ratio-custom-lg: 4 / 3;
+  --aspect-ratio-custom-md: 3 / 1;
+  --aspect-ratio-custom-sm: 2 / 1;
 }
 
 /* ----------------------------------------------------------------------- 
@@ -217,21 +246,23 @@ button {
  *  Maps `font-family-*` classes to Tailwind font tokens / next/font vars
  * --------------------------------------------------------------------- */
 .font-family-montserrat {
-    font-family: var(--font-montserrat, var(--font-sans));
+  font-family: var(--font-montserrat, var(--font-sans));
 }
 
 .font-family-sourcecodepro {
-    font-family: var(--font-sourcecodepro, var(--font-mono));
+  font-family: var(--font-sourcecodepro, var(--font-mono));
 }
 
 .font-family-baskervville {
-    font-family: var(--font-baskervville, var(--font-serif));
+  font-family: var(--font-baskervville, var(--font-serif));
 }
 
 .font-family-playfair {
-    font-family: var(--font-playfair, var(--font-serif));
+  font-family: var(--font-playfair, var(--font-serif));
 }
 
 .font-family-manrope {
-    font-family: var(--font-manrope, var(--font-sans));
+  font-family: var(--font-manrope, var(--font-sans));
 }
+
+
