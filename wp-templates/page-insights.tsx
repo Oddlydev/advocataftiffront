@@ -314,7 +314,6 @@ export default function InsightsPage({ data }: InsightsPageProps) {
                 setCurrentPage(1);
               }}
               placeholder="Search"
-              autoFocus={true}
             />
           </div>
 

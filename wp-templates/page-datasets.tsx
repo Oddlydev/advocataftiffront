@@ -329,7 +329,6 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
                 setCurrentPage(1);
               }}
               placeholder="Search"
-              autoFocus={true}
             />
           </div>
 
