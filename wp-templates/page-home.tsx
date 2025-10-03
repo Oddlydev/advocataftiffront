@@ -493,7 +493,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           </div>
           <div className="mx-auto max-w-7xl text-center">
             <PrimaryButton onClick={() => router.push("/datasets")}>
-              View data catalog
+              All Data Sets
             </PrimaryButton>
           </div>
         </div>
@@ -525,7 +525,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           </div>
           <div className="mx-auto max-w-7xl text-center">
             <PrimaryButton onClick={() => router.push("/insights")}>
-              Explore more
+              More Insights
             </PrimaryButton>
           </div>
         </div>
