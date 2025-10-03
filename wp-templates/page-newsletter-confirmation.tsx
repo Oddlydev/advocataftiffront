@@ -2,9 +2,9 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import SEO from "@/src/components/SEO";
 import { COUNTRY_CODES } from "@/src/data/countryCodes";
+import Link from "next/link";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -286,24 +286,22 @@ export default function PageNewsletterConfirmation() {
                       />
                     </svg>
                     <span className="text-base font-normal text-slate-600 font-sourcecodepro">
-                      I agree to Advocata's{' '}
-                      <a
-                        href="https://advocataftiffront.vercel.app/privacy-policy/"
-                        target="_blank"
+                      I agree to Advocata's{" "}
+                      <Link
+                        href="/privacy-policy/"
                         rel="noopener noreferrer"
                         className="underline hover:text-slate-900"
                       >
                         Privacy Policy
-                      </a>{' '}
-                      and{' '}
-                      <a
-                        href="https://advocataftiffront.vercel.app/terms-and-conditions/"
-                        target="_blank"
+                      </Link>{" "}
+                      and{" "}
+                      <Link
+                        href="/terms-and-conditions/"
                         rel="noopener noreferrer"
                         className="underline hover:text-slate-900"
                       >
                         Terms of Service
-                      </a>
+                      </Link>
                       .
                     </span>
                   </label>
