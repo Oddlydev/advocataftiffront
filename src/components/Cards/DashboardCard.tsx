@@ -64,7 +64,7 @@ const Card: React.FC<CardProps> = ({
             </div>
           </div>
 
-          <div className="flex-shrink-0">
+          {/* <div className="flex-shrink-0">
             <img
               className="relative w-full h-full object-cover rounded-xl xl:left-12 md:left-9 left-6 top-4 transition-all duration-500 ease-in-out group-focus-within:rounded-none"
               src={image}
@@ -73,7 +73,23 @@ const Card: React.FC<CardProps> = ({
               alt={title}
               loading="lazy"
             />
+          </div> */}
+
+          <div className="flex-shrink-0 relative"> {/* h-full */}
+            <img
+              className="relative w-full h-full object-cover rounded-lg xl:left-12 md:left-9 left-6 top-4 transition-all duration-500 ease-in-out group-focus-within:rounded-none"
+              src={image}
+              width={300}
+              height={200}
+              alt={title}
+              loading="lazy"
+            />
+            {/* Overlay */}
+            <div className="absolute w-full h-full inset-0 rounded-lg xl:left-12 md:left-9 left-6 top-4 pointer-events-none"
+                style={{ background: "linear-gradient(0deg, rgba(235, 26, 82, 0.20), rgba(235, 26, 82, 0.20))" }}>
+            </div>
           </div>
+
         </div>
       </a>
     </div>
