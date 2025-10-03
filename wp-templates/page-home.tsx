@@ -373,7 +373,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
       )}
 
       {/* Dashboards */}
-      <div className="bg-white pb-24 sm:pb-32 -mt-18">
+      <div className="bg-white pb-24 sm:pb-32">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           <div className="mx-auto max-w-3xl text-center">
             <PageSubTitle className="page-sub-title">dashboard</PageSubTitle>
@@ -505,7 +505,8 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           <div className="mx-auto max-w-3xl text-center">
             <PageSubTitle className="page-sub-title">Highlights</PageSubTitle>
             <PageTitle className="page-title">
-              Up to date with our latest news and updates
+              Stay Up to Date with the Latest News and Our Insights on Sri
+              Lanka's Economy
             </PageTitle>
           </div>
           <div className="mx-auto my-8 md:my-11 grid max-w-2xl grid-cols-1 gap-6 xl:gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3 md:grid-cols-2">
