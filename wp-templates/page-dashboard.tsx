@@ -155,7 +155,7 @@ const Section: React.FC<SectionProps> = ({
   return (
     <Link href={url} >
       <div className="pt-8">
-        <div className="border border-slate-400 shadow-2xl rounded-lg p-3 lg:p-12 pr-0 lg:pr-0
+        <div className="border border-slate-400 shadow-2xl rounded-l-lg p-3 lg:p-12 pr-0 lg:pr-0
              transition-all duration-300 ease-in-out hover:-translate-y-1.5">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
             {/* Left Column */}
@@ -172,16 +172,25 @@ const Section: React.FC<SectionProps> = ({
             </div>
 
             {/* Right Column */}
-            <div>
+            <div className="relative">
               <img
                 src={imgSrc}
                 alt={imgAlt}
-                className="w-full h-full rounded-lg"
+                className="w-full h-full rounded-l-lg"
                 width={511}
                 height={503}
                 loading="lazy"
               />
+              {/* Overlay */}
+              <div
+                className="absolute inset-0 rounded-l-lg pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(0deg, rgba(235, 26, 82, 0.20), rgba(235, 26, 82, 0.20))",
+                }}
+              />
             </div>
+            
           </div>
         </div>
       </div>
