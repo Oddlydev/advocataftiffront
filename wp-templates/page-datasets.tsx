@@ -297,22 +297,22 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
       </section> */}
 
       <div className="insight-hero relative">
-          {/* Background Image */}
-          <img
-            src={datasetBgPattern}
-            alt="hero background"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-                
-          {/* Hero Content */}
-          <div className="relative z-10">
-            <HeroBasic
+        {/* Background Image */}
+        <img
+          src={datasetBgPattern}
+          alt="hero background"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+
+        {/* Hero Content */}
+        <div className="relative z-10">
+          <HeroBasic
             bgUrl={datasetBgPattern}
             title="Research Datasets"
             paragraph={heroParagraph}
             overlay={null}
           />
-          </div>
+        </div>
       </div>
 
       <section className="bg-white">
@@ -328,7 +328,8 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
                 setSearchQuery(q);
                 setCurrentPage(1);
               }}
-              placeholder="Search datasets..."
+              placeholder="Search"
+              autoFocus={true}
             />
           </div>
 
