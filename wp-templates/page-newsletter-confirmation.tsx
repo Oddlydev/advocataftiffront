@@ -122,27 +122,6 @@ export default function PageNewsletterConfirmation() {
                 noValidate
                 className="w-full lg:pt-2 space-y-6"
               >
-                {/* Email */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-base font-bold text-slate-800 font-sourcecodepro"
-                  >
-                    Email Address <span className="text-brand-1-500">*</span>
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="email"
-                      type="email"
-                      name="email"
-                      value={email}
-                      disabled
-                      readOnly
-                      className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
                 {/* Name Fields */}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
@@ -181,6 +160,27 @@ export default function PageNewsletterConfirmation() {
                         focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
                       />
                     </div>
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-base font-bold text-slate-800 font-sourcecodepro"
+                  >
+                    Email Address <span className="text-brand-1-500">*</span>
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="email"
+                      type="email"
+                      name="email"
+                      value={email}
+                      disabled
+                      readOnly
+                      className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
+                    />
                   </div>
                 </div>
 
