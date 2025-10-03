@@ -6,20 +6,6 @@ import SEO from "@/src/components/SEO";
 
 type Status = "idle" | "loading" | "success" | "error";
 
-type SplitName = {
-  firstName: string;
-  lastName: string;
-};
-
-function splitName(name: string): SplitName {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (!parts.length) {
-    return { firstName: "", lastName: "" };
-  }
-  const [firstName, ...rest] = parts;
-  return { firstName, lastName: rest.join(" ") };
-}
-
 export default function PageNewsletterConfirmation() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<Status>("idle");
@@ -34,9 +20,11 @@ export default function PageNewsletterConfirmation() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const emailValue = email.trim();
-    const nameValue = (formData.get("name") as string | null)?.trim() ?? "";
-    const { firstName, lastName } = splitName(nameValue);
+    const emailValue =
+      ((formData.get("email") as string | null)?.trim() ?? "") || email.trim();
+    const firstName =
+      (formData.get("firstName") as string | null)?.trim() ?? "";
+    const lastName = (formData.get("lastName") as string | null)?.trim() ?? "";
     const countryCode =
       (formData.get("country") as string | null)?.trim() ?? "";
     const phoneNumber =
@@ -137,76 +125,95 @@ export default function PageNewsletterConfirmation() {
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
                     <label
-                      htmlFor="name"
+                      htmlFor="first-name"
                       className="block text-base font-bold text-slate-800 font-sourcecodepro"
                     >
-                      Your Name <span className="text-brand-1-500">*</span>
+                      First Name <span className="text-brand-1-500">*</span>
                     </label>
                     <div className="mt-2">
                       <input
-                        id="name"
+                        id="first-name"
                         type="text"
-                        name="name"
+                        name="firstName"
                         autoComplete="given-name"
-                        placeholder="First Last Name"
+                        placeholder="First name"
                         className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400
                         focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
                       />
                     </div>
                   </div>
-
-                  {/* Phone Number with Country */}
                   <div>
                     <label
-                      htmlFor="phone-number"
+                      htmlFor="last-name"
                       className="block text-base font-bold text-slate-800 font-sourcecodepro"
                     >
-                      Contact Number <span className="text-brand-1-500">*</span>
+                      Last Name <span className="text-brand-1-500">*</span>
                     </label>
-                   <div className="mt-2">
-                      <div
-                        className="flex rounded-md bg-white outline-1 -outline-offset-1 outline-gray-200
-                          has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-brand-1-200 w-full px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200"
-                      >
-                        {/* Country Code Select with Arrow */}
-                        <div className="relative flex items-center">
-                          <select
-                            id="country"
-                            name="country"
-                            autoComplete="country"
-                            aria-label="Country"
-                            className="appearance-none rounded-md bg-white pr-7 pl-3 text-base text-gray-500 focus:outline-none"
-                          >
-                            <option>+94</option>
-                            <option>+95</option>
-                            <option>+96</option>
-                          </select>
-                          {/* Dropdown Arrow */}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="pointer-events-none absolute right-2 h-5 w-5 text-gray-500"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M5.29289 7.29289C5.68342 6.90237 6.31658 6.90237 6.7071 7.29289L9.99999 10.5858L13.2929 7.29289C13.6834 6.90237 14.3166 6.90237 14.7071 7.29289C15.0976 7.68342 15.0976 8.31658 14.7071 8.70711L10.7071 12.7071C10.3166 13.0976 9.68341 13.0976 9.29289 12.7071L5.29289 8.70711C4.90237 8.31658 4.90237 7.68342 5.29289 7.29289Z"
-                              fill="#1E293B"
-                            />
-                          </svg>
-                        </div>
+                    <div className="mt-2">
+                      <input
+                        id="last-name"
+                        type="text"
+                        name="lastName"
+                        autoComplete="family-name"
+                        placeholder="Last name"
+                        className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400
+                        focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
 
-                        {/* Phone Number Input */}
-                        <div className="flex -ml-px">
-                          <input
-                            id="phone-number"
-                            type="number"
-                            name="phone-number"
-                            placeholder="11 234 5678"
-                            className="block w-full grow bg-white pl-2 text-base text-slate-800 font-sourcecodepro placeholder:text-gray-400 focus:outline-none"
+                {/* Contact Number */}
+                <div>
+                  <label
+                    htmlFor="phone-number"
+                    className="block text-base font-bold text-slate-800 font-sourcecodepro"
+                  >
+                    Contact Number <span className="text-brand-1-500">*</span>
+                  </label>
+                  <div className="mt-2">
+                    <div
+                      className="flex rounded-md bg-white outline-1 -outline-offset-1 outline-gray-200
+                        has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-brand-1-200 w-full px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200"
+                    >
+                      {/* Country Code Select with Arrow */}
+                      <div className="relative flex items-center">
+                        <select
+                          id="country"
+                          name="country"
+                          autoComplete="country"
+                          aria-label="Country"
+                          className="appearance-none rounded-md bg-white pr-7 pl-3 text-base text-gray-500 focus:outline-none"
+                        >
+                          <option>+94</option>
+                          <option>+95</option>
+                          <option>+96</option>
+                        </select>
+                        {/* Dropdown Arrow */}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="pointer-events-none absolute right-2 h-5 w-5 text-gray-500"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M5.29289 7.29289C5.68342 6.90237 6.31658 6.90237 6.7071 7.29289L9.99999 10.5858L13.2929 7.29289C13.6834 6.90237 14.3166 6.90237 14.7071 7.29289C15.0976 7.68342 15.0976 8.31658 14.7071 8.70711L10.7071 12.7071C10.3166 13.0976 9.68341 13.0976 9.29289 12.7071L5.29289 8.70711C4.90237 8.31658 4.90237 7.68342 5.29289 7.29289Z"
+                            fill="#1E293B"
                           />
-                        </div>
+                        </svg>
+                      </div>
+
+                      {/* Phone Number Input */}
+                      <div className="flex -ml-px grow">
+                        <input
+                          id="phone-number"
+                          type="tel"
+                          name="phone-number"
+                          placeholder="11 234 5678"
+                          className="block w-full grow bg-white pl-2 text-base text-slate-800 font-sourcecodepro placeholder:text-gray-400 focus:outline-none"
+                        />
                       </div>
                     </div>
                   </div>
@@ -343,4 +350,3 @@ export default function PageNewsletterConfirmation() {
     </main>
   );
 }
-
