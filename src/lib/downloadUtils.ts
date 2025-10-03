@@ -86,7 +86,11 @@ export async function downloadPdfFromCsv(
       .split("\n")
       .map((row) => row.split(","));
 
-    const doc = new jsPDF();
+    const doc = new jsPDF({
+      orientation: "landscape",  // 👈 this sets landscape
+      unit: "mm",                // default is mm
+      format: "a3",              // you can change to letter, legal, etc.
+    });
 
     autoTable(doc, {
       head: [rows[0]], // first row as table header
