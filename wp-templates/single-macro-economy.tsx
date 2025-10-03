@@ -136,6 +136,12 @@ export const SINGLE_MACRO_ECONOMY_QUERY = gql`
         definition
         statisticalConceptAndMethodology
       }
+      macroChartDetailsSection {
+        chartTitle
+        chartSubtitle
+        dataSource
+        chartLabel
+      }
       seo {
         title
         metaDesc
@@ -184,6 +190,12 @@ type MacroEconomyPageProps = {
         definition?: string | null;
         statisticalConceptAndMethodology?: string | null;
       } | null;
+      macroChartDetailsSection?: {
+        chartTitle?: string | null;
+        chartSubtitle?: string | null;
+        dataSource?: string | null;
+        chartLabel?: string | null;
+      } | null;
       seo?: Record<string, unknown> | null;
     } | null;
   };
@@ -200,6 +212,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
   const methodologyHtml = metrics?.statisticalConceptAndMethodology ?? null;
   const overviewHtml = macroEconomy?.content ?? macroEconomy?.excerpt ?? null;
   const displayTitle = macroEconomy?.title ?? config.chartTitle;
+  const chartDetails = macroEconomy?.macroChartDetailsSection;
 
   const ChartComponent = config.component;
   const controlIds = {
@@ -254,10 +267,10 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
           <div className="border border-gray-200 rounded-xl py-6 px-5">
             <div className="mb-10">
               <h4 className="text-xl/snug md:text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
-                {config.chartTitle}
+                {chartDetails?.chartTitle}
               </h4>
               <p className="text-sm/5 md:text-base/6 font-baskervville font-normal text-slate-950">
-                {config.chartSubtitle}
+                {chartDetails?.chartSubtitle}
               </p>
             </div>
 
@@ -405,11 +418,11 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
               <div className="bg-gray-50 rounded-lg px-6 py-3.5">
                 <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
                   <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
-                    <p>{config.dataSource}</p>
+                    <p>Data Source: {chartDetails?.dataSource}</p>
                   </div>
-                  {config.dataSourceNote ? (
+                  {chartDetails?.chartLabel ? (
                     <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
-                      <p>{config.dataSourceNote}</p>
+                      <p>{chartDetails?.chartLabel}</p>
                     </div>
                   ) : null}
                 </div>
@@ -434,7 +447,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                   />
                 ) : (
                   <p className="text-lg font-baskervville font-normal text-slate-950">
-                    {config.chartSubtitle}
+                    {chartDetails?.chartSubtitle}
                   </p>
                 )}
               </div>
