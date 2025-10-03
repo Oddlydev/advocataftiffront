@@ -310,38 +310,40 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
             <div className="ring-1 ring-black/10 rounded-3xl relative -top-32 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-hidden bg-brand-1-800 p-10">
               <div className="flex items-center justify-between px-6 py-4">
-                <h3 className="text-2xl md:text-3xl xl:text-4xl leading-snug font-montserrat font-bold text-slate-50">Featured Dashboard</h3>
+                <h3 className="text-2xl md:text-3xl xl:text-4xl leading-snug font-montserrat font-bold text-slate-50">
+                  Featured Dashboard
+                </h3>
                 <div>
                   <WhiteIconButton
-                      text="View All Dashboards"
-                      link="/"
-                      icon={
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                        >
-                          <path
-                              d="M12.025 4.94168L17.0834 10L12.025 15.0583"
-                              stroke="#4B5563"
-                              stroke-width="1.8"
-                              stroke-miterlimit="10"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M2.91669 10H16.9417"
-                              stroke="#4B5563"
-                              stroke-width="1.8"
-                              stroke-miterlimit="10"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                      }
-                    />
+                    text="View All Dashboards"
+                    link="/"
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                      >
+                        <path
+                          d="M12.025 4.94168L17.0834 10L12.025 15.0583"
+                          stroke="#4B5563"
+                          stroke-width="1.8"
+                          stroke-miterlimit="10"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M2.91669 10H16.9417"
+                          stroke="#4B5563"
+                          stroke-width="1.8"
+                          stroke-miterlimit="10"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    }
+                  />
                 </div>
               </div>
               {heroVideo ? (
@@ -376,12 +378,13 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           <div className="mx-auto max-w-3xl text-center">
             <PageSubTitle className="page-sub-title">dashboard</PageSubTitle>
             <PageTitle className="page-title">
-              Explore Our advance dashboards
+              Explore Our Advanced Dashboards
             </PageTitle>
             <PageTitleText className="page-title-text">
-              Powered by Advocata’s cutting-edge AI, our platform leverages
-              advanced data insights to help you connect with people who share
-              your values and interests.
+              Our platform features 4 interactive dashboards to help you
+              understand the state of Sri Lanka's macro economy, government
+              fiscal operations, the fiscal health of state-owned enterprises
+              and government fiscal transparency.
             </PageTitleText>
           </div>
 
