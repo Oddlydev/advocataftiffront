@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import SEO from "@/src/components/SEO";
+import { COUNTRY_CODES } from "@/src/data/countryCodes";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -20,8 +21,7 @@ export default function PageNewsletterConfirmation() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const emailValue =
-      ((formData.get("email") as string | null)?.trim() ?? "") || email.trim();
+    const emailValue = email.trim();
     const firstName =
       (formData.get("firstName") as string | null)?.trim() ?? "";
     const lastName = (formData.get("lastName") as string | null)?.trim() ?? "";
@@ -32,16 +32,37 @@ export default function PageNewsletterConfirmation() {
     const organisation =
       (formData.get("organization") as string | null)?.trim() ?? "";
 
+    setMessage("");
+
+    // validations
     if (!emailValue) {
       setStatus("error");
       setMessage("Please provide your email address.");
       return;
     }
 
-    setStatus("loading");
-    setMessage("");
+    if (!firstName) {
+      setStatus("error");
+      setMessage("Please provide your first name.");
+      return;
+    }
 
-    const phone = [countryCode, phoneNumber].filter(Boolean).join(" ").trim();
+    if (!lastName) {
+      setStatus("error");
+      setMessage("Please provide your last name.");
+      return;
+    }
+
+    const digitsOnly = phoneNumber.replace(/[^0-9]/g, "");
+    if (!digitsOnly || digitsOnly.length !== 10) {
+      setStatus("error");
+      setMessage("Please enter a valid 10-digit contact number.");
+      return;
+    }
+
+    setStatus("loading");
+
+    const phone = [countryCode, digitsOnly].filter(Boolean).join(" ").trim();
 
     try {
       const res = await fetch("/api/subscribe", {
@@ -97,6 +118,7 @@ export default function PageNewsletterConfirmation() {
             <div className="lg:col-span-7 rounded-lg shadow-sm border border-slate-200 py-8 px-7">
               <form
                 onSubmit={handleSubmit}
+                noValidate
                 className="w-full lg:pt-2 space-y-6"
               >
                 {/* Email */}
@@ -112,10 +134,9 @@ export default function PageNewsletterConfirmation() {
                       id="email"
                       type="email"
                       name="email"
-                      autoComplete="email"
-                      placeholder="your@email.com"
                       value={email}
-                      onChange={(event) => setEmail(event.target.value)}
+                      disabled
+                      readOnly
                       className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
                     />
                   </div>
@@ -135,7 +156,7 @@ export default function PageNewsletterConfirmation() {
                         id="first-name"
                         type="text"
                         name="firstName"
-                        autoComplete="given-name"
+                        required
                         placeholder="First name"
                         className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400
                         focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
@@ -154,7 +175,6 @@ export default function PageNewsletterConfirmation() {
                         id="last-name"
                         type="text"
                         name="lastName"
-                        autoComplete="family-name"
                         placeholder="Last name"
                         className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400
                         focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
@@ -176,20 +196,20 @@ export default function PageNewsletterConfirmation() {
                       className="flex rounded-md bg-white outline-1 -outline-offset-1 outline-gray-200
                         has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-brand-1-200 w-full px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200"
                     >
-                      {/* Country Code Select with Arrow */}
+                      {/* Country Code Select */}
                       <div className="relative flex items-center">
                         <select
                           id="country"
                           name="country"
-                          autoComplete="country"
-                          aria-label="Country"
+                          defaultValue="+94"
                           className="appearance-none rounded-md bg-white pr-7 pl-3 text-base text-gray-500 focus:outline-none"
                         >
-                          <option>+94</option>
-                          <option>+95</option>
-                          <option>+96</option>
+                          {COUNTRY_CODES.map((code) => (
+                            <option key={code} value={code}>
+                              {code}
+                            </option>
+                          ))}
                         </select>
-                        {/* Dropdown Arrow */}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="pointer-events-none absolute right-2 h-5 w-5 text-gray-500"
@@ -205,13 +225,15 @@ export default function PageNewsletterConfirmation() {
                         </svg>
                       </div>
 
-                      {/* Phone Number Input */}
+                      {/* Phone Input */}
                       <div className="flex -ml-px grow">
                         <input
                           id="phone-number"
                           type="tel"
                           name="phone-number"
-                          placeholder="11 234 5678"
+                          inputMode="numeric"
+                          autoComplete="tel-national"
+                          placeholder="1234567890"
                           className="block w-full grow bg-white pl-2 text-base text-slate-800 font-sourcecodepro placeholder:text-gray-400 focus:outline-none"
                         />
                       </div>
@@ -219,6 +241,7 @@ export default function PageNewsletterConfirmation() {
                   </div>
                 </div>
 
+                {/* Organization */}
                 <div>
                   <label
                     htmlFor="organization"
@@ -231,7 +254,6 @@ export default function PageNewsletterConfirmation() {
                       id="organization"
                       type="text"
                       name="organization"
-                      autoComplete="organization"
                       placeholder="Your Company/Institution"
                       className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400
                       focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
@@ -268,6 +290,7 @@ export default function PageNewsletterConfirmation() {
                   </label>
                 </div>
 
+                {/* Global error message below form */}
                 {status === "error" && message && (
                   <p className="text-sm text-red-600 font-sourcecodepro">
                     {message}
