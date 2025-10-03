@@ -16,7 +16,7 @@ export default function PostContent({ content, variant = "single" }: Props) {
               <h2
                 className={
                   variant === "single"
-                    ? "text-slate-950 font-montserrat font-bold text-2xl leading-8 lg:leading-10 lg:text-3xl mt-6"
+                    ? "text-slate-950 font-montserrat font-bold text-2xl leading-8 lg:leading-10 lg:text-4xl"
                     : "text-slate-950 font-montserrat font-bold text-2xl lg:text-3xl leading-snug mb-6"
                 }
               >

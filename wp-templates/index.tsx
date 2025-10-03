@@ -9,6 +9,8 @@ import HomePage from "./page-home";
 import SingleInsight from "./single-insights";
 import DatasetInnerPage from "./single-dataset";
 import PageStateOwnedDashboard from "./page-state-owned-enterprises";
+import PagePrivacyPolicy from "./page-privacy-policy";
+import PageTermsAndConditions from "./page-terms-and-conditions";
 import PageThankYou from "./page-thank-you";
 import PageDashboard from "./page-dashboard";
 import PageNewsletterConfirmation from "./page-newsletter-confirmation";
@@ -37,6 +39,8 @@ export default {
   "single-insight": SingleInsight,
   "single-data-set": DatasetInnerPage,
   "page-state-owned-enterprises": PageStateOwnedDashboard,
+  "page-privacy-policy": PagePrivacyPolicy,
+  "page-terms-and-conditions": PageTermsAndConditions,
   "page-thank-you": PageThankYou,
   "page-dashboard": PageDashboard,
   "page-newsletter-confirmation": PageNewsletterConfirmation,

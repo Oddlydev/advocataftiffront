@@ -16,11 +16,17 @@ export const PAGE_QUERY = gql`
         opengraphDescription
         opengraphUrl
         opengraphSiteName
-        opengraphImage { sourceUrl }
+        opengraphImage {
+          sourceUrl
+        }
         twitterTitle
         twitterDescription
-        twitterImage { sourceUrl }
-        schema { raw }
+        twitterImage {
+          sourceUrl
+        }
+        schema {
+          raw
+        }
       }
     }
   }

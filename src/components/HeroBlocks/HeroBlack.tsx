@@ -9,6 +9,7 @@ type HeroBlackProps = {
   dateText?: string;
   items?: Crumb[];
   homeHref?: string;
+  showDate?: boolean;
 };
 
 export default function HeroBlack({
@@ -17,6 +18,7 @@ export default function HeroBlack({
   dateText = "August 24th, 2025",
   items,
   homeHref,
+  showDate = true,
 }: HeroBlackProps): JSX.Element {
   return (
     <section
@@ -42,10 +44,13 @@ export default function HeroBlack({
         <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-6xl leading-snug font-montserrat font-bold max-w-6xl">
           {title}
         </h1>
-        <p className="hero-date text-slate-50 text-sm/snug md:text-base/6 xl:text-lg/7 font-sourcecodepro font-medium">
-          {dateText}
-        </p>
+        {showDate && dateText ? (
+          <p className="hero-date text-slate-50 text-sm/snug md:text-base/6 xl:text-lg/7 font-sourcecodepro font-medium">
+            {dateText}
+          </p>
+        ) : null}
       </div>
     </section>
   );
 }
+
