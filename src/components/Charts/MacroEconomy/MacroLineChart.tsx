@@ -304,7 +304,7 @@ export function MacroLineChart({
       )
       .text(
         leftSeries.some((s) => s.formatInMillions)
-          ? `${yAxisLabel} (Mn)`
+          ? `${yAxisLabel}`
           : yAxisLabel
       );
 
