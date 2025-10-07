@@ -142,7 +142,7 @@ export function MacroLineChart({
         "box-shadow",
         "0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -4px rgba(0,0,0,0.1)"
       )
-      .style("padding", "14px");
+      // .style("padding", "14px");
 
     // Clear SVG
     d3.select(container).selectAll("*").remove();
@@ -233,10 +233,24 @@ export function MacroLineChart({
       .attr("transform", `translate(0, ${height})`)
       .call(d3.axisBottom(x).tickFormat(d3.format("d")))
       .selectAll<SVGTextElement, number>("text")
-      .attr(
-        "class",
-        "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-normal"
-      );
+      .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-normal");
+
+    // Vertical grid lines
+    const xGridGroup = svg.append("g").attr("class", "x-grid");
+
+    xGridGroup
+      .selectAll("line")
+      .data(years.filter((_, i) => i % 2 === 0)) // draw every other line
+      .enter()
+      .append("line")
+      .attr("x1", (d) => x(d)!)
+      .attr("x2", (d) => x(d)!)
+      .attr("y1", 0)
+      .attr("y2", height)
+      .attr("stroke", "#CBD5E1")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "4,4");
+
 
     // Define tick formatters
     const leftTickFormat: (d: number) => string = leftSeries.some(
@@ -401,12 +415,12 @@ export function MacroLineChart({
               .map((cfg) => {
                 const v = d[cfg.key];
                 return `
-                <div class="flex items-center justify-between gap-2">
-                  <div class="flex items-center gap-1">
-                    <div class="flex items-center gap-1"><span style="width:6px;height:6px;background:${cfg.color};border-radius:50%;display:inline-block;"></span></div>
-                    <span class="text-slate-600 font-sourcecodepro text-xs">${cfg.label}:</span>
+                <div class="flex items-start justify-between gap-0.5 md:gap-2">
+                  <div class="flex items-start md:items-center gap-1">
+                    <div class="flex items-center gap-1 pt-1 md:pt-0"><span style="width:6px;height:6px;background:${cfg.color};border-radius:50%;display:inline-block;"></span></div>
+                    <span class="text-slate-600 font-sourcecodepro text-[10px] md:text-xs">${cfg.label}:</span>
                   </div>
-                  <span style="color:${cfg.color};" class="text-xs font-sourcecodepro">
+                  <span style="color:${cfg.color};" class="text-[10px] md:text-xs font-sourcecodepro">
                     ${typeof v === "number" ? (cfg.valueFormatter?.(Number(v.toFixed(3))) ?? v.toFixed(3)) : "N/A"}
                   </span>
                 </div>`;
@@ -414,8 +428,8 @@ export function MacroLineChart({
               .join("");
 
             tooltip.style("display", "block").html(`
-              <div class="flex flex-col gap-1">
-                <div class="font-semibold text-slate-600 font-sourcecodepro text-xs pb-3.5">Year: ${d.year}</div>
+              <div class="flex flex-col gap-0.5 md:gap-1">
+                <div class="font-semibold text-slate-600 font-sourcecodepro text-[10px] md:text-xs pb-1 md:pb-2.5">Year: ${d.year}</div>
                 ${tooltipRows}
               </div>`);
 
@@ -524,7 +538,7 @@ export function MacroLineChart({
       <svg ref={chartRef} className="w-full h-full" />
       <div
         ref={tooltipRef}
-        className="absolute hidden bg-white text-sm text-slate-800 py-2 px-3 rounded shadow-lg pointer-events-none"
+        className="absolute hidden bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1.5 md:py-2 md:px-3 rounded shadow-lg pointer-events-none"
         style={{ border: "1px solid #E2E8F0" }}
       />
     </div>

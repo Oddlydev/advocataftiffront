@@ -333,16 +333,18 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
             </div>
 
             {config.legendItems && config.legendItems.length > 0 ? (
-              <div className="mt-5 px-6">
+              <div className="my-2 md:mt-5">
                 <div className="grid md:flex items-center md:justify-center gap-2 md:gap-6">
                   {config.legendItems.map((item) => (
                     <div key={item.label} className="flex items-center gap-2">
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full inline-block ${
-                          item.indicatorClassName ?? ""
-                        }`}
-                        style={item.indicatorStyle}
-                      ></span>
+                      <div>
+                          <span
+                          className={`w-1.5 h-1.5 rounded-full inline-block ${
+                            item.indicatorClassName ?? ""
+                          }`}
+                          style={item.indicatorStyle}
+                        ></span>
+                      </div>
                       <span className="text-sm/tight md:text-base/6 font-normal font-baskervville text-slate-600">
                         {item.label}
                       </span>
@@ -352,7 +354,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
               </div>
             ) : null}
 
-            <div className="mt-10">
+            <div className="mt-2 md:mt-6 xl:mt-10">
               <div className="bg-gray-50 rounded-lg px-6 py-3.5">
                 <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
                   <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
