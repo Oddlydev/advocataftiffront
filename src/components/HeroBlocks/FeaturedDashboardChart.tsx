@@ -215,17 +215,19 @@ export default function FeaturedDashboardChart(
           )}
         </div>
         {metadata.legendItems && metadata.legendItems.length > 0 ? (
-          <div className="mt-5">
-            <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="my-2">
+            <div className="grid md:flex items-center md:justify-center gap-2 md:gap-6">
               {metadata.legendItems.map((item) => (
                 <div key={item.label} className="flex items-center gap-2">
-                  <span
-                    className={`inline-block h-2 w-2 rounded-full ${
-                      item.indicatorClassName ?? "bg-brand-1-500"
-                    }`}
-                    style={item.indicatorStyle}
-                  />
-                  <span className="text-sm font-sourcecodepro text-slate-600">
+                  <div>
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full inline-block ${
+                        item.indicatorClassName ?? "bg-brand-1-500"
+                      }`}
+                      style={item.indicatorStyle}
+                    />
+                  </div>
+                  <span className="text-sm/tight md:text-base/6 font-normal font-baskervville text-slate-600">
                     {item.label}
                   </span>
                 </div>
@@ -233,13 +235,17 @@ export default function FeaturedDashboardChart(
             </div>
           </div>
         ) : null}{" "}
-        <div className="mt-5 border-t border-slate-200 pt-4 text-xs font-sourcecodepro text-slate-500 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <div className="md:flex-1">{metadata.dataSource}</div>
-          {metadata.dataSourceNote ? (
-            <div className="md:flex-1 text-left md:text-right">
-              {metadata.dataSourceNote}
+        <div className="mt-2 md:mt-6 xl:mt-10">
+          <div className="bg-gray-50 rounded-lg px-6 py-3.5">
+            <div className="flex md:justify-between gap-4 text-xs/4 text-slate-600 flex-col md:flex-row md:items-center">
+              <div className="md:flex-1">{metadata.dataSource}</div>
+              {metadata.dataSourceNote ? (
+                <div className="md:flex-1 text-left md:text-right">
+                  {metadata.dataSourceNote}
+                </div>
+              ) : null}
             </div>
-          ) : null}
+          </div>
         </div>
       </div>
     );
