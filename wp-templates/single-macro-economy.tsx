@@ -333,11 +333,11 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
             </div>
 
             {config.legendItems && config.legendItems.length > 0 ? (
-              <div className="my-2 md:mt-5">
+              <div className="mb-2 mt-0">
                 <div className="grid md:flex items-center md:justify-center gap-2 md:gap-6">
                   {config.legendItems.map((item) => (
                     <div key={item.label} className="flex items-center gap-2">
-                      <div>
+                      <div className="flex items-center gap-2">
                           <span
                           className={`w-1.5 h-1.5 rounded-full inline-block ${
                             item.indicatorClassName ?? ""

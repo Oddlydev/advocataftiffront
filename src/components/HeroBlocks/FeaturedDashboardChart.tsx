@@ -215,11 +215,11 @@ export default function FeaturedDashboardChart(
           )}
         </div>
         {metadata.legendItems && metadata.legendItems.length > 0 ? (
-          <div className="my-2">
+          <div className="mb-2">
             <div className="grid md:flex items-center md:justify-center gap-2 md:gap-6">
               {metadata.legendItems.map((item) => (
                 <div key={item.label} className="flex items-center gap-2">
-                  <div>
+                  <div className="flex items-center gap-2">
                     <span
                       className={`w-1.5 h-1.5 rounded-full inline-block ${
                         item.indicatorClassName ?? "bg-brand-1-500"
