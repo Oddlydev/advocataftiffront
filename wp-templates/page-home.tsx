@@ -16,7 +16,22 @@ import {
 } from "@/src/components/Typography";
 import SearchFieldHome from "@/src/components/InputFields/SearchFieldHome";
 import WhiteIconButton from "@/src/components/Buttons/WhiteIconBtn";
+import FeaturedDashboardChart, {
+  FeaturedDashboardChartProps,
+} from "@/src/components/HeroBlocks/FeaturedDashboardChart";
 
+type DashboardFileNode = { mediaItemUrl?: string | null } | null;
+type DashboardDataSetFields = {
+  dataSetFile?: { node?: DashboardFileNode } | null;
+};
+type FeaturedDashboardEntry = {
+  __typename?: string | null;
+  databaseId?: number | null;
+  slug?: string | null;
+  uri?: string | null;
+  title?: string | null;
+  dataSetFields?: DashboardDataSetFields | null;
+};
 interface HomePageProps {
   data?: {
     page?: {
@@ -44,6 +59,11 @@ interface HomePageProps {
         homeHeroThumbnail?: {
           heroSectionImage?: { node?: { mediaItemUrl?: string | null } | null };
           heroSectionVideo?: { node?: { mediaItemUrl?: string | null } | null };
+        } | null;
+      } | null;
+      featuredDashboardSection?: {
+        featuredDashboard?: {
+          nodes?: Array<FeaturedDashboardEntry | null> | null;
         } | null;
       } | null;
     } | null;
@@ -103,6 +123,34 @@ const PAGE_QUERY = gql`
     page(id: $databaseId, idType: DATABASE_ID, asPreview: $asPreview) {
       title
       content
+      featuredDashboardSection {
+        featuredDashboard {
+          nodes {
+            __typename
+            databaseId
+            slug
+            uri
+            ... on MacroEconomy {
+              dataSetFields {
+                dataSetFile {
+                  node {
+                    mediaItemUrl
+                  }
+                }
+              }
+            }
+            ... on GovernmentFiscal {
+              dataSetFields {
+                dataSetFile {
+                  node {
+                    mediaItemUrl
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
       seo {
         title
         metaDesc
@@ -252,6 +300,43 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
   const heroImage =
     data?.page?.homeHeroThumbnail?.homeHeroThumbnail?.heroSectionImage?.node
       ?.mediaItemUrl;
+  const featuredNodes =
+    data?.page?.featuredDashboardSection?.featuredDashboard?.nodes ?? [];
+  let featuredDashboardChart: FeaturedDashboardChartProps | null = null;
+  let featuredDashboardUri: string | null = null;
+
+  const primaryFeatured = featuredNodes.find(
+    (node): node is FeaturedDashboardEntry =>
+      Boolean(node) &&
+      (node?.__typename === "MacroEconomy" ||
+        node?.__typename === "GovernmentFiscal")
+  );
+
+  if (primaryFeatured?.__typename === "MacroEconomy") {
+    featuredDashboardChart = {
+      kind: "macro",
+      slug: primaryFeatured.slug ?? undefined,
+      datasetUrl:
+        primaryFeatured.dataSetFields?.dataSetFile?.node?.mediaItemUrl ??
+        undefined,
+      databaseId: primaryFeatured.databaseId ?? undefined,
+      title: primaryFeatured.title ?? undefined,
+    };
+    featuredDashboardUri = primaryFeatured.uri ?? null;
+  } else if (primaryFeatured?.__typename === "GovernmentFiscal") {
+    featuredDashboardChart = {
+      kind: "fiscal",
+      datasetUrl:
+        primaryFeatured.dataSetFields?.dataSetFile?.node?.mediaItemUrl ??
+        undefined,
+      databaseId: primaryFeatured.databaseId ?? undefined,
+      title: primaryFeatured.title ?? undefined,
+    };
+    featuredDashboardUri = primaryFeatured.uri ?? null;
+  }
+
+  data?.page?.homeHeroThumbnail?.homeHeroThumbnail?.heroSectionImage?.node
+    ?.mediaItemUrl;
 
   return (
     <div className="bg-gray-400 overflow-x-hidden">
@@ -305,7 +390,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
       </div>
 
       {/* Hero media (video or image) */}
-      {(heroVideo || heroImage) && (
+      {featuredDashboardChart ? (
         <div className="bg-white pb-0 relative z-20">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
             <div className="ring-1 ring-black/10 rounded-3xl relative -top-32 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-hidden bg-brand-1-800 p-10">
@@ -316,7 +401,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
                 <div>
                   <WhiteIconButton
                     text="View All Dashboards"
-                    link="/"
+                    link="/dashboard"
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -328,50 +413,133 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
                         <path
                           d="M12.025 4.94168L17.0834 10L12.025 15.0583"
                           stroke="#4B5563"
-                          stroke-width="1.8"
-                          stroke-miterlimit="10"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="1.8"
+                          strokeMiterlimit="10"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M2.91669 10H16.9417"
                           stroke="#4B5563"
-                          stroke-width="1.8"
-                          stroke-miterlimit="10"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="1.8"
+                          strokeMiterlimit="10"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                       </svg>
                     }
                   />
                 </div>
               </div>
-              {heroVideo ? (
-                <video
-                  src={heroVideo}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  className="rounded-3xl h-full w-full object-cover mt-3"
-                />
-              ) : (
-                heroImage && (
-                  <img
-                    src={heroImage}
-                    className="rounded-3xl h-full w-full object-cover mt-3"
-                    width={1120}
-                    height={713}
-                    loading="lazy"
-                    alt="Home hero"
-                  />
-                )
-              )}
+              <FeaturedDashboardChart {...featuredDashboardChart} />
             </div>
           </div>
         </div>
-      )}
-
+      ) : heroVideo ? (
+        <div className="bg-white pb-0 relative z-20">
+          <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
+            <div className="ring-1 ring-black/10 rounded-3xl relative -top-32 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-hidden bg-brand-1-800 p-10">
+              <div className="flex items-center justify-between px-6 py-4">
+                <h3 className="text-2xl md:text-3xl xl:text-4xl leading-snug font-montserrat font-bold text-slate-50">
+                  Featured Dashboard
+                </h3>
+                <div>
+                  <WhiteIconButton
+                    text="View All Dashboards"
+                    link="/dashboard"
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                      >
+                        <path
+                          d="M12.025 4.94168L17.0834 10L12.025 15.0583"
+                          stroke="#4B5563"
+                          strokeWidth="1.8"
+                          strokeMiterlimit="10"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M2.91669 10H16.9417"
+                          stroke="#4B5563"
+                          strokeWidth="1.8"
+                          strokeMiterlimit="10"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    }
+                  />
+                </div>
+              </div>
+              <video
+                src={heroVideo}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="rounded-3xl h-full w-full object-cover mt-3"
+              />
+            </div>
+          </div>
+        </div>
+      ) : heroImage ? (
+        <div className="bg-white pb-0 relative z-20">
+          <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
+            <div className="ring-1 ring-black/10 rounded-3xl relative -top-32 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-hidden bg-brand-1-800 p-10">
+              <div className="flex items-center justify-between px-6 py-4">
+                <h3 className="text-2xl md:text-3xl xl:text-4xl leading-snug font-montserrat font-bold text-slate-50">
+                  Featured Dashboard
+                </h3>
+                <div>
+                  <WhiteIconButton
+                    text="View All Dashboards"
+                    link="/dashboard"
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                      >
+                        <path
+                          d="M12.025 4.94168L17.0834 10L12.025 15.0583"
+                          stroke="#4B5563"
+                          strokeWidth="1.8"
+                          strokeMiterlimit="10"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M2.91669 10H16.9417"
+                          stroke="#4B5563"
+                          strokeWidth="1.8"
+                          strokeMiterlimit="10"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    }
+                  />
+                </div>
+              </div>
+              <img
+                src={heroImage}
+                className="rounded-3xl h-full w-full object-cover mt-3"
+                width={1120}
+                height={713}
+                loading="lazy"
+                alt="Home hero"
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
       {/* Dashboards */}
       <div className="bg-white pb-24 sm:pb-32">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">

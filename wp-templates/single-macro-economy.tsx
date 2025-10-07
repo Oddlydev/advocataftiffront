@@ -4,6 +4,12 @@ import SEO from "@/src/components/SEO";
 import SecondaryNav from "@/src/components/SecondaryNav";
 import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
 import MacroEconomySliderNav from "@/src/components/MacroEconomyNav";
+import type { ComponentType } from "react";
+import {
+  MACRO_CHART_METADATA,
+  MACRO_FALLBACK_SLUG,
+  type MacroChartMetadata,
+} from "@/src/data/macroCharts";
 import {
   ForeignExchangeChart,
   ForeignReservesChart,
@@ -15,101 +21,33 @@ import {
   UnemploymentChart,
 } from "@/src/components/Charts/MacroEconomy";
 
-type LegendItem = {
-  label: string;
-  indicatorClassName?: string;
-  indicatorStyle?: React.CSSProperties;
+type MacroPageConfig = MacroChartMetadata & {
+  component: ComponentType<MacroChartWrapperProps>;
 };
 
-type MacroPageConfig = {
-  component: React.ComponentType<MacroChartWrapperProps>;
-  chartTitle: string;
-  chartSubtitle: string;
-  legendItems?: LegendItem[];
-  dataSource: string;
-  dataSourceNote?: string;
+const MACRO_CHART_COMPONENTS: Record<string, ComponentType<MacroChartWrapperProps>> = {
+  inflation: InflationChart,
+  "foreign-exchange": ForeignExchangeChart,
+  "foreign-reserves": ForeignReservesChart,
+  unemployment: UnemploymentChart,
+  "gdp-growth": GDPGrowthChart,
+  "interest-rates": InterestRatesChart,
+  "national-debt": NationalDebtChart,
 };
 
-const MACRO_PAGE_CONFIG: Record<string, MacroPageConfig> = {
-  inflation: {
-    component: InflationChart,
-    chartTitle: "Average Annual Inflation",
-    chartSubtitle:
-      "Percentage change in prices for consumer goods and services (2015-2024)",
-    legendItems: [
-      {
-        indicatorClassName: "bg-brand-1-900 inset-shadow-brand-1-950",
-        label: "All Items",
-      },
-      {
-        indicatorClassName: "bg-brand-1-500",
-        label: "Food & Non-Alcoholic Beverages",
-      },
-      {
-        indicatorClassName: "bg-brand-1-200",
-        label: "Non - Food Items",
-      },
-    ],
-    dataSource: "Data Source: Department of Census and Statistics, Sri Lanka",
-    dataSourceNote: "Average Annual Inflation 2015 - 2024",
-  },
-  "foreign-exchange": {
-    component: ForeignExchangeChart,
-    chartTitle: "Foreign Exchange Inflows and Outflows",
-    chartSubtitle: "Balance of Payment (BOP) 2010 - 2024 (USD Millions)",
-    dataSource: "Data Source: Central Bank of Sri Lanka",
-    dataSourceNote: "Sri Lanka's Balance of Payment (BOP) 2010 - 2024",
-  },
-  "foreign-reserves": {
-    component: ForeignReservesChart,
-    chartTitle: "Total Annual Foreign Reserves",
-    chartSubtitle: "Official Reserve Assets in USD Millions (2013-2024)",
-    dataSource: "Data Source: Central Bank of Sri Lanka",
-    dataSourceNote: "Foreign Reserves 2013 - 2024",
-  },
-  unemployment: {
-    component: UnemploymentChart,
-    chartTitle: "Annual Unemployment Rate",
-    chartSubtitle: "Annual Unemployment Rate (%) (2009-2023)",
-    dataSource: "Data Source: Department of Census and Statistics, Sri Lanka",
-    dataSourceNote: "Annual Unemployment Rate 2009 - 2023",
-  },
-  "gdp-growth": {
-    component: GDPGrowthChart,
-    chartTitle: "Annual GDP Growth Rate",
-    chartSubtitle: "GDP Growth Rate (%) (2010-2024)",
-    dataSource: "Data Source: Central Bank of Sri Lanka",
-    dataSourceNote: "GDP Growth Rate 2010 - 2024",
-  },
-  "interest-rates": {
-    component: InterestRatesChart,
-    chartTitle: "Annual Average Interest Rates (Lending and Deposit)",
-    chartSubtitle: "AWNFDR, AWNDR, AWNLR, AWPLR (2010-2024)",
-    legendItems: [
-      { indicatorClassName: "bg-brand-1-200", label: "AWNFDR" },
-      { indicatorClassName: "bg-brand-1-950", label: "AWNDR" },
-      { indicatorClassName: "bg-brand-1-700", label: "AWNLR" },
-      { indicatorClassName: "bg-brand-1-500", label: "AWPLR" },
-    ],
-    dataSource: "Data Source: Central Bank of Sri Lanka",
-    dataSourceNote: "Annual Average Interest Rates 2010 - 2024",
-  },
-  "national-debt": {
-    component: NationalDebtChart,
-    chartTitle: "Total Government Debt Per Person",
-    chartSubtitle: "Government Debt Owed by Each Individual in Rs. (2010-2024)",
-    legendItems: [
-      {
-        indicatorClassName: "bg-brand-1-900 inset-shadow-brand-1-950",
-        label: "Total Debt (Rs. Mn)",
-      },
-      { indicatorClassName: "bg-brand-1-500", label: "Debt Per Person (Rs.)" },
-    ],
-    dataSource: "Data Source: Central Bank of Sri Lanka",
-    dataSourceNote: "Government Debt 2010 - 2024",
-  },
-};
-const FALLBACK_SLUG = "inflation";
+const MACRO_PAGE_CONFIG: Record<string, MacroPageConfig> = Object.fromEntries(
+  Object.entries(MACRO_CHART_METADATA).map(([slug, meta]) => [
+    slug,
+    {
+      ...meta,
+      component:
+        MACRO_CHART_COMPONENTS[slug] ??
+        MACRO_CHART_COMPONENTS[MACRO_FALLBACK_SLUG],
+    },
+  ])
+) as Record<string, MacroPageConfig>;
+
+const FALLBACK_SLUG = MACRO_FALLBACK_SLUG;
 
 export const SINGLE_MACRO_ECONOMY_QUERY = gql`
   query GetMacroEconomy($slug: ID!) {
