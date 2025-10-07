@@ -9,14 +9,19 @@ interface CsvTableProps {
   pageSize?: number; // default rows per page
 }
 
-export default function CsvTable({ csvUrl, filterQuery, pageSize = 10 }: CsvTableProps) {
+export default function CsvTable({
+  csvUrl,
+  filterQuery,
+  pageSize = 10,
+}: CsvTableProps) {
   const [rows, setRows] = useState<string[][]>([]);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const cacheKey = `csvRows:${csvUrl}`;
   const memCache: { [key: string]: string[][] } =
-    (globalThis as any).__csvRowsCache || ((globalThis as any).__csvRowsCache = {});
+    (globalThis as any).__csvRowsCache ||
+    ((globalThis as any).__csvRowsCache = {});
 
   useEffect(() => {
     if (!csvUrl) {
@@ -114,7 +119,11 @@ export default function CsvTable({ csvUrl, filterQuery, pageSize = 10 }: CsvTabl
 
   // Utility: format cell values
   const formatCell = (value: string): React.ReactNode => {
-    if (!value || value.trim() === "" || value.toLowerCase().includes("data n/a")) {
+    if (
+      !value ||
+      value.trim() === "" ||
+      value.toLowerCase().includes("data n/a")
+    ) {
       return <span className="text-brand-1-600 font-medium">Data N/A</span>;
     }
     const num = Number(value);
@@ -122,13 +131,16 @@ export default function CsvTable({ csvUrl, filterQuery, pageSize = 10 }: CsvTabl
     return value;
   };
 
-  {/* Floating scroll button */}
+  {
+    /* Floating scroll button */
+  }
   const handleScrollRight = () => {
     const tableWrapper = document.getElementById("table-wrapper");
     if (!tableWrapper) return;
 
     let scrollStep = 160; // default mobile
-    if (window.innerWidth >= 1280) scrollStep = 288; // xl
+    if (window.innerWidth >= 1280)
+      scrollStep = 288; // xl
     else if (window.innerWidth >= 768) scrollStep = 225; // md
 
     tableWrapper.scrollBy({ left: scrollStep, behavior: "smooth" });
@@ -145,171 +157,171 @@ export default function CsvTable({ csvUrl, filterQuery, pageSize = 10 }: CsvTabl
     tableWrapper.scrollBy({ left: -scrollStep, behavior: "smooth" });
   };
 
-return (
-<div className="relative">
-    <div className="bg-white py-3.5 md:py-5 xl:py-6">
-      <div className="mx-auto max-w-7xl">
-        <div className="shadow-md border p-4 border-gray-200 rounded-lg">
-          <div id="table-wrapper" className="overflow-x-auto overflow-y-auto max-w-full box-content">
-            <div className="w-[1200px] table-inner">
-              <table className="border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg">
-                <thead className="rounded-t-lg">
-                  <tr>
-                    {headers.map((header, i) => (
-                      <th
-                        key={i}
-                        className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700
+  return (
+    <div className="relative">
+      <div className="bg-white py-3.5 md:py-5 xl:py-6">
+        <div className="mx-auto max-w-7xl">
+          <div className="shadow-md border p-4 border-gray-200 rounded-lg">
+            <div
+              id="table-wrapper"
+              className="overflow-x-auto overflow-y-auto max-w-full box-content"
+            >
+              <div className="w-[1200px] table-inner">
+                <table className="border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg">
+                  <thead className="rounded-t-lg">
+                    <tr>
+                      {headers.map((header, i) => (
+                        <th
+                          key={i}
+                          className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700
                           ${i === 0 ? "sticky top-0 left-0 z-20 rounded-tl-lg" : ""}
                           ${i === headers.length - 1 ? "rounded-tr-lg" : ""}
                           w-[160px] md:w-[225px] xl:w-[235px]`}
-                      >
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-
-                <tbody className="divide-y divide-gray-300">
-                  {/* Sector row example */}
-                  <tr className="border-gray-100">
-                    <td className="sector sticky top-0 left-0 z-20 bg-brand-white text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold w-[160px] md:whitespace-nowrap">
-                      Aviation
-                    </td>
-                    {Array(headers.length - 1)
-                      .fill(null)
-                      .map((_, idx) => (
-                        <td
-                          key={idx}
-                          className="bg-brand-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro text-gray-500 w-[160px]"
-                        ></td>
-                      ))}
-                  </tr>
-
-                  {/* No data row */}
-                  {visibleRows.length === 0 && (
-                    <tr>
-                      {headers.map((_, cellIndex) => (
-                        <td
-                          key={cellIndex}
-                          className="bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro text-gray-500 w-[160px] md:w-[225px] xl:w-[235px]"
                         >
-                          <span className="text-brand-1-600">Data N/A</span>
-                        </td>
+                          {header}
+                        </th>
                       ))}
                     </tr>
-                  )}
+                  </thead>
 
-                  {visibleRows.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
-                      {row.map((cell, cellIndex) => (
-                        <td
-                          key={cellIndex}
-                          className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium text-gray-500 font-sourcecodepro 
+                  <tbody className="divide-y divide-gray-300">
+                    {/* No data row */}
+                    {visibleRows.length === 0 && (
+                      <tr>
+                        {headers.map((_, cellIndex) => (
+                          <td
+                            key={cellIndex}
+                            className="bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro text-gray-500 w-[160px] md:w-[225px] xl:w-[235px]"
+                          >
+                            <span className="text-brand-1-600">Data N/A</span>
+                          </td>
+                        ))}
+                      </tr>
+                    )}
+
+                    {visibleRows.map((row, rowIndex) => (
+                      <tr key={rowIndex}>
+                        {row.map((cell, cellIndex) => (
+                          <td
+                            key={cellIndex}
+                            className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium text-gray-500 font-sourcecodepro 
                             ${cellIndex === 0 ? "sticky left-0 text-brand-black md:whitespace-nowrap" : "text-gray-500"}
                             w-[160px] md:w-[225px] xl:w-[235px]`}
-                        >
-                          {formatCell(cell)}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Floating scroll button */}
-          <button
-            onClick={handleScrollRight}
-            className="absolute z-20 top-14 right-6 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
-          >
-            <svg className="size-4" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M7.4248 16.6L12.8581 11.1667C13.4998 10.525 13.4998 9.47503 12.8581 8.83336L7.4248 3.40002" stroke="currentColor" stroke-width="2.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-
-        </div>
-
-        {/* Button Section Start */}
-        <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
-          <div>
-            <div className="grid md:flex gap-7 items-center justify-start md:justify-end w-full">
-              <div>
-                <p className="text-base/6 font-medium font-sourcecodepro text-slate-600">
-                  Interpretation of the indicators :
-                </p>
-              </div>
-              <div className="flex items-center gap-3 md:gap-5">
-                {/* Good */}
-                <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
-                  <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                    Good
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                    >
-                      <circle cx="6" cy="6" r="6" fill="#22C55E" />
-                    </svg>
-                    <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
-                      1
-                    </span>
-                  </div>
-                </div>
-
-                {/* Average */}
-                <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
-                  <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                    Average
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                    >
-                      <circle cx="6" cy="6" r="6" fill="#F59E0B" />
-                    </svg>
-                    <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
-                      0.5
-                    </span>
-                  </div>
-                </div>
-
-                {/* Poor */}
-                <div className="flex items-center gap-3">
-                  <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                    Poor
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                    >
-                      <circle cx="6" cy="6" r="6" fill="#DC2626" />
-                    </svg>
-                    <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
-                      0
-                    </span>
-                  </div>
-                </div>
+                          >
+                            {formatCell(cell)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
+
+            {/* Floating scroll button */}
+            <button
+              onClick={handleScrollRight}
+              className="absolute z-20 top-14 right-6 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
+            >
+              <svg
+                className="size-4"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <path
+                  d="M7.4248 16.6L12.8581 11.1667C13.4998 10.525 13.4998 9.47503 12.8581 8.83336L7.4248 3.40002"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-miterlimit="10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
           </div>
+
+          {/* Button Section Start */}
+          <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
+            <div>
+              <div className="grid md:flex gap-7 items-center justify-start md:justify-end w-full">
+                <div>
+                  <p className="text-base/6 font-medium font-sourcecodepro text-slate-600">
+                    Interpretation of the indicators :
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 md:gap-5">
+                  {/* Good */}
+                  <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
+                    <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                      Good
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                      >
+                        <circle cx="6" cy="6" r="6" fill="#22C55E" />
+                      </svg>
+                      <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                        1
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Average */}
+                  <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
+                    <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                      Average
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                      >
+                        <circle cx="6" cy="6" r="6" fill="#F59E0B" />
+                      </svg>
+                      <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                        0.5
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Poor */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                      Poor
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                      >
+                        <circle cx="6" cy="6" r="6" fill="#DC2626" />
+                      </svg>
+                      <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                        0
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Button Section End */}
         </div>
-        {/* Button Section End */}
       </div>
     </div>
-</div>
-);
-
+  );
 }
