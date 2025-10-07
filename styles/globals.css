@@ -265,4 +265,11 @@ button {
   font-family: var(--font-manrope, var(--font-sans));
 }
 
+@media (min-width: 390px) and (max-width: 500px) {
+  .custom-top-50 {
+    top: calc(var(--spacing) * -50);
+  }
+}
+
+
 
