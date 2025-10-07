@@ -508,14 +508,6 @@ export default function Footer(): JSX.Element {
               <ul className="grid xl:flex gap-3.5 xl:gap-12">
                 <li>
                   <a
-                    href="/privacy-policy"
-                    className="footer-link text-sm/5 text-brand-white/60 hover:underline font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%]"
-                  >
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a
                     href="/terms-and-conditions"
                     className="footer-link text-sm/5 text-brand-white/60 hover:underline font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%]"
                   >
