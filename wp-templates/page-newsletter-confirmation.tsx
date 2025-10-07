@@ -8,6 +8,16 @@ import Link from "next/link";
 
 type Status = "idle" | "loading" | "success" | "error";
 
+function isValidE164(countryCode: string, nsnDigits: string) {
+  const cc = (countryCode || "").replace(/\D/g, "");
+  const nsn = (nsnDigits || "").replace(/\D/g, "");
+  const total = cc.length + nsn.length; // E.164 total length (without '+')
+  // Basic, practical guardrails:
+  // - NSN at least 4 digits
+  // - Total (CC + NSN) 8–15 digits (E.164 max is 15)
+  return nsn.length >= 4 && total >= 8 && total <= 15;
+}
+
 export default function PageNewsletterConfirmation() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<Status>("idle");
@@ -32,6 +42,7 @@ export default function PageNewsletterConfirmation() {
       (formData.get("phone-number") as string | null)?.trim() ?? "";
     const organisation =
       (formData.get("organization") as string | null)?.trim() ?? "";
+    const agree = formData.get("agree") === "on";
 
     setMessage("");
 
@@ -54,10 +65,20 @@ export default function PageNewsletterConfirmation() {
       return;
     }
 
-    const digitsOnly = phoneNumber.replace(/[^0-9]/g, "");
-    if (!digitsOnly || digitsOnly.length !== 10) {
+    const digitsOnly = phoneNumber.replace(/\D/g, "");
+    if (!isValidE164(countryCode, digitsOnly)) {
       setStatus("error");
-      setMessage("Please enter a valid 10-digit contact number.");
+      setMessage(
+        "Please enter a valid contact number (country code + number should be 8–15 digits total)."
+      );
+      return;
+    }
+
+    if (!agree) {
+      setStatus("error");
+      setMessage(
+        "Please agree to the Privacy Policy and Terms of Service to continue."
+      );
       return;
     }
 
@@ -111,7 +132,7 @@ export default function PageNewsletterConfirmation() {
               <p className="mt-4 text-lg/7 font-normal font-baskervville text-slate-800">
                 Get exclusive economic insights, policy analysis, and
                 data-driven research delivered directly to your inbox from
-                Advocata's expert team.
+                Advocata&apos;s expert team.
               </p>
             </div>
 
@@ -234,7 +255,7 @@ export default function PageNewsletterConfirmation() {
                           name="phone-number"
                           inputMode="numeric"
                           autoComplete="tel-national"
-                          placeholder="1234567890"
+                          placeholder="123456789"
                           className="block w-full grow bg-white pl-2 text-base text-slate-800 font-sourcecodepro placeholder:text-gray-400 focus:outline-none"
                         />
                       </div>
@@ -269,6 +290,7 @@ export default function PageNewsletterConfirmation() {
                       id="agree"
                       type="checkbox"
                       name="agree"
+                      required
                       className="peer mt-1 h-4 w-4 rounded-sm border border-[#475569] appearance-none
                       checked:bg-brand-1-600 checked:border-brand-1-600 focus:outline-none focus:ring-2 focus:ring-brand-1-600"
                     />
@@ -286,7 +308,7 @@ export default function PageNewsletterConfirmation() {
                       />
                     </svg>
                     <span className="text-base font-normal text-slate-600 font-sourcecodepro">
-                      I agree to Advocata's{" "}
+                      I agree to Advocata&apos;s{" "}
                       <Link
                         href="/privacy-policy/"
                         rel="noopener noreferrer"
@@ -343,7 +365,7 @@ export default function PageNewsletterConfirmation() {
               <p className="mt-4 text-lg/7 font-normal font-baskervville text-slate-800">
                 Get exclusive economic insights, policy analysis, and
                 data-driven research delivered directly to your inbox from
-                Advocata's expert team.
+                Advocata&apos;s expert team.
               </p>
             </div>
 
@@ -378,7 +400,7 @@ export default function PageNewsletterConfirmation() {
                   Subscription Confirmed!
                 </h3>
                 <p className="mt-4 text-slate-950 font-normal font-sourcecodepro text-base/6">
-                  Welcome to our research community. You'll start receiving
+                  Welcome to our research community. You&apos;ll start receiving
                   exclusive economic insights and policy analysis from our
                   expert team.
                 </p>
