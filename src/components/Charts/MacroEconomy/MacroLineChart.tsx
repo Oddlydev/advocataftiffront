@@ -233,7 +233,7 @@ export function MacroLineChart({
       .attr("transform", `translate(0, ${height})`)
       .call(d3.axisBottom(x).tickFormat(d3.format("d")))
       .selectAll<SVGTextElement, number>("text")
-      .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-normal");
+      .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
 
     // Vertical grid lines
     const xGridGroup = svg.append("g").attr("class", "x-grid");
@@ -276,7 +276,7 @@ export function MacroLineChart({
       .selectAll<SVGTextElement, number>("text")
       .attr(
         "class",
-        "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-normal"
+        "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold"
       );
 
     // Right Y axis
@@ -293,7 +293,7 @@ export function MacroLineChart({
         .selectAll<SVGTextElement, number>("text")
         .attr(
           "class",
-          "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-normal"
+          "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold"
         );
 
       svg
@@ -429,7 +429,7 @@ export function MacroLineChart({
 
             tooltip.style("display", "block").html(`
               <div class="flex flex-col gap-0.5 md:gap-1">
-                <div class="font-semibold text-slate-600 font-sourcecodepro text-[10px] md:text-xs pb-1 md:pb-2.5">Year: ${d.year}</div>
+                <div class="font-semibold text-slate-600 font-sourcecodepro text-[10px] md:text-xs pb-1 md:pb-2.5 uppercase">Year: ${d.year}</div>
                 ${tooltipRows}
               </div>`);
 
