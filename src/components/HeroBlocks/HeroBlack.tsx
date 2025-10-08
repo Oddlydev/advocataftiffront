@@ -1,7 +1,9 @@
 "use client";
 import type { JSX } from "react";
-import Breadcrumb from "../Breadcrumb";
-import type { Crumb } from "../Breadcrumb";
+// import Breadcrumb from "../Breadcrumb";
+// import type { Crumb } from "../Breadcrumb";
+import type { Crumb } from "../Breadcrumb-white";
+import BreadcrumbWhite from "../Breadcrumb-white";
 
 type HeroBlackProps = {
   bgUrl?: string;
@@ -32,7 +34,7 @@ export default function HeroBlack({
     >
       <div className="hero-block text-center mx-auto max-w-6xl grid justify-center">
         <div className="mb-5 hero-breadcrumb text-slate-200 flex justify-center">
-          <Breadcrumb
+          <BreadcrumbWhite
             light
             homeHref={homeHref}
             items={

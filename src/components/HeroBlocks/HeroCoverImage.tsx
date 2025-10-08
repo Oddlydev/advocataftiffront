@@ -1,6 +1,7 @@
 "use client";
 import type { JSX } from "react";
-import Breadcrumb from "../Breadcrumb";
+// import Breadcrumb from "../Breadcrumb";
+import BreadcrumbWhite from "../Breadcrumb-white";
 
 type HeroCoverImageProps = {
   bgUrl?: string;
@@ -31,7 +32,7 @@ export default function HeroCoverImage({
       >
         <div className="hero-block relative z-20 text-center mx-auto max-w-6xl grid justify-center">
           <div className="mb-5 hero-breadcrumb text-slate-200 flex justify-center">
-            <Breadcrumb light items={[{ label: "Datasets", href: "#" }]} />
+            <BreadcrumbWhite light items={[{ label: "Datasets", href: "#" }]} />
           </div>
 
           <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-6xl leading-snug font-montserrat font-bold max-w-6xl">
