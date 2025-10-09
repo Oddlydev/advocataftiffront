@@ -4,7 +4,11 @@ import searchClient from "@/src/lib/algolia";
 import { type JSX, FormEvent, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function SearchFieldHome(): JSX.Element {
+interface SearchFieldHomeProps {
+  setIsSearchVisible?: (visible: boolean) => void;
+}
+
+export default function SearchFieldHome({ setIsSearchVisible }: SearchFieldHomeProps): JSX.Element {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const router = useRouter();
@@ -17,6 +21,9 @@ export default function SearchFieldHome(): JSX.Element {
   }
 
   useEffect(() => {
+    const hasResults = query.trim().length > 0 && results.length > 0;
+    if (setIsSearchVisible) setIsSearchVisible(query.trim().length > 0 || hasResults);
+
     if (query.trim().length === 0) {
       setResults([]);
       return;
@@ -29,15 +36,8 @@ export default function SearchFieldHome(): JSX.Element {
           searchParams: {
             query,
             hitsPerPage: 5,
-            filters:
-              'post_type_label:"Data Sets" OR post_type_label:"Insights"',
-            attributesToHighlight: [
-              "post_title",
-              "post_excerpt",
-              "post_content",
-              "taxonomies.categories",
-              "taxonomies.tags",
-            ],
+            filters: 'post_type_label:"Data Sets" OR post_type_label:"Insights"',
+            attributesToHighlight: ["post_title", "post_excerpt", "post_content", "taxonomies.categories", "taxonomies.tags"],
             enableReRanking: true,
             attributesToSnippet: ["post_excerpt:20", "post_content:30"],
           },
@@ -49,11 +49,11 @@ export default function SearchFieldHome(): JSX.Element {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [query]);
+  }, [query, results.length, setIsSearchVisible]);
 
   return (
     <div className="relative w-full">
-      <form className="relative w-full" onSubmit={handleSubmit}>
+      <form className="relative w-full z-[9999]" onSubmit={handleSubmit}>
         <input
           type="text"
           id="search-home"
@@ -61,9 +61,9 @@ export default function SearchFieldHome(): JSX.Element {
           placeholder="Search Eg: Budget, Debt and Loans"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="search-input w-full rounded-full border border-white bg-brand-black py-5 px-6 md:pl-12 md:pr-28 font-sourcecodepro text-sm md:text-base text-slate-50/70 placeholder:text-brand-white/90 shadow-sm focus:border-brand-1-200 focus:outline-0 focus:ring-1 focus:ring-transparent"
+          className="search-input w-full rounded-full border border-white bg-brand-black py-6 px-8 md:pl-12 md:pr-28 font-sourcecodepro text-sm md:text-base text-slate-50/70 placeholder:text-brand-white/90 shadow-sm focus:border-brand-1-200 focus:outline-0 focus:ring-1 focus:ring-transparent"
         />
-        <div className="search-icon hidden md:block absolute left-3 top-1/2 -translate-y-1/2 text-slate-50">
+        <div className="search-icon hidden md:block absolute left-4 top-1/2 -translate-y-1/2 text-slate-50">
           <svg
             className="size-5 text-slate-50"
             xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +88,7 @@ export default function SearchFieldHome(): JSX.Element {
         </div>
         <button
           type="submit"
-          className="search-btn btn absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-3 rounded-full bg-brand-white text-gray-600 border border-slate-400 hover:bg-brand-1-600 hover:text-brand-white"
+          className="search-btn btn absolute right-2.5 top-1/2 -translate-y-1/2 font-semibold font-sourcecodepro px-3 py-2.5 sm:px-3.5 sm:py-2.5 md:px-4 md:py-3 lg:py-3.5 xl:px-6 xl:py-3.5 text-xs/4 sm:text-sm/tight lg:text-base/6 gap-2 lg:gap-3 transition-all duration-500 ease-in-out cursor-pointer uppercase bg-brand-white border border-slate-200 text-gray-600 rounded-full shadow-sm hover:bg-slate-100 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent"
         >
           <span className="hidden md:block">Search</span>
           <span className="block md:hidden">
@@ -120,7 +120,7 @@ export default function SearchFieldHome(): JSX.Element {
       </form>
 
       {query.trim().length > 0 && results.length === 0 && (
-        <div className="absolute top-full left-0 mt-2 py-20 px-3.5 w-full bg-brand-black border border-brand-white/25 rounded-2xl z-50">
+        <div className="absolute top-full left-0 mt-2 py-20 px-3.5 w-full bg-brand-black border border-brand-white/25 rounded-2xl z-50 z-[9999]">
           <div className="grid items-center gap-3 text-slate-200/40 text-base font-sourcecodepro font-normal">
             <svg
               xmlns="http://www.w3.org/2000/svg"

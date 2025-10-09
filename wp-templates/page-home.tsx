@@ -1,4 +1,6 @@
-import React, { JSX } from "react";
+// import React, { JSX } from "react";
+import React, { JSX, useState, useEffect } from "react";
+
 import { gql } from "@apollo/client";
 import type { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
@@ -338,6 +340,22 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
   data?.page?.homeHeroThumbnail?.homeHeroThumbnail?.heroSectionImage?.node
     ?.mediaItemUrl;
 
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+
+  // z-index toggle effect
+useEffect(() => {
+  if (typeof window === "undefined") return; // Only run in browser
+
+  const featured = document.getElementById("featured-section");
+  if (!featured) return;
+
+  if (isSearchVisible) {
+    featured.classList.remove("z-20");
+  } else {
+    featured.classList.add("z-20");
+  }
+}, [isSearchVisible]);
+
   return (
     <div className="bg-gray-400 overflow-x-hidden">
       <SEO
@@ -382,7 +400,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
                 </div>
               )}
               <div className="mt-8">
-                <SearchFieldHome />
+                <SearchFieldHome setIsSearchVisible={setIsSearchVisible}/>
               </div>
             </div>
           </div>
@@ -391,9 +409,9 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
 
       {/* Hero media (video or image) */}
       {featuredDashboardChart ? (
-        <div className="bg-white pb-0 relative z-20">
+        <div id="featured-section" className="bg-white pb-0 relative">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-            <div className="ring-1 ring-black/10 rounded-3xl relative -top-30 custom-top-50 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-hidden bg-brand-1-800 p-5 md:p-10">
+            <div className="ring-1 ring-black/10 rounded-3xl relative -top-30 custom-top-50 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-visible bg-brand-1-800 p-5 md:p-10">
               <div className="md:flex items-center justify-between px-3 py-2 md:px-6 md:py-4">
                 <h3 className="text-2xl md:text-3xl xl:text-4xl leading-snug font-montserrat font-bold text-slate-50">
                   Featured Dashboard
@@ -436,9 +454,9 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           </div>
         </div>
       ) : heroVideo ? (
-        <div className="bg-white pb-0 relative z-20">
+        <div id="featured-section" className="bg-white pb-0 relative">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-            <div className="ring-1 ring-black/10 rounded-3xl relative -top-32 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-hidden bg-brand-1-800 p-10">
+            <div className="ring-1 ring-black/10 rounded-3xl relative -top-30 custom-top-50 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-visible bg-brand-1-800 p-5 md:p-10">
               <div className="flex items-center justify-between px-6 py-4">
                 <h3 className="text-2xl md:text-3xl xl:text-4xl leading-snug font-montserrat font-bold text-slate-50">
                   Featured Dashboard
@@ -488,7 +506,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           </div>
         </div>
       ) : heroImage ? (
-        <div className="bg-white pb-0 relative z-20">
+        <div className="bg-white pb-0 relative">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
             <div className="ring-1 ring-black/10 rounded-3xl relative -top-32 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-hidden bg-brand-1-800 p-10">
               <div className="flex items-center justify-between px-6 py-4">

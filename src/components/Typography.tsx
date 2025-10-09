@@ -45,7 +45,7 @@ export const PageTitleText: React.FC<TypographyProps> = ({
   return (
     <p
       className={clsx(
-        "text-base/6 md:text-lg/7 font-normal font-baskervville text-slate-800 max-w-md mx-auto",
+        "text-base/6 md:text-lg/7 font-normal font-baskervville text-slate-800 max-w-2xl mx-auto",
         className
       )}
     >

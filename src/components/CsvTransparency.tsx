@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import Papa from "papaparse";
-import { color } from "d3";
 
 interface CsvTransparencyProps {
   csvUrl: string;

@@ -89,9 +89,9 @@ const CardType5: React.FC<CardType5Props> = ({
 
         {postDate && (
           <div className="card-footer mt-9 flex items-center justify-between">
-            <div className="date-info flex justify-between w-full items-center space-x-1 text-xs leading-tight font-medium font-sourcecodepro text-slate-600">
+            <div className="date-info flex justify-between w-full items-center space-x-1 uppercase text-xs leading-tight font-medium font-sourcecodepro text-slate-600">
               <time
-                className="text-xs leading-tight font-medium font-sourcecodepro text-slate-600"
+                className="text-xs leading-tight font-medium font-sourcecodepro text-slate-600 uppercase"
                 dateTime={isoDate}
               >
                 {formatDate(postDate)}

@@ -16,7 +16,7 @@ export default function PostContent({ content, variant = "single" }: Props) {
               <h2
                 className={
                   variant === "single"
-                    ? "text-slate-950 font-montserrat font-bold text-2xl leading-8 lg:leading-10 lg:text-4xl"
+                    ? "text-slate-950 font-montserrat font-bold text-2xl leading-snug lg:text-3xl"
                     : "text-slate-950 font-montserrat font-bold text-2xl lg:text-3xl leading-snug mb-6"
                 }
               >
@@ -29,7 +29,7 @@ export default function PostContent({ content, variant = "single" }: Props) {
               <h3
                 className={
                   variant === "single"
-                    ? "text-slate-950 font-montserrat font-normal text-xl leading-7 lg:leading-8 lg:text-2xl mt-6"
+                    ? "text-slate-950 font-montserrat font-normal text-xl leading-snug lg:text-2xl mt-6"
                     : "text-slate-950 font-montserrat font-bold text-xl lg:text-3xl leading-snug mt-6"
                 }
               >
@@ -42,7 +42,7 @@ export default function PostContent({ content, variant = "single" }: Props) {
               <p
                 className={
                   variant === "single"
-                    ? "text-slate-600 font-baskervville font-normal text-base/6 py-4"
+                    ? "text-slate-600 font-baskervville font-normal text-lg/7 py-4"
                     : "text-slate-600 font-baskervville font-normal text-lg/7 py-6"
                 }
               >
