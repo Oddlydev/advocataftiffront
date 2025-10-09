@@ -235,18 +235,22 @@ export default function FeaturedDashboardChart(
             </div>
           </div>
         ) : null}{" "}
+        
         <div className="mt-2 md:mt-6 xl:mt-10">
-          <div className="bg-gray-50 rounded-lg px-6 py-3.5">
-            <div className="flex md:justify-between gap-4 text-xs/4 text-slate-600 flex-col md:flex-row md:items-center">
-              <div className="md:flex-1">{metadata.dataSource}</div>
-              {metadata.dataSourceNote ? (
-                <div className="md:flex-1 text-left md:text-right">
-                  {metadata.dataSourceNote}
+              <div className="bg-gray-50 rounded-lg px-6 py-3.5">
+                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                    <p>{metadata.dataSource}</p>
+                  </div>
+                  {metadata.dataSourceNote ? (
+                    <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                      <p>{metadata.dataSourceNote}</p>
+                    </div>
+                  ) : null}
                 </div>
-              ) : null}
-            </div>
-          </div>
+              </div>
         </div>
+
       </div>
     );
   }

@@ -64,15 +64,15 @@ export default function Accordion({
                   onClick={() => toggle(i)}
                   className={[
                     // from @apply .accordion-btn
-                    "bg-neutral-100 rounded-lg border border-zinc-300",
+                    "bg-neutral-100 rounded-lg border border-zinc-300 font-medium",
                     "py-4 px-4 md:py-4 md:px-6",
                     "text-slate-950 flex w-full items-start justify-between",
-                    "gap-16 md:gap-64 text-left",
+                    "gap-16 md:gap-64 text-left font-medium",
                     // hide the question button when open (matches PHP)
                     isOpen ? "hidden" : "",
                   ].join(" ")}
                 >
-                  <span className="text-lg leading-7 md:text-xl md:leading-7 font-bold font-montserrat">
+                  <span className="text-lg leading-7 md:text-xl md:leading-7 font-medium font-montserrat">
                     {item.title}
                   </span>
                   <span className="ml-6 flex h-7 items-center">
@@ -105,14 +105,14 @@ export default function Accordion({
                   isOpen ? "block" : "hidden",
                   // from @apply .accordion-content
                   "mt-6 bg-white/25 border border-white rounded-lg",
-                  "p-4 md:p-6 text-slate-50",
+                  "p-4 md:p-6 text-slate-50 font-bold",
                 ].join(" ")}
               >
                 <h3
-                  className="flex w-full items-start justify-between gap-16 md:gap-56 text-left text-slate-50 font-medium font-montserrat"
+                  className="flex w-full items-start justify-between gap-16 md:gap-56 text-left text-slate-50 font-montserrat"
                   onClick={() => toggle(i)} // click header to close (matches your PHP)
                 >
-                  <span className="text-lg leading-7 md:text-xl md:leading-7 font-bold font-montserrat">
+                  <span className="text-lg leading-7 md:text-xl md:leading-7 font-montserrat">
                     {item.title}
                   </span>
                   <span className="ml-6 flex h-7 items-center">

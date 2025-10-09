@@ -177,7 +177,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ data }) => {
               defaultOpenIndex={0}
               items={faqItems.map((item) => ({
                 title: (
-                  <span className="text-lg/7 md:text-xl/7 font-montserrat font-medium">
+                  <span className="text-lg/7 md:text-xl/7 font-montserrat">
                     {item.title}
                   </span>
                 ),

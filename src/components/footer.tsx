@@ -79,14 +79,14 @@ export default function Footer(): JSX.Element {
             </div>
 
             {/* column 2 (desktop) */}
-            <div className="hidden xl:block p-0 xl:pt-7 w-full xl:w-3/5">
+            <div className="hidden xl:block p-0 xl:pt-7 w-full xl:w-3/4">
               <div className="mb-3.5">
                 <span className="block w-10 border-t-4 border-brand-white" />
               </div>
               <h3 className="footer-heading text-2xl/snug tracking-normal font-montserrat font-normal text-brand-white">
                 Dashboards
               </h3>
-              <ul role="list" className="mt-7 space-y-6 grid xl:grid-cols-2">
+              <ul role="list" className="mt-7 space-y-6 grid xl:grid-cols-2 gao-1.5">
                 {dashboards.map((item) => {
                   const isActive = pathname === item.uri;
                   return (
