@@ -370,7 +370,7 @@ useEffect(() => {
 }, [data, series, yAxisLabel, yAxisRightLabel, controlIds, yMaxPadding, minY]);
 
   return (
-    <div className="relative w-full"> // h-[150px] md:h-[300px] xl:h-[500px]
+    <div className="relative w-full">
       <svg ref={chartRef} className="w-full h-full" />
       <div
         ref={tooltipRef}

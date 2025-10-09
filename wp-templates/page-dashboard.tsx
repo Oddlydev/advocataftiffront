@@ -187,7 +187,7 @@ const Section: React.FC<SectionProps> = ({
                 {text}
               </p>
               <div className="mt-4 lg:mt-5">
-                <WhiteButton url={url}>Learn more</WhiteButton>
+                <WhiteButton className="px-2.5 py-3.5 text-sm font-semibold text-gray-600" url={url}>Learn more</WhiteButton>
               </div>
             </div>
 

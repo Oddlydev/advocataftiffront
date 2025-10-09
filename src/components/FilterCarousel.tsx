@@ -46,7 +46,7 @@ export default function FilterCarousel({
         responsive: {
           320: { items: 2 },
           768: { items: 3 },
-          1024: { items: 4 },
+          1024: { items: 6 },
         },
       });
       // Custom prev/next buttons
@@ -76,7 +76,7 @@ export default function FilterCarousel({
       {/* Slider track */}
       <div
         ref={trackRef}
-        className="filter-carousel-slider w-full px-7 md:px-8 xl:px-4"
+        className="filter-carousel-slider w-full px-7 md:px-8 xl:px-10"
       >
         {items.map((label, index) => (
           <div className="slider-item">

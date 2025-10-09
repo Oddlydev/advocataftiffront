@@ -524,7 +524,13 @@ function MacroCard({
       {/* Card content */}
       <div className="relative flex h-full flex-col overflow-hidden z-10 rounded-lg">
         <div className="px-6 pt-8 pb-3 sm:px-6 sm:pt-10 sm:pb-0">
-          <div className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-full text-slate-50 bg-white/10 backdrop-blur-lg border border-white/20 shadow-inner text-sm xl:text-base font-semibold font-montserrat tracking-tight">
+          <div className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 
+             rounded-full text-white 
+             bg-white/10 backdrop-blur-sm 
+             border border-white/20 
+             shadow-inner shadow-white/5 
+             ring-1 ring-white/10 
+             text-sm xl:text-base font-semibold font-montserrat">
             {ICONS[getSlug(post.uri)]}
             <span>{post.title}</span>
           </div>
@@ -537,7 +543,7 @@ function MacroCard({
         <div className="px-6 py-8 sm:px-6 sm:py-10 flex items-start gap-2 mt-auto">
           <a
             href={post.uri}
-            className="flex items-center gap-2 text-white font-medium hover:underline uppercase"
+            className="flex items-center gap-2 text-sm/tight text-slate-50 font-semibold font-sourcecodepro hover:underline uppercase"
           >
             <span>Open Dashboard</span>
             <svg
