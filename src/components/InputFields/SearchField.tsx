@@ -1,6 +1,13 @@
 "use client";
 
-import { type JSX, useCallback, useMemo, useRef, useState } from "react";
+import {
+  type JSX,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 type SearchFieldProps = {
   value?: string; // controlled value
@@ -19,7 +26,7 @@ export default function SearchField({
   defaultValue,
   onChange,
   onSubmit,
-  placeholder = "Search...",
+  placeholder = "Search",
   className,
   clearOnFocus = false,
   showSubmitButton = false,
@@ -27,19 +34,38 @@ export default function SearchField({
 }: SearchFieldProps): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null);
   const isControlled = useMemo(() => typeof value === "string", [value]);
-  const [internal, setInternal] = useState<string>(defaultValue ?? "");
-  const query = isControlled ? (value as string) : internal;
+  const [query, setQuery] = useState<string>(
+    (typeof value === "string" ? value : defaultValue) ?? ""
+  );
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Keep local input in sync when external value changes
+  useEffect(() => {
+    if (typeof value === "string" && value !== query) {
+      setQuery(value);
+    }
+  }, [value]);
+
+  const emitChangeDebounced = useCallback(
+    (next: string) => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => {
+        onChange?.(next);
+      }, 800);
+    },
+    [onChange]
+  );
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const next = e.target.value;
-      if (!isControlled) setInternal(next);
-      onChange?.(next);
+      setQuery(next);
+      emitChangeDebounced(next);
     },
-    [isControlled, onChange]
+    [emitChangeDebounced]
   );
 
-  const handleKeyDown = useCallback(
+  const handleKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") onSubmit?.(query);
     },
@@ -49,14 +75,21 @@ export default function SearchField({
   const handleFocus = useCallback(() => {
     if (!clearOnFocus) return;
     if (query && query.length > 0) {
-      if (!isControlled) setInternal("");
-      onChange?.("");
+      setQuery("");
+      emitChangeDebounced("");
       requestAnimationFrame(() => {
         inputRef.current?.focus({ preventScroll: true });
         inputRef.current?.setSelectionRange(0, 0);
       });
     }
-  }, [clearOnFocus, isControlled, onChange, query]);
+  }, [clearOnFocus, emitChangeDebounced, query]);
+
+  // Cleanup pending debounce on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   return (
     <div className="bg-white">
@@ -70,7 +103,7 @@ export default function SearchField({
           placeholder={placeholder}
           value={query}
           onChange={handleChange}
-          onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
           onFocus={handleFocus}
           className={`search-input w-full rounded-full border border-gray-300 bg-white py-2.5 pl-12 font-sourcecodepro text-sm md:text-base text-slate-800 placeholder:text-slate-600/50 shadow-sm hover:border-brand-1-100 focus:border-brand-1-200 focus:outline-0 focus:ring-1 focus:ring-transparent focus:shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05),0px_0px_0px_1px_#9B195F] ${
             showSubmitButton ? "pr-28" : "pr-12"
@@ -103,8 +136,8 @@ export default function SearchField({
             <button
               type="button"
               onClick={() => {
-                if (!isControlled) setInternal("");
-                onChange?.("");
+                setQuery("");
+                emitChangeDebounced("");
               }}
               className="flex items-center text-slate-600"
             >
