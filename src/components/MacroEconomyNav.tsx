@@ -135,9 +135,9 @@ export default function MacroEconomySliderNav({
     setActiveIndex(index);
     const selected = posts[index];
     if (selected?.uri) {
-      router.push(normalizePath(selected.uri) || "/");
+      router.push(normalizePath(selected.uri) || "/", { scroll: false } as any);
     } else if (selected?.slug) {
-      router.push(`/macro/${selected.slug}`);
+      router.push(`/macro/${selected.slug}`, { scroll: false } as any);
     }
     // Keep the chosen one in view if staying on page
     if (sliderRef.current?.goTo) sliderRef.current.goTo(index);
