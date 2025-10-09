@@ -433,7 +433,7 @@ export default function PageMacroEconomyLanding() {
       {/* Hero */}
       <HeroWhite
         title="The Macro Economy of Sri Lanka"
-        paragraph="Explore key macroeconomic indicators with real-time dashboards."
+        paragraph="Gain a holistic view of Sri Lanka’s economic landscape through key indicators such as inflation, GDP, foreign exchange, reserves, unemployment, debt, and interest rates. The Macro Economy dashboard brings together the data that shape everyday life—from the cost of living and currency stability to national output and employment trends."
         items={[
           { label: "Dashboards", href: "/dashboard" },
           { label: "The Macro Economy of Sri Lanka" },
