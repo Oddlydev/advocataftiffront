@@ -271,5 +271,9 @@ button {
   }
 }
 
+.full-width-img img {
+  width: 100% !important;
+}
+
 
 

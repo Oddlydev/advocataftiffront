@@ -758,8 +758,8 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
                         onClick={() => setSelectedDatasetKey(item.key)}
                         className={`text-sm/tight xl:text-base/6 py-2 px-3 border rounded-lg font-semibold font-sourcecodepro uppercase transition-colors duration-200 w-full text-center xl:w-auto ${
                           isActive
-                            ? "bg-brand-2-950 text-brand-white border-brand-2-950"
-                            : "text-slate-800 border-gray-400 bg-white hover:bg-brand-2-50 hover:text-slate-800 focus:bg-brand-2-950 focus:text-brand-white focus:border-brand-2-950"
+                            ? "bg-[#1C0209] text-brand-white border-[#1C0209]"
+                            : "text-slate-800 border-gray-400 bg-white hover:bg-brand-2-50 hover:text-slate-800 focus:bg-[#1C0209] focus:text-brand-white focus:border-brand-2-950"
                         }`}
                       >
                         {item.title}
