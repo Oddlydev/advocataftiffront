@@ -87,12 +87,30 @@ function firstParagraphFromHtml(html?: string | null): string {
   return "";
 }
 
+/** Replace common WP HTML entities with readable characters */
+function normalizeWpEntities(input?: string | null): string {
+  if (!input) return "";
+  return (
+    input
+      // Apostrophes / single quotes
+      .replace(/&#8217;|&rsquo;/gi, "’")
+      .replace(/&#8216;|&lsquo;/gi, "‘")
+      // Double quotes
+      .replace(/&#8220;|&ldquo;/gi, "“")
+      .replace(/&#8221;|&rdquo;/gi, "”")
+      // Ampersand
+      .replace(/&#038;|&amp;/gi, "&")
+  );
+}
+
 const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
   const page = data?.page;
   if (!page) return <p>Dashboards page not found.</p>;
 
   // Hero text: first paragraph from Gutenberg content
-  const heroParagraph = firstParagraphFromHtml(page?.content);
+  const heroParagraph = normalizeWpEntities(
+    firstParagraphFromHtml(page?.content)
+  );
 
   return (
     <main>
@@ -108,7 +126,7 @@ const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
         />
         <div className="relative z-10">
           <HeroBasic
-            title="Economic Dashboards"
+            title="Dashboards"
             paragraph={heroParagraph}
             overlay={null}
           />
@@ -118,16 +136,16 @@ const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
       {/* Dynamic Sections from GraphQL */}
       <section className="bg-white pb-12 md:pb-16 xl:pb-20 pt-10 md:pt-12 xl:pt-16">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-            {page.dashboardSection?.dashboards?.map((item: any, i: number) => (
-              <Section
-                key={i}
-                title={item?.title ?? ""}
-                text={item?.description ?? ""}
-                imgSrc={item?.image?.node?.mediaItemUrl ?? ""}
-                imgAlt={item?.title ?? "dashboard image"}
-                url={item?.url ?? "#"}
-              />
-            ))}
+          {page.dashboardSection?.dashboards?.map((item: any, i: number) => (
+            <Section
+              key={i}
+              title={item?.title ?? ""}
+              text={item?.description ?? ""}
+              imgSrc={item?.image?.node?.mediaItemUrl ?? ""}
+              imgAlt={item?.title ?? "dashboard image"}
+              url={item?.url ?? "#"}
+            />
+          ))}
         </div>
       </section>
     </main>
@@ -153,10 +171,12 @@ const Section: React.FC<SectionProps> = ({
   url,
 }) => {
   return (
-    <Link href={url} >
+    <Link href={url}>
       <div className="pt-8">
-        <div className="border border-slate-400 shadow-2xl rounded-l-lg p-3 lg:p-12 pr-0 lg:pr-0
-             transition-all duration-300 ease-in-out hover:-translate-y-1.5">
+        <div
+          className="border border-slate-400 shadow-2xl rounded-l-lg p-3 lg:p-12 pr-0 lg:pr-0
+             transition-all duration-300 ease-in-out hover:-translate-y-1.5"
+        >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
             {/* Left Column */}
             <div>
@@ -190,7 +210,6 @@ const Section: React.FC<SectionProps> = ({
                 }}
               />
             </div>
-            
           </div>
         </div>
       </div>

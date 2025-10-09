@@ -131,6 +131,22 @@ function firstParagraphFromHtml(html?: string | null): string {
   return "";
 }
 
+/** Replace common WP HTML entities with readable characters */
+function normalizeWpEntities(input?: string | null): string {
+  if (!input) return "";
+  return (
+    input
+      // Apostrophes / single quotes
+      .replace(/&#8217;|&rsquo;/gi, "’")
+      .replace(/&#8216;|&lsquo;/gi, "‘")
+      // Double quotes
+      .replace(/&#8220;|&ldquo;/gi, "“")
+      .replace(/&#8221;|&rdquo;/gi, "”")
+      // Ampersand
+      .replace(/&#038;|&amp;/gi, "&")
+  );
+}
+
 /** Datasets listing page */
 const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
   const page = data?.page;
@@ -278,7 +294,7 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
   }, [categories, displayActiveCategory]);
 
   // Hero text: first paragraph from Gutenberg content
-  const heroParagraph = firstParagraphFromHtml(page?.content);
+  const heroParagraph = normalizeWpEntities(firstParagraphFromHtml(page?.content));
 
   return (
     <main>
@@ -357,8 +373,8 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
                 return (
                   <CardType6
                     key={c.id}
-                    title={c.title ?? ""}
-                    excerpt={c.excerpt ?? ""}
+                    title={normalizeWpEntities(c.title)}
+                    excerpt={normalizeWpEntities(c.excerpt)}
                     fileUrl={fileUrl}
                     postDate={c.date ?? ""}
                     uri={c.uri ?? undefined}
