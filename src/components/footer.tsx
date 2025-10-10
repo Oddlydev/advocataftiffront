@@ -232,6 +232,8 @@ export default function Footer(): JSX.Element {
                 href="https://web.facebook.com/advocatainstitute"
                 className="footer-social-link text-brand-white/60"
                 aria-label="Facebook"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <svg
                   className="size-10"
@@ -274,6 +276,8 @@ export default function Footer(): JSX.Element {
                 href="https://x.com/advocatalk"
                 className="footer-social-link text-brand-white/60"
                 aria-label="X"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <svg
                   className="size-10"
@@ -309,6 +313,8 @@ export default function Footer(): JSX.Element {
                 href="https://www.youtube.com/@advocatainstitute"
                 className="footer-social-link text-brand-white/60"
                 aria-label="YouTube"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <svg
                   className="size-10"
@@ -365,6 +371,8 @@ export default function Footer(): JSX.Element {
                 href="https://lk.linkedin.com/company/advocata-institute"
                 className="footer-social-link text-brand-white/60"
                 aria-label="Linked In"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <svg
                   className="size-10"
@@ -414,6 +422,8 @@ export default function Footer(): JSX.Element {
                 href="https://www.instagram.com/advocatalk/"
                 className="footer-social-link text-brand-white/60"
                 aria-label="Instagram"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <svg
                   className="size-10"
