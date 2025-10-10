@@ -204,7 +204,7 @@ export default function CsvTable({
                         {row.map((cell, cellIndex) => (
                           <td
                             key={cellIndex}
-                            className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium text-gray-500 font-sourcecodepro 
+                            className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro 
                             ${cellIndex === 0 ? "sticky left-0 text-brand-black md:whitespace-nowrap" : "text-gray-500"}
                             w-[160px] md:w-[225px] xl:w-[235px]`}
                           >

@@ -51,14 +51,14 @@ const CardType5: React.FC<CardType5Props> = ({
   const Article = (
     
     <article
-      className="card card-type-5 relative flex flex-col h-full overflow-hidden transition-all duration-500 ease-in-out cursor-pointer rounded-lg border border-gray-300 hover:border-gray-300 hover:-translate-y-1.5 hover:shadow-[0px_0px_40px_0px_rgba(79,8,46,0.40)] focus:border-gray-300 focus:bg-gray-50 focus:shadow-inner-lg"
+      className="card card-type-5 group relative flex flex-col h-full overflow-hidden transition-all duration-500 ease-in-out cursor-pointer rounded-lg bg-white border border-gray-300 hover:border-gray-300 hover:-translate-y-1.5 hover:shadow-lg focus:border-brand-2-100 focus:bg-gray-50 focus:shadow-inner-lg"
       aria-label={title}
     >
       <div>
         <img
           className="card-img shrink-0 w-full h-64 object-cover aspect-[4/3]"
           src={imageUrl}
-          alt={title || "card-type-5 img"}
+          alt={title || 'card-type-5 img'}
           width={100}
           height={100}
           loading="lazy"
@@ -68,11 +68,14 @@ const CardType5: React.FC<CardType5Props> = ({
       <div className="card-body flex flex-1 flex-col justify-between bg-white p-8 pb-7">
         <div className="flex-1">
           {categories.length > 0 && (
-            <span className="card-category text-sm leading-5 md:text-base md:leading-6 font-normal border-b-2 border-transparent font-sourcecodepro text-slate-800 uppercase pb-1 transition-all duration-500 ease-in-out focus:border-b-2 focus:border-transparent hover:border-brand-1-500">
+            <span
+              className="card-category text-sm leading-5 md:text-base md:leading-6 font-normal border-b-2 border-transparent font-sourcecodepro text-slate-800 uppercase pb-1 
+                        transition-all duration-500 ease-in-out group-hover:border-brand-1-500"
+            >
               {categories
                 .map((cat) => cat?.name)
                 .filter(Boolean)
-                .join(", ")}
+                .join(', ')}
             </span>
           )}
 
@@ -88,7 +91,7 @@ const CardType5: React.FC<CardType5Props> = ({
         </div>
 
         {postDate && (
-          <div className="card-footer mt-9 flex items-center justify-between">
+          <div className="card-footer mt-7 flex items-center justify-between">
             <div className="date-info flex justify-between w-full items-center space-x-1 uppercase text-xs leading-tight font-medium font-sourcecodepro text-slate-600">
               <time
                 className="text-xs leading-tight font-medium font-sourcecodepro text-slate-600 uppercase"
@@ -101,7 +104,6 @@ const CardType5: React.FC<CardType5Props> = ({
         )}
       </div>
     </article>
-
   );
 
   return uri ? (

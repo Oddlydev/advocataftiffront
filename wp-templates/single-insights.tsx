@@ -152,9 +152,9 @@ const SingleInsight: React.FC<SingleInsightProps> = ({ data }) => {
       {/* Body */}
       <div className="bg-white py-10 md:py-16 xl:py-20">
         <div className="mx-auto max-w-full">
-          <div className="mx-auto max-w-4xl px-5 md:px-10 xl:px-16">
+          <div className="mx-auto max-w-full">
             {insight.title && (
-              <h2 className="text-slate-950 font-montserrat font-bold text-3xl lg:text-4xl leading-snug mb-6">
+              <h2 className="text-slate-950 font-montserrat font-bold text-3xl lg:text-4xl leading-snug mb-6 mx-auto max-w-4xl px-5 md:px-10 xl:px-16">
                 {insight.title}
               </h2>
             )}

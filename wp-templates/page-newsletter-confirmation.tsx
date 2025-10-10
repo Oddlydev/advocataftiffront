@@ -224,7 +224,7 @@ export default function PageNewsletterConfirmation() {
                           id="country"
                           name="country"
                           defaultValue="+94"
-                          className="appearance-none rounded-md bg-white pr-7 pl-3 text-base text-gray-500 focus:outline-none"
+                          className="appearance-none rounded-md bg-white pr-7 pl-3 text-base text-gray-500 focus:outline-none w-18"
                         >
                           {COUNTRY_CODES.map((code) => (
                             <option key={code} value={code}>
@@ -283,30 +283,32 @@ export default function PageNewsletterConfirmation() {
                   </div>
                 </div>
 
-                {/* Checkbox */}
-                <div>
-                  <label className="flex items-start gap-3 cursor-pointer relative">
-                    <input
-                      id="agree"
-                      type="checkbox"
-                      name="agree"
-                      required
-                      className="peer mt-1 h-4 w-4 rounded-sm border border-[#475569] appearance-none
-                      checked:bg-brand-1-600 checked:border-brand-1-600 focus:outline-none focus:ring-2 focus:ring-brand-1-600"
-                    />
-                    <svg
-                      className="pointer-events-none absolute hidden peer-checked:block mt-1 ml-0.5 w-3.5 h-3.5 text-white"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                    >
-                      <path
-                        d="M3 8L6 11L11 3.5"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+               {/* Checkbox */}
+                <div className="pt-7">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <div className="relative flex justify-center items-center">
+                      <input
+                        id="agree"
+                        type="checkbox"
+                        name="agree"
+                        required
+                        className="peer h-5 w-5 rounded-sm border border-slate-500 appearance-none checked:bg-brand-1-600 checked:border-brand-1-600 focus:outline-none focus:ring-0 focus:ring-tranparent"
                       />
-                    </svg>
+                      {/* Tick Icon */}
+                      <svg
+                        className="absolute top-1/2 left-1/2 w-3.5 h-3.5 -translate-x-1/2 -translate-y-1/2 text-white pointer-events-none hidden peer-checked:block"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                      >
+                        <path
+                          d="M3 8L6 11L11 3.5"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
                     <span className="text-base font-normal text-slate-600 font-sourcecodepro">
                       I agree to Advocata&apos;s{" "}
                       <Link
@@ -328,6 +330,7 @@ export default function PageNewsletterConfirmation() {
                     </span>
                   </label>
                 </div>
+
 
                 {/* Global error message below form */}
                 {status === "error" && message && (
@@ -372,7 +375,7 @@ export default function PageNewsletterConfirmation() {
             {/* Right Column */}
             <div className="lg:col-span-7 rounded-lg shadow-sm border border-slate-200 py-12 md:py-12 lg:py-32 px-6 lg:px-12">
               <div className="text-center">
-                <div className="mb-6 mx-auto flex size-10 p-2.5 items-center justify-center rounded-full bg-brand-1-700">
+                <div className="mb-6 mx-auto flex size-10 p-2.5 items-center justify-center rounded-full bg-brand-1-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"

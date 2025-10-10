@@ -302,7 +302,7 @@ export default function InsightsPage({ data }: InsightsPageProps) {
 
       <div className="bg-white">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pt-5 pb-3.5 md:pb-5 md:pt-10 lg:pt-16 lg:pb-6">
-          <div className="pb-8">
+          <div className="pb-4">
             <SearchField
               value={searchQuery}
               onChange={(q) => {
@@ -332,7 +332,7 @@ export default function InsightsPage({ data }: InsightsPageProps) {
         </div>
       </div>
 
-      <div className="bg-white py-12 md:py-16 xl:py-20">
+      <div className="bg-white pt-6 pb-12 md:pb-16 xl:pb-20">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           {hasResults ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
