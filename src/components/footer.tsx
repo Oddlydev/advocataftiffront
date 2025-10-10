@@ -86,7 +86,10 @@ export default function Footer(): JSX.Element {
               <h3 className="footer-heading text-2xl/snug tracking-normal font-montserrat font-normal text-brand-white">
                 Dashboards
               </h3>
-              <ul role="list" className="mt-7 space-y-6 grid xl:grid-cols-2 gao-1.5">
+              <ul
+                role="list"
+                className="mt-7 space-y-6 grid xl:grid-cols-2 gao-1.5"
+              >
                 {dashboards.map((item) => {
                   const isActive = pathname === item.uri;
                   return (
@@ -226,7 +229,7 @@ export default function Footer(): JSX.Element {
             <div className="flex justify-center xl:justify-start gap-x-5 md:gap-x-8">
               {/* Facebook */}
               <a
-                href="#"
+                href="https://web.facebook.com/advocatainstitute"
                 className="footer-social-link text-brand-white/60"
                 aria-label="Facebook"
               >
@@ -268,7 +271,7 @@ export default function Footer(): JSX.Element {
 
               {/* X */}
               <a
-                href="#"
+                href="https://x.com/advocatalk"
                 className="footer-social-link text-brand-white/60"
                 aria-label="X"
               >
@@ -303,7 +306,7 @@ export default function Footer(): JSX.Element {
 
               {/* YouTube */}
               <a
-                href="#"
+                href="https://www.youtube.com/@advocatainstitute"
                 className="footer-social-link text-brand-white/60"
                 aria-label="YouTube"
               >
@@ -359,7 +362,7 @@ export default function Footer(): JSX.Element {
 
               {/* LinkedIn */}
               <a
-                href="#"
+                href="https://lk.linkedin.com/company/advocata-institute"
                 className="footer-social-link text-brand-white/60"
                 aria-label="Linked In"
               >
@@ -408,7 +411,7 @@ export default function Footer(): JSX.Element {
 
               {/* Instagram */}
               <a
-                href="#"
+                href="https://www.instagram.com/advocatalk/"
                 className="footer-social-link text-brand-white/60"
                 aria-label="Instagram"
               >
