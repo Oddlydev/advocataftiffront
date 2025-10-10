@@ -248,7 +248,7 @@ export default function CsvTable({
             <div>
               <div className="grid md:flex gap-7 items-center justify-start md:justify-end w-full">
                 <div>
-                  <p className="text-base/6 font-medium font-sourcecodepro text-slate-600">
+                  <p className="text-sm xl:text-base/6 font-medium font-sourcecodepro text-slate-600">
                     Interpretation of the indicators :
                   </p>
                 </div>

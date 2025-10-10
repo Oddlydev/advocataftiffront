@@ -4,9 +4,8 @@ type WhiteIconButtonProps = {
   text?: string;
   icon?: React.ReactNode;
   className?: string;
-  link?: string; // new link prop
-} & React.ButtonHTMLAttributes<HTMLButtonElement> &
-  React.AnchorHTMLAttributes<HTMLAnchorElement>;
+  link?: string; // optional URL for <a>
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export default function WhiteIconButton({
   text = "White With Icon",
@@ -50,15 +49,11 @@ export default function WhiteIconButton({
     </svg>
   );
 
-  const combinedClass = `${baseBtn} bg-brand-white border border-slate-200 text-gray-600 rounded-md shadow-sm hover:bg-slate-100 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent ${className}`;
+  const combinedClass = `${baseBtn} bg-white border border-slate-200 text-gray-600 rounded-md shadow-sm hover:bg-slate-100 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent ${className}`;
 
   if (link) {
     return (
-      <a
-        href={link}
-        className={combinedClass}
-        {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-      >
+      <a href={link} className={combinedClass}>
         {text}
         {icon || defaultIcon}
       </a>
@@ -66,10 +61,7 @@ export default function WhiteIconButton({
   }
 
   return (
-    <button
-      className={combinedClass}
-      {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
-    >
+    <button className={combinedClass} {...props}>
       {text}
       {icon || defaultIcon}
     </button>

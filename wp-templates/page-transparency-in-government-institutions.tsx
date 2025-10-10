@@ -390,7 +390,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
       <SEO yoast={seo as any} title="Transparency in government Institutions" />
       {/* Secondary Navigation */}
       <div className="bg-white border-b border-slate-300">
-        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-4 lg:py-0">
+        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-0 lg:py-0">
           <SecondaryNav
             className="!font-baskervville"
             items={[

@@ -163,7 +163,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ data }) => {
         <AboutHero image={heroImage} />
 
         {/* FAQ */}
-        <section className="relative overflow-hidden py-24 sm:py-32 bg-brand-2-900">
+        <section className="relative overflow-hidden py-12 sm:py-16 xl:py-20 bg-brand-2-900">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
             <div className="mx-auto max-w-4xl text-center">
               <PageSubTitle className="!text-slate-50">FAQ</PageSubTitle>

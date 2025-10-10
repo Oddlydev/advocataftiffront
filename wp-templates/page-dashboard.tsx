@@ -174,12 +174,12 @@ const Section: React.FC<SectionProps> = ({
     <Link href={url}>
       <div className="pt-8">
         <div
-          className="border border-slate-400 shadow-2xl rounded-l-lg p-3 lg:p-12 pr-0 lg:pr-0
+          className="border border-slate-400 shadow-2xl rounded-lg p-6 md:p-9 lg:px-12 lg:py-16 pr-0 lg:pr-0
              transition-all duration-300 ease-in-out hover:-translate-y-1.5"
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
             {/* Left Column */}
-            <div>
+            <div className="pr-6 md:pr-0 lg:pr-0">
               <h2 className="font-montserrat text-slate-950 font-bold text-2xl md:text-3xl xl:text-4xl leading-snug">
                 {title}
               </h2>
@@ -187,7 +187,7 @@ const Section: React.FC<SectionProps> = ({
                 {text}
               </p>
               <div className="mt-4 lg:mt-5">
-                <WhiteButton className="px-2.5 py-3.5 text-sm font-semibold text-gray-600" url={url}>Learn more</WhiteButton>
+                <WhiteButton className="!py-2.5 !px-3.5 !text-sm !font-semibold !text-gray-600" url={url}>Learn more</WhiteButton>
               </div>
             </div>
 
@@ -196,14 +196,14 @@ const Section: React.FC<SectionProps> = ({
               <img
                 src={imgSrc}
                 alt={imgAlt}
-                className="w-full h-full rounded-l-lg"
+                className="w-full h-full rounded-l-lg md:rounded-lg xl:rounded-l-lg xl:rounded-r-none"
                 width={511}
                 height={503}
                 loading="lazy"
               />
               {/* Overlay */}
               <div
-                className="absolute inset-0 rounded-l-lg pointer-events-none"
+                className="absolute inset-0  rounded-l-lg md:rounded-lg xl:rounded-l-lg xl:rounded-r-none pointer-events-none"
                 style={{
                   background:
                     "linear-gradient(0deg, rgba(235, 26, 82, 0.20), rgba(235, 26, 82, 0.20))",

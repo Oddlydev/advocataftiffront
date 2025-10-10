@@ -403,7 +403,7 @@ export default function PageMacroEconomyLanding() {
       {/* Secondary Navigation */}
       <div className="bg-white border-b border-slate-300">
         <div className="bg-white border-b border-slate-300">
-          <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-4 lg:py-0">
+          <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-0 lg:py-0">
             <SecondaryNav
               className="!font-baskervville"
               items={[
@@ -524,13 +524,17 @@ function MacroCard({
       {/* Card content */}
       <div className="relative flex h-full flex-col overflow-hidden z-10 rounded-lg">
         <div className="px-6 pt-8 pb-3 sm:px-6 sm:pt-10 sm:pb-0">
-          <div className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 
-             rounded-full text-white 
-             bg-white/10 backdrop-blur-sm 
-             border border-white/20 
-             shadow-inner shadow-white/5 
-             ring-1 ring-white/10 
-             text-sm xl:text-base font-semibold font-montserrat">
+          <div
+            className="mt-2 inline-flex items-center gap-2 px-5 py-2.5
+            rounded-full
+            text-slate-50
+            bg-[rgba(0, 0, 0, 0.00)] backdrop-blur-sm
+            border border-[rgba(255,255,255,0.2)]
+            shadow-[inset_0_1px_0_rgba(255,255,255,0.25),_0_4px_10px_rgba(0,0,0,0.1)]
+            ring-1 ring-white/10
+            text-sm xl:text-base font-semibold font-montserrat
+            transition-all duration-300"
+          >
             {ICONS[getSlug(post.uri)]}
             <span>{post.title}</span>
           </div>

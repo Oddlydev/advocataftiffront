@@ -79,7 +79,7 @@ const CardType5: React.FC<CardType5Props> = ({
             </span>
           )}
 
-          <h2 className="mt-3 text-xl leading-snug md:text-2xl md:leading-snug font-semibold font-montserrat text-slate-950 transition-colors duration-500 ease-in-out line-clamp-3">
+          <h2 className="mt-3 text-xl leading-snug xl:text-2xl xl:leading-snug font-semibold font-montserrat text-slate-950 transition-colors duration-500 ease-in-out line-clamp-3">
             {title}
           </h2>
 

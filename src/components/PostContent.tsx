@@ -92,7 +92,7 @@ export default function PostContent({ content, variant = "single" }: Props) {
               <blockquote
                 className={
                   variant === "single"
-                    ? "italic font-medium border-slate-200 border-l-4 py-3 px-4"
+                    ? "italic font-medium border-slate-200 border-l-4 pl-7 py-3 px-4"
                     : "text-lg/7 font-sourcecodepro text-slate-600 font-normal border-brand-2-50 border-l-4 py-3 px-4"
                 }
               >
@@ -189,7 +189,7 @@ export default function PostContent({ content, variant = "single" }: Props) {
             } else if (isSmall) {
               imgClass += "w-full max-w-2xl mx-auto";
             } else {
-              imgClass += "w-full max-w-4xl mx-auto";
+              imgClass += "w-full  mx-auto";
             }
 
             return (

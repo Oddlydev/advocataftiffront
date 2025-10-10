@@ -561,7 +561,7 @@ useEffect(() => {
       {/* Dashboards */}
       <div className="bg-white pb-24 sm:pb-32">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-          <div className="mx-auto max-w-3xl text-center">
+          <div className="mx-auto max-w-xl xl:max-w-3xl text-center">
             <PageSubTitle className="page-sub-title">dashboard</PageSubTitle>
             <PageTitle className="page-title">
               Explore Our Advanced Dashboards
@@ -636,9 +636,9 @@ useEffect(() => {
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start">
             <div className="lg:pt-4 lg:pr-4 lg:w-3xl">
-              <div className="max-w-lg lg:max-w-none">
+              <div className="max-w-md md:max-w-xl lg:max-w-none">
                 {data?.page?.homeAiSection?.aiTitle && (
-                  <span className="text-xs font-semibold text-white bg-white/25 py-2 px-3 rounded-full uppercase font-sourcecodepro">
+                  <span className="text-xs font-semibold text-white py-2 px-3 rounded-full uppercase font-sourcecodepro" style={{ backgroundColor: "rgba(255, 255, 255, 0.24)" }}>
                     {data.page.homeAiSection.aiTitle}
                   </span>
                 )}

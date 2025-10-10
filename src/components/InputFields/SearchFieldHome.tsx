@@ -61,7 +61,7 @@ export default function SearchFieldHome({ setIsSearchVisible }: SearchFieldHomeP
           placeholder="Search Eg: Budget, Debt and Loans"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="search-input w-full rounded-full border border-white bg-brand-black py-6 px-8 md:pl-12 md:pr-28 font-sourcecodepro text-sm md:text-base text-slate-50/70 placeholder:text-brand-white/90 shadow-sm focus:border-brand-1-200 focus:outline-0 focus:ring-1 focus:ring-transparent"
+          className="search-input w-full rounded-full border border-white bg-brand-black py-5 px-6 md:pl-12 md:pr-28 font-sourcecodepro text-sm md:text-base text-slate-50/70 placeholder:text-slate-50 shadow-sm focus:border-brand-1-200 focus:outline-0 focus:ring-1 focus:ring-transparent"
         />
         <div className="search-icon hidden md:block absolute left-4 top-1/2 -translate-y-1/2 text-slate-50">
           <svg
@@ -88,12 +88,12 @@ export default function SearchFieldHome({ setIsSearchVisible }: SearchFieldHomeP
         </div>
         <button
           type="submit"
-          className="search-btn btn absolute right-2.5 top-1/2 -translate-y-1/2 font-semibold font-sourcecodepro px-3 py-2.5 sm:px-3.5 sm:py-2.5 md:px-4 md:py-3 lg:py-3.5 xl:px-6 xl:py-3.5 text-xs/4 sm:text-sm/tight lg:text-base/6 gap-2 lg:gap-3 transition-all duration-500 ease-in-out cursor-pointer uppercase bg-brand-white border border-slate-200 text-gray-600 rounded-full shadow-sm hover:text-brand-white hover:bg-brand-1-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent"
+          className="search-btn btn absolute right-2.5 top-1/2 -translate-y-1/2 font-semibold font-sourcecodepro px-3 py-3 sm:px-3.5 sm:py-2.5 md:px-4 md:py-3 lg:py-3.5 xl:px-6 xl:py-3.5 text-xs/4 sm:text-sm/tight lg:text-base/6 gap-2 lg:gap-3 transition-all duration-500 ease-in-out cursor-pointer uppercase bg-brand-white border border-slate-200 text-gray-600 rounded-full shadow-sm hover:text-brand-white hover:bg-brand-1-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent"
         >
           <span className="hidden md:block">Search</span>
           <span className="block md:hidden">
             <svg
-              className="size-6 text-gray-600"
+              className="size-5 text-gray-600"
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
