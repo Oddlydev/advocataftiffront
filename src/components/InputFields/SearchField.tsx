@@ -19,6 +19,7 @@ type SearchFieldProps = {
   clearOnFocus?: boolean; // optional: clear input when focused
   showSubmitButton?: boolean; // optional: render a trailing submit button
   submitLabel?: string; // label for the submit button
+  autoFocus?: boolean; // allow autofocus (disabled by default)
 };
 
 export default function SearchField({
@@ -31,6 +32,7 @@ export default function SearchField({
   clearOnFocus = false,
   showSubmitButton = false,
   submitLabel = "Search",
+  autoFocus = false,
 }: SearchFieldProps): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null);
   const isControlled = useMemo(() => typeof value === "string", [value]);
@@ -51,7 +53,7 @@ export default function SearchField({
       if (debounceRef.current) clearTimeout(debounceRef.current);
       debounceRef.current = setTimeout(() => {
         onChange?.(next);
-      }, 800);
+      }, 500);
     },
     [onChange]
   );
@@ -100,6 +102,7 @@ export default function SearchField({
           type="text"
           id="search"
           name="search"
+          autoFocus={autoFocus}
           placeholder={placeholder}
           value={query}
           onChange={handleChange}

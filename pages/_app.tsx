@@ -36,7 +36,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           onSearch={(q) => console.log("search:", q)}
         />
 
-        <Component {...pageProps} key={router.asPath} />
+        {/* Avoid remounting the entire page on shallow route changes */}
+        <Component {...pageProps} />
 
         <Footer />
       </div>

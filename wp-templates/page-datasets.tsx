@@ -149,6 +149,23 @@ function normalizeWpEntities(input?: string | null): string {
 
 /** Datasets listing page */
 const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
+  // Autofocus: disabled on first visit in this session, enabled afterwards
+  const useAutoFocusAfterFirstVisit = (storageKey: string) => {
+    const [enabled, setEnabled] = useState(false);
+    useEffect(() => {
+      if (typeof window === "undefined") return;
+      const key = `visited:${storageKey}`;
+      const hasVisited = sessionStorage.getItem(key);
+      if (hasVisited) {
+        setEnabled(true);
+      } else {
+        sessionStorage.setItem(key, "1");
+        setEnabled(false);
+      }
+    }, [storageKey]);
+    return enabled;
+  };
+  const searchAutoFocus = useAutoFocusAfterFirstVisit("datasets-page");
   const page = data?.page;
   const router = useRouter();
   if (!page) return <p>Datasets page not found.</p>;
@@ -294,7 +311,9 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
   }, [categories, displayActiveCategory]);
 
   // Hero text: first paragraph from Gutenberg content
-  const heroParagraph = normalizeWpEntities(firstParagraphFromHtml(page?.content));
+  const heroParagraph = normalizeWpEntities(
+    firstParagraphFromHtml(page?.content)
+  );
 
   return (
     <main>
@@ -345,6 +364,7 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
                 setCurrentPage(1);
               }}
               placeholder="Search"
+              autoFocus={searchAutoFocus}
             />
           </div>
 

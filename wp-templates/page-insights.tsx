@@ -121,6 +121,23 @@ function firstParagraphFromHtml(html?: string | null): string {
 }
 
 export default function InsightsPage({ data }: InsightsPageProps) {
+  // Autofocus: disabled on first visit in this session, enabled afterwards
+  const useAutoFocusAfterFirstVisit = (storageKey: string) => {
+    const [enabled, setEnabled] = useState(false);
+    useEffect(() => {
+      if (typeof window === "undefined") return;
+      const key = `visited:${storageKey}`;
+      const hasVisited = sessionStorage.getItem(key);
+      if (hasVisited) {
+        setEnabled(true);
+      } else {
+        sessionStorage.setItem(key, "1");
+        setEnabled(false);
+      }
+    }, [storageKey]);
+    return enabled;
+  };
+  const searchAutoFocus = useAutoFocusAfterFirstVisit("insights-page");
   const page = data?.page;
   const router = useRouter();
   if (!page) return <p>Insights page not found.</p>;
@@ -314,6 +331,7 @@ export default function InsightsPage({ data }: InsightsPageProps) {
                 setCurrentPage(1);
               }}
               placeholder="Search"
+              autoFocus={searchAutoFocus}
             />
           </div>
 
