@@ -7,12 +7,14 @@ interface CsvTableProps {
   csvUrl: string;
   filterQuery?: string;
   pageSize?: number; // default rows per page
+  sectorFilters?: string[]; // if provided, filter by Sector column (by name)
 }
 
 export default function CsvTable({
   csvUrl,
   filterQuery,
   pageSize = 10,
+  sectorFilters = [],
 }: CsvTableProps) {
   const [rows, setRows] = useState<string[][]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -97,11 +99,30 @@ export default function CsvTable({
     .split(" ")
     .filter(Boolean);
 
-  const visibleRows = tokens.length
+  // Determine index for Sector column; fallback to 1 (second column)
+  const sectorIndex = (() => {
+    const idx = headers.findIndex((h) => /sector/i.test(h ?? ""));
+    if (idx >= 0) return idx;
+    return Math.min(1, headers.length - 1);
+  })();
+
+  const hasSectorFilter = Array.isArray(sectorFilters) && sectorFilters.length > 0;
+  const sectorSet = new Set(sectorFilters.map((s) => norm(s)));
+
+  let filteredByText = tokens.length
     ? dataRows.filter((row) =>
         tokens.every((t) => row.some((cell) => norm(cell).includes(t)))
       )
     : dataRows;
+
+  if (hasSectorFilter) {
+    filteredByText = filteredByText.filter((row) => {
+      const val = row[sectorIndex] ?? "";
+      return sectorSet.has(norm(val));
+    });
+  }
+
+  const visibleRows = filteredByText;
 
   // Pagination logic
   const totalItems = visibleRows.length;

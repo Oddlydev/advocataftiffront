@@ -9,6 +9,8 @@ type DropdownItem = {
   as?: "a" | "button";
   target?: string;
   rel?: string;
+  kind?: "checkbox"; // optional checkbox-style row
+  checked?: boolean; // for kind === 'checkbox'
 };
 
 type DefaultDropdownProps = {
@@ -21,6 +23,7 @@ type DefaultDropdownProps = {
   idKey?: string; // optional stable id suffix (e.g., "one", "two")
   open?: boolean; // controlled open state
   onOpenChange?: (open: boolean) => void; // controlled state setter
+  closeOnItemClick?: boolean; // defaults to true; set false for multi-select menus
 };
 
 function useClickOutside(
@@ -48,6 +51,7 @@ export default function DefaultDropdown({
   idKey,
   open,
   onOpenChange,
+  closeOnItemClick = true,
 }: DefaultDropdownProps): JSX.Element {
   const isControlled = typeof open === "boolean";
   const [internalOpen, setInternalOpen] = useState(false);
@@ -138,16 +142,45 @@ export default function DefaultDropdown({
                 </a>
               );
             }
+            // Button item (supports optional checkbox rendering)
             return (
               <button
                 {...common}
                 type="button"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   it.onClick?.();
-                  setOpenState(false);
+                  if (closeOnItemClick) setOpenState(false);
                 }}
               >
-                {it.label}
+                {it.kind === "checkbox" ? (
+                  <div className="flex gap-3 items-center">
+                    <span
+                      aria-hidden
+                      className="grid size-4 place-items-center border border-slate-600 rounded-sm"
+                    >
+                      {it.checked ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 8 6"
+                          fill="none"
+                          className="size-3 stroke-slate-600"
+                        >
+                          <path
+                            d="M1.5 3L3 4.5L6.5 1.5"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      ) : null}
+                    </span>
+                    <span className="font-normal text-slate-600">{it.label}</span>
+                  </div>
+                ) : (
+                  it.label
+                )}
               </button>
             );
           })}

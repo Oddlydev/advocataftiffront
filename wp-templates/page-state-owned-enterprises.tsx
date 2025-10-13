@@ -237,7 +237,8 @@ export default function PageStateOwnedDashboard(): JSX.Element {
   const [heroParagraph, setHeroParagraph] = useState<string>("");
 
   const [queryInput, setQueryInput] = useState("");
-  const [industry, setIndustry] = useState<string | null>(null);
+  // Multi-select industries to filter CSV rows by Sector column
+  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [year, setYear] = useState<string | null>(null);
   const [openId, setOpenId] = useState<"one" | "two" | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -267,10 +268,12 @@ export default function PageStateOwnedDashboard(): JSX.Element {
     const urlYear = searchParams.get("year");
     const urlIndustry = searchParams.get("industry");
     const effectiveYear = urlYear ?? year ?? yearsSorted[0]?.slug ?? null;
-    const effectiveIndustry =
-      urlIndustry ?? industry ?? cached.industries[0]?.slug ?? null;
+    // Parse any pre-selected industries from URL as comma-separated names
+    if (urlIndustry) {
+      const names = urlIndustry.split(",").map((s) => s.trim()).filter(Boolean);
+      if (names.length) setSelectedIndustries(names);
+    }
     if (!year && effectiveYear) setYear(effectiveYear);
-    if (!industry && effectiveIndustry) setIndustry(effectiveIndustry);
 
     let initial = cached.posts;
     if (effectiveYear) {
@@ -278,11 +281,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
         p.years.some((y) => y.slug === effectiveYear)
       );
     }
-    if (effectiveIndustry) {
-      initial = initial.filter((p) =>
-        p.industries.some((i) => i.slug === effectiveIndustry)
-      );
-    }
+    // Do not filter posts by industry; industry selection filters CSV rows.
     setFilteredPosts(initial);
     if (initial[0]) {
       setCurrentCsvUrl(initial[0].csvUrl ?? null);
@@ -297,7 +296,10 @@ export default function PageStateOwnedDashboard(): JSX.Element {
     const ind = searchParams.get("industry");
     const yr = searchParams.get("year");
     setQueryInput(q);
-    setIndustry(ind);
+    if (ind) {
+      const names = ind.split(",").map((s) => s.trim()).filter(Boolean);
+      setSelectedIndustries(names);
+    }
     setYear(yr);
   }, [searchParams]);
 
@@ -342,20 +344,13 @@ export default function PageStateOwnedDashboard(): JSX.Element {
         const urlYear = searchParams.get("year");
         const urlIndustry = searchParams.get("industry");
         const effectiveYear = urlYear ?? year ?? years[0]?.slug ?? null;
-        // Try pick industry from first post matching the year, else first industry list
-        let effectiveIndustry = urlIndustry ?? industry ?? null;
-        if (!effectiveIndustry) {
-          const firstForYear = posts.find((p) =>
-            effectiveYear ? p.years.some((y) => y.slug === effectiveYear) : true
-          );
-          effectiveIndustry =
-            firstForYear?.industries?.[0]?.slug ??
-            industriesRaw[0]?.slug ??
-            null;
+        // Preselect industries from URL (comma-separated names)
+        if (urlIndustry) {
+          const names = urlIndustry.split(",").map((s) => s.trim()).filter(Boolean);
+          if (names.length) setSelectedIndustries(names);
         }
 
         if (!year && effectiveYear) setYear(effectiveYear);
-        if (!industry && effectiveIndustry) setIndustry(effectiveIndustry);
 
         let initial = posts;
         if (effectiveYear) {
@@ -363,11 +358,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
             p.years.some((y) => y.slug === effectiveYear)
           );
         }
-        if (effectiveIndustry) {
-          initial = initial.filter((p) =>
-            p.industries.some((i) => i.slug === effectiveIndustry)
-          );
-        }
+        // Do not filter by industry here; applies at CSV row-level
         setFilteredPosts(initial);
         if (initial[0]) {
           setCurrentCsvUrl(initial[0].csvUrl ?? null);
@@ -385,20 +376,15 @@ export default function PageStateOwnedDashboard(): JSX.Element {
     load();
   }, []);
 
-  // Filter posts
+  // Filter posts (by year only). Industry selection filters CSV rows, not posts.
   useEffect(() => {
     let results = soePosts;
-    if (industry) {
-      results = results.filter((p) =>
-        p.industries.some((ind) => ind.slug === industry)
-      );
-    }
     if (year) {
       results = results.filter((p) => p.years.some((y) => y.slug === year));
     }
     setFilteredPosts(results);
     setCurrentPage(1);
-  }, [industry, year, soePosts]);
+  }, [year, soePosts]);
 
   // Pick current CSV
   useEffect(() => {
@@ -437,7 +423,6 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                 label: "Transparency in government Institutions",
                 href: (() => {
                   const params = new URLSearchParams();
-                  if (industry) params.set("industry", industry);
                   if (year) params.set("year", year);
                   const qs = params.toString();
                   return qs
@@ -449,8 +434,9 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                 label: "State Owned Enterprises",
                 href: (() => {
                   const params = new URLSearchParams();
-                  if (industry) params.set("industry", industry);
                   if (year) params.set("year", year);
+                  if (selectedIndustries.length)
+                    params.set("industry", selectedIndustries.join(","));
                   const qs = params.toString();
                   return qs
                     ? `/state-owned-enterprises?${qs}`
@@ -501,21 +487,29 @@ export default function PageStateOwnedDashboard(): JSX.Element {
               <DefaultDropdown
                 idKey="one"
                 label={
-                  industry
-                    ? (industryOptions.find((i) => i.slug === industry)?.name ??
-                      "Industry")
+                  selectedIndustries.length > 0
+                    ? `Industry (${selectedIndustries.length})`
                     : "Industry"
                 }
                 items={[
-                  { label: "All Industries", onClick: () => setIndustry(null) },
                   ...industryOptions.map((ind) => ({
+                    kind: "checkbox" as const,
                     label: ind.name,
-                    onClick: () => setIndustry(ind.slug),
+                    checked: selectedIndustries.includes(ind.name),
+                    onClick: () => {
+                      setSelectedIndustries((prev) =>
+                        prev.includes(ind.name)
+                          ? prev.filter((n) => n !== ind.name)
+                          : [...prev, ind.name]
+                      );
+                    },
                   })),
+                  { label: "Clear selection", onClick: () => setSelectedIndustries([]) },
                 ]}
                 align="right"
                 open={openId === "one"}
                 onOpenChange={(v) => setOpenId(v ? "one" : null)}
+                closeOnItemClick={false}
               />
 
               {/* Year Dropdown */}
@@ -543,7 +537,11 @@ export default function PageStateOwnedDashboard(): JSX.Element {
               Loading dataset...
             </p>
           ) : currentCsvUrl ? (
-            <CsvTable csvUrl={currentCsvUrl} filterQuery={queryInput} />
+            <CsvTable
+              csvUrl={currentCsvUrl}
+              filterQuery={queryInput}
+              sectorFilters={selectedIndustries}
+            />
           ) : (
             <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
               No dataset found for selection.
