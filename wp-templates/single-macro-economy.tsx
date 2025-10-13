@@ -204,9 +204,9 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-10 md:pb-20">
           <div className="border border-gray-200 rounded-xl py-6 px-5">
             <div className="mb-10">
-              <h4 className="text-xl/snug md:text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
+              <h2 className="text-xl/snug md:text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
                 {chartDetails?.chartTitle}
-              </h4>
+              </h2>
               <p className="text-sm/5 md:text-base/6 font-baskervville font-normal text-slate-950">
                 {chartDetails?.chartSubtitle}
               </p>

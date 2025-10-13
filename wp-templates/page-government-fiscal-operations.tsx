@@ -596,24 +596,24 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
       const isTablet = window.innerWidth >= 640 && window.innerWidth < 1024;
 
       const margin = {
-        top: 35,
-        right: isMobile ? 150 : isTablet ? 170 : 220,
-        bottom: 20,
+        top: 24,
+        right: isMobile ? 140 : isTablet ? 180 : 240,
+        bottom: 16,
         left: 16,
       };
 
       svg.selectAll("*").remove();
 
-      const sankeyGenerator = d3Sankey<SankeyNodeDatum, SankeyLinkDatum>()
-        .nodeWidth(40)
-        .nodePadding(21) // increased gap
-        .extent([
-          [margin.left, margin.top],
-          [
-            Math.max(width - margin.right, margin.left + 1),
-            Math.max(height - margin.bottom, margin.top + 1),
-          ],
-        ]);
+    const nodeWidth = isMobile ? 12 : isTablet ? 26 : 38;
+    const nodePadding = isMobile ? 8 : isTablet ? 20 : 24;
+
+    const sankeyGenerator = d3Sankey<SankeyNodeDatum, SankeyLinkDatum>()
+      .nodeWidth(nodeWidth)
+      .nodePadding(nodePadding)
+      .extent([
+        [margin.left, margin.top],
+        [Math.max(width - margin.right, margin.left + 1), Math.max(height - margin.bottom, margin.top + 1)],
+      ]);
 
       const graph = sankeyGenerator({
         nodes: chartData.nodes.map((node) => ({ ...node })),
@@ -652,8 +652,10 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
         .attr("width", (d) => Math.max(1, (d.x1 ?? 0) - (d.x0 ?? 0)))
         .attr("fill", (d) => color(d.key))
         .attr("stroke", "none");
+        // .attr("position", "relative")
+        // .attr("z-index", "20");
 
-      const fontSize = isMobile ? 6 : isTablet ? 10 : 11;
+      const fontSize = isMobile ? 4 : isTablet ? 6 : 11;
 
       nodeGroup
         .append("text")
@@ -668,7 +670,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
         .text((d) => d.name)
         .append("tspan")
         .attr("x", (d) => (d.x1 ?? 0) + 10)
-        .attr("dy", "1.2em")
+        .attr("dy", "1.05em")
         .style("font-weight", "400")
         .style("fill", "#475569")
         .text((d) => {
@@ -743,7 +745,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
       <div className="bg-white py-3.5 md:py-5 xl:pt-6 xl:pb-20">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           {/* Chip-box & Dropdown-Button */}
-          <div className="lg:flex gap-2 items-center justify-between pb-16">
+          <div className="lg:flex gap-2 items-center justify-between pb-5 md:pb-8 xl:pb-16">
             <div className="relative w-full xl:w-2/3">
               <div className="grid xl:grid-cols-4 md:flex xl:items-center gap-2.5 md:gap-1.5">
                 {datasets.map((item) => {
