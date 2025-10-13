@@ -294,7 +294,9 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
   }, [categories, displayActiveCategory]);
 
   // Hero text: first paragraph from Gutenberg content
-  const heroParagraph = normalizeWpEntities(firstParagraphFromHtml(page?.content));
+  const heroParagraph = normalizeWpEntities(
+    firstParagraphFromHtml(page?.content)
+  );
 
   return (
     <main>
@@ -345,6 +347,7 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
                 setCurrentPage(1);
               }}
               placeholder="Search"
+              autoFocus={true}
             />
           </div>
 
