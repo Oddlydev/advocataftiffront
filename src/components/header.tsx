@@ -386,40 +386,16 @@ const MobileMenu: React.FC<{
         }}
       >
         {/* Hamburger */}
-        <svg
-          className={`icon-hamburger h-5 w-5 ${open ? "hidden" : "block"}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          />
+        <svg className={`icon-hamburger h-5 w-5 ${open ? "hidden" : "block"}`} xmlns="http://www.w3.org/2000/svg" width="22" height="14" viewBox="0 0 22 14" fill="none">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 1C0 0.447715 0.447715 0 1 0H21C21.5523 0 22 0.447715 22 1C22 1.55228 21.5523 2 21 2H1C0.447715 2 0 1.55228 0 1Z" fill="currentColor"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 7C0 6.44772 0.447715 6 1 6H21C21.5523 6 22 6.44772 22 7C22 7.55228 21.5523 8 21 8H1C0.447715 8 0 7.55228 0 7Z" fill="currentColor"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 13C0 12.4477 0.447715 12 1 12H21C21.5523 12 22 12.4477 22 13C22 13.5523 21.5523 14 21 14H1C0.447715 14 0 13.5523 0 13Z" fill="currentColor"/>
         </svg>
+
         {/* Close */}
-        <svg
-          className={`icon-close h-5 w-5 ${open ? "block" : "hidden"}`}
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-        >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M15.5892 4.41073C15.9147 4.73617 15.9147 5.26381 15.5892 5.58925L5.58925 15.5892C5.26381 15.9147 4.73617 15.9147 4.41073 15.5892C4.0853 15.2638 4.0853 14.7362 4.41073 14.4107L14.4107 4.41073C14.7362 4.0853 15.2638 4.0853 15.5892 4.41073Z"
-            fill="white"
-          />
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M4.41073 4.41073C4.73617 4.0853 5.26381 4.0853 5.58925 4.41073L15.5892 14.4107C15.9147 14.7362 15.9147 15.2638 15.5892 15.5892C15.2638 15.9147 14.7362 15.9147 14.4107 15.5892L4.41073 5.58925C4.0853 5.26381 4.0853 4.73617 4.41073 4.41073Z"
-            fill="white"
-          />
+        <svg className={`icon-close h-5 w-5 ${open ? "block" : "hidden"}`} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M15.5892 4.41073C15.9147 4.73617 15.9147 5.26381 15.5892 5.58925L5.58921 15.5892C5.26378 15.9147 4.73614 15.9147 4.4107 15.5892C4.08527 15.2638 4.08527 14.7362 4.4107 14.4107L14.4107 4.41073C14.7361 4.0853 15.2638 4.0853 15.5892 4.41073Z" fill="currentColor"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M4.4107 4.41073C4.73614 4.0853 5.26378 4.0853 5.58921 4.41073L15.5892 14.4107C15.9147 14.7362 15.9147 15.2638 15.5892 15.5892C15.2638 15.9147 14.7361 15.9147 14.4107 15.5892L4.4107 5.58925C4.08527 5.26381 4.08527 4.73617 4.4107 4.41073Z" fill="currentColor"/>
         </svg>
       </button>
 
@@ -427,7 +403,7 @@ const MobileMenu: React.FC<{
       <div
         id="mobile-menu-panel"
         ref={ref}
-        className={`mobile-menu lg:hidden absolute inset-0 top-12 h-screen w-full bg-brand-black border-t border-gray-300 z-50 flex flex-col gap-4 px-6 py-6 ${
+        className={`mobile-menu lg:hidden absolute inset-0 top-15 h-screen w-full bg-brand-black border-t border-gray-300 z-50 flex flex-col gap-4 md:gap-4 px-6 py-6 overflow-y-scroll ${
           open ? "" : "hidden"
         }`}
       >
@@ -505,9 +481,9 @@ const MobileMenu: React.FC<{
                   <div
                     className={`${
                       dropdownOpen ? "" : "hidden"
-                    } dropdown-menu space-y-2 grid ml-4 px-4 py-2 left-0 mt-2 w-[96%] xl:w-full bg-white border-0 rounded-md shadow-lg`}
+                    } dropdown-menu space-y-2 grid ml-10 px-4 py-2 left-0 mt-2 w-[90%] xl:w-full bg-white border-0 rounded-md shadow-lg`}
                   >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
                       <div>
                         <span className="text-slate-800 uppercase font-medium font-montserrat text-sm/5">
                           dashboards
@@ -618,7 +594,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
     <header
       className={`${className ?? ""} navbar bg-brand-black relative z-30`}
     >
-      <div className="max-w-full mx-auto px-6 md:px-6 lg:px-8 flex items-center justify-between py-3 lg:py-3">
+      <div className="max-w-full mx-auto px-6 md:px-6 lg:px-8 flex items-center justify-between py-4 lg:py-3">
         {/* Logo */}
         <a
           href={baseUrl}
