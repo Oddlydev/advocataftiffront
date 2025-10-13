@@ -190,6 +190,48 @@ useEffect(() => {
   // ----------------
   // Axes
   // ----------------
+ // Compact Y-axis number formatter (max 2 digits + suffix)
+  const formatCompact = (num: number) => {
+    const abs = Math.abs(num);
+    let value: number;
+    // let suffix = "";
+
+    if (abs >= 1_000_000_000) {
+      value = num / 1_000_000_000;
+      // suffix = "B";
+    } else if (abs >= 1_000_000) {
+      value = num / 1_000_000;
+      // suffix = "M";
+    } else if (abs >= 1_000) {
+      value = num / 1_000;
+      // suffix = "K";
+    } else {
+      return num.toString(); // leave small numbers as-is
+    }
+
+    // Show only up to 2 significant digits max
+    const formatted =
+      value >= 10 ? value.toFixed(0) : value.toFixed(1);
+
+    return `${formatted}`;
+  };
+
+  // ----------------
+  // Left Y-Axis
+  // ----------------
+  svg.append("g")
+    .call(d3.axisLeft(yLeft).ticks(5).tickFormat(formatCompact as any))
+    .selectAll<SVGTextElement, number>("text")
+    .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
+
+  if (useDualAxis && yRight) {
+    svg.append("g")
+      .attr("transform", `translate(${width},0)`)
+      .call(d3.axisRight(yRight).ticks(5).tickFormat(formatCompact as any))
+      .selectAll<SVGTextElement, number>("text")
+      .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
+  }
+
   const leftTickFormat: (d: number) => string = leftSeries.some(s => s.formatInMillions) ? (d) => `${d / 1e6}` : d3.format(",");
   const rightTickFormat: ((d: number) => string) | null = useDualAxis && yRight ? d3.format(",") : null;
 
@@ -197,22 +239,22 @@ useEffect(() => {
     .selectAll<SVGTextElement, number>("text")
     .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
 
-  svg.append("g").call(d3.axisLeft(yLeft).ticks(5).tickFormat(leftTickFormat as any))
-    .selectAll<SVGTextElement, number>("text")
-    .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
+  // svg.append("g").call(d3.axisLeft(yLeft).ticks(5).tickFormat(leftTickFormat as any))
+  //   .selectAll<SVGTextElement, number>("text")
+  //   .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
 
-  if (useDualAxis && yRight) {
-    svg.append("g").attr("transform", `translate(${width},0)`).call(d3.axisRight(yRight).ticks(5).tickFormat(rightTickFormat as any))
-      .selectAll<SVGTextElement, number>("text")
-      .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
+  // if (useDualAxis && yRight) {
+  //   svg.append("g").attr("transform", `translate(${width},0)`).call(d3.axisRight(yRight).ticks(5).tickFormat(rightTickFormat as any))
+  //     .selectAll<SVGTextElement, number>("text")
+  //     .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
 
-    svg.append("text").attr("text-anchor", "middle").attr("transform", `translate(${width + 50},${height / 2})rotate(90)`)
-      .attr("class", "font-sourcecodepro text-slate-600 text-base lg:text-lg font-normal")
-      .text(yAxisRightLabel ?? "");
-  }
+  //   svg.append("text").attr("text-anchor", "middle").attr("transform", `translate(${width + 50},${height / 2})rotate(90)`)
+  //     .attr("class", "font-sourcecodepro text-slate-600 text-base lg:text-lg font-normal")
+  //     .text(yAxisRightLabel ?? "");
+  // }
 
-  svg.append("text").attr("text-anchor", "middle").attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
-    .attr("class", "font-sourcecodepro text-slate-600 text-base lg:text-lg font-normal")
+  svg.append("text").attr("text-anchor", "middle").attr("transform", `translate(${-55},${height / 2})rotate(-90)`)
+    .attr("class", "font-sourcecodepro text-slate-600 text-base lg:text-base font-normal")
     .text(yAxisLabel);
 
   // ----------------
