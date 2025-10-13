@@ -377,7 +377,7 @@ const MobileMenu: React.FC<{
       {/* Mobile menu toggle */}
       <button
         id="mobile-menu-toggle"
-        className="mobile-menu-toggle text-slate-50"
+        className="mobile-menu-toggle text-slate-50 p-3 focus:outline-none focus:ring-0 focus:ring-transparent hover:bg-slate-700/30"
         aria-expanded={open}
         aria-controls="mobile-menu-panel"
         onClick={(e) => {
@@ -403,7 +403,7 @@ const MobileMenu: React.FC<{
       <div
         id="mobile-menu-panel"
         ref={ref}
-        className={`mobile-menu lg:hidden absolute inset-0 top-15 h-screen w-full bg-brand-black border-t border-gray-300 z-50 flex flex-col gap-4 md:gap-4 px-6 py-6 overflow-y-scroll ${
+        className={`mobile-menu lg:hidden absolute inset-0 top-18 h-screen w-full bg-brand-black border-t border-gray-300 z-50 flex flex-col gap-4 md:gap-4 px-6 py-6 overflow-y-scroll ${
           open ? "" : "hidden"
         }`}
       >
@@ -598,7 +598,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
         {/* Logo */}
         <a
           href={baseUrl}
-          className="brand-logo text-2xl leading-snug font-bold text-gray-800 w-full sm:w-40 md:w-52 lg:w-64"
+          className="inline-flex items-center p-2 md:p-3 brand-logo text-2xl leading-snug font-bold text-gray-800 w-full sm:w-40 md:w-52 lg:w-64"
           aria-label="Homepage"
         >
           <div className="flex space-x-3 text-white text-sm font-normal font-sourcecodepro items-center">
