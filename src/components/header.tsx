@@ -380,6 +380,7 @@ const MobileMenu: React.FC<{
         className="mobile-menu-toggle text-slate-50 p-3 focus:outline-none focus:ring-0 focus:ring-transparent hover:bg-slate-700/30"
         aria-expanded={open}
         aria-controls="mobile-menu-panel"
+        aria-label={open ? "Close mobile menu" : "Open mobile menu"} // dynamic label
         onClick={(e) => {
           e.stopPropagation();
           setOpen((v) => !v);
