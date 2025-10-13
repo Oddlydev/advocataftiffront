@@ -5,7 +5,8 @@ import SEO from "@/src/components/SEO";
 import Image from "next/image";
 import HeroBasic from "@/src/components/HeroBlocks/HeroBasic";
 import WhiteButton from "@/src/components/Buttons/WhiteBtn";
-import Link from "next/link";
+// Using a plain anchor for consistent navigation behavior across browsers
+// (Home page cards use <a> and work reliably.)
 
 export const PAGE_QUERY = gql`
   query GetDashboardsPage($databaseId: ID!, $asPreview: Boolean = false) {
@@ -66,6 +67,19 @@ interface DashboardsPageProps {
   };
 }
 const datasetBgPattern = "/assets/images/patterns/dataset-bg-pattern.jpg";
+
+// Normalize a WP/ACF URL to an internal path for Next.js routing
+function toInternalHref(input?: string | null): string {
+  if (!input) return "#";
+  try {
+    // If it's an absolute URL, keep only the pathname so the client router handles it
+    const u = new URL(input);
+    return u.pathname || "/";
+  } catch {
+    // Already relative or invalid for URL – return as-is
+    return input;
+  }
+}
 
 /** First non-empty <p> from Gutenberg HTML (as plain text) */
 function firstParagraphFromHtml(html?: string | null): string {
@@ -170,9 +184,9 @@ const Section: React.FC<SectionProps> = ({
   imgAlt,
   url,
 }) => {
+  const href = toInternalHref(url);
   return (
-    <Link href={url}>
-      <div className="pt-8">
+    <a href={href} className="block pt-8">
         <div
           className="border border-slate-400 shadow-2xl rounded-lg p-6 md:p-9 lg:px-12 lg:py-16 pr-0 lg:pr-0
              transition-all duration-300 ease-in-out hover:-translate-y-1.5"
@@ -187,7 +201,8 @@ const Section: React.FC<SectionProps> = ({
                 {text}
               </p>
               <div className="mt-4 lg:mt-5">
-                <WhiteButton className="!py-2.5 !px-3.5 !text-sm !font-semibold !text-gray-600" url={url}>Learn more</WhiteButton>
+                {/* Use a non-navigating button so clicks bubble to the anchor wrapper */}
+                <WhiteButton className="!py-2.5 !px-3.5 !text-sm !font-semibold !text-gray-600">Learn more</WhiteButton>
               </div>
             </div>
 
@@ -212,8 +227,7 @@ const Section: React.FC<SectionProps> = ({
             </div>
           </div>
         </div>
-      </div>
-    </Link>
+    </a>
   );
 };
 
