@@ -213,7 +213,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
             </div>
 
             <div className="relative">
-              <div className="absolute -top-3 md:-top-6 lg:top-0 right-4 md:right-10 flex gap-2">
+              <div className="absolute z-20 -top-3 md:-top-6 lg:top-0 right-4 md:right-10 flex gap-2">
                 <button
                   id={controlIds.zoomInId}
                   className="px-1.5 py-1 md:px-2.5 md:py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
