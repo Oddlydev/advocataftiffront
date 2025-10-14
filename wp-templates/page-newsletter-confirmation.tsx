@@ -76,9 +76,7 @@ export default function PageNewsletterConfirmation() {
 
     if (!agree) {
       setStatus("error");
-      setMessage(
-        "Please agree to the Privacy Policy and Terms of Service to continue."
-      );
+      setMessage("Please agree to the Terms and Conditions to continue.");
       return;
     }
 
@@ -283,7 +281,7 @@ export default function PageNewsletterConfirmation() {
                   </div>
                 </div>
 
-               {/* Checkbox */}
+                {/* Checkbox */}
                 <div className="pt-7">
                   <label className="flex items-center gap-3 cursor-pointer">
                     <div className="relative flex justify-center items-center">
@@ -312,25 +310,16 @@ export default function PageNewsletterConfirmation() {
                     <span className="text-base font-normal text-slate-600 font-sourcecodepro">
                       I agree to Advocata&apos;s{" "}
                       <Link
-                        href="/privacy-policy/"
-                        rel="noopener noreferrer"
-                        className="underline hover:text-slate-900"
-                      >
-                        Privacy Policy
-                      </Link>{" "}
-                      and{" "}
-                      <Link
                         href="/terms-and-conditions/"
                         rel="noopener noreferrer"
                         className="underline hover:text-slate-900"
                       >
-                        Terms of Service
+                        Terms and Conditions
                       </Link>
                       .
                     </span>
                   </label>
                 </div>
-
 
                 {/* Global error message below form */}
                 {status === "error" && message && (
