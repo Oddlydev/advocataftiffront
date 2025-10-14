@@ -1,5 +1,5 @@
 import React from "react";
-import Link from "next/link";
+// Use a plain anchor for robust navigation (works even with absolute URLs)
 
 interface CardType5Props {
   title: string;
@@ -47,6 +47,16 @@ const CardType5: React.FC<CardType5Props> = ({
   categories = [],
 }) => {
   const isoDate = toISOOrRaw(postDate);
+
+  const toInternalHref = (input?: string): string | undefined => {
+    if (!input) return undefined;
+    try {
+      const u = new URL(input, typeof window !== "undefined" ? window.location.origin : "http://localhost");
+      return u.pathname || "/";
+    } catch {
+      return input; // already a relative path
+    }
+  };
 
   const Article = (
     
@@ -106,10 +116,11 @@ const CardType5: React.FC<CardType5Props> = ({
     </article>
   );
 
-  return uri ? (
-    <Link href={uri} prefetch={false} aria-label={title} className="block h-full">
+  const href = toInternalHref(uri);
+  return href ? (
+    <a href={href} aria-label={title} className="block h-full">
       {Article}
-    </Link>
+    </a>
   ) : (
     Article
   );

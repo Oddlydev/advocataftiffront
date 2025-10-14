@@ -290,7 +290,7 @@ function extractHeroFromGutenberg(html?: string | null): {
 /** Main Home Page component */
 export default function PageHome({ data }: HomePageProps): JSX.Element {
   const router = useRouter();
-  const homeHeroBg = "/assets/images/patterns/home-hero-bg.jpg";
+  const homeHeroBg = "/assets/images/patterns/home-hero.jpg";
 
   const heroHtml = data?.page?.content ?? undefined;
   const { title: heroTitle, description: heroDescription } =
@@ -343,18 +343,18 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   // z-index toggle effect
-useEffect(() => {
-  if (typeof window === "undefined") return; // Only run in browser
+  useEffect(() => {
+    if (typeof window === "undefined") return; // Only run in browser
 
-  const featured = document.getElementById("featured-section");
-  if (!featured) return;
+    const featured = document.getElementById("featured-section");
+    if (!featured) return;
 
-  if (isSearchVisible) {
-    featured.classList.remove("z-20");
-  } else {
-    featured.classList.add("z-20");
-  }
-}, [isSearchVisible]);
+    if (isSearchVisible) {
+      featured.classList.remove("z-20");
+    } else {
+      featured.classList.add("z-20");
+    }
+  }, [isSearchVisible]);
 
   return (
     <div className="bg-white overflow-x-hidden">
@@ -400,7 +400,7 @@ useEffect(() => {
                 </div>
               )}
               <div className="mt-8">
-                <SearchFieldHome setIsSearchVisible={setIsSearchVisible}/>
+                <SearchFieldHome setIsSearchVisible={setIsSearchVisible} />
               </div>
             </div>
           </div>
@@ -630,7 +630,7 @@ useEffect(() => {
         className="relative overflow-hidden bg-white py-24 sm:py-32"
         style={{
           background:
-            "url('/assets/images/patterns/home-page-bg.jpg') no-repeat center/cover",
+            "url('/assets/images/patterns/ai-banner.jpg') no-repeat center/cover",
         }}
       >
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
@@ -638,7 +638,10 @@ useEffect(() => {
             <div className="lg:pt-4 lg:pr-4 lg:w-3xl">
               <div className="max-w-md md:max-w-xl lg:max-w-none">
                 {data?.page?.homeAiSection?.aiTitle && (
-                  <span className="text-xs font-semibold text-white py-2 px-3 rounded-full uppercase font-sourcecodepro" style={{ backgroundColor: "rgba(255, 255, 255, 0.24)" }}>
+                  <span
+                    className="text-xs font-semibold text-white py-2 px-3 rounded-full uppercase font-sourcecodepro"
+                    style={{ backgroundColor: "rgba(255, 255, 255, 0.24)" }}
+                  >
                     {data.page.homeAiSection.aiTitle}
                   </span>
                 )}

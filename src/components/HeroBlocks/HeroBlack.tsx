@@ -15,7 +15,7 @@ type HeroBlackProps = {
 };
 
 export default function HeroBlack({
-  bgUrl = "/assets/images/hero-black-bg.jpg",
+  bgUrl = "/assets/images/black-hero-bg.jpg",
   title = "U.S. Population Projected to Reach 341,145,670 at Midnight EST on January 1",
   dateText = "August 24th, 2025",
   items,
@@ -55,4 +55,3 @@ export default function HeroBlack({
     </section>
   );
 }
-

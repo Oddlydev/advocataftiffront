@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 
 interface CardType6Props {
   title: string;
@@ -50,6 +49,20 @@ const CardType6: React.FC<CardType6Props> = ({
   postDate,
   uri,
 }) => {
+  const toInternalHref = (input?: string): string | undefined => {
+    if (!input) return undefined;
+    try {
+      const u = new URL(
+        input,
+        typeof window !== "undefined" ? window.location.origin : "http://localhost"
+      );
+      return u.pathname || "/";
+    } catch {
+      return input; // already relative
+    }
+  };
+
+  const href = toInternalHref(uri);
   return (
     <div className="h-full">
       <div
@@ -60,15 +73,10 @@ const CardType6: React.FC<CardType6Props> = ({
           "card card-type-6",
         ].join(" ")}
       >
-        {uri && (
-          <Link
-            href={uri}
-            prefetch={false}
-            aria-label={title}
-            className="absolute inset-0 z-10"
-          >
+        {href && (
+          <a href={href} aria-label={title} className="absolute inset-0 z-10">
             <span className="sr-only">{title}</span>
-          </Link>
+          </a>
         )}
         <div className="card-body flex flex-1 flex-col justify-between bg-white px-6 py-5">
           <div className="flex-1">

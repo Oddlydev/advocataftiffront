@@ -98,7 +98,7 @@ interface InsightsPageProps {
   loading?: boolean;
 }
 
-const insightBgPattern = "/assets/images/patterns/insight-bg-pattern.jpg";
+const insightBgPattern = "/assets/images/patterns/insight-hero.jpg";
 
 /** Return the first NON-EMPTY <p> from Gutenberg HTML as plain text */
 function firstParagraphFromHtml(html?: string | null): string {
