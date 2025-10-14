@@ -280,7 +280,7 @@ const DashboardDropdown: React.FC<{
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <span className="text-slate-800 font-medium font-montserrat text-sm/5 uppercase">
+            <span className="text-slate-800 font-normal font-montserrat text-sm/5 uppercase">
               dashboards
             </span>
             <nav className="sidebar-fill pt-4" aria-label="Sidebar">
