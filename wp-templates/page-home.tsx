@@ -399,15 +399,15 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
 
         <div className="absolute inset-0 flex items-center">
           <div className="hero-block-container px-5 md:px-16 xl:px-20 pt-10 pb-24 sm:pb-28 md:pt-16 md:pb-16 xl:pt-32 xl:pb-72 relative z-10 mx-auto">
-            <div className="hero-block-center text-center mx-auto max-w-6xl grid justify-center">
+            <div className="hero-block-center text-center mx-auto max-w-4xl grid justify-center">
               {heroTitle && (
-                <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-[80px] leading-snug font-montserrat font-extrabold max-w-4xl">
+                <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-[80px] leading-snug font-montserrat font-extrabold">
                   {heroTitle}
                 </h1>
               )}
               {heroDescription && (
                 <div className="space-y-2.5">
-                  <p className="hero-paragraph text-slate-200 text-base/6 lg:text-lg/7 font-montserrat font-normal max-w-3xl mx-auto">
+                  <p className="hero-paragraph text-slate-200 text-base/6 lg:text-lg/7 font-montserrat font-normal mx-auto">
                     {heroDescription}
                   </p>
                 </div>
