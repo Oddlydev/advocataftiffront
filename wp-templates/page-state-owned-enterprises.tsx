@@ -266,13 +266,8 @@ export default function PageStateOwnedDashboard(): JSX.Element {
     setSoePosts(cached.posts);
 
     const urlYear = searchParams.get("year");
-    const urlIndustry = searchParams.get("industry");
     const effectiveYear = urlYear ?? year ?? yearsSorted[0]?.slug ?? null;
-    // Parse any pre-selected industries from URL as comma-separated names
-    if (urlIndustry) {
-      const names = urlIndustry.split(",").map((s) => s.trim()).filter(Boolean);
-      if (names.length) setSelectedIndustries(names);
-    }
+    // Do not preselect industries from URL on initial load
     if (!year && effectiveYear) setYear(effectiveYear);
 
     let initial = cached.posts;
@@ -290,16 +285,11 @@ export default function PageStateOwnedDashboard(): JSX.Element {
     setIsLoading(false);
   }, []);
 
-  // Load defaults from URL
+  // Load defaults from URL (ignore industry to avoid auto-select)
   useEffect(() => {
     const q = searchParams.get("q") || "";
-    const ind = searchParams.get("industry");
     const yr = searchParams.get("year");
     setQueryInput(q);
-    if (ind) {
-      const names = ind.split(",").map((s) => s.trim()).filter(Boolean);
-      setSelectedIndustries(names);
-    }
     setYear(yr);
   }, [searchParams]);
 
@@ -342,13 +332,8 @@ export default function PageStateOwnedDashboard(): JSX.Element {
 
         // Determine effective selection and prime results before clearing loader
         const urlYear = searchParams.get("year");
-        const urlIndustry = searchParams.get("industry");
         const effectiveYear = urlYear ?? year ?? years[0]?.slug ?? null;
-        // Preselect industries from URL (comma-separated names)
-        if (urlIndustry) {
-          const names = urlIndustry.split(",").map((s) => s.trim()).filter(Boolean);
-          if (names.length) setSelectedIndustries(names);
-        }
+        // Do not preselect industries from URL on initial load
 
         if (!year && effectiveYear) setYear(effectiveYear);
 
@@ -488,8 +473,8 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                 idKey="one"
                 label={
                   selectedIndustries.length > 0
-                    ? `Industry (${selectedIndustries.length})`
-                    : "Industry"
+                    ? `Sector (${selectedIndustries.length})`
+                    : "Sector"
                 }
                 items={[
                   ...industryOptions.map((ind) => ({
@@ -504,7 +489,10 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                       );
                     },
                   })),
-                  { label: "Clear selection", onClick: () => setSelectedIndustries([]) },
+                  {
+                    label: "Clear selection",
+                    onClick: () => setSelectedIndustries([]),
+                  },
                 ]}
                 align="right"
                 open={openId === "one"}
