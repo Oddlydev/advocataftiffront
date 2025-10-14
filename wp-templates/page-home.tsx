@@ -364,39 +364,38 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
         description={heroDescription}
       />
       {/* Hero section */}
-      <div className="home-hero relative bg-cover bg-center bg-no-repeat text-white h-screen md:h-[65vh] xl:h-screen">
-        {/* Background Image */}
-        <div>
-          <img
-            src={homeHeroBg}
-            width={1628}
-            height={700}
-            className="h-screen md:h-[65vh] xl:h-screen w-full object-cover"
-            alt="home-hero-bg"
-          />
-        </div>
-
-        {/* overlay */}
+      <div
+        className="home-hero relative text-white h-screen md:h-[65vh] xl:h-screen"
+        style={{
+          backgroundImage: `url(${homeHeroBg})`,
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundColor: "lightgray",
+        }}
+      >
+        {/* Overlay container */}
         <div className="absolute inset-0 h-full w-full overflow-hidden">
           {/* Blurred overlay */}
-          <div
-            className="absolute inset-0 h-full w-full backdrop-blur-xs"
-            style={{
-              maskImage: "linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0))",
-              WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0))",
-            }}
-          ></div>
+          <div className="absolute inset-0 h-full w-full backdrop-blur-xs" 
+            style={{ 
+              maskImage: "linear-gradient(0deg, rgba(235, 26, 82, 0.20) 0%, rgba(235, 26, 82, 0.20) 100%)", 
+              WebkitMaskImage: "linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.45) 100%)", }} >
+          </div>
 
-          {/* Optional color gradients */}
+          {/* Red + Black gradient overlay */}
           <div
             className="absolute inset-0 h-full w-full"
             style={{
-              background:
-                "linear-gradient(0deg, rgba(235, 26, 82, 0.20) 0%, rgba(235, 26, 82, 0.20) 100%), linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.45) 100%)",
+              background: `
+                linear-gradient(0deg, rgba(235, 26, 82, 0.20) 0%, rgba(235, 26, 82, 0.20) 100%),
+                linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.45) 100%)
+              `,
             }}
           ></div>
         </div>
 
+        {/* Hero content */}
         <div className="absolute inset-0 flex items-center">
           <div className="hero-block-container px-5 md:px-16 xl:px-20 pt-10 pb-24 sm:pb-28 md:pt-16 md:pb-16 xl:pt-32 xl:pb-72 relative z-10 mx-auto">
             <div className="hero-block-center text-center mx-auto max-w-4xl grid justify-center">
