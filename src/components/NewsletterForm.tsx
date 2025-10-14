@@ -114,7 +114,7 @@ export default function NewsletterForm({
             className={`footer-subscribe-btn flex w-full items-center justify-center rounded-md px-6 py-4 text-lg/7 font-medium text-brand-white font-sourcecodepro shadow-sm transition-colors duration-300 ease-in-out cursor-pointer ${
               variant === "desktop"
                 ? "bg-brand-1-600 hover:bg-brand-1-900"
-                : "bg-brand-1-900 hover:bg-brand-1-950"
+                : "bg-brand-1-600 hover:bg-brand-1-900"
             }`}
           >
             Subscribe

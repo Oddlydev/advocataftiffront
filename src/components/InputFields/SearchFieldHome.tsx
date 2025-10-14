@@ -89,7 +89,7 @@ export default function SearchFieldHome({ setIsSearchVisible }: SearchFieldHomeP
         <button
           type="submit"
           aria-label="Search"
-          className="search-btn btn absolute right-2.5 top-1/2 -translate-y-1/2 font-semibold font-sourcecodepro px-3 py-3 sm:px-3.5 sm:py-2.5 md:px-4 md:py-3 lg:py-3.5 xl:px-6 xl:py-3.5 text-xs/4 sm:text-sm/tight lg:text-base/6 gap-2 lg:gap-3 transition-all duration-500 ease-in-out cursor-pointer uppercase bg-brand-white border border-slate-200 text-gray-600 rounded-full shadow-sm hover:text-brand-white hover:bg-brand-1-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent"
+          className="search-btn btn absolute right-2.5 top-1/2 -translate-y-1/2 font-semibold font-sourcecodepro px-3.5 py-3.5 sm:px-3.5 sm:py-2.5 md:px-4 md:py-3 lg:py-3.5 xl:px-6 xl:py-3.5 text-xs/4 sm:text-sm/tight lg:text-base/6 gap-2 lg:gap-3 transition-all duration-500 ease-in-out cursor-pointer uppercase bg-brand-white border border-slate-200 text-gray-600 rounded-full shadow-sm hover:text-brand-white hover:bg-brand-1-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent"
         >
           <span className="hidden md:block">Search</span>
           <span className="block md:hidden">

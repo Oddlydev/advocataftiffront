@@ -745,7 +745,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
       <div className="bg-white py-3.5 md:py-5 xl:pt-6 xl:pb-20">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           {/* Chip-box & Dropdown-Button */}
-          <div className="lg:flex gap-2 items-center justify-between pb-5 md:pb-8 xl:pb-16">
+          <div className="md:flex gap-2 items-center justify-between pb-5 md:pb-8 xl:pb-16">
             <div className="relative w-full xl:w-2/3">
               <div className="grid xl:grid-cols-4 md:flex xl:items-center gap-2.5 md:gap-1.5">
                 {datasets.map((item) => {
@@ -773,7 +773,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
             </div>
 
             {/* Dropdown */}
-            <div className="grid md:flex gap-3 items-center xl:justify-end w-full lg:w-1/3 mt-4 xl:mt-0">
+            <div className="grid md:flex gap-3 items-center md:justify-end w-full lg:w-1/3 mt-4 md:mt-0">
               <span className="text-slate-800 font-medium text-lg/7 font-sourcecodepro md:flex md:justify-items-end mt-3 md:mt-0">
                 Filter by :
               </span>

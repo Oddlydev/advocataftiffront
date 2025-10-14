@@ -357,7 +357,7 @@ useEffect(() => {
 }, [isSearchVisible]);
 
   return (
-    <div className="bg-gray-400 overflow-x-hidden">
+    <div className="bg-white overflow-x-hidden">
       <SEO
         yoast={data?.page?.seo as any}
         title={data?.page?.title ?? heroTitle ?? "Home"}
