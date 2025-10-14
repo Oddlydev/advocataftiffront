@@ -321,25 +321,25 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
         yoast={data?.page?.seo as any}
         title={data?.page?.title ?? undefined}
       />
-      {/* <section className="dataset-hero relative">
-        <div className="absolute inset-0 -z-10" />
-        <HeroBasic
-          bgUrl={datasetBgPattern}
-          title="Research Datasets"
-          paragraph={heroParagraph}
-          overlay={null}
-        />
-      </section> */}
 
       <div className="insight-hero relative">
-        {/* Background Image */}
+        {/* Background image */}
         <img
           src={datasetBgPattern}
           alt="hero background"
           className="absolute inset-0 h-full w-full object-cover"
         />
 
-        {/* Hero Content */}
+        {/* Overlay gradient */}
+        <div
+          className="absolute inset-0 w-full h-full"
+          style={{
+            background:
+              "linear-gradient(0deg, rgba(20, 101, 245, 0.10) 0%, rgba(20, 101, 245, 0.10) 100%)",
+          }}
+        />
+
+        {/* Hero content */}
         <div className="relative z-10">
           <HeroBasic
             bgUrl={datasetBgPattern}

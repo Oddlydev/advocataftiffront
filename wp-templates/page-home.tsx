@@ -377,13 +377,26 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
         </div>
 
         {/* overlay */}
-        <div
-          className="absolute inset-0 h-full w-full"
-          style={{
-            background:
-              "linear-gradient(0deg, rgba(235, 26, 82, 0.20) 0%, rgba(235, 26, 82, 0.20) 100%), linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.45) 100%)",
-          }}
-        />
+        <div className="absolute inset-0 h-full w-full overflow-hidden">
+          {/* Blurred overlay */}
+          <div
+            className="absolute inset-0 h-full w-full backdrop-blur-xs"
+            style={{
+              maskImage: "linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0))",
+              WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0))",
+            }}
+          ></div>
+
+          {/* Optional color gradients */}
+          <div
+            className="absolute inset-0 h-full w-full"
+            style={{
+              background:
+                "linear-gradient(0deg, rgba(235, 26, 82, 0.20), rgba(235, 26, 82, 0.20)), linear-gradient(0deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45))",
+            }}
+          ></div>
+        </div>
+        
         <div className="absolute inset-0 flex items-center">
           <div className="hero-block-container px-5 md:px-16 xl:px-20 pt-10 pb-24 sm:pb-28 md:pt-16 md:pb-16 xl:pt-32 xl:pb-72 relative z-10 mx-auto">
             <div className="hero-block-center text-center mx-auto max-w-6xl grid justify-center">

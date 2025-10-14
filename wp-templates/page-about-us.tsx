@@ -75,24 +75,28 @@ const AboutHero: React.FC<{
 }> = ({ image }) => {
   if (!image?.sourceUrl) return null;
   return (
-    <div className="about-hero relative">
-      <div className="h-full lg:h-[500px] w-full">
-        <img
-          src={image.sourceUrl}
-          width={1628}
-          height={500}
-          className="h-full w-full object-cover"
-          alt={image.altText || "About hero"}
+      <div className="about-hero relative">
+        {/* Background image */}
+        <div className="h-full lg:h-[500px] w-full">
+          <img
+            src={image.sourceUrl}
+            width={1628}
+            height={500}
+            className="h-full w-full object-cover"
+            alt={image.altText || "About hero"}
+          />
+        </div>
+
+        {/* Overlay gradient */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(0deg, rgba(235, 26, 82, 0.16) 0%, rgba(235, 26, 82, 0.16) 100%)",
+            // mixBlendMode: "multiply", // optional: helps blend nicely
+          }}
         />
       </div>
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(0deg, rgba(235, 26, 82, 0.16) 0%, rgba(235, 26, 82, 0.16) 100%)",
-        }}
-      />
-    </div>
   );
 };
 

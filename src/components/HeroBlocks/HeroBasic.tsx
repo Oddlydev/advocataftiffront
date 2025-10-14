@@ -25,9 +25,9 @@ export default function HeroBasic({
       }}
     >
       {/* Overlay (only render if not null) */}
-      {overlay && (
+      {/* {overlay && (
         <div className="absolute inset-0" style={{ background: overlay }} />
-      )}
+      )} */}
 
       {/* Content */}
       <div className="relative hero-block text-start mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-5 items-center">

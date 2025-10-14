@@ -132,14 +132,26 @@ const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
 
       {/* Hero Section */}
       <div className="insight-hero relative">
-        {/* Background Image */}
+        {/* Background image */}
         <img
           src={datasetBgPattern}
           alt="hero background"
           className="absolute inset-0 h-full w-full object-cover"
         />
+      
+        {/* Overlay gradient */}
+        <div
+          className="absolute inset-0 w-full h-full"
+          style={{
+            background:
+              "linear-gradient(0deg, rgba(20, 101, 245, 0.10) 0%, rgba(20, 101, 245, 0.10) 100%)",
+          }}
+        />
+      
+        {/* Hero content */}
         <div className="relative z-10">
           <HeroBasic
+            bgUrl={datasetBgPattern}
             title="Dashboards"
             paragraph={heroParagraph}
             overlay={null}
