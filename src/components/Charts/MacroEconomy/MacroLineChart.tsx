@@ -216,32 +216,65 @@ export function MacroLineChart({
       return `${formatted}`;
     };
 
-    // ----------------
-    // Left Y-Axis
-    // ----------------
-    svg.append("g")
-      .call(d3.axisLeft(yLeft).ticks(5).tickFormat(formatCompact as any))
-      .selectAll<SVGTextElement, number>("text")
-      .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
+    // -----------------------------
+    // Y-AXIS (Left)
+    // -----------------------------
+    const leftAxis = d3.axisLeft(yLeft)
+      .ticks(5)
+      .tickFormat(formatCompact as any);
 
+    svg.append("g")
+      .call(leftAxis)
+      .selectAll<SVGTextElement, number>("text")
+      .attr("class", "font-sourcecodepro text-slate-600 text-xs md:text-base xl:text-lg font-semibold");
+
+    // -----------------------------
+    // Y-AXIS (Right, if dual)
+    // -----------------------------
     if (useDualAxis && yRight) {
+      const rightAxis = d3.axisRight(yRight)
+        .ticks(5)
+        .tickFormat(formatCompact as any);
+
       svg.append("g")
         .attr("transform", `translate(${width},0)`)
-        .call(d3.axisRight(yRight).ticks(5).tickFormat(formatCompact as any))
+        .call(rightAxis)
         .selectAll<SVGTextElement, number>("text")
-        .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
+        .attr("class", "font-sourcecodepro text-slate-600 text-xs md:text-base xl:text-lg font-semibold");
     }
 
-    const leftTickFormat: (d: number) => string = leftSeries.some(s => s.formatInMillions) ? (d) => `${d / 1e6}` : d3.format(",");
-    const rightTickFormat: ((d: number) => string) | null = useDualAxis && yRight ? d3.format(",") : null;
+    // -----------------------------
+    // X-AXIS
+    // -----------------------------
+    const xAxis = d3.axisBottom(x)
+      .tickFormat(d3.format("d"))
+      .ticks(Math.min(data.length, 10)); // limit to avoid label crowding
 
-    svg.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(x).tickFormat(d3.format("d")))
+    svg.append("g")
+      .attr("transform", `translate(0,${height})`)
+      .call(xAxis)
       .selectAll<SVGTextElement, number>("text")
-      .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
+      .attr("class", "font-sourcecodepro text-slate-600 text-xs md:text-base xl:text-lg font-semibold");
 
-    svg.append("text").attr("text-anchor", "middle").attr("transform", `translate(${-55},${height / 2})rotate(-90)`)
-      .attr("class", "font-sourcecodepro text-slate-600 text-base lg:text-base font-normal")
+    // -----------------------------
+    // Y-AXIS LABEL
+    // -----------------------------
+    svg.append("text")
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(${-50},${height / 2})rotate(-90)`)
+      .attr("class", "font-sourcecodepro text-slate-600 text-sm md:text-base xl:text-lg font-normal")
       .text(yAxisLabel);
+
+    // -----------------------------
+    // RIGHT Y-AXIS LABEL (optional)
+    // -----------------------------
+    if (useDualAxis && yAxisRightLabel) {
+      svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", `translate(${width + 50},${height / 2})rotate(90)`)
+        .attr("class", "font-sourcecodepro text-slate-600 text-sm md:text-base xl:text-lg font-normal")
+        .text(yAxisRightLabel);
+    }
 
     // ----------------
     // Grid lines
@@ -396,7 +429,7 @@ export function MacroLineChart({
             .style("left", `${event.clientX - rect.left + 15}px`)
             .style("top", `${event.clientY - rect.top - 50}px`);
         })
-        
+
         .on("mouseout", () => {
           if (hideTooltipTimeout) clearTimeout(hideTooltipTimeout);
           hideTooltipTimeout = setTimeout(() => {
