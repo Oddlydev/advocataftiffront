@@ -1,23 +1,31 @@
 "use client";
 
 import searchClient from "@/src/lib/algolia";
-import { type JSX, FormEvent, useState, useEffect } from "react";
+import { type JSX, FormEvent, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 interface SearchFieldHomeProps {
   setIsSearchVisible?: (visible: boolean) => void;
+  onSearch?: (query: string) => void;
 }
 
-export default function SearchFieldHome({ setIsSearchVisible }: SearchFieldHomeProps): JSX.Element {
+export default function SearchFieldHome({ setIsSearchVisible, onSearch }: SearchFieldHomeProps): JSX.Element {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const router = useRouter();
 
+  const sanitizeInput = useCallback((value: string) => {
+    // Remove potentially dangerous characters and control chars
+    return value.replace(/[<>]/g, "").replace(/[\u0000-\u001F\u007F]/g, "");
+  }, []);
+
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (query.trim().length > 0) {
-      router.push(`/search-result?query=${encodeURIComponent(query)}`);
-    }
+    const cleaned = sanitizeInput(query).trim();
+    if (cleaned.length === 0) return;
+    // Call optional onSearch with cleaned value
+    onSearch?.(cleaned);
+    router.push(`/search-result?query=${encodeURIComponent(cleaned)}`);
   }
 
   useEffect(() => {
@@ -34,6 +42,7 @@ export default function SearchFieldHome({ setIsSearchVisible }: SearchFieldHomeP
         const { hits } = await searchClient.searchSingleIndex({
           indexName: "wp_searchable_posts",
           searchParams: {
+            // query is already sanitized in onChange below
             query,
             hitsPerPage: 5,
             filters: 'post_type_label:"Data Sets" OR post_type_label:"Insights"',
@@ -60,7 +69,10 @@ export default function SearchFieldHome({ setIsSearchVisible }: SearchFieldHomeP
           name="search"
           placeholder="Search Eg: Budget, Debt and Loans"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            const cleaned = sanitizeInput(e.target.value);
+            setQuery(cleaned);
+          }}
           className="search-input w-full rounded-full border border-white/45 bg-brand-black py-5 px-6 md:pl-12 md:pr-28 font-sourcecodepro text-sm md:text-base text-slate-50/70 placeholder:text-slate-50 shadow-sm focus:border-brand-1-200 focus:outline-0 focus:ring-1 focus:ring-transparent"
         />
         <div className="search-icon hidden md:block absolute left-4 top-1/2 -translate-y-1/2 text-slate-50">

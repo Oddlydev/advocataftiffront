@@ -13,7 +13,8 @@ type SearchFieldProps = {
   value?: string; // controlled value
   defaultValue?: string; // for uncontrolled usage
   onChange?: (query: string) => void; // fires on each keystroke
-  onSubmit?: (query: string) => void; // fires on Enter or submit
+  onSubmit?: (query: string) => void; // fires on Enter or submit (deprecated, prefer onSearch)
+  onSearch?: (query: string) => void; // fires on Enter or submit with cleaned value
   placeholder?: string;
   className?: string;
   clearOnFocus?: boolean; // optional: clear input when focused
@@ -27,6 +28,7 @@ export default function SearchField({
   defaultValue,
   onChange,
   onSubmit,
+  onSearch,
   placeholder = "Search",
   className,
   clearOnFocus = false,
@@ -40,6 +42,10 @@ export default function SearchField({
     (typeof value === "string" ? value : defaultValue) ?? ""
   );
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const sanitizeInput = useCallback((val: string) => {
+    return val.replace(/[<>]/g, "").replace(/[\u0000-\u001F\u007F]/g, "");
+  }, []);
 
   // Keep local input in sync when external value changes
   useEffect(() => {
@@ -60,18 +66,23 @@ export default function SearchField({
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const next = e.target.value;
-      setQuery(next);
-      emitChangeDebounced(next);
+      const cleaned = sanitizeInput(e.target.value);
+      setQuery(cleaned);
+      emitChangeDebounced(cleaned);
     },
-    [emitChangeDebounced]
+    [emitChangeDebounced, sanitizeInput]
   );
 
   const handleKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") onSubmit?.(query);
+      if (e.key === "Enter") {
+        const cleaned = sanitizeInput(query).trim();
+        if (cleaned.length === 0) return;
+        onSearch?.(cleaned);
+        onSubmit?.(cleaned);
+      }
     },
-    [onSubmit, query]
+    [onSubmit, onSearch, query, sanitizeInput]
   );
 
   const handleFocus = useCallback(() => {
@@ -163,7 +174,12 @@ export default function SearchField({
           {showSubmitButton && (
             <button
               type="button"
-              onClick={() => onSubmit?.(query)}
+              onClick={() => {
+                const cleaned = sanitizeInput(query).trim();
+                if (cleaned.length === 0) return;
+                onSearch?.(cleaned);
+                onSubmit?.(cleaned);
+              }}
               className="rounded-full bg-brand-1-600 px-4 py-1.5 text-white text-sm font-medium hover:bg-brand-1-700"
             >
               {submitLabel}
