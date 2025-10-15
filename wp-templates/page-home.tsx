@@ -397,7 +397,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
 
         {/* Hero content */}
         <div className="absolute inset-0 flex items-center">
-          <div className="hero-block-container px-5 md:px-16 xl:px-20 pt-10 pb-24 sm:pb-28 md:pt-16 md:pb-16 xl:pt-32 xl:pb-72 relative z-10 mx-auto">
+          <div className="hero-block-container px-5 md:px-16 xl:px-20 pt-10 pb-24 sm:pb-28 md:pt-16 md:pb-16 xl:pt-56 xl:pb-78 relative z-10 mx-auto">
             <div className="hero-block-center text-center mx-auto max-w-4xl grid justify-center">
               {heroTitle && (
                 <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-[80px] leading-snug font-montserrat font-extrabold">
@@ -423,7 +423,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
       {featuredDashboardChart ? (
         <div id="featured-section" className="bg-white pb-0 relative">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-            <div className="ring-1 ring-black/10 rounded-3xl relative -top-30 custom-top-50 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-32 overflow-visible bg-brand-1-800 p-5 md:p-10">
+            <div className="ring-1 ring-black/10 rounded-3xl relative -top-30 custom-top-50 sm:-top-28 md:-top-28 lg:-top-40 xl:-top-30 overflow-visible bg-brand-1-800 p-5 md:p-10">
               <div className="md:flex items-center justify-between px-3 py-2 md:px-6 md:py-4">
                 <h2 className="text-2xl md:text-3xl xl:text-4xl leading-snug font-montserrat font-bold text-slate-50">
                   Featured Dashboard
