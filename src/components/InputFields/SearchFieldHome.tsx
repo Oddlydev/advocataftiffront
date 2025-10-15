@@ -73,7 +73,7 @@ export default function SearchFieldHome({ setIsSearchVisible, onSearch }: Search
             const cleaned = sanitizeInput(e.target.value);
             setQuery(cleaned);
           }}
-          className="search-input w-full rounded-full border border-white/45 bg-brand-black py-5 px-6 md:pl-12 md:pr-28 font-sourcecodepro text-sm md:text-base text-slate-50/70 placeholder:text-slate-50 shadow-sm focus:border-brand-1-200 focus:outline-0 focus:ring-1 focus:ring-transparent"
+          className="search-input w-full rounded-full border border-white/25 bg-brand-black py-5 px-6 md:pl-12 md:pr-28 font-sourcecodepro text-sm md:text-base text-slate-50/70 placeholder:text-slate-50 shadow-sm focus:border-brand-1-200 focus:outline-0 focus:ring-1 focus:ring-transparent"
         />
         <div className="search-icon hidden md:block absolute left-5 top-1/2 -translate-y-1/2 text-slate-50">
           <svg
