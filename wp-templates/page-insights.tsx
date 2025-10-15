@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import type { GetStaticPropsContext } from "next";
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/router";
 import Pagination from "../src/components/Pagination";
 import CardType5 from "../src/components/Cards/CardType5";
@@ -121,6 +121,9 @@ function firstParagraphFromHtml(html?: string | null): string {
 }
 
 export default function InsightsPage({ data }: InsightsPageProps) {
+  const sanitizeInput = useCallback((val: string) => {
+    return val.replace(/[<>]/g, "").replace(/[\u0000-\u001F\u007F]/g, "");
+  }, []);
   // Autofocus: disabled on first visit in this session, enabled afterwards
   const useAutoFocusAfterFirstVisit = (storageKey: string) => {
     const [enabled, setEnabled] = useState(false);
@@ -205,8 +208,8 @@ export default function InsightsPage({ data }: InsightsPageProps) {
 
     const qp = router.query?.q;
     const qStr = Array.isArray(qp) ? qp[0] : qp;
-    if (typeof qStr === "string") setSearchQuery(qStr);
-  }, [router.asPath, router.query?.q, slugToName, isListingView]);
+    if (typeof qStr === "string") setSearchQuery(sanitizeInput(qStr));
+  }, [router.asPath, router.query?.q, slugToName, isListingView, sanitizeInput]);
 
   const cards = (data?.insights?.nodes ?? []) as Array<{
     id: string;
@@ -247,12 +250,23 @@ export default function InsightsPage({ data }: InsightsPageProps) {
   }, [activeCategory, searchQuery, cards]);
 
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const resultsRef = useRef<HTMLDivElement | null>(null);
+  const scrollToResults = useCallback(() => {
+    const el = resultsRef.current;
+    if (!el || typeof window === "undefined") return;
+    const headerOffset = 100;
+    requestAnimationFrame(() => {
+      const rect = el.getBoundingClientRect();
+      const top = rect.top + window.scrollY - headerOffset;
+      window.scrollTo({ top, behavior: "smooth" });
+    });
+  }, []);
   useEffect(() => {
     if (!isListingView()) return;
 
     if (syncTimer.current) clearTimeout(syncTimer.current);
     syncTimer.current = setTimeout(() => {
-      const q = searchQuery.trim();
+      const q = sanitizeInput(searchQuery).trim();
       if (q) {
         const href = `/insights/?q=${encodeURIComponent(q)}`;
         if (router.asPath !== href) {
@@ -273,7 +287,7 @@ export default function InsightsPage({ data }: InsightsPageProps) {
         syncTimer.current = null;
       }
     };
-  }, [searchQuery, activeCategory, nameToSlug, router.asPath, isListingView]);
+  }, [searchQuery, activeCategory, nameToSlug, router.asPath, isListingView, sanitizeInput]);
 
   const totalItems = filteredCards.length;
   const paginated = filteredCards.slice(
@@ -368,7 +382,7 @@ export default function InsightsPage({ data }: InsightsPageProps) {
       <div className="bg-white pt-6 pb-12 md:pb-16 xl:pb-20">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           {hasResults ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" ref={resultsRef}>
               {paginated.map((c) => (
                 <CardType5
                   key={c.id}
@@ -382,7 +396,7 @@ export default function InsightsPage({ data }: InsightsPageProps) {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16" aria-live="polite">
+            <div className="text-center py-16" aria-live="polite" ref={resultsRef}>
               <h3 className="text-xl font-semibold tracking-wide">
                 {isSearching
                   ? `No insights found for “${searchQuery.trim()}”.`
@@ -406,7 +420,10 @@ export default function InsightsPage({ data }: InsightsPageProps) {
             currentPage={currentPage}
             totalItems={totalItems}
             pageSize={pageSize}
-            onPageChange={setCurrentPage}
+            onPageChange={(p) => {
+              setCurrentPage(p);
+              scrollToResults();
+            }}
           />
         </div>
       )}

@@ -76,6 +76,7 @@ export default function Pagination({
       <div className="pagination-mobile flex flex-1 justify-between sm:hidden px-4">
         {canPrev ? (
           <button
+            type="button"
             onClick={() => onPageChange(currentPage - 1)}
             className="pagination-mobile-btn relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-sourcecodepro text-gray-600 uppercase"
           >
@@ -89,6 +90,7 @@ export default function Pagination({
 
         {canNext ? (
           <button
+            type="button"
             onClick={() => onPageChange(currentPage + 1)}
             className="pagination-mobile-btn relative inline-flex items-center rounded-md shadow-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium font-sourcecodepro text-gray-600 uppercase"
           >
@@ -113,6 +115,7 @@ export default function Pagination({
           aria-label="Pagination"
         >
           <button
+            type="button"
             onClick={() => canPrev && onPageChange(currentPage - 1)}
             aria-label="Previous"
             disabled={!canPrev}
@@ -142,6 +145,7 @@ export default function Pagination({
               </span>
             ) : (
               <button
+                type="button"
                 key={p as number}
                 onClick={() => onPageChange(p as number)}
                 aria-current={currentPage === p ? "page" : undefined}
@@ -157,6 +161,7 @@ export default function Pagination({
           )}
 
           <button
+            type="button"
             onClick={() => canNext && onPageChange(currentPage + 1)}
             aria-label="Next"
             disabled={!canNext}

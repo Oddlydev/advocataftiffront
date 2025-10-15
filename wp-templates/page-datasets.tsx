@@ -301,6 +301,17 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
     currentPage * pageSize
   );
   const hasResults = totalItems > 0;
+  const resultsRef = useRef<HTMLDivElement | null>(null);
+  const scrollToResults = React.useCallback(() => {
+    const el = resultsRef.current;
+    if (!el || typeof window === "undefined") return;
+    const headerOffset = 100;
+    requestAnimationFrame(() => {
+      const rect = el.getBoundingClientRect();
+      const top = rect.top + window.scrollY - headerOffset;
+      window.scrollTo({ top, behavior: "smooth" });
+    });
+  }, []);
 
   // Category carousel state
   const isSearching = searchQuery.trim().length > 0;
@@ -386,7 +397,7 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
       <section className="bg-white pt-6 pb-12 md:pb-16 xl:pb-20">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           {hasResults ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" ref={resultsRef}>
               {paginatedCards.map((c) => {
                 const fileUrl =
                   c.dataSetFields?.dataSetFile?.node?.mediaItemUrl ?? "";
@@ -427,7 +438,10 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
             currentPage={currentPage}
             totalItems={totalItems}
             pageSize={6}
-            onPageChange={setCurrentPage}
+            onPageChange={(p) => {
+              setCurrentPage(p);
+              scrollToResults();
+            }}
           />
         </section>
       )}
