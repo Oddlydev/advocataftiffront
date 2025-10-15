@@ -239,20 +239,6 @@ export function MacroLineChart({
       .selectAll<SVGTextElement, number>("text")
       .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
 
-    // svg.append("g").call(d3.axisLeft(yLeft).ticks(5).tickFormat(leftTickFormat as any))
-    //   .selectAll<SVGTextElement, number>("text")
-    //   .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
-
-    // if (useDualAxis && yRight) {
-    //   svg.append("g").attr("transform", `translate(${width},0)`).call(d3.axisRight(yRight).ticks(5).tickFormat(rightTickFormat as any))
-    //     .selectAll<SVGTextElement, number>("text")
-    //     .attr("class", "font-sourcecodepro text-slate-600 text-xs lg:text-lg font-semibold");
-
-    //   svg.append("text").attr("text-anchor", "middle").attr("transform", `translate(${width + 50},${height / 2})rotate(90)`)
-    //     .attr("class", "font-sourcecodepro text-slate-600 text-base lg:text-lg font-normal")
-    //     .text(yAxisRightLabel ?? "");
-    // }
-
     svg.append("text").attr("text-anchor", "middle").attr("transform", `translate(${-55},${height / 2})rotate(-90)`)
       .attr("class", "font-sourcecodepro text-slate-600 text-base lg:text-base font-normal")
       .text(yAxisLabel);
@@ -348,44 +334,77 @@ export function MacroLineChart({
           .attr("fill", color)
           .style("cursor", "pointer");
 
-        // Animate dot
-        dot.transition().delay((i / (data.length - 1)) * DURATION).duration(300).ease(d3.easeBackOut).attr("r", 4);
+      // Animate dot
+      dot.transition().delay((i / (data.length - 1)) * DURATION).duration(300).ease(d3.easeBackOut).attr("r", 4);
 
-        // Hover events (leave as-is, hoverLine/hoverCircle are outside plotLayer)
-        dot.on("mouseover", () => {
-          hoverLine.transition().duration(300).attr("x1", x(d.year)!).attr("x2", x(d.year)!).attr("opacity", 1);
-          hoverCircle.transition().duration(300).attr("cx", x(d.year)!).attr("cy", yScale(value)).attr("r", 7).attr("stroke", color).attr("opacity", 1);
-          dot.transition().duration(300).ease(d3.easeBackOut).attr("r", 5);
+      // Hover events (leave as-is, hoverLine/hoverCircle are outside plotLayer)
+      let hideTooltipTimeout: ReturnType<typeof setTimeout> | null = null;
+
+      dot
+        .on("mouseover", () => {
+          if (hideTooltipTimeout) {
+            clearTimeout(hideTooltipTimeout);
+            hideTooltipTimeout = null;
+          }
+
+          hoverLine.transition().duration(150)
+            .attr("x1", x(d.year)!)
+            .attr("x2", x(d.year)!)
+            .attr("opacity", 1);
+
+          hoverCircle.transition().duration(150)
+            .attr("cx", x(d.year)!)
+            .attr("cy", yScale(value))
+            .attr("r", 7)
+            .attr("stroke", color)
+            .attr("opacity", 1);
+
+          dot.transition().duration(150).attr("r", 5);
 
           const tooltipRows = series.map(cfg => {
             const v = d[cfg.key];
             return `<div class="flex items-start justify-between gap-0.5 md:gap-2">
               <div class="flex items-start md:items-center gap-1">
-                <div class="flex items-center gap-1 pt-1 md:pt-0"><span style="width:6px;height:6px;background:${cfg.color};border-radius:50%;display:inline-block;"></span></div>
+                <div class="flex items-center gap-1 pt-1 md:pt-0">
+                  <span style="width:6px;height:6px;background:${cfg.color};
+                        border-radius:50%;display:inline-block;"></span>
+                </div>
                 <span class="text-slate-600 font-sourcecodepro text-[10px] md:text-xs">${cfg.label}:</span>
               </div>
               <span style="color:${cfg.color};" class="text-[10px] md:text-xs font-sourcecodepro">
-                ${typeof v === "number" ? (cfg.valueFormatter?.(Number(v.toFixed(3))) ?? v.toFixed(3)) : "N/A"}
+                ${typeof v === "number"
+                  ? (cfg.valueFormatter?.(Number(v.toFixed(3))) ?? v.toFixed(3))
+                  : "N/A"}
               </span>
             </div>`;
           }).join("");
 
-          tooltip.style("display", "block").html(`
-            <div class="flex flex-col gap-0.5 md:gap-1">
-              <div class="font-semibold text-slate-600 font-sourcecodepro text-[10px] md:text-xs pb-1 md:pb-2.5 uppercase">Year: ${d.year}</div>
-              ${tooltipRows}
-            </div>`);
+          tooltip
+            .style("display", "block")
+            .html(`
+              <div class="flex flex-col gap-0.5 md:gap-1">
+                <div class="font-semibold text-slate-600 font-sourcecodepro text-[10px] md:text-xs pb-1 md:pb-2.5 uppercase">
+                  Year: ${d.year}
+                </div>
+                ${tooltipRows}
+              </div>`);
         })
+
         .on("mousemove", (event) => {
           const rect = container.getBoundingClientRect();
-          tooltip.style("left", `${event.clientX - rect.left + 15}px`)
-                .style("top", `${event.clientY - rect.top - 50}px`);
+          tooltip
+            .style("left", `${event.clientX - rect.left + 15}px`)
+            .style("top", `${event.clientY - rect.top - 50}px`);
         })
+        
         .on("mouseout", () => {
-          hoverLine.transition().duration(300).attr("opacity", 0);
-          hoverCircle.transition().duration(300).attr("r", 0).attr("opacity", 0);
-          dot.transition().duration(300).ease(d3.easeBackOut).attr("r", 4);
-          tooltip.style("display", "none");
+          if (hideTooltipTimeout) clearTimeout(hideTooltipTimeout);
+          hideTooltipTimeout = setTimeout(() => {
+            hoverLine.transition().duration(200).attr("opacity", 0);
+            hoverCircle.transition().duration(200).attr("r", 0).attr("opacity", 0);
+            dot.transition().duration(200).attr("r", 4);
+            tooltip.style("display", "none");
+          }, 120); // <-- small delay prevents flicker
         });
       });
     });
