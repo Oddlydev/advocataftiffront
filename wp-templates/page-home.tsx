@@ -387,10 +387,13 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           <div
             className="absolute inset-0 h-full w-full"
             style={{
-              background: `
-                linear-gradient(0deg, rgba(235, 26, 82, 0.20) 0%, rgba(235, 26, 82, 0.20) 100%),
-                linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.45) 100%)
-              `,
+              // background: `
+              //   linear-gradient(0deg, rgba(235, 26, 82, 0.20) 0%, rgba(235, 26, 82, 0.20) 100%),
+              //   linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.45) 100%)
+              // `,
+              background: 
+              ` linear-gradient(0deg, rgba(235, 26, 82, 0.30) 0%, rgba(235, 26, 82, 0.30) 100%), 
+              linear-gradient(0deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.55) 100%)`
             }}
           ></div>
         </div>
@@ -400,7 +403,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           <div className="hero-block-container px-5 md:px-16 xl:px-20 pt-10 pb-24 sm:pb-28 md:pt-16 md:pb-16 xl:pt-56 xl:pb-78 relative z-10 mx-auto">
             <div className="hero-block-center text-center mx-auto max-w-4xl grid justify-center">
               {heroTitle && (
-                <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-[80px] leading-snug font-montserrat font-extrabold">
+                <h1 className="hero-title mb-5 text-slate-50 text-4xl md:text-5xl xl:text-[80px] leading-tight font-montserrat font-extrabold">
                   {heroTitle}
                 </h1>
               )}
