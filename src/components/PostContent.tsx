@@ -57,7 +57,7 @@ export default function PostContent({ content, variant = "single" }: Props) {
             return (
               <a
                 {...domNode.attribs}
-                className="text-brand-1-500 underline underline-offset-4 transition-colors mx-auto max-w-4xl px-2"
+                className="text-[#1465F5] text-lg/7 font-baskervville font-normal underline underline-offset-4 transition-colors mx-auto max-w-4xl px-2"
               >
                 {domToReact(domNode.children, options)}
               </a>
