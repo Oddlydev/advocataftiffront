@@ -364,7 +364,7 @@ export default function PageNewsletterConfirmation() {
             {/* Right Column */}
             <div className="lg:col-span-7 rounded-lg shadow-sm border border-slate-200 py-12 md:py-12 lg:py-32 px-6 lg:px-12">
               <div className="text-center">
-                <div className="mb-6 mx-auto flex size-10 p-2.5 items-center justify-center rounded-full bg-brand-1-500">
+                <div className="mb-6 mx-auto flex size-10 p-2.5 items-center justify-center rounded-full bg-[#EB1A52]">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
