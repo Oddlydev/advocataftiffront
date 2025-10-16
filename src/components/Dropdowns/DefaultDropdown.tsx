@@ -11,6 +11,7 @@ type DropdownItem = {
   rel?: string;
   kind?: "checkbox"; // optional checkbox-style row
   checked?: boolean; // for kind === 'checkbox'
+  itemClassName?: string; // 👈 add this line
 };
 
 type DefaultDropdownProps = {
@@ -24,6 +25,7 @@ type DefaultDropdownProps = {
   open?: boolean; // controlled open state
   onOpenChange?: (open: boolean) => void; // controlled state setter
   closeOnItemClick?: boolean; // defaults to true; set false for multi-select menus
+  itemClassName?: string; // 👈 add this line
 };
 
 function useClickOutside(
@@ -110,7 +112,7 @@ export default function DefaultDropdown({
         ref={menuRef}
         id={menuId}
         className={[
-          "default-dropdown-menu absolute right-0 z-10 mt-2 w-48 md:w-64 origin-top-right rounded-md bg-brand-white shadow-lg ring-1 ring-black/5 focus:outline-none transition ease-out duration-100 transform scale-95",
+          "default-dropdown-menu absolute right-0 z-10 mt-2 w-48 md:w-56 origin-top-right rounded-md bg-brand-white shadow-lg ring-1 ring-black/5 focus:outline-none transition ease-out duration-100 transform scale-95",
           align === "right" ? "right-0" : "left-0",
           "transform transition-all duration-200 ease-out z-30",
           isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none",
@@ -121,11 +123,11 @@ export default function DefaultDropdown({
         aria-labelledby={btnId}
         tabIndex={-1}
       >
-        <div className="py-1" role="none">
+        <div className="py-1" role="none"> {/* overflow-y-scroll h-96 */}
           {items.map((it, idx) => {
             const common = {
               className:
-                "default-dropdown-item block w-full text-left px-4 py-2.5 text-base/6 text-slate-600 hover:bg-slate-100 font-sourcecodepro font-normal",
+                "default-dropdown-item block w-full text-left px-4 py-2.5 text-base/6 text-slate-600 hover:bg-brand-white font-sourcecodepro font-normal",
               role: "menuitem" as const,
               key: idx,
             };
@@ -155,27 +157,29 @@ export default function DefaultDropdown({
               >
                 {it.kind === "checkbox" ? (
                   <div className="flex gap-3 items-center">
-                    <span
-                      aria-hidden
-                      className="grid size-4 place-items-center border border-slate-600 rounded-sm"
-                    >
-                      {it.checked ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 8 6"
-                          fill="none"
-                          className="size-3 stroke-slate-600"
-                        >
-                          <path
-                            d="M1.5 3L3 4.5L6.5 1.5"
-                            stroke="currentColor"
-                            strokeWidth="1.8"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      ) : null}
-                    </span>
+                    <div>
+                      <span
+                        aria-hidden
+                        className="grid size-4 place-items-center border border-slate-600 rounded-sm"
+                      >
+                        {it.checked ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 8 6"
+                            fill="none"
+                            className="size-3 stroke-slate-600"
+                          >
+                            <path
+                              d="M1.5 3L3 4.5L6.5 1.5"
+                              stroke="currentColor"
+                              strokeWidth="1.8"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        ) : null}
+                      </span>
+                    </div>
                     <span className="font-normal text-slate-600">{it.label}</span>
                   </div>
                 ) : (

@@ -515,6 +515,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                 align="right"
                 open={openId === "two"}
                 onOpenChange={(v) => setOpenId(v ? "two" : null)}
+                itemClassName="w-full text-left" // ✅ full width applied
               />
             </div>
           </div>
