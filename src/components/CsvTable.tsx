@@ -398,7 +398,11 @@ export default function CsvTable({
                     <p>
                       Proxy measures are used for some of the financial
                       indicators where required data is unavailable. Please
-                      refer to the SOE Fiscal Indicator Methodology under FAQs.
+                      refer to the SOE Fiscal Indicator Methodology under{" "}
+                      <a href="/about-us" className="text-brand-1-600">
+                        FAQs
+                      </a>
+                      .
                     </p>
                   </div>
                 </div>
