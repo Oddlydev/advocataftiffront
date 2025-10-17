@@ -309,7 +309,7 @@ export default function CsvTable({
                             key={i}
                             className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700 sticky top-0 ${
                               i === 0 ? "left-0 z-20 rounded-tl-lg" : "z-10"
-                            } ${i === headers.length - 1 ? "rounded-tr-lg" : ""} w-[160px] md:w-[225px] xl:w-[235px]`}
+                            } ${i === headers.length - 1 ? "rounded-tr-lg" : ""} w-[160px] md:w-[225px] xl:w-[280px]`}
                           >
                             {isROA ? (
                               <button
@@ -337,7 +337,7 @@ export default function CsvTable({
                         {headers.map((_, cellIndex) => (
                           <td
                             key={cellIndex}
-                            className="bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro text-gray-500 w-[160px] md:w-[225px] xl:w-[235px]"
+                            className="bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro text-gray-500 w-[160px] md:w-[225px] xl:w-[280px]"
                           >
                             <span className="text-brand-1-600">Data N/A</span>
                           </td>
@@ -351,8 +351,8 @@ export default function CsvTable({
                           <td
                             key={cellIndex}
                             className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro 
-                            ${cellIndex === 0 ? "sticky left-0 text-brand-black md:whitespace-nowrap" : "text-gray-500"}
-                            w-[160px] md:w-[225px] xl:w-[235px]`}
+                            ${cellIndex === 0 ? "sticky left-0 text-brand-black" : "text-gray-500"}
+                            w-[160px] md:w-[250px] xl:w-[315px]`}
                           >
                             {formatCell(cell)}
                           </td>

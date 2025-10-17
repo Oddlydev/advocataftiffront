@@ -159,7 +159,7 @@ export default function CsvTransparency({
                     {/* Header row 1 */}
                     <tr>
                       <th
-                        className="sticky top-0 left-0 z-20 rounded-tl-lg bg-brand-1-700 px-3 py-3.5 text-left text-lg/7 font-semibold uppercase text-brand-white w-[160px]"
+                        className="sticky top-0 left-0 z-20 rounded-tl-lg bg-brand-1-700 px-3 py-3.5 text-left text-lg/7 font-semibold uppercase text-brand-white w-[160px] md:w-[225px] xl:w-[235px]"
                         rowSpan={2}
                       >
                         SOE
@@ -195,7 +195,7 @@ export default function CsvTransparency({
                       {headers.slice(1).map((h, i) => (
                         <th
                           key={i}
-                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-left text-base/6 font-semibold font-sourcecodepro uppercase text-brand-white w-[160px] md:w-[225px] xl:w-[250px] align-baseline"
+                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-left text-base/6 font-semibold font-sourcecodepro uppercase text-brand-white w-[160px] md:w-[225px] xl:w-[235px] md:w-[225px] xl:w-[250px] align-baseline"
                         >
                           {h}
                         </th>
@@ -206,7 +206,7 @@ export default function CsvTransparency({
                   <tbody className="divide-y divide-gray-300">
                     {/* Sector row example */}
                     <tr className="border-gray-100">
-                      <td className="sector sticky top-0 left-0 z-20 bg-brand-white text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold w-[160px] md:whitespace-nowrap">
+                      <td className="sector sticky top-0 left-0 z-20 bg-brand-white text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold w-[160px] md:w-[225px] xl:w-[235px]">
                           Aviation
                       </td>
                       {Array(headers.length - 1)
@@ -214,7 +214,7 @@ export default function CsvTransparency({
                           .map((_, idx) => (
                           <td
                               key={idx}
-                              className="bg-brand-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro text-gray-500 w-[160px]"
+                              className="bg-brand-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro text-gray-500 w-[160px] md:w-[225px] xl:w-[235px]"
                           ></td>
                         ))}
                     </tr>
@@ -239,9 +239,9 @@ export default function CsvTransparency({
                             className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-medium
                   ${
                     i === 0
-                      ? "sticky left-0 text-brand-black md:whitespace-nowrap"
+                      ? "sticky left-0 text-brand-black w-[160px] md:w-[250px] xl:w-[315px]"
                       : "text-gray-500"
-                  } w-[160px]`}
+                  } w-[160px] md:w-[225px] xl:w-[280px]`}
                           >
                             {i === 0
                               ? cell // SOE name
