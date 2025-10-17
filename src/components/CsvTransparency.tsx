@@ -239,9 +239,9 @@ export default function CsvTransparency({
                             className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-medium
                   ${
                     i === 0
-                      ? "sticky left-0 text-brand-black w-[160px] md:w-[250px] xl:w-[315px]"
+                      ? "sticky left-0 text-brand-black !w-[160px] md:!w-[250px] xl:!w-[315px]"
                       : "text-gray-500"
-                  } w-[160px] md:w-[225px] xl:w-[280px]`}
+                  } w-[150px] md:w-[215px] xl:w-[260px]`}
                           >
                             {i === 0
                               ? cell // SOE name
