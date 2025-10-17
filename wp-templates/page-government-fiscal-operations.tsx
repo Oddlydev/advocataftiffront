@@ -6,10 +6,12 @@ import type { GetStaticPropsContext } from "next";
 import SecondaryNav from "@/src/components/SecondaryNav";
 import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
 import RelatedDatasets from "@/src/components/RelatedDatasets";
-import * as d3 from "d3";
-import { sankey as d3Sankey, sankeyLinkHorizontal } from "d3-sankey";
 import DefaultDropdown from "@/src/components/Dropdowns/DefaultDropdown";
 import { usePathname } from "next/navigation";
+
+// Chart D3
+import * as d3 from "d3";
+import { sankey as d3Sankey, sankeyLinkHorizontal, sankeyLeft } from "d3-sankey";
 
 export const PAGE_QUERY = gql`
   query GetFiscalDashboardData($databaseId: ID!, $asPreview: Boolean = false) {
@@ -35,15 +37,18 @@ export const PAGE_QUERY = gql`
 `;
 
 type FiscalDatasetFile = { node?: { mediaItemUrl?: string | null } | null };
+
 interface FiscalDatasetFields {
   dataSetFile?: FiscalDatasetFile | null;
 }
+
 interface FiscalDatasetNode {
   databaseId: number;
   title?: string | null;
   slug?: string | null;
   dataSetFields?: FiscalDatasetFields | null;
 }
+
 interface PageFiscalOperationsProps {
   data?: {
     page?: {
@@ -55,11 +60,13 @@ interface PageFiscalOperationsProps {
     } | null;
   };
 }
+
 interface ParsedDataset {
   rows: Array<Record<string, string>>;
   columns: string[];
   yearColumns: string[];
 }
+
 interface SankeyNodeDatum {
   name: string;
   key: string;
@@ -70,12 +77,14 @@ interface SankeyNodeDatum {
   y0?: number;
   y1?: number;
 }
+
 interface SankeyLinkDatum {
   source: number;
   target: number;
   value: number;
   width?: number;
 }
+
 interface SankeyChartData {
   nodes: SankeyNodeDatum[];
   links: SankeyLinkDatum[];
@@ -181,6 +190,7 @@ function datasetPathSegment(node: FiscalDatasetNode): string {
   }
   return `dataset-${node.databaseId}`;
 }
+
 interface BuildSankeyParams {
   rows: Array<Record<string, string>>;
   year: string;
@@ -397,6 +407,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
       current === match.key ? current : match.key
     );
   }, [datasets, pathInfo.datasetSlug]);
+  
   useEffect(() => {
     if (datasets.length === 0) {
       setSelectedDatasetKey("");
@@ -425,6 +436,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
   const activeDatasetId = activeDataset?.node?.databaseId
     ? String(activeDataset.node.databaseId)
     : null;
+  
   useEffect(() => {
     if (!activeDataset) {
       setChartData(null);
@@ -526,6 +538,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
     };
   }, [activeDataset, datasetCache]);
 
+  
   useEffect(() => {
     if (!activeDataset) {
       setChartData(null);
@@ -604,27 +617,83 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
 
       svg.selectAll("*").remove();
 
-    const nodeWidth = isMobile ? 12 : isTablet ? 26 : 38;
-    const nodePadding = isMobile ? 8 : isTablet ? 20 : 24;
+      const nodeWidth = isMobile ? 12 : isTablet ? 26 : 30;
+      const nodePadding = isMobile ? 8 : isTablet ? 20 : 25;
 
-    const sankeyGenerator = d3Sankey<SankeyNodeDatum, SankeyLinkDatum>()
-      .nodeWidth(nodeWidth)
-      .nodePadding(nodePadding)
-      .extent([
-        [margin.left, margin.top],
-        [Math.max(width - margin.right, margin.left + 1), Math.max(height - margin.bottom, margin.top + 1)],
-      ]);
+      // --- Clone the data ---
+      const nodes = chartData.nodes.map((n) => ({ ...n }));
+      const links = chartData.links.map((l) => ({ ...l }));
 
-      const graph = sankeyGenerator({
-        nodes: chartData.nodes.map((node) => ({ ...node })),
-        links: chartData.links.map((link) => ({ ...link })),
+      // --- STEP 1: Compute node depths dynamically ---
+      const incoming: Record<string, string[]> = {};
+      const outgoing: Record<string, string[]> = {};
+
+      links.forEach((l) => {
+        const s = String(l.source);
+        const t = String(l.target);
+        if (!outgoing[s]) outgoing[s] = [];
+        if (!incoming[t]) incoming[t] = [];
+        outgoing[s].push(t);
+        incoming[t].push(s);
       });
 
+      // BFS from root-like nodes (nodes without incoming links)
+      const depthMap: Record<string, number> = {};
+      const queue: string[] = [];
+
+      nodes.forEach((n) => {
+        const key = String(n.key);
+        if (!incoming[key] || incoming[key].length === 0) {
+          depthMap[key] = 0;
+          queue.push(key);
+        }
+      });
+
+      while (queue.length > 0) {
+        const current = queue.shift()!;
+        const currentDepth = depthMap[current] ?? 0;
+        (outgoing[current] || []).forEach((next) => {
+          if (!(next in depthMap)) {
+            depthMap[next] = currentDepth + 1;
+            queue.push(next);
+          }
+        });
+      }
+
+      // --- STEP 2: Assign X positions based on computed depth ---
+      const maxDepth = Math.max(...Object.values(depthMap));
+      const step = (width - margin.left - margin.right - nodeWidth) / (maxDepth || 1);
+
+      nodes.forEach((node) => {
+        const depth = depthMap[node.key] ?? 0;
+        node.x0 = margin.left + depth * step;
+        node.x1 = node.x0 + nodeWidth;
+      });
+
+      // --- STEP 3: Build Sankey with these fixed positions ---
+      const sankeyGenerator = d3Sankey<SankeyNodeDatum, SankeyLinkDatum>()
+        .nodeWidth(nodeWidth)
+        .nodePadding(nodePadding)
+      .nodeAlign(sankeyLeft)
+
+        .extent([
+          [margin.left, margin.top],
+          [Math.max(width - margin.right, margin.left + 1),
+          Math.max(height - margin.bottom, margin.top + 1)],
+        ]);
+
+      const graph = sankeyGenerator({
+        nodes,
+        links,
+      });
+
+      // --- STEP 4: Color scale ---
       const color = d3
         .scaleOrdinal<string>()
         .domain(graph.nodes.map((node) => node.key))
         .range(COLOR_PALETTE);
 
+      // --- STEP 5: Draw Links ---
       svg
         .append("g")
         .attr("fill", "none")
@@ -637,6 +706,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
         .attr("stroke-width", (d) => Math.max(1, d.width ?? 1))
         .attr("stroke-opacity", 0.35);
 
+      // --- STEP 6: Draw Nodes ---
       const nodeGroup = svg
         .append("g")
         .selectAll("g")
@@ -652,8 +722,6 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
         .attr("width", (d) => Math.max(1, (d.x1 ?? 0) - (d.x0 ?? 0)))
         .attr("fill", (d) => color(d.key))
         .attr("stroke", "none");
-        // .attr("position", "relative")
-        // .attr("z-index", "20");
 
       const fontSize = isMobile ? 4 : isTablet ? 6 : 11;
 
@@ -685,6 +753,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
     window.addEventListener("resize", renderChart);
     return () => window.removeEventListener("resize", renderChart);
   }, [chartData]);
+
 
   const statusMessage = useMemo(() => {
     if (loading) {
