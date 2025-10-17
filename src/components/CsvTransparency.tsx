@@ -195,7 +195,7 @@ export default function CsvTransparency({
                       {headers.slice(1).map((h, i) => (
                         <th
                           key={i}
-                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-left text-base/6 font-semibold font-sourcecodepro uppercase text-brand-white w-[160px] md:w-[225px] xl:w-[235px] md:w-[225px] xl:w-[250px] align-baseline"
+                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-left text-base/6 font-semibold font-sourcecodepro uppercase text-brand-white w-[160px] md:w-[225px] xl:w-[235px] align-baseline"
                         >
                           {h}
                         </th>
