@@ -448,13 +448,13 @@ export default function CsvTable({
               </div>
               <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
                 <div>
-                  <div className="grid xl:flex gap-7 items-center justify-start xl:justify-end w-full">
+                  <div className="grid xl:flex gap-4 xl:gap-7 items-center justify-start xl:justify-end w-full">
                     <div>
                       <p className="text-sm xl:text-base/6 font-medium font-sourcecodepro text-slate-600">
                         Interpretation of the indicators :
                       </p>
                     </div>
-                    <div className="grid md:flex items-center gap-3 md:gap-5">
+                    <div className="grid md:flex items-center gap-2.5 md:gap-5">
                       {/* Good */}
                       <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
                         <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
