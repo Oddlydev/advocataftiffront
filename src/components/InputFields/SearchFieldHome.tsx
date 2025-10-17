@@ -1,8 +1,8 @@
 "use client";
 
 import searchClient from "@/src/lib/algolia";
-import { type JSX, FormEvent, useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { type JSX, FormEvent, useState, useEffect, useCallback, useRef } from "react";
+import { useRouter, usePathname } from "next/navigation";
 
 interface SearchFieldHomeProps {
   setIsSearchVisible?: (visible: boolean) => void;
@@ -13,6 +13,8 @@ export default function SearchFieldHome({ setIsSearchVisible, onSearch }: Search
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const router = useRouter();
+  const pathname = usePathname();
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const sanitizeInput = useCallback((value: string) => {
     // Remove potentially dangerous characters and control chars
@@ -25,6 +27,10 @@ export default function SearchFieldHome({ setIsSearchVisible, onSearch }: Search
     if (cleaned.length === 0) return;
     // Call optional onSearch with cleaned value
     onSearch?.(cleaned);
+    // Clear state and close results before navigating
+    setQuery("");
+    setResults([]);
+    setIsSearchVisible?.(false);
     router.push(`/search-result?query=${encodeURIComponent(cleaned)}`);
   }
 
@@ -60,8 +66,35 @@ export default function SearchFieldHome({ setIsSearchVisible, onSearch }: Search
     return () => clearTimeout(timer);
   }, [query, results.length, setIsSearchVisible]);
 
+  // Close results when clicking outside the search container
+  useEffect(() => {
+    const handlePointerDown = (ev: MouseEvent | TouchEvent) => {
+      const el = containerRef.current;
+      if (!el) return;
+      const target = ev.target as Node | null;
+      if (target && !el.contains(target)) {
+        setQuery("");
+        setResults([]);
+        setIsSearchVisible?.(false);
+      }
+    };
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("touchstart", handlePointerDown, { passive: true } as any);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("touchstart", handlePointerDown as any);
+    };
+  }, [setIsSearchVisible]);
+
+  // Clear search when route changes (e.g., navigate to results and come back)
+  useEffect(() => {
+    setQuery("");
+    setResults([]);
+    setIsSearchVisible?.(false);
+  }, [pathname, setIsSearchVisible]);
+
   return (
-    <div className="relative w-full">
+    <div className="relative w-full" ref={containerRef}>
       <form className="relative w-full z-[9999]" onSubmit={handleSubmit}>
         <input
           type="text"
