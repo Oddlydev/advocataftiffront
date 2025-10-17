@@ -35,7 +35,7 @@ const Card: React.FC<CardProps> = ({
             </div>
 
             <div className="mt-4 mb-7 font-semibold font-sourcecodepro transition-all duration-500 ease-in-out">
-             <WhiteButton className="px-2.5 py-3.5 text-sm font-semibold text-gray-600"> 
+             <WhiteButton className="!py-2.5 !px-3.5 !text-sm !font-semibold text-gray-600"> 
                 Learn more
                 <svg
                   className="text-gray-600 hidden size-3.5 transition-all duration-500 ease-in-out group-hover:block group-focus:block"
