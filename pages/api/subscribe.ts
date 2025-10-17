@@ -64,7 +64,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
         body: JSON.stringify({
             email_address: emailLower,
-            status_if_new: "subscribed", // direct subscription
+            // Ensure member is subscribed whether new or existing (was unsubscribed)
+            status_if_new: "subscribed",
+            status: "subscribed",
             merge_fields: {
                 FNAME: firstName || "",
                 LNAME: lastName || "",
