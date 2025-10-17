@@ -27,6 +27,13 @@ export const SINGLE_DATASET_QUERY = gql`
       uri
       slug
       excerpt
+      datasetMetaData {
+        datasetMetaDataFile {
+          node {
+            mediaItemUrl
+          }
+        }
+      }
       seo {
         title
         metaDesc
@@ -68,7 +75,6 @@ export const SINGLE_DATASET_QUERY = gql`
         }
       }
     }
-
     dataSets(first: 10, where: { orderby: { field: DATE, order: DESC } }) {
       nodes {
         id
@@ -77,6 +83,13 @@ export const SINGLE_DATASET_QUERY = gql`
         excerpt
         date
         slug
+        datasetMetaData {
+          datasetMetaDataFile {
+            node {
+              mediaItemUrl
+            }
+          }
+        }
         dataSetFields {
           dataSetFile {
             node {
@@ -100,6 +113,11 @@ interface SingleDatasetProps {
       uri?: string | null;
       slug?: string | null;
       excerpt?: string | null;
+      datasetMetaData?: {
+        datasetMetaDataFile?: {
+          node?: { mediaItemUrl?: string | null } | null;
+        } | null;
+      } | null;
       featuredImage?: {
         node?: { sourceUrl?: string | null; altText?: string | null } | null;
       } | null;
@@ -141,6 +159,8 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
 
   const downloadUrl =
     dataset.dataSetFields?.dataSetFile?.node?.mediaItemUrl ?? "";
+  const metaUrl =
+    dataset.datasetMetaData?.datasetMetaDataFile?.node?.mediaItemUrl ?? null;
 
   // Exclude current dataset; cap to 3 items
   const related =
@@ -238,9 +258,15 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
             </SecondaryButton>
 
             <SecondaryButton
-              onClick={() =>
-                downloadCsvFile(downloadUrl, dataset.slug || "dataset")
-              }
+              onClick={() => {
+                if (metaUrl) {
+                  // Fire both downloads: meta and dataset
+                  try {
+                    downloadCsvFile(metaUrl, `${dataset.slug || "dataset"}-meta`);
+                  } catch {}
+                }
+                downloadCsvFile(downloadUrl, dataset.slug || "dataset");
+              }}
             >
               CSV
               <svg
