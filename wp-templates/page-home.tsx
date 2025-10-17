@@ -58,9 +58,13 @@ interface HomePageProps {
         aiDescription?: string | null;
       } | null;
       homeHeroThumbnail?: {
-        homeHeroThumbnail?: {
-          heroSectionImage?: { node?: { mediaItemUrl?: string | null } | null };
-          heroSectionVideo?: { node?: { mediaItemUrl?: string | null } | null };
+        homeHeroImage?: {
+          heroImageDesktop?: {
+            node?: { mediaItemUrl?: string | null } | null;
+          } | null;
+          heroImageMobile?: {
+            node?: { mediaItemUrl?: string | null } | null;
+          } | null;
         } | null;
       } | null;
       featuredDashboardSection?: {
@@ -178,13 +182,13 @@ const PAGE_QUERY = gql`
         aiDescription
       }
       homeHeroThumbnail {
-        homeHeroThumbnail {
-          heroSectionImage {
+        homeHeroImage {
+          heroImageDesktop {
             node {
               mediaItemUrl
             }
           }
-          heroSectionVideo {
+          heroImageMobile {
             node {
               mediaItemUrl
             }
@@ -290,18 +294,20 @@ function extractHeroFromGutenberg(html?: string | null): {
 /** Main Home Page component */
 export default function PageHome({ data }: HomePageProps): JSX.Element {
   const router = useRouter();
-  const homeHeroBg = "/assets/images/patterns/home-hero.jpg";
 
   const heroHtml = data?.page?.content ?? undefined;
   const { title: heroTitle, description: heroDescription } =
     extractHeroFromGutenberg(heroHtml);
 
-  const heroVideo =
-    data?.page?.homeHeroThumbnail?.homeHeroThumbnail?.heroSectionVideo?.node
+  const heroImgLg =
+    data?.page?.homeHeroThumbnail?.homeHeroImage?.heroImageDesktop?.node
       ?.mediaItemUrl;
-  const heroImage =
-    data?.page?.homeHeroThumbnail?.homeHeroThumbnail?.heroSectionImage?.node
+  const heroImageSm =
+    data?.page?.homeHeroThumbnail?.homeHeroImage?.heroImageMobile?.node
       ?.mediaItemUrl;
+  // Backward-compat: ensure unused hero media vars exist for below branches
+  const heroVideo: string | null = null;
+  const heroImage: string | null = null;
   const featuredNodes =
     data?.page?.featuredDashboardSection?.featuredDashboard?.nodes ?? [];
   let featuredDashboardChart: FeaturedDashboardChartProps | null = null;
@@ -337,7 +343,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
     featuredDashboardUri = primaryFeatured.uri ?? null;
   }
 
-  data?.page?.homeHeroThumbnail?.homeHeroThumbnail?.heroSectionImage?.node
+  data?.page?.homeHeroThumbnail?.homeHeroImage?.heroImageDesktop?.node
     ?.mediaItemUrl;
 
   const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -364,24 +370,37 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
         description={heroDescription}
       />
       {/* Hero section */}
-      <div
-        className="home-hero relative text-white h-screen md:h-[65vh] xl:h-screen"
-        style={{
-          backgroundImage: `url(${homeHeroBg})`,
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundColor: "lightgray",
-        }}
-      >
+      <div className="home-hero relative text-white h-screen md:h-[65vh] xl:h-screen bg-[#d3d3d3]">
+        {/* Responsive hero thumbnail image (mobile + desktop) */}
+        <picture className="absolute inset-0 block">
+          <source
+            media="(min-width: 1024px)"
+            srcSet={
+              heroImgLg ??
+              "/assets/images/hero-img/hero-img-urban-market-lg.jpg"
+            }
+          />
+          <img
+            src={
+              heroImageSm ??
+              "/assets/images/hero-img/hero-img-urban-market-sm.jpg"
+            }
+            alt={heroTitle ?? "Home hero background"}
+            className="h-full w-full object-cover"
+          />
+        </picture>
         {/* Overlay container */}
         <div className="absolute inset-0 h-full w-full overflow-hidden">
           {/* Blurred overlay */}
-          <div className="absolute inset-0 h-full w-full backdrop-blur-xs" 
-            style={{ 
-              maskImage: "linear-gradient(0deg, rgba(235, 26, 82, 0.20) 0%, rgba(235, 26, 82, 0.20) 100%)", 
-              WebkitMaskImage: "linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.45) 100%)", }} >
-          </div>
+          <div
+            className="absolute inset-0 h-full w-full backdrop-blur-xs"
+            style={{
+              maskImage:
+                "linear-gradient(0deg, rgba(235, 26, 82, 0.20) 0%, rgba(235, 26, 82, 0.20) 100%)",
+              WebkitMaskImage:
+                "linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.45) 100%)",
+            }}
+          ></div>
 
           {/* Red + Black gradient overlay */}
           <div
@@ -391,9 +410,8 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
               //   linear-gradient(0deg, rgba(235, 26, 82, 0.20) 0%, rgba(235, 26, 82, 0.20) 100%),
               //   linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.45) 100%)
               // `,
-              background: 
-              ` linear-gradient(0deg, rgba(235, 26, 82, 0.30) 0%, rgba(235, 26, 82, 0.30) 100%), 
-              linear-gradient(0deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.55) 100%)`
+              background: ` linear-gradient(0deg, rgba(235, 26, 82, 0.30) 0%, rgba(235, 26, 82, 0.30) 100%), 
+              linear-gradient(0deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.55) 100%)`,
             }}
           ></div>
         </div>
