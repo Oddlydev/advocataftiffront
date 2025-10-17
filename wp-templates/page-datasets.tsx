@@ -295,7 +295,7 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
   }, [searchQuery, activeCategory, nameToSlug, router.asPath, isListingView]);
 
   // Pagination
-  const pageSize = 6;
+  const pageSize = 12;
   const totalItems = filteredCards.length;
   const paginatedCards = filteredCards.slice(
     (currentPage - 1) * pageSize,
@@ -401,7 +401,10 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
       <section className="bg-white pt-6 pb-12 md:pb-16 xl:pb-20">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           {hasResults ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" ref={resultsRef}>
+            <div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+              ref={resultsRef}
+            >
               {paginatedCards.map((c) => {
                 const fileUrl =
                   c.dataSetFields?.dataSetFile?.node?.mediaItemUrl ?? "";
@@ -441,7 +444,7 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
           <Pagination
             currentPage={currentPage}
             totalItems={totalItems}
-            pageSize={6}
+            pageSize={pageSize}
             onPageChange={(p) => {
               setCurrentPage(p);
               scrollToResults();

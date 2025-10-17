@@ -90,6 +90,7 @@ export default function MacroEconomySliderNav({
       autoplayButtonOutput: false,
       gutter: 10,
       loop: false,
+      edgePadding: 32, // keep edge slides clear of gradient arrows
       responsive: {
         320: { items: 2 },
         768: { items: 3 },
@@ -130,6 +131,22 @@ export default function MacroEconomySliderNav({
     // re-init only when items length changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items.length]);
+
+  // Whenever the active index changes, ensure it is scrolled into view
+  useEffect(() => {
+    if (!sliderRef.current) return;
+    if (typeof sliderRef.current.goTo === "function") {
+      sliderRef.current.goTo(activeIndex);
+    }
+    // Best-effort: also ask the element to scroll into view in case of wrappers
+    try {
+      const info = sliderRef.current.getInfo?.();
+      const slides: HTMLElement[] =
+        info?.slideItems ? Array.from(info.slideItems) : Array.from((trackRef.current?.children ?? []) as any);
+      const el = slides[activeIndex] as HTMLElement | undefined;
+      el?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+    } catch {}
+  }, [activeIndex]);
 
   const handleSelect = (index: number) => {
     setActiveIndex(index);

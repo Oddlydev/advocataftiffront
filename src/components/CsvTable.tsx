@@ -347,14 +347,12 @@ export default function CsvTable({
                     {/* No data row */}
                     {visibleRows.length === 0 && (
                       <tr>
-                        {headers.map((_, cellIndex) => (
-                          <td
-                            key={cellIndex}
-                            className="bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro text-gray-500 w-[160px] md:w-[225px] xl:w-[280px]"
-                          >
-                            <span className="text-brand-1-600">Data N/A</span>
-                          </td>
-                        ))}
+                        <td
+                          colSpan={headers.length}
+                          className="bg-white border-b border-gray-100 px-3 py-6 text-left text-base/6 font-medium font-sourcecodepro text-gray-500"
+                        >
+                          No data to display
+                        </td>
                       </tr>
                     )}
 
