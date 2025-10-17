@@ -391,81 +391,94 @@ export default function CsvTable({
 
           {/* Interpretation legend (optional) */}
           {showInterpretation && (
-            <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
-              <div>
-                <div className="grid md:flex gap-7 items-center justify-start md:justify-end w-full">
-                  <div>
-                    <p className="text-sm xl:text-base/6 font-medium font-sourcecodepro text-slate-600">
-                      Interpretation of the indicators :
+            <>
+              <div className="bg-gray-50 rounded-lg mt-3 px-6 py-3.5">
+                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                    <p>
+                      Proxy measures are used for some of the financial
+                      indicators where required data is unavailable. Please
+                      refer to the SOE Fiscal Indicator Methodology under FAQs.
                     </p>
                   </div>
-                  <div className="flex items-center gap-3 md:gap-5">
-                    {/* Good */}
-                    <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
-                      <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                        Good
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="12"
-                          height="12"
-                          viewBox="0 0 12 12"
-                          fill="none"
-                        >
-                          <circle cx="6" cy="6" r="6" fill="#22C55E" />
-                        </svg>
-                        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
-                          1
-                        </span>
-                      </div>
+                </div>
+              </div>
+              <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
+                <div>
+                  <div className="grid md:flex gap-7 items-center justify-start md:justify-end w-full">
+                    <div>
+                      <p className="text-sm xl:text-base/6 font-medium font-sourcecodepro text-slate-600">
+                        Interpretation of the indicators :
+                      </p>
                     </div>
-
-                    {/* Average */}
-                    <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
-                      <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                        Average
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="12"
-                          height="12"
-                          viewBox="0 0 12 12"
-                          fill="none"
-                        >
-                          <circle cx="6" cy="6" r="6" fill="#F59E0B" />
-                        </svg>
-                        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
-                          0.5
+                    <div className="flex items-center gap-3 md:gap-5">
+                      {/* Good */}
+                      <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
+                        <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                          Good
                         </span>
+                        <div className="flex items-center gap-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                          >
+                            <circle cx="6" cy="6" r="6" fill="#22C55E" />
+                          </svg>
+                          <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                            1
+                          </span>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Poor */}
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                        Poor
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="12"
-                          height="12"
-                          viewBox="0 0 12 12"
-                          fill="none"
-                        >
-                          <circle cx="6" cy="6" r="6" fill="#DC2626" />
-                        </svg>
-                        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
-                          0
+                      {/* Average */}
+                      <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
+                        <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                          Average
                         </span>
+                        <div className="flex items-center gap-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                          >
+                            <circle cx="6" cy="6" r="6" fill="#F59E0B" />
+                          </svg>
+                          <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                            0.5
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Poor */}
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                          Poor
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                          >
+                            <circle cx="6" cy="6" r="6" fill="#DC2626" />
+                          </svg>
+                          <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                            0
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>
