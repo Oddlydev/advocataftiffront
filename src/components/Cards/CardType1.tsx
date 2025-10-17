@@ -1,5 +1,6 @@
 import WhiteButton from "../Buttons/WhiteBtn";
 import React from "react";
+import Image from "next/image";
 
 const CardType1: React.FC = () => {
   return (
@@ -50,13 +51,12 @@ const CardType1: React.FC = () => {
           </div>
 
           <div className="flex-shrink-0">
-            <img
+            <Image
               className="relative w-full h-full object-cover rounded-xl xl:left-12 md:left-9 left-6 top-4 transition-all duration-500 ease-in-out group-focus-within:rounded-none"
               src="/assets/images/card-imgs/card-img-1.jpg"
               width={300}
               height={200}
               alt="card-type-1 img"
-              loading="lazy"
             />
           </div>
         </div>

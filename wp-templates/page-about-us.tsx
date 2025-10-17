@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import type { GetStaticPropsContext } from "next";
 import React from "react";
+import Image from "next/image";
 import Accordion from "../src/components/Accordion";
 import { PageSubTitle, PageTitle } from "@/src/components/Typography";
 import TextBlock from "../src/components/TextBlock";
@@ -92,12 +93,13 @@ const AboutHero: React.FC<{
     <div className="about-hero relative">
       {/* Background image */}
       <div className="h-full lg:h-[500px] w-full">
-        <img
+        <Image
           src={image.sourceUrl}
           width={1628}
           height={500}
           className="h-full w-full object-cover"
           alt={image.altText || "About hero"}
+          priority={false}
         />
       </div>
 

@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import WhiteButton from "../Buttons/WhiteBtn";
 
 const CardType4: React.FC = () => {
@@ -54,13 +55,13 @@ const CardType4: React.FC = () => {
           </div>
 
           <div className="flex-shrink-0">
-            <img
+            <Image
               className="relative w-full h-full object-cover rounded-xl xl:left-12 md:left-9 left-6 top-4 group-focus-within:rounded-none"
               src="/assets/images/card-imgs/card-img-4.jpg"
               width={300}
               height={200}
               alt="card-type-4 img"
-              loading="lazy"
+              priority={false}
             />
           </div>
         </div>

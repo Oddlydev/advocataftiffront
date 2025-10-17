@@ -5,6 +5,7 @@ import { gql } from "@apollo/client";
 import type { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import SEO from "@/src/components/SEO";
+import Image from "next/image";
 
 // Components
 import Card from "@/src/components/Cards/DashboardCard";
@@ -579,13 +580,13 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
                   />
                 </div>
               </div>
-              <img
-                src={heroImage}
+              <Image
+                src={heroImage as any}
                 className="rounded-3xl h-full w-full object-cover mt-3"
                 width={1120}
                 height={713}
-                loading="lazy"
                 alt="Home hero"
+                priority={false}
               />
             </div>
           </div>

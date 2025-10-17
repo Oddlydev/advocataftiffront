@@ -133,12 +133,14 @@ const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
       {/* Hero Section */}
       <div className="insight-hero relative">
         {/* Background image */}
-        <img
+        <Image
           src={datasetBgPattern}
           alt="hero background"
+          width={1000}
+          height={667}
           className="absolute inset-0 h-full w-full object-cover"
         />
-      
+
         {/* Overlay gradient */}
         <div
           className="absolute inset-0 w-full h-full"
@@ -147,7 +149,7 @@ const PageDashboards: React.FC<DashboardsPageProps> = ({ data }) => {
               "linear-gradient(0deg, rgba(20, 101, 245, 0.10) 0%, rgba(20, 101, 245, 0.10) 100%)",
           }}
         />
-      
+
         {/* Hero content */}
         <div className="relative z-10">
           <HeroBasic
@@ -199,46 +201,48 @@ const Section: React.FC<SectionProps> = ({
   const href = toInternalHref(url);
   return (
     <a href={href} className="block pt-8">
-        <div
-          className="border border-slate-400 shadow-2xl rounded-lg p-6 md:p-9 lg:px-12 lg:py-16 pr-0 lg:pr-0
+      <div
+        className="border border-slate-400 shadow-2xl rounded-lg p-6 md:p-9 lg:px-12 lg:py-16 pr-0 lg:pr-0
              transition-all duration-300 ease-in-out hover:-translate-y-1.5"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
-            {/* Left Column */}
-            <div className="pr-6 md:pr-0 lg:pr-0">
-              <h2 className="font-montserrat text-slate-950 font-bold text-2xl md:text-3xl xl:text-4xl leading-snug">
-                {title}
-              </h2>
-              <p className="font-sourcecodepro text-slate-950 font-normal text-base/6 mt-0.5 lg:mt-2">
-                {text}
-              </p>
-              <div className="mt-4 lg:mt-5">
-                {/* Use a non-navigating button so clicks bubble to the anchor wrapper */}
-                <WhiteButton className="!py-2.5 !px-3.5 !text-sm !font-semibold !text-gray-600">Learn more</WhiteButton>
-              </div>
-            </div>
-
-            {/* Right Column */}
-            <div className="relative">
-              <img
-                src={imgSrc}
-                alt={imgAlt}
-                className="w-full h-full rounded-l-lg md:rounded-lg xl:rounded-l-lg xl:rounded-r-none"
-                width={511}
-                height={503}
-                loading="lazy"
-              />
-              {/* Overlay */}
-              <div
-                className="absolute inset-0  rounded-l-lg md:rounded-lg xl:rounded-l-lg xl:rounded-r-none pointer-events-none"
-                style={{
-                  background:
-                    "linear-gradient(0deg, rgba(235, 26, 82, 0.20), rgba(235, 26, 82, 0.20))",
-                }}
-              />
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
+          {/* Left Column */}
+          <div className="pr-6 md:pr-0 lg:pr-0">
+            <h2 className="font-montserrat text-slate-950 font-bold text-2xl md:text-3xl xl:text-4xl leading-snug">
+              {title}
+            </h2>
+            <p className="font-sourcecodepro text-slate-950 font-normal text-base/6 mt-0.5 lg:mt-2">
+              {text}
+            </p>
+            <div className="mt-4 lg:mt-5">
+              {/* Use a non-navigating button so clicks bubble to the anchor wrapper */}
+              <WhiteButton className="!py-2.5 !px-3.5 !text-sm !font-semibold !text-gray-600">
+                Learn more
+              </WhiteButton>
             </div>
           </div>
+
+          {/* Right Column */}
+          <div className="relative">
+            <Image
+              src={imgSrc}
+              alt={imgAlt}
+              className="w-full h-full rounded-l-lg md:rounded-lg xl:rounded-l-lg xl:rounded-r-none"
+              width={511}
+              height={503}
+              priority={false}
+            />
+            {/* Overlay */}
+            <div
+              className="absolute inset-0  rounded-l-lg md:rounded-lg xl:rounded-l-lg xl:rounded-r-none pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(0deg, rgba(235, 26, 82, 0.20), rgba(235, 26, 82, 0.20))",
+              }}
+            />
+          </div>
         </div>
+      </div>
     </a>
   );
 };

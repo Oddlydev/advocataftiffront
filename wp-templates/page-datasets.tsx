@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import type { GetStaticPropsContext } from "next";
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import Pagination from "../src/components/Pagination";
 import CardType6 from "../src/components/Cards/CardType6";
@@ -335,10 +336,13 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
 
       <div className="insight-hero relative">
         {/* Background image */}
-        <img
+        <Image
           src={datasetBgPattern}
           alt="hero background"
+          width={1000}
+          height={667}
           className="absolute inset-0 h-full w-full object-cover"
+          priority={false}
         />
 
         {/* Overlay gradient */}

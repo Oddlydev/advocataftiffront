@@ -1,0 +1,16 @@
+*** Begin Patch
+*** Update File: next.config.js
+@@
+-module.exports = withFaust({
+-  images: {
+-    domains: ["advocataftifda.wpenginepowered.com/"],
+-  },
++module.exports = withFaust({
++  images: {
++    // Allow optimizing images from the WP Engine host
++    domains: ["advocataftifda.wpenginepowered.com"],
++    // Instruct Next.js to serve modern formats when supported
++    formats: ["image/avif", "image/webp"],
++  },
+   trailingSlash: true,
+*** End Patch

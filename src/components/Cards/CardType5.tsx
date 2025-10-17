@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 // Use a plain anchor for robust navigation (works even with absolute URLs)
 
 interface CardType5Props {
@@ -64,14 +65,14 @@ const CardType5: React.FC<CardType5Props> = ({
       className="card card-type-5 group relative flex flex-col h-full overflow-hidden transition-all duration-500 ease-in-out cursor-pointer rounded-lg bg-white border border-gray-300 hover:border-gray-300 hover:-translate-y-1.5 hover:shadow-lg focus:border-brand-2-100 focus:bg-gray-50 focus:shadow-inner-lg"
       aria-label={title}
     >
-      <div>
-        <img
-          className="card-img shrink-0 w-full h-64 object-cover aspect-[4/3]"
+      <div className="relative shrink-0 w-full h-64">
+        <Image
+          className="object-cover"
           src={imageUrl}
           alt={title || 'card-type-5 img'}
-          width={100}
-          height={100}
-          loading="lazy"
+          fill
+          sizes="(min-width: 1024px) 33vw, 100vw"
+          priority={false}
         />
       </div>
 

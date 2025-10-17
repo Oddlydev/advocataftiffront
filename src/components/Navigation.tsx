@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useQuery } from "@apollo/client";
 import { HEADER_MENU_QUERY } from "@/queries/MenuQueries";
 import searchClient from "../lib/algolia";
@@ -695,7 +696,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
         >
           <div className="flex space-x-3 text-white text-sm font-normal font-sourcecodepro items-center">
             <span>
-              <img src={logoSrc} alt="brand-logo" height={44} width={107} />
+              <Image src={logoSrc} alt="brand-logo" height={44} width={107} />
             </span>
           </div>
         </a>

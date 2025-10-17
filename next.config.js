@@ -5,7 +5,10 @@ const { withFaust } = require("@faustwp/core");
  **/
 module.exports = withFaust({
   images: {
-    domains: ["advocataftifda.wpenginepowered.com/"],
+    // Allow optimizing images from the WP Engine host
+    domains: ["advocataftifda.wpenginepowered.com"],
+    // Serve modern formats to supported browsers
+    formats: ["image/avif", "image/webp"],
   },
   trailingSlash: true,
 

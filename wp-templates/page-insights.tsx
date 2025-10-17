@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import type { GetStaticPropsContext } from "next";
 import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import Pagination from "../src/components/Pagination";
 import CardType5 from "../src/components/Cards/CardType5";
@@ -312,10 +313,13 @@ export default function InsightsPage({ data }: InsightsPageProps) {
 
       <div className="insight-hero relative">
         {/* Background image */}
-        <img
+        <Image
           src={insightBgPattern}
           alt="hero background"
+          width={1000}
+          height={667}
           className="absolute inset-0 h-full w-full object-cover"
+          priority={false}
         />
 
         {/* Dark overlay (bottom layer) */}

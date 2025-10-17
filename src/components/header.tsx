@@ -5,6 +5,7 @@ import { useQuery } from "@apollo/client";
 import { HEADER_MENU_QUERY } from "@/queries/MenuQueries";
 import searchClient from "../lib/algolia";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export type HeaderNavProps = {
   logoSrc: string;
@@ -387,16 +388,55 @@ const MobileMenu: React.FC<{
         }}
       >
         {/* Hamburger */}
-        <svg className={`icon-hamburger h-5 w-5 ${open ? "hidden" : "block"}`} xmlns="http://www.w3.org/2000/svg" width="22" height="14" viewBox="0 0 22 14" fill="none">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 1C0 0.447715 0.447715 0 1 0H21C21.5523 0 22 0.447715 22 1C22 1.55228 21.5523 2 21 2H1C0.447715 2 0 1.55228 0 1Z" fill="currentColor"/>
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 7C0 6.44772 0.447715 6 1 6H21C21.5523 6 22 6.44772 22 7C22 7.55228 21.5523 8 21 8H1C0.447715 8 0 7.55228 0 7Z" fill="currentColor"/>
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 13C0 12.4477 0.447715 12 1 12H21C21.5523 12 22 12.4477 22 13C22 13.5523 21.5523 14 21 14H1C0.447715 14 0 13.5523 0 13Z" fill="currentColor"/>
+        <svg
+          className={`icon-hamburger h-5 w-5 ${open ? "hidden" : "block"}`}
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="14"
+          viewBox="0 0 22 14"
+          fill="none"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M0 1C0 0.447715 0.447715 0 1 0H21C21.5523 0 22 0.447715 22 1C22 1.55228 21.5523 2 21 2H1C0.447715 2 0 1.55228 0 1Z"
+            fill="currentColor"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M0 7C0 6.44772 0.447715 6 1 6H21C21.5523 6 22 6.44772 22 7C22 7.55228 21.5523 8 21 8H1C0.447715 8 0 7.55228 0 7Z"
+            fill="currentColor"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M0 13C0 12.4477 0.447715 12 1 12H21C21.5523 12 22 12.4477 22 13C22 13.5523 21.5523 14 21 14H1C0.447715 14 0 13.5523 0 13Z"
+            fill="currentColor"
+          />
         </svg>
 
         {/* Close */}
-        <svg className={`icon-close h-5 w-5 ${open ? "block" : "hidden"}`} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M15.5892 4.41073C15.9147 4.73617 15.9147 5.26381 15.5892 5.58925L5.58921 15.5892C5.26378 15.9147 4.73614 15.9147 4.4107 15.5892C4.08527 15.2638 4.08527 14.7362 4.4107 14.4107L14.4107 4.41073C14.7361 4.0853 15.2638 4.0853 15.5892 4.41073Z" fill="currentColor"/>
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M4.4107 4.41073C4.73614 4.0853 5.26378 4.0853 5.58921 4.41073L15.5892 14.4107C15.9147 14.7362 15.9147 15.2638 15.5892 15.5892C15.2638 15.9147 14.7361 15.9147 14.4107 15.5892L4.4107 5.58925C4.08527 5.26381 4.08527 4.73617 4.4107 4.41073Z" fill="currentColor"/>
+        <svg
+          className={`icon-close h-5 w-5 ${open ? "block" : "hidden"}`}
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M15.5892 4.41073C15.9147 4.73617 15.9147 5.26381 15.5892 5.58925L5.58921 15.5892C5.26378 15.9147 4.73614 15.9147 4.4107 15.5892C4.08527 15.2638 4.08527 14.7362 4.4107 14.4107L14.4107 4.41073C14.7361 4.0853 15.2638 4.0853 15.5892 4.41073Z"
+            fill="currentColor"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M4.4107 4.41073C4.73614 4.0853 5.26378 4.0853 5.58921 4.41073L15.5892 14.4107C15.9147 14.7362 15.9147 15.2638 15.5892 15.5892C15.2638 15.9147 14.7361 15.9147 14.4107 15.5892L4.4107 5.58925C4.08527 5.26381 4.08527 4.73617 4.4107 4.41073Z"
+            fill="currentColor"
+          />
         </svg>
       </button>
 
@@ -604,7 +644,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
         >
           <div className="flex space-x-3 text-white text-sm font-normal font-sourcecodepro items-center">
             <span>
-              <img src={logoSrc} alt="brand-logo" height={44} width={107} />
+              <Image src={logoSrc} alt="brand-logo" height={44} width={107} />
             </span>
           </div>
         </a>

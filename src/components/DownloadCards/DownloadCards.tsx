@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 import DownloadCard1 from "./DownloadCard1";
 import DownloadCard2 from "./DownloadCard2";
 
@@ -43,7 +44,7 @@ export const useDownload = (fileUrl: string, fileName: string) => {
 export const DownloadIcon: React.FC<{ status: string }> = ({ status }) => {
   if (status === "loading") {
     return (
-      <img
+      <Image
         src="/assets/images/card-imgs/download-loading-icon.png"
         alt="Downloading..."
         width={24}
