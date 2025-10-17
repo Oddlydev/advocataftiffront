@@ -141,6 +141,19 @@ export default function CsvTable({
     return isNaN(n) ? NaN : n;
   };
 
+  // Determine ROA indicator color based on value thresholds
+  // Green: > 3.95
+  // Yellow: 1 to 3.95
+  // Orange: -1.5 to < 1
+  // Red: < -1.5
+  const getRoaColor = (num: number): string | null => {
+    if (isNaN(num)) return null;
+    if (num > 3.95) return "#22C55E"; // green-500
+    if (num >= 1 && num <= 3.95) return "#F59E0B"; // amber-500
+    if (num >= -1.5 && num < 1) return "#F97316"; // orange-500
+    return "#DC2626"; // red-600
+  };
+
   // Apply sorting by ROA if enabled
   const visibleRows = (() => {
     if (roaSortDir && roaIndex >= 0) {
@@ -347,16 +360,44 @@ export default function CsvTable({
 
                     {visibleRows.map((row, rowIndex) => (
                       <tr key={rowIndex}>
-                        {row.map((cell, cellIndex) => (
-                          <td
-                            key={cellIndex}
-                            className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro 
-                            ${cellIndex === 0 ? "sticky left-0 text-brand-black" : "text-gray-500"}
-                            w-[160px] md:w-[250px] xl:w-[315px]`}
-                          >
-                            {formatCell(cell)}
-                          </td>
-                        ))}
+                        {row.map((cell, cellIndex) => {
+                          const isROA = cellIndex === roaIndex;
+                          const num = isROA ? parseNumeric(cell ?? "") : NaN;
+                          const color = isROA ? getRoaColor(num) : null;
+                          return (
+                            <td
+                              key={cellIndex}
+                              className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro 
+                              ${cellIndex === 0 ? "sticky left-0 text-brand-black" : "text-gray-500"}
+                              w-[160px] md:w-[250px] xl:w-[315px]`}
+                            >
+                              {isROA ? (
+                                <span className="inline-flex items-center gap-2">
+                                  {color && (
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="12"
+                                      height="12"
+                                      viewBox="0 0 12 12"
+                                      fill="none"
+                                      aria-label="ROA indicator"
+                                    >
+                                      <circle
+                                        cx="6"
+                                        cy="6"
+                                        r="6"
+                                        fill={color}
+                                      />
+                                    </svg>
+                                  )}
+                                  <span>{formatCell(cell)}</span>
+                                </span>
+                              ) : (
+                                formatCell(cell)
+                              )}
+                            </td>
+                          );
+                        })}
                       </tr>
                     ))}
                   </tbody>
@@ -419,7 +460,7 @@ export default function CsvTable({
                       {/* Good */}
                       <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
                         <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                          Good
+                          Successful
                         </span>
                         <div className="flex items-center gap-2">
                           <svg
@@ -431,16 +472,16 @@ export default function CsvTable({
                           >
                             <circle cx="6" cy="6" r="6" fill="#22C55E" />
                           </svg>
-                          <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                          {/* <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
                             1
-                          </span>
+                          </span> */}
                         </div>
                       </div>
 
-                      {/* Average */}
+                      {/* Marginal Success */}
                       <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
                         <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                          Average
+                          Marginally Successful
                         </span>
                         <div className="flex items-center gap-2">
                           <svg
@@ -452,16 +493,37 @@ export default function CsvTable({
                           >
                             <circle cx="6" cy="6" r="6" fill="#F59E0B" />
                           </svg>
-                          <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                          {/* <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                            1
+                          </span> */}
+                        </div>
+                      </div>
+
+                      {/* Average */}
+                      <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
+                        <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                          Unsuccessful
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                          >
+                            <circle cx="6" cy="6" r="6" fill="#F97316" />
+                          </svg>
+                          {/* <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
                             0.5
-                          </span>
+                          </span> */}
                         </div>
                       </div>
 
                       {/* Poor */}
                       <div className="flex items-center gap-3">
                         <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                          Poor
+                          Total Failure
                         </span>
                         <div className="flex items-center gap-2">
                           <svg
@@ -473,9 +535,9 @@ export default function CsvTable({
                           >
                             <circle cx="6" cy="6" r="6" fill="#DC2626" />
                           </svg>
-                          <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                          {/* <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
                             0
-                          </span>
+                          </span> */}
                         </div>
                       </div>
                     </div>
