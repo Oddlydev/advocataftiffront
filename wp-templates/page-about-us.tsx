@@ -20,16 +20,27 @@ export const PAGE_QUERY = gql`
         opengraphDescription
         opengraphUrl
         opengraphSiteName
-        opengraphImage { sourceUrl }
+        opengraphImage {
+          sourceUrl
+        }
         twitterTitle
         twitterDescription
-        twitterImage { sourceUrl }
-        schema { raw }
+        twitterImage {
+          sourceUrl
+        }
+        schema {
+          raw
+        }
       }
       aboutFaqSection {
         aboutFaqDetails {
           aboutFaqItemTitle
           aboutFaqItemDescription
+          aboutFaqFile {
+            node {
+              mediaItemUrl
+            }
+          }
         }
       }
       aboutHeroSection {
@@ -54,6 +65,9 @@ interface AboutPageProps {
         aboutFaqDetails?: Array<{
           aboutFaqItemTitle?: string | null;
           aboutFaqItemDescription?: string | null;
+          aboutFaqFile?: {
+            node?: { mediaItemUrl?: string | null } | null;
+          } | null;
         }> | null;
       } | null;
       aboutHeroSection?: {
@@ -75,28 +89,28 @@ const AboutHero: React.FC<{
 }> = ({ image }) => {
   if (!image?.sourceUrl) return null;
   return (
-      <div className="about-hero relative">
-        {/* Background image */}
-        <div className="h-full lg:h-[500px] w-full">
-          <img
-            src={image.sourceUrl}
-            width={1628}
-            height={500}
-            className="h-full w-full object-cover"
-            alt={image.altText || "About hero"}
-          />
-        </div>
-
-        {/* Overlay gradient */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(0deg, rgba(235, 26, 82, 0.16) 0%, rgba(235, 26, 82, 0.16) 100%)",
-            // mixBlendMode: "multiply", // optional: helps blend nicely
-          }}
+    <div className="about-hero relative">
+      {/* Background image */}
+      <div className="h-full lg:h-[500px] w-full">
+        <img
+          src={image.sourceUrl}
+          width={1628}
+          height={500}
+          className="h-full w-full object-cover"
+          alt={image.altText || "About hero"}
         />
       </div>
+
+      {/* Overlay gradient */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(0deg, rgba(235, 26, 82, 0.16) 0%, rgba(235, 26, 82, 0.16) 100%)",
+          // mixBlendMode: "multiply", // optional: helps blend nicely
+        }}
+      />
+    </div>
   );
 };
 
@@ -142,17 +156,12 @@ const AboutPage: React.FC<AboutPageProps> = ({ data }) => {
   const heroImage =
     page?.aboutHeroSection?.aboutUsHeroBackgroundImage?.node ?? undefined;
 
-  const faqItems =
-    page?.aboutFaqSection?.aboutFaqDetails?.map((item) => ({
-      title: item?.aboutFaqItemTitle,
-      content: item?.aboutFaqItemDescription,
-    })) ?? [];
+  const faqItems = page?.aboutFaqSection?.aboutFaqDetails ?? [];
 
   return (
     <main>
       <SEO yoast={page?.seo as any} title={page?.title ?? undefined} />
       <div className="overflow-x-hidden">
-        
         {/* Intro (derived from Gutenberg) */}
         {(introTitle || introParagraphs.length > 0) && (
           <TextBlock
@@ -179,18 +188,56 @@ const AboutPage: React.FC<AboutPageProps> = ({ data }) => {
             <Accordion
               className="mx-auto max-w-4xl"
               defaultOpenIndex={0}
-              items={faqItems.map((item) => ({
-                title: (
-                  <span className="text-lg/7 md:text-xl/7 font-montserrat">
-                    {item.title}
-                  </span>
-                ),
-                content: (
+              items={faqItems.map((item) => {
+                const titleText = item?.aboutFaqItemTitle ?? "";
+                const descText = item?.aboutFaqItemDescription ?? "";
+                const fileUrl = item?.aboutFaqFile?.node?.mediaItemUrl ?? undefined;
+                const downloadName = fileUrl
+                  ? (fileUrl.split("/").pop() || "download")
+                  : undefined;
+
+                const contentNode: React.ReactNode = (
                   <p className="text-base/6 md:text-lg/7 pt-4 max-w-sm md:max-w-4xl">
-                    {item.content}
+                    {descText}
+                    {fileUrl ? (
+                      <a
+                        href={fileUrl}
+                        download={downloadName}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Download file"
+                        title={downloadName ? `Download ${downloadName}` : "Download file"}
+                        className="inline-flex items-center align-middle ml-3 text-current"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                      </a>
+                    ) : null}
                   </p>
-                ),
-              }))}
+                );
+
+                return {
+                  title: (
+                    <span className="text-lg/7 md:text-xl/7 font-montserrat">
+                      {titleText}
+                    </span>
+                  ),
+                  content: contentNode,
+                };
+              })}
             />
           </div>
         </section>
