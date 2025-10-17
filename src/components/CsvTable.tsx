@@ -239,24 +239,69 @@ export default function CsvTable({
                           if (!isROA) return null;
                           if (roaSortDir === "asc") {
                             return (
-                              <svg className="ml-1 inline-block align-middle" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 15l6-6 6 6"/></svg>
+                              <svg
+                                className="ml-1 inline-block align-middle"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M6 15l6-6 6 6" />
+                              </svg>
                             );
                           }
                           if (roaSortDir === "desc") {
                             return (
-                              <svg className="ml-1 inline-block align-middle" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 9l-6 6-6-6"/></svg>
+                              <svg
+                                className="ml-1 inline-block align-middle"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M18 9l-6 6-6-6" />
+                              </svg>
                             );
                           }
                           // unsorted icon
                           return (
-                            <svg className="ml-1 inline-block align-middle opacity-70" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg>
+                            <svg
+                              className="ml-1 inline-block align-middle"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M7 15l5 5 5-5M7 9l5-5 5 5" />
+                            </svg>
                           );
                         };
 
                         const onClickHeader = () => {
                           if (!isROA) return;
                           setCurrentPage(1);
-                          setRoaSortDir((prev) => (prev === "desc" ? "asc" : prev === "asc" ? null : "desc"));
+                          setRoaSortDir((prev) =>
+                            prev === "desc"
+                              ? "asc"
+                              : prev === "asc"
+                                ? null
+                                : "desc"
+                          );
                         };
 
                         return (
@@ -270,7 +315,7 @@ export default function CsvTable({
                               <button
                                 type="button"
                                 onClick={onClickHeader}
-                                className="group inline-flex items-center text-left focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white/40 rounded"
+                                className="group inline-flex items-center text-left  rounded"
                                 title="Sort by ROA"
                               >
                                 <span>{header}</span>
@@ -361,10 +406,18 @@ export default function CsvTable({
                         Good
                       </span>
                       <div className="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                        >
                           <circle cx="6" cy="6" r="6" fill="#22C55E" />
                         </svg>
-                        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">1</span>
+                        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                          1
+                        </span>
                       </div>
                     </div>
 
@@ -374,10 +427,18 @@ export default function CsvTable({
                         Average
                       </span>
                       <div className="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                        >
                           <circle cx="6" cy="6" r="6" fill="#F59E0B" />
                         </svg>
-                        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">0.5</span>
+                        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                          0.5
+                        </span>
                       </div>
                     </div>
 
@@ -387,10 +448,18 @@ export default function CsvTable({
                         Poor
                       </span>
                       <div className="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                        >
                           <circle cx="6" cy="6" r="6" fill="#DC2626" />
                         </svg>
-                        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">0</span>
+                        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+                          0
+                        </span>
                       </div>
                     </div>
                   </div>
