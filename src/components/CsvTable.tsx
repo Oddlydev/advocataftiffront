@@ -21,6 +21,7 @@ export default function CsvTable({
   const [rows, setRows] = useState<string[][]>([]);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [roaSortDir, setRoaSortDir] = useState<"asc" | "desc" | null>(null);
 
   const cacheKey = `csvRows:${csvUrl}`;
   const memCache: { [key: string]: string[][] } =
@@ -125,7 +126,39 @@ export default function CsvTable({
     });
   }
 
-  const visibleRows = filteredByText;
+  // Locate ROA column (case-insensitive)
+  const roaIndex = (() => {
+    const idx = headers.findIndex((h) => /\broa\b/i.test(h ?? ""));
+    return idx >= 0 ? idx : -1;
+  })();
+
+  // Parse numeric strings robustly (e.g., "12.3%", "1,234", "-0.5")
+  const parseNumeric = (v: string): number => {
+    if (!v) return NaN;
+    const cleaned = v.replace(/[^0-9.\-]/g, "");
+    if (cleaned.trim() === "") return NaN;
+    const n = Number(cleaned);
+    return isNaN(n) ? NaN : n;
+  };
+
+  // Apply sorting by ROA if enabled
+  const visibleRows = (() => {
+    if (roaSortDir && roaIndex >= 0) {
+      const sorted = [...filteredByText].sort((a, b) => {
+        const av = parseNumeric(a[roaIndex] ?? "");
+        const bv = parseNumeric(b[roaIndex] ?? "");
+        const aNaN = isNaN(av);
+        const bNaN = isNaN(bv);
+        // Place NaN at the end regardless of direction
+        if (aNaN && bNaN) return 0;
+        if (aNaN) return 1;
+        if (bNaN) return -1;
+        return roaSortDir === "asc" ? av - bv : bv - av;
+      });
+      return sorted;
+    }
+    return filteredByText;
+  })();
 
   // Pagination logic
   const totalItems = visibleRows.length;
@@ -200,17 +233,55 @@ export default function CsvTable({
                 <table className="border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg">
                   <thead className="rounded-t-lg">
                     <tr>
-                      {headers.map((header, i) => (
-                        <th
-                          key={i}
-                          className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700 sticky top-0
-                          ${i === 0 ? "left-0 z-20 rounded-tl-lg" : "z-10"}
-                          ${i === headers.length - 1 ? "rounded-tr-lg" : ""}
-                          w-[160px] md:w-[225px] xl:w-[235px]`}
-                        >
-                          {header}
-                        </th>
-                      ))}
+                      {headers.map((header, i) => {
+                        const isROA = i === roaIndex;
+                        const sortIcon = () => {
+                          if (!isROA) return null;
+                          if (roaSortDir === "asc") {
+                            return (
+                              <svg className="ml-1 inline-block align-middle" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 15l6-6 6 6"/></svg>
+                            );
+                          }
+                          if (roaSortDir === "desc") {
+                            return (
+                              <svg className="ml-1 inline-block align-middle" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 9l-6 6-6-6"/></svg>
+                            );
+                          }
+                          // unsorted icon
+                          return (
+                            <svg className="ml-1 inline-block align-middle opacity-70" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg>
+                          );
+                        };
+
+                        const onClickHeader = () => {
+                          if (!isROA) return;
+                          setCurrentPage(1);
+                          setRoaSortDir((prev) => (prev === "desc" ? "asc" : prev === "asc" ? null : "desc"));
+                        };
+
+                        return (
+                          <th
+                            key={i}
+                            className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700 sticky top-0 ${
+                              i === 0 ? "left-0 z-20 rounded-tl-lg" : "z-10"
+                            } ${i === headers.length - 1 ? "rounded-tr-lg" : ""} w-[160px] md:w-[225px] xl:w-[235px]`}
+                          >
+                            {isROA ? (
+                              <button
+                                type="button"
+                                onClick={onClickHeader}
+                                className="group inline-flex items-center text-left focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white/40 rounded"
+                                title="Sort by ROA"
+                              >
+                                <span>{header}</span>
+                                {sortIcon()}
+                              </button>
+                            ) : (
+                              header
+                            )}
+                          </th>
+                        );
+                      })}
                     </tr>
                   </thead>
 
