@@ -105,7 +105,7 @@ export default function NewsletterForm({
           autoComplete="email"
           required
           className="footer-subscribe-input block w-full rounded-md shadow-sm bg-white px-3 py-3.5 text-base/6 text-gray-900
-          font-sourcecodepro border border-gray-200 placeholder:text-gray-400   focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
+          font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
           placeholder="Enter your email"
         />
         <div className="mt-3 sm:shrink-0">

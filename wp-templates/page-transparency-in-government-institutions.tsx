@@ -448,8 +448,8 @@ export default function PageTransparencyDashboard(): JSX.Element {
       {/* Filters */}
       <section className="bg-white py-3.5 md:py-5 xl:py-6">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-          <div className="lg:flex gap-2 items-center justify-between pb-9">
-            <div className="relative w-full xl:w-1/2">
+          <div className="lg:flex gap-2 xl:gap-12 items-center justify-between pb-9">
+            <div className="relative w-full xl:w-3/4">
               <SearchField
                 value={queryInput}
                 onChange={(q) => {
