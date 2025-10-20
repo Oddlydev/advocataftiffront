@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Papa from "papaparse";
 
 interface CsvTableProps {
@@ -22,6 +22,8 @@ export default function CsvTable({
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [roaSortDir, setRoaSortDir] = useState<"asc" | "desc" | null>(null);
+  const [headerOffset, setHeaderOffset] = useState(0);
+  const theadRef = useRef<HTMLTableSectionElement | null>(null);
 
   const cacheKey = `csvRows:${csvUrl}`;
   const memCache: { [key: string]: string[][] } =
@@ -80,6 +82,19 @@ export default function CsvTable({
       });
   }, [csvUrl]);
 
+  // Measure header height early to keep hook order stable across renders
+  useEffect(() => {
+    const updateOffset = () => {
+      const el = theadRef.current;
+      if (!el) return;
+      const h = el.offsetHeight || el.getBoundingClientRect().height || 0;
+      setHeaderOffset(h);
+    };
+    updateOffset();
+    window.addEventListener("resize", updateOffset);
+    return () => window.removeEventListener("resize", updateOffset);
+  }, [rows.length]);
+
   if (error) return <p className="text-red-500">{error}</p>;
   if (rows.length === 0)
     return (
@@ -102,12 +117,10 @@ export default function CsvTable({
     .split(" ")
     .filter(Boolean);
 
-  // Determine index for Sector column; fallback to 1 (second column)
-  const sectorIndex = (() => {
-    const idx = headers.findIndex((h) => /sector/i.test(h ?? ""));
-    if (idx >= 0) return idx;
-    return Math.min(1, headers.length - 1);
-  })();
+  // Determine index for Sector column
+  const detectedSectorIndex = headers.findIndex((h) => /sector/i.test(h ?? ""));
+  const useSectorGrouping = detectedSectorIndex >= 0;
+  const sectorIndex = detectedSectorIndex; // -1 if not found
 
   const hasSectorFilter =
     Array.isArray(sectorFilters) && sectorFilters.length > 0;
@@ -131,6 +144,18 @@ export default function CsvTable({
     const idx = headers.findIndex((h) => /\broa\b/i.test(h ?? ""));
     return idx >= 0 ? idx : -1;
   })();
+
+  // Compute display headers and ROA display index after optionally removing Sector column
+  const displayHeaders: string[] = useSectorGrouping
+    ? headers.filter((_, i) => i !== sectorIndex)
+    : headers;
+  const roaDisplayIndex =
+    roaIndex >= 0
+      ? roaIndex -
+        (useSectorGrouping && sectorIndex >= 0 && sectorIndex < roaIndex
+          ? 1
+          : 0)
+      : -1;
 
   // Parse numeric strings robustly (e.g., "12.3%", "1,234", "-0.5")
   const parseNumeric = (v: string): number => {
@@ -182,6 +207,30 @@ export default function CsvTable({
   const end = Math.min(currentPage * pageSize, totalItems);
 
   const paginatedRows = visibleRows.slice(start - 1, end);
+
+  // Build render list: insert a sector heading row before each sector group (when enabled)
+  type RenderItem =
+    | { type: "sector"; sector: string }
+    | { type: "data"; row: string[] };
+
+  const renderItems: RenderItem[] = (() => {
+    const base = visibleRows; // preserve existing rendering behavior
+    if (!useSectorGrouping || sectorIndex < 0) {
+      return base.map((row) => ({ type: "data", row }));
+    }
+    const items: RenderItem[] = [];
+    let lastSectorKey: string | null = null;
+    for (const row of base) {
+      const sector = row[sectorIndex] ?? "";
+      const sectorKey = norm(sector);
+      if (lastSectorKey !== sectorKey) {
+        items.push({ type: "sector", sector });
+        lastSectorKey = sectorKey;
+      }
+      items.push({ type: "data", row });
+    }
+    return items;
+  })();
 
   const onPageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
@@ -244,10 +293,10 @@ export default function CsvTable({
             >
               <div className="w-[1200px] table-inner">
                 <table className="border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg">
-                  <thead className="rounded-t-lg">
+                  <thead ref={theadRef} className="rounded-t-lg">
                     <tr>
-                      {headers.map((header, i) => {
-                        const isROA = i === roaIndex;
+                      {displayHeaders.map((header, i) => {
+                        const isROA = i === roaDisplayIndex;
                         const sortIcon = () => {
                           if (!isROA) return null;
                           if (roaSortDir === "asc") {
@@ -322,7 +371,7 @@ export default function CsvTable({
                             key={i}
                             className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700 sticky top-0 ${
                               i === 0 ? "left-0 z-20 rounded-tl-lg" : "z-10"
-                            } ${i === headers.length - 1 ? "rounded-tr-lg" : ""} w-[160px] md:w-[225px] xl:w-[280px]`}
+                            } ${i === displayHeaders.length - 1 ? "rounded-tr-lg" : ""} w-[160px] md:w-[225px] xl:w-[280px]`}
                           >
                             {isROA ? (
                               <button
@@ -348,7 +397,7 @@ export default function CsvTable({
                     {visibleRows.length === 0 && (
                       <tr>
                         <td
-                          colSpan={headers.length}
+                          colSpan={displayHeaders.length}
                           className="bg-white border-b border-gray-100 px-3 py-6 text-left text-base/6 font-medium font-sourcecodepro text-gray-500"
                         >
                           No data to display
@@ -356,48 +405,75 @@ export default function CsvTable({
                       </tr>
                     )}
 
-                    {visibleRows.map((row, rowIndex) => (
-                      <tr key={rowIndex}>
-                        {row.map((cell, cellIndex) => {
-                          const isROA = cellIndex === roaIndex;
-                          const num = isROA ? parseNumeric(cell ?? "") : NaN;
-                          const color = isROA ? getRoaColor(num) : null;
-                          return (
+                    {renderItems.map((item, idx) => {
+                      if (item.type === "sector") {
+                        return (
+                          <tr key={`sector-${idx}`}>
+                            {/* Sticky first cell with sector name */}
                             <td
-                              key={cellIndex}
-                              className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro 
-                              ${cellIndex === 0 ? "sticky left-0 text-brand-black" : "text-gray-500"}
-                              w-[160px] md:w-[250px] xl:w-[315px]`}
+                              className="sector sticky left-0 z-20 bg-gray-50 text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold w-[160px] md:w-[250px] xl:w-[315px]"
+                              style={{ top: headerOffset }}
                             >
-                              {isROA ? (
-                                <span className="inline-flex items-center gap-2">
-                                  {color && (
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="12"
-                                      height="12"
-                                      viewBox="0 0 12 12"
-                                      fill="none"
-                                      aria-label="ROA indicator"
-                                    >
-                                      <circle
-                                        cx="6"
-                                        cy="6"
-                                        r="6"
-                                        fill={color}
-                                      />
-                                    </svg>
-                                  )}
-                                  <span>{formatCell(cell)}</span>
-                                </span>
-                              ) : (
-                                formatCell(cell)
-                              )}
+                              {item.sector}
                             </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
+                            {/* Spacer cells to align columns; these scroll horizontally */}
+                            {displayHeaders.slice(1).map((_, i) => (
+                              <td
+                                key={`spacer-${i}`}
+                                className="bg-gray-50 border-b border-gray-100 px-3 py-3.5 w-[160px] md:w-[250px] xl:w-[315px]"
+                              />
+                            ))}
+                          </tr>
+                        );
+                      }
+                      const row = item.row;
+                      const displayRow =
+                        useSectorGrouping && sectorIndex >= 0
+                          ? row.filter((_, i) => i !== sectorIndex)
+                          : row;
+                      return (
+                        <tr key={`row-${idx}`}>
+                          {displayRow.map((cell, cellIndex) => {
+                            const isROA = cellIndex === roaDisplayIndex;
+                            const num = isROA ? parseNumeric(cell ?? "") : NaN;
+                            const color = isROA ? getRoaColor(num) : null;
+                            return (
+                              <td
+                                key={cellIndex}
+                                className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro 
+                                ${cellIndex === 0 ? "sticky left-0 text-brand-black" : "text-gray-500"}
+                                w-[160px] md:w-[250px] xl:w-[315px]`}
+                              >
+                                {isROA ? (
+                                  <span className="inline-flex items-center gap-2">
+                                    {color && (
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="12"
+                                        height="12"
+                                        viewBox="0 0 12 12"
+                                        fill="none"
+                                        aria-label="ROA indicator"
+                                      >
+                                        <circle
+                                          cx="6"
+                                          cy="6"
+                                          r="6"
+                                          fill={color}
+                                        />
+                                      </svg>
+                                    )}
+                                    <span>{formatCell(cell)}</span>
+                                  </span>
+                                ) : (
+                                  formatCell(cell)
+                                )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
