@@ -276,12 +276,12 @@ const DashboardDropdown: React.FC<{
       </button>
 
       <div
-        className={`${open ? "" : "hidden"} dropdown-menu absolute space-y-2 grid px-3 py-3 -left-60 mt-2 w-2xl bg-white border-0 rounded-md shadow-lg`}
+        className={`${open ? "" : "hidden"} dropdown-menu absolute space-y-2 grid px-3 py-3 -left-[34rem] mt-5 w-[44rem] bg-white border-0 rounded-md shadow-lg`}
         role="menu"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <span className="text-slate-800 font-medium font-urwdin text-sm/5 uppercase">
+            <span className="text-slate-800 font-semibold font-sourcecodepro text-sm/tight uppercase">
               dashboards
             </span>
             <nav className="sidebar-fill pt-4" aria-label="Sidebar">

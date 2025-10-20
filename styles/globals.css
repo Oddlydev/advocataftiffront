@@ -153,8 +153,6 @@ button {
   --font-montserrat: var(--font-montserrat);
   --font-sourcecodepro: var(--font-sourcecodepro);
   --font-baskervville: var(--font-baskervville);
-  --font-playfair: var(--font-playfair);
-  --font-urwdin: var(--font-ibmplexsans);
 
   /* Set your defaults (so utilities like font-sans work) */
   --font-sans:
@@ -171,7 +169,6 @@ button {
   --font-montserrat: var(--font-montserrat);
   --font-sourcecodepro: var(--font-sourcecodepro);
   --font-baskervville: var(--font-baskervville);
-  --font-playfair: var(--font-playfair);
   --font-inter: var(--font-inter);
   --font-manrope: var(--font-manrope);
 
@@ -266,16 +263,8 @@ button {
   font-family: var(--font-baskervville, var(--font-serif));
 }
 
-.font-family-playfair {
-  font-family: var(--font-playfair, var(--font-serif));
-}
-
 .font-family-manrope {
   font-family: var(--font-manrope, var(--font-sans));
-}
-
-.font-family-urwdin {
-  font-family: var(--font-ibmplexsans, var(--font-sans));
 }
 
 @media (min-width: 390px) and (max-width: 500px) {

@@ -159,7 +159,7 @@ export default function DefaultDropdown({
           {items.map((it, idx) => {
             const common = {
               className:
-                "default-dropdown-item block text-left px-6 py-2.5 text-base/6 text-slate-600 hover:bg-brand-white font-sourcecodepro font-normal",
+                "default-dropdown-item block text-left px-6 py-2.5 text-base/6 text-slate-600 hover:text-brand-1-700 font-sourcecodepro font-normal",
               role: "menuitem" as const,
               key: idx,
             };
@@ -188,34 +188,34 @@ export default function DefaultDropdown({
                 }}
               >
                 {it.kind === "checkbox" ? (
-                  <div className="flex gap-3 items-center">
-                    <div>
-                      <span
-                        aria-hidden
-                        className="grid size-4 place-items-center border border-slate-600 rounded-sm"
-                      >
-                        {it.checked ? (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 8 6"
-                            fill="none"
-                            className="size-3 stroke-slate-600"
-                          >
-                            <path
-                              d="M1.5 3L3 4.5L6.5 1.5"
-                              stroke="currentColor"
-                              strokeWidth="1.8"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        ) : null}
-                      </span>
-                    </div>
-                    <span className="font-normal text-slate-600">
-                      {it.label}
+                <div className="group flex gap-3 items-center cursor-pointer">
+                  <div>
+                    <span
+                      aria-hidden
+                      className="grid size-4 place-items-center border-2 border-slate-600 rounded-sm group-hover:border-brand-1-700"
+                    >
+                      {it.checked ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 8 6"
+                          fill="none"
+                          className="size-3 stroke-slate-600 group-hover:stroke-brand-1-700"
+                        >
+                          <path
+                            d="M1.5 3L3 4.5L6.5 1.5"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      ) : null}
                     </span>
                   </div>
+                  <span className="font-normal text-slate-600 group-hover:text-brand-1-700">
+                    {it.label}
+                  </span>
+                </div>
                 ) : (
                   it.label
                 )}
