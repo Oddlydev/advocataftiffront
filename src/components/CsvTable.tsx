@@ -211,12 +211,16 @@ export default function CsvTable({
   };
 
   const formatCell = (value: string): React.ReactNode => {
-    if (!value || value.trim() === "" || value.toLowerCase().includes("data n/a")) {
+    const raw = (value ?? "").toString();
+    const trimmed = raw.trim();
+    const lower = trimmed.toLowerCase();
+    // Treat empty, explicit "data n/a", or lone dash placeholders as N/A
+    if (!trimmed || lower.includes("data n/a") || /^-+$/.test(trimmed)) {
       return <span className="text-brand-1-600 font-medium">Data N/A</span>;
     }
-    const num = Number(value);
+    const num = Number(trimmed);
     if (!isNaN(num)) return num.toLocaleString("en-US");
-    return value;
+    return trimmed;
   };
 
   const handleScrollRight = () => {
