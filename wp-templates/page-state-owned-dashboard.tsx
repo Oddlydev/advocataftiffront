@@ -478,9 +478,9 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       {/* Filters */}
       <section className="bg-white">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-          <div className="lg:flex gap-2 items-center justify-between pb-9">
+          <div className="lg:flex gap-2 xl:gap-12 items-center justify-between pb-9">
             {/* Search */}
-            <div className="relative w-full xl:w-1/2">
+            <div className="relative w-full xl:w-3/4">
               <SearchField
                 value={queryInput}
                 onChange={(q) => {

@@ -290,7 +290,7 @@ export default function PageNewsletterConfirmation() {
                         type="checkbox"
                         name="agree"
                         required
-                        className="peer h-5 w-5 rounded-sm border border-slate-500 appearance-none checked:bg-brand-1-600 checked:border-brand-1-600 focus:outline-none focus:ring-0 focus:ring-tranparent"
+                        className="peer h-5 w-5 rounded-sm border border-slate-500 appearance-none checked:bg-slate-600 checked:border-slate-600 focus:outline-none focus:ring-0 focus:ring-tranparent"
                       />
                       {/* Tick Icon */}
                       <svg

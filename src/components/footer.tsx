@@ -79,7 +79,7 @@ export default function Footer(): JSX.Element {
             </div>
 
             {/* column 2 (desktop) */}
-            <div className="hidden xl:block p-0 xl:pt-7 w-full xl:w-3/4">
+            <div className="hidden xl:block p-0 xl:pt-7 w-full xl:w-full">
               <div className="mb-3.5">
                 <span className="block w-10 border-t-4 border-brand-white" />
               </div>

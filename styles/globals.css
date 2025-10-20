@@ -146,6 +146,7 @@ button {
   --font-sourcecodepro: var(--font-sourcecodepro);
   --font-baskervville: var(--font-baskervville);
   --font-playfair: var(--font-playfair);
+  --font-urwdin: var(--font-ibmplexsans);
 
   /* Set your defaults (so utilities like font-sans work) */
   --font-sans:
@@ -263,6 +264,10 @@ button {
 
 .font-family-manrope {
   font-family: var(--font-manrope, var(--font-sans));
+}
+
+.font-family-urwdin {
+  font-family: var(--font-ibmplexsans, var(--font-sans));
 }
 
 @media (min-width: 390px) and (max-width: 500px) {

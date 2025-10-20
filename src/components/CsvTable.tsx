@@ -371,7 +371,7 @@ export default function CsvTable({
                             key={i}
                             className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700 sticky top-0 ${
                               i === 0 ? "left-0 z-20 rounded-tl-lg" : "z-10"
-                            } ${i === displayHeaders.length - 1 ? "rounded-tr-lg" : ""} w-[160px] md:w-[225px] xl:w-[280px]`}
+                            } ${i === headers.length - 1 ? "rounded-tr-lg" : ""} w-[150px] md:w-[215px] xl:w-[260px]`}
                           >
                             {isROA ? (
                               <button
@@ -411,7 +411,7 @@ export default function CsvTable({
                           <tr key={`sector-${idx}`}>
                             {/* Sticky first cell with sector name */}
                             <td
-                              className="sector sticky left-0 z-20 bg-gray-50 text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold w-[160px] md:w-[250px] xl:w-[315px]"
+                              className="sector sticky left-0 z-20 bg-brand-white text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold w-[160px] md:w-[250px] xl:w-[315px]"
                               style={{ top: headerOffset }}
                             >
                               {item.sector}
@@ -420,7 +420,7 @@ export default function CsvTable({
                             {displayHeaders.slice(1).map((_, i) => (
                               <td
                                 key={`spacer-${i}`}
-                                className="bg-gray-50 border-b border-gray-100 px-3 py-3.5 w-[160px] md:w-[250px] xl:w-[315px]"
+                                className="bg-brand-white border-b border-gray-100 px-3 py-3.5 w-[160px] md:w-[250px] xl:w-[315px]"
                               />
                             ))}
                           </tr>
@@ -507,7 +507,7 @@ export default function CsvTable({
           {/* Interpretation legend (optional) */}
           {showInterpretation && (
             <>
-              <div className="bg-gray-50 rounded-lg mt-3 px-6 py-3.5">
+              <div className="bg-gray-50 rounded-lg mt-3 px-6 py-3.5 mt-6 md:mt-9">
                 <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
                   <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                     <p>
@@ -524,13 +524,13 @@ export default function CsvTable({
               </div>
               <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
                 <div>
-                  <div className="grid md:flex gap-7 items-center justify-start md:justify-end w-full">
+                  <div className="grid xl:flex gap-4 xl:gap-7 items-center justify-start xl:justify-end w-full">
                     <div>
                       <p className="text-sm xl:text-base/6 font-medium font-sourcecodepro text-slate-600">
                         Interpretation of the indicators :
                       </p>
                     </div>
-                    <div className="flex items-center gap-3 md:gap-5">
+                    <div className="grid md:flex items-center gap-2.5 md:gap-5">
                       {/* Good */}
                       <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
                         <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">

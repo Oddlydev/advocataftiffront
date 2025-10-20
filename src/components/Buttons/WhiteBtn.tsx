@@ -26,7 +26,7 @@ export default function WhiteButton({ children, url, className = "", ...rest }: 
     <button
       {...rest} // allows passing extra props like type, disabled
       onClick={handleClick}
-      className={`${baseBtn} bg-white border border-slate-200 text-gray-600 shadow-sm hover:bg-slate-100 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent ${className}`}
+      className={`${baseBtn} bg-brand-white border border-slate-200 text-gray-600 shadow-sm hover:bg-slate-100 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-indigo-500 focus-visible:outline-0 focus-visible:outline-offset-0 focus-visible:outline-transparent ${className}`}
     >
       {children}
     </button>

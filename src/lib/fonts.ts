@@ -1,5 +1,5 @@
 // src/lib/fonts.ts
-import { Inter, Montserrat, Manrope, Playfair_Display, Source_Code_Pro, Baskervville } from "next/font/google";
+import { Inter, Montserrat, Manrope, Playfair_Display, Source_Code_Pro, Baskervville, IBM_Plex_Sans } from "next/font/google";
 
 export const inter = Inter({
     subsets: ["latin"],
@@ -30,4 +30,9 @@ export const baskervville = Baskervville({
     weight: "400",
     subsets: ["latin"],
     variable: "--font-baskervville",
+});
+
+export const ibmPlexSans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  variable: "--font-ibmplexsans",
 });
