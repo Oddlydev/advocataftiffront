@@ -199,7 +199,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       {downloadUrl?.toLowerCase().endsWith(".csv") && (
         <section className="bg-white -mt-4 md:-mt-5 xl:-mt-8">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-            <CsvTable csvUrl={downloadUrl} showInterpretation={false} />
+            <CsvTable csvUrl={downloadUrl} />
           </div>
         </section>
       )}
@@ -262,7 +262,10 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                 if (metaUrl) {
                   // Fire both downloads: meta and dataset
                   try {
-                    downloadCsvFile(metaUrl, `${dataset.slug || "dataset"}-meta`);
+                    downloadCsvFile(
+                      metaUrl,
+                      `${dataset.slug || "dataset"}-meta`
+                    );
                   } catch {}
                 }
                 downloadCsvFile(downloadUrl, dataset.slug || "dataset");
