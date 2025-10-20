@@ -446,7 +446,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
       />
 
       {/* Filters */}
-      <section className="bg-white py-3.5 md:py-5 xl:py-6">
+      <section className="bg-white pt-3.5 md:pt-5 xl:pt-6 pb-6 md:pb-9 xl:pb-20">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           <div className="lg:flex gap-2 xl:gap-12 items-center justify-between pb-9">
             <div className="relative w-full xl:w-3/4">
@@ -523,7 +523,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
       </section>
 
       {/* Pagination */}
-      <section className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pt-6 md:pt-9 hidden">
+      <section className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-16 hidden">
         <Pagination
           currentPage={currentPage}
           totalItems={filteredPosts.length}
