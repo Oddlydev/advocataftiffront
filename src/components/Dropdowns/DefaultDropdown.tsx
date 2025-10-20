@@ -35,7 +35,9 @@ function useClickOutside(
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as Node;
-      const inside = elements.some((r) => r.current && r.current.contains(target));
+      const inside = elements.some(
+        (r) => r.current && r.current.contains(target)
+      );
       if (!inside) onOutside();
     };
     document.addEventListener("click", handler);
@@ -62,8 +64,12 @@ export default function DefaultDropdown({
   const menuRef = useRef<HTMLDivElement>(null);
   const reactId = useId();
   const key = idKey ?? reactId;
-  const btnId = idKey ? `default-dropdown-btn-${idKey}` : `default-dropdown-btn-${reactId}`;
-  const menuId = idKey ? `default-dropdown-menu-btn-${idKey}` : `default-dropdown-menu-${reactId}`;
+  const btnId = idKey
+    ? `default-dropdown-btn-${idKey}`
+    : `default-dropdown-btn-${reactId}`;
+  const menuId = idKey
+    ? `default-dropdown-menu-btn-${idKey}`
+    : `default-dropdown-menu-${reactId}`;
 
   const setOpenState = (v: boolean) => {
     if (isControlled) onOpenChange?.(v);
@@ -80,14 +86,24 @@ export default function DefaultDropdown({
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
+  const listScrollable = items.length > 6;
+
   return (
-    <div className={["default-dropdown-btn-wrapper relative inline-block text-left", className].join(" ")}>
+    <div
+      className={[
+        "default-dropdown-btn-wrapper relative inline-block text-left",
+        className,
+      ].join(" ")}
+    >
       <div>
         <button
           ref={btnRef}
           type="button"
           id={btnId}
-          className={["default-dropdown-btn inline-flex w-full justify-center gap-x-1.5 rounded-md bg-brand-white px-4 py-2 text-lg/7 font-sourcecodepro font-normal text-slate-600 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 items-center gap-1", buttonClassName].join(" ")}
+          className={[
+            "default-dropdown-btn inline-flex w-full justify-center gap-x-1.5 rounded-md bg-brand-white px-4 py-2 text-lg/7 font-sourcecodepro font-normal text-slate-600 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 items-center gap-1",
+            buttonClassName,
+          ].join(" ")}
           aria-expanded={isOpen}
           aria-haspopup="true"
           aria-controls={menuId}
@@ -97,7 +113,14 @@ export default function DefaultDropdown({
           }}
         >
           {label}
-          <svg className="-mr-1 size-5 text-gray-700" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <svg
+            className="-mr-1 size-5 text-gray-700"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
             <path
               fillRule="evenodd"
               clipRule="evenodd"
@@ -112,22 +135,31 @@ export default function DefaultDropdown({
         ref={menuRef}
         id={menuId}
         className={[
-          "default-dropdown-menu absolute right-0 z-10 mt-2 w-48 md:w-56 origin-top-right rounded-md bg-brand-white shadow-lg ring-1 ring-black/5 focus:outline-none transition ease-out duration-100 transform scale-95",
+          "default-dropdown-menu absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-brand-white shadow-lg ring-1 ring-black/5 focus:outline-none transition ease-out duration-100 transform scale-95",
           align === "right" ? "right-0" : "left-0",
           "transform transition-all duration-200 ease-out z-30",
-          isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none",
+          isOpen
+            ? "opacity-100 scale-100"
+            : "opacity-0 scale-95 pointer-events-none",
           menuClassName,
         ].join(" ")}
         role="menu"
         aria-orientation="vertical"
         aria-labelledby={btnId}
         tabIndex={-1}
+        style={{ width: "max-content" }}
       >
-        <div className="py-1 overflow-y-scroll h-96 " role="none"> {/* overflow-y-scroll h-96 */}
+        <div
+          className={[
+            "py-1",
+            listScrollable ? "overflow-y-auto max-h-[280px]" : "",
+          ].join(" ")}
+          role="none"
+        >
           {items.map((it, idx) => {
             const common = {
               className:
-                "default-dropdown-item block w-full text-left px-4 py-2.5 text-base/6 text-slate-600 hover:bg-brand-1-50 hover:text-slate-800 font-sourcecodepro font-normal",
+                "default-dropdown-item block text-left px-6 py-2.5 text-base/6 text-slate-600 hover:bg-brand-white font-sourcecodepro font-normal",
               role: "menuitem" as const,
               key: idx,
             };
@@ -180,7 +212,9 @@ export default function DefaultDropdown({
                         ) : null}
                       </span>
                     </div>
-                    <span className="font-normal text-slate-600">{it.label}</span>
+                    <span className="font-normal text-slate-600">
+                      {it.label}
+                    </span>
                   </div>
                 ) : (
                   it.label
