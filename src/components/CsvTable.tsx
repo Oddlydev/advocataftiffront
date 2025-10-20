@@ -371,7 +371,7 @@ export default function CsvTable({
                             key={i}
                             className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700 sticky top-0 ${
                               i === 0 ? "left-0 z-20 rounded-tl-lg" : "z-10"
-                            } ${i === headers.length - 1 ? "rounded-tr-lg" : ""} w-[150px] md:w-[215px] xl:w-[260px]`}
+                            } ${i === displayHeaders.length - 1 ? "rounded-tr-lg" : ""} w-[150px] md:w-[215px] xl:w-[260px]`}
                           >
                             {isROA ? (
                               <button
@@ -420,7 +420,8 @@ export default function CsvTable({
                             {displayHeaders.slice(1).map((_, i) => (
                               <td
                                 key={`spacer-${i}`}
-                                className="bg-brand-white border-b border-gray-100 px-3 py-3.5 w-[160px] md:w-[250px] xl:w-[315px]"
+                                className="sticky bg-brand-white border-b border-gray-100 px-3 py-3.5 w-[160px] md:w-[250px] xl:w-[315px] z-10"
+                                style={{ top: headerOffset }}
                               />
                             ))}
                           </tr>
