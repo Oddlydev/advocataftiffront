@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { gql } from "@apollo/client";
@@ -7,11 +7,15 @@ import SecondaryNav from "@/src/components/SecondaryNav";
 import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
 import RelatedDatasets from "@/src/components/RelatedDatasets";
 import DefaultDropdown from "@/src/components/Dropdowns/DefaultDropdown";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 // Chart D3
 import * as d3 from "d3";
-import { sankey as d3Sankey, sankeyLinkHorizontal, sankeyLeft } from "d3-sankey";
+import {
+  sankey as d3Sankey,
+  sankeyLinkHorizontal,
+  sankeyLeft,
+} from "d3-sankey";
 
 export const PAGE_QUERY = gql`
   query GetFiscalDashboardData($databaseId: ID!, $asPreview: Boolean = false) {
@@ -31,6 +35,11 @@ export const PAGE_QUERY = gql`
             }
           }
         }
+        fiscal {
+          dataSource
+          periodicity
+          notes
+        }
       }
     }
   }
@@ -47,6 +56,11 @@ interface FiscalDatasetNode {
   title?: string | null;
   slug?: string | null;
   dataSetFields?: FiscalDatasetFields | null;
+  fiscal?: {
+    dataSource?: string | null;
+    periodicity?: string | null;
+    notes?: string | null;
+  } | null;
 }
 
 interface PageFiscalOperationsProps {
@@ -307,11 +321,16 @@ function buildSankeyData({
 function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
   const sankeyRef = useRef<SVGSVGElement | null>(null);
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const pathInfo = useMemo(() => {
     const currentPath = pathname || "/";
     const segments = currentPath.split("/").filter(Boolean);
     const baseSegments = [...segments];
+
+    // Prefer query params if present
+    const qpYear = searchParams?.get("year") || "";
+    const qpDataset = (searchParams?.get("dataset") || "").toLowerCase();
 
     let yearFromPath = "";
     if (baseSegments.length > 0) {
@@ -331,10 +350,10 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
     const basePath = `/${baseSegments.join("/")}`;
     return {
       basePath: basePath === "" ? "/" : basePath,
-      datasetSlug: datasetFromPath,
-      year: yearFromPath,
+      datasetSlug: qpDataset || datasetFromPath,
+      year: qpYear || yearFromPath,
     };
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
   const [openId, setOpenId] = useState<string | null>(null);
   const [year, setYear] = useState<string>(pathInfo.year);
@@ -407,7 +426,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
       current === match.key ? current : match.key
     );
   }, [datasets, pathInfo.datasetSlug]);
-  
+
   useEffect(() => {
     if (datasets.length === 0) {
       setSelectedDatasetKey("");
@@ -436,7 +455,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
   const activeDatasetId = activeDataset?.node?.databaseId
     ? String(activeDataset.node.databaseId)
     : null;
-  
+
   useEffect(() => {
     if (!activeDataset) {
       setChartData(null);
@@ -538,7 +557,6 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
     };
   }, [activeDataset, datasetCache]);
 
-  
   useEffect(() => {
     if (!activeDataset) {
       setChartData(null);
@@ -576,20 +594,16 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
   }, [activeDataset, datasetCache, year]);
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
+    if (typeof window === "undefined") return;
+    if (!selectedDatasetKey || !year) return;
 
-    if (!selectedDatasetKey || !year) {
-      return;
-    }
-
-    const baseSegments = (pathInfo.basePath || "/").split("/").filter(Boolean);
-    const nextSegments = [...baseSegments, selectedDatasetKey, year];
-    const nextPath = `/${nextSegments.join("/")}`;
-
-    if (window.location.pathname !== nextPath) {
-      window.history.replaceState(null, "", nextPath);
+    const params = new URLSearchParams(window.location.search);
+    params.set("data-series", selectedDatasetKey);
+    params.set("year", year);
+    const nextUrl = `${pathInfo.basePath}?${params.toString()}`;
+    const current = window.location.pathname + window.location.search;
+    if (current !== nextUrl) {
+      window.history.replaceState(null, "", nextUrl);
     }
   }, [pathInfo.basePath, selectedDatasetKey, year]);
 
@@ -662,7 +676,8 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
 
       // --- STEP 2: Assign X positions based on computed depth ---
       const maxDepth = Math.max(...Object.values(depthMap));
-      const step = (width - margin.left - margin.right - nodeWidth) / (maxDepth || 1);
+      const step =
+        (width - margin.left - margin.right - nodeWidth) / (maxDepth || 1);
 
       nodes.forEach((node) => {
         const depth = depthMap[node.key] ?? 0;
@@ -674,12 +689,14 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
       const sankeyGenerator = d3Sankey<SankeyNodeDatum, SankeyLinkDatum>()
         .nodeWidth(nodeWidth)
         .nodePadding(nodePadding)
-      .nodeAlign(sankeyLeft)
+        .nodeAlign(sankeyLeft)
 
         .extent([
           [margin.left, margin.top],
-          [Math.max(width - margin.right, margin.left + 1),
-          Math.max(height - margin.bottom, margin.top + 1)],
+          [
+            Math.max(width - margin.right, margin.left + 1),
+            Math.max(height - margin.bottom, margin.top + 1),
+          ],
         ]);
 
       const graph = sankeyGenerator({
@@ -754,7 +771,6 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
     return () => window.removeEventListener("resize", renderChart);
   }, [chartData]);
 
-
   const statusMessage = useMemo(() => {
     if (loading) {
       return "Loading data...";
@@ -769,6 +785,13 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
   }, [activeDataset, chartData, datasetCache, error, loading]);
 
   const yearLabel = year || "Year";
+  const notesLines = useMemo(() => {
+    const raw = activeDataset?.node.fiscal?.notes || "";
+    return raw
+      .split(/\r?\n/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }, [activeDataset]);
 
   return (
     <main>
@@ -882,9 +905,50 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
                 </div>
               ) : null}
             </div>
+            {/* Meta: Data Source and Periodicity */}
+            <div className="mt-2 md:mt-6 xl:mt-10">
+              <div className="bg-gray-50 rounded-lg px-6 py-3.5">
+                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                    <p>
+                      Data Source:{" "}
+                      {activeDataset?.node.fiscal?.dataSource || "—"}
+                    </p>
+                  </div>
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                    <p>
+                      Periodicity:{" "}
+                      {activeDataset?.node.fiscal?.periodicity || "—"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Notes section (similar styling to metrics section) */}
+      {notesLines.length > 0 ? (
+        <div className="bg-white pb-12 md:pb-16 xl:pb-20">
+          <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
+            <div className="border border-gray-200 bg-gray-50 rounded-xl">
+              <div className="px-6 py-7">
+                <div className="mb-2">
+                  <h5 className="text-2xl font-montserrat font-bold text-slate-950 mb-1.5">
+                    Notes
+                  </h5>
+                  <ol className="list-decimal pl-5 space-y-1 text-lg font-baskervville font-normal text-slate-950">
+                    {notesLines.map((line, idx) => (
+                      <li key={idx}>{line}</li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {activeDatasetId ? <RelatedDatasets datasetId={activeDatasetId} /> : null}
     </main>
