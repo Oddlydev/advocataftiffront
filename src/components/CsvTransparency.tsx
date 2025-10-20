@@ -8,13 +8,10 @@ interface CsvTransparencyProps {
   filterQuery?: string;
 }
 
-export default function CsvTransparency({
-  csvUrl,
-  filterQuery,
-}: CsvTransparencyProps) {
+export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparencyProps) {
   const [rows, setRows] = useState<string[][]>([]);
   const [error, setError] = useState<string | null>(null);
-  // simple in-memory cache to persist across mounts during session
+
   const cacheKey = `csvRows:${csvUrl}`;
   const memCache: { [key: string]: string[][] } = (globalThis as any).__csvRowsCache || ((globalThis as any).__csvRowsCache = {});
 
@@ -23,7 +20,7 @@ export default function CsvTransparency({
       setError("No CSV file URL provided.");
       return;
     }
-    // 1) Try memory/session cache for instant render
+
     let hadCache = false;
     if (memCache[cacheKey]) {
       setRows(memCache[cacheKey]);
@@ -44,7 +41,6 @@ export default function CsvTransparency({
 
     const proxiedUrl = `https://corsproxy.io/?${csvUrl}`;
 
-    // 2) Fetch in background; if we had cache, we keep table visible while refreshing
     fetch(proxiedUrl)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch CSV file.");
@@ -72,203 +68,133 @@ export default function CsvTransparency({
   }, [csvUrl]);
 
   if (error) return <p className="text-red-500">{error}</p>;
-  if (rows.length === 0)
-    return <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">Loading dataset...</p>;
+  if (rows.length === 0) return <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">Loading dataset...</p>;
 
   const headers = rows[0];
   const dataRows = rows.slice(1);
 
-  // Normalize function: lowercase, collapse whitespace, replace NBSP
-  const norm = (s: string) =>
-    (s ?? "")
-      .toLowerCase()
-      .replace(/\u00a0/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
+  const norm = (s: string) => (s ?? "").toLowerCase().replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
 
-  // Tokenize query by spaces; require ALL tokens to match somewhere in the row
-  const tokens = norm(filterQuery ?? "")
-    .split(" ")
-    .filter(Boolean);
+  const tokens = norm(filterQuery ?? "").split(" ").filter(Boolean);
   const visibleRows = tokens.length
-    ? dataRows.filter((row) =>
-        tokens.every((t) => row.some((cell) => norm(cell).includes(t)))
-      )
+    ? dataRows.filter((row) => tokens.every((t) => row.some((cell) => norm(cell).includes(t))))
     : dataRows;
 
-  // For cells with Yes/No/Partially etc. => return colored dot + text
   const renderStatusCell = (value: string) => {
     const lower = value.toLowerCase();
     let color = "#9CA3AF"; // gray default
-    if (lower === "yes")
-      color = "#22C55E"; // green
-    else if (lower === "no")
-      color = "#DC2626"; // red
-    else if (lower === "partially")
-      color = "#F59E0B"; // yellow
-    else if (lower.includes("qualified")) color = "#F59E0B"; // orange for audits
+    if (lower === "yes") color = "#22C55E"; // green
+    else if (lower === "no") color = "#DC2626"; // red
+    else if (lower === "partially") color = "#F59E0B"; // yellow
+    else if (lower.includes("qualified")) color = "#F59E0B"; // orange
 
     return (
       <div className="flex items-center gap-2">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
           <circle cx="6" cy="6" r="6" fill={color} />
         </svg>
-        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
-          {value}
-        </span>
+        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">{value}</span>
       </div>
     );
   };
 
-  {/* Floating scroll button */}
   const handleScrollRight = () => {
     const tableWrapper = document.getElementById("table-wrapper");
     if (!tableWrapper) return;
-
-    let scrollStep = 160; // default mobile
-    if (window.innerWidth >= 1280) scrollStep = 288; // xl
-    else if (window.innerWidth >= 768) scrollStep = 225; // md
-
+    let scrollStep = window.innerWidth >= 1280 ? 288 : window.innerWidth >= 768 ? 225 : 160;
     tableWrapper.scrollBy({ left: scrollStep, behavior: "smooth" });
   };
 
   const handleScrollLeft = () => {
     const tableWrapper = document.getElementById("table-wrapper");
     if (!tableWrapper) return;
-
-    let scrollStep = 160;
-    if (window.innerWidth >= 1280) scrollStep = 288;
-    else if (window.innerWidth >= 768) scrollStep = 225;
-
+    let scrollStep = window.innerWidth >= 1280 ? 288 : window.innerWidth >= 768 ? 225 : 160;
     tableWrapper.scrollBy({ left: -scrollStep, behavior: "smooth" });
   };
 
   return (
     <div className="relative">
-          <div className="shadow-md border p-4 border-gray-200 rounded-lg">
-            <div id="table-wrapper" className="overflow-x-auto overflow-y-auto max-w-full box-content">
-              <div className="w-[1200px] table-inner">
-                <table className="border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg">
-                  <thead className="bg-brand-1-700 rounded-lg">
-                    {/* Header row 1 */}
-                    <tr>
-                      <th
-                        className="sticky top-0 left-0 z-20 rounded-tl-lg bg-brand-1-700 px-3 py-3.5 text-left text-lg/7 font-semibold uppercase text-brand-white w-[160px] md:w-[225px] xl:w-[235px]"
-                        rowSpan={2}
+      <div className="shadow-md border p-4 border-gray-200 rounded-lg">
+        <div id="table-wrapper" className="overflow-x-auto overflow-y-auto max-w-full box-content">
+          <div className="w-[1200px] table-inner">
+            <table className="border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg">
+              <thead>
+                {/* First row: main subheadings */}
+                <tr>
+                  <th className="sticky top-0 left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-lg/7 font-semibold uppercase text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]" rowSpan={2}>
+                    SOE
+                  </th>
+                  <th className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60" colSpan={3}>
+                    Annual Report
+                  </th>
+                  <th className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60" colSpan={2}>
+                    Auditing Standards
+                  </th>
+                  <th className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60" colSpan={2}>
+                    Right to Information
+                  </th>
+                  <th className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60" colSpan={3}>
+                    Accessibility of Information
+                  </th>
+                </tr>
+                {/* Second row: subheaders from CSV */}
+                <tr>
+                  {headers.slice(1).map((h, i) => (
+                    <th
+                      key={i}
+                      className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-left text-base/6 font-semibold font-sourcecodepro uppercase text-brand-white w-[160px] md:w-[155px] xl:w-[210px]"
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-300">
+                {visibleRows.length === 0 && (
+                  <tr>
+                    <td colSpan={headers.length} className="px-3 py-3.5 text-left text-base/6 font-medium text-gray-500">
+                      {tokens.length ? "No matching results." : "No data available."}
+                    </td>
+                  </tr>
+                )}
+                {visibleRows.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {row.map((cell, i) => (
+                      <td
+                        key={i}
+                        className={`border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-medium ${
+                          i === 0
+                            ? "sticky left-0 z-20 text-brand-black !w-[160px] md:!w-[225px] xl:!w-[300px] bg-white"
+                            : "text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
+                        }`}
                       >
-                        SOE
-                      </th>
-                      <th
-                        className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                        colSpan={3}
-                      >
-                        Annual report
-                      </th>
-                      <th
-                        className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                        colSpan={2}
-                      >
-                        Auditing Standards
-                      </th>
-                      <th
-                        className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                        colSpan={2}
-                      >
-                        Right to Information
-                      </th>
-                      <th
-                        className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                        colSpan={3}
-                      >
-                        Accessibility of Information
-                      </th>
-                    </tr>
-
-                    {/* Header row 2 (from CSV headers) */}
-                    <tr>
-                      {headers.slice(1).map((h, i) => (
-                        <th
-                          key={i}
-                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-left text-base/6 font-semibold font-sourcecodepro uppercase text-brand-white w-[160px] md:w-[225px] xl:w-[235px] align-baseline"
-                        >
-                          {h}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-
-                  <tbody className="divide-y divide-gray-300">
-                    {/* Sector row example */}
-                    <tr className="border-gray-100">
-                      <td className="sector sticky top-0 left-0 z-20 bg-brand-white text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold w-[160px] md:w-[225px] xl:w-[235px]">
-                          Aviation
+                        {i === 0 ? cell : renderStatusCell(cell)}
                       </td>
-                      {Array(headers.length - 1)
-                          .fill(null)
-                          .map((_, idx) => (
-                          <td
-                              key={idx}
-                              className="bg-brand-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro text-gray-500 w-[160px] md:w-[225px] xl:w-[235px]"
-                          ></td>
-                        ))}
-                    </tr>
-
-                    {visibleRows.length === 0 && (
-                      <tr>
-                        <td
-                          className="px-3 py-3.5 text-left text-base/6 font-medium text-gray-500"
-                          colSpan={headers.length}
-                        >
-                          {tokens.length
-                            ? "No matching results."
-                            : "No data available."}
-                        </td>
-                      </tr>
-                    )}
-                    {visibleRows.map((row, rowIndex) => (
-                      <tr key={rowIndex}>
-                        {row.map((cell, i) => (
-                          <td
-                            key={i}
-                            className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-medium
-                  ${
-                    i === 0
-                      ? "sticky left-0 text-brand-black !w-[160px] md:!w-[250px] xl:!w-[315px]"
-                      : "text-gray-500"
-                  } w-[150px] md:w-[215px] xl:w-[260px]`}
-                          >
-                            {i === 0
-                              ? cell // SOE name
-                              : i === 1
-                                ? cell // Year column → plain text only
-                                : renderStatusCell(cell)}{" "}
-                            {/* All other columns */}
-                          </td>
-                        ))}
-                      </tr>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Floating scroll button */}
-            <button
-              onClick={handleScrollRight}
-              className="absolute z-20 top-8 right-6 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
-            >
-              <svg className="size-4" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M7.4248 16.6L12.8581 11.1667C13.4998 10.525 13.4998 9.47503 12.8581 8.83336L7.4248 3.40002" stroke="currentColor" stroke-width="2.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+        </div>
+
+        {/* Floating scroll button */}
+        <button
+          onClick={handleScrollRight}
+          className="absolute z-20 top-8 right-6 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
+        >
+          <svg className="size-4" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path
+              d="M7.4248 16.6L12.8581 11.1667C13.4998 10.525 13.4998 9.47503 12.8581 8.83336L7.4248 3.40002"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeMiterlimit="10"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
     </div>
   );
 }

@@ -6,9 +6,9 @@ import Papa from "papaparse";
 interface CsvTableProps {
   csvUrl: string;
   filterQuery?: string;
-  pageSize?: number; // default rows per page
-  sectorFilters?: string[]; // if provided, filter by Sector column (by name)
-  showInterpretation?: boolean; // toggle legend section at the bottom
+  pageSize?: number;
+  sectorFilters?: string[];
+  showInterpretation?: boolean;
 }
 
 export default function CsvTable({
@@ -82,7 +82,6 @@ export default function CsvTable({
       });
   }, [csvUrl]);
 
-  // Measure header height early to keep hook order stable across renders
   useEffect(() => {
     const updateOffset = () => {
       const el = theadRef.current;
@@ -117,13 +116,11 @@ export default function CsvTable({
     .split(" ")
     .filter(Boolean);
 
-  // Determine index for Sector column
   const detectedSectorIndex = headers.findIndex((h) => /sector/i.test(h ?? ""));
   const useSectorGrouping = detectedSectorIndex >= 0;
-  const sectorIndex = detectedSectorIndex; // -1 if not found
+  const sectorIndex = detectedSectorIndex;
 
-  const hasSectorFilter =
-    Array.isArray(sectorFilters) && sectorFilters.length > 0;
+  const hasSectorFilter = Array.isArray(sectorFilters) && sectorFilters.length > 0;
   const sectorSet = new Set(sectorFilters.map((s) => norm(s)));
 
   let filteredByText = tokens.length
@@ -139,25 +136,15 @@ export default function CsvTable({
     });
   }
 
-  // Locate ROA column (case-insensitive)
-  const roaIndex = (() => {
-    const idx = headers.findIndex((h) => /\broa\b/i.test(h ?? ""));
-    return idx >= 0 ? idx : -1;
-  })();
-
-  // Compute display headers and ROA display index after optionally removing Sector column
+  const roaIndex = headers.findIndex((h) => /\broa\b/i.test(h ?? ""));
   const displayHeaders: string[] = useSectorGrouping
     ? headers.filter((_, i) => i !== sectorIndex)
     : headers;
   const roaDisplayIndex =
     roaIndex >= 0
-      ? roaIndex -
-        (useSectorGrouping && sectorIndex >= 0 && sectorIndex < roaIndex
-          ? 1
-          : 0)
+      ? roaIndex - (useSectorGrouping && sectorIndex >= 0 && sectorIndex < roaIndex ? 1 : 0)
       : -1;
 
-  // Parse numeric strings robustly (e.g., "12.3%", "1,234", "-0.5")
   const parseNumeric = (v: string): number => {
     if (!v) return NaN;
     const cleaned = v.replace(/[^0-9.\-]/g, "");
@@ -166,20 +153,14 @@ export default function CsvTable({
     return isNaN(n) ? NaN : n;
   };
 
-  // Determine ROA indicator color based on value thresholds
-  // Green: > 3.95
-  // Yellow: 1 to 3.95
-  // Orange: -1.5 to < 1
-  // Red: < -1.5
   const getRoaColor = (num: number): string | null => {
     if (isNaN(num)) return null;
-    if (num > 3.95) return "#22C55E"; // green-500
-    if (num >= 1 && num <= 3.95) return "#F59E0B"; // amber-500
-    if (num >= -1.5 && num < 1) return "#F97316"; // orange-500
-    return "#DC2626"; // red-600
+    if (num > 3.95) return "#22C55E";
+    if (num >= 1 && num <= 3.95) return "#F59E0B";
+    if (num >= -1.5 && num < 1) return "#F97316";
+    return "#DC2626";
   };
 
-  // Apply sorting by ROA if enabled
   const visibleRows = (() => {
     if (roaSortDir && roaIndex >= 0) {
       const sorted = [...filteredByText].sort((a, b) => {
@@ -187,7 +168,6 @@ export default function CsvTable({
         const bv = parseNumeric(b[roaIndex] ?? "");
         const aNaN = isNaN(av);
         const bNaN = isNaN(bv);
-        // Place NaN at the end regardless of direction
         if (aNaN && bNaN) return 0;
         if (aNaN) return 1;
         if (bNaN) return -1;
@@ -198,23 +178,17 @@ export default function CsvTable({
     return filteredByText;
   })();
 
-  // Pagination logic
   const totalItems = visibleRows.length;
   const totalPages = Math.ceil(totalItems / pageSize);
   const canPrev = currentPage > 1;
   const canNext = currentPage < totalPages;
   const start = (currentPage - 1) * pageSize + 1;
   const end = Math.min(currentPage * pageSize, totalItems);
-
   const paginatedRows = visibleRows.slice(start - 1, end);
 
-  // Build render list: insert a sector heading row before each sector group (when enabled)
-  type RenderItem =
-    | { type: "sector"; sector: string }
-    | { type: "data"; row: string[] };
-
+  type RenderItem = { type: "sector"; sector: string } | { type: "data"; row: string[] };
   const renderItems: RenderItem[] = (() => {
-    const base = visibleRows; // preserve existing rendering behavior
+    const base = visibleRows;
     if (!useSectorGrouping || sectorIndex < 0) {
       return base.map((row) => ({ type: "data", row }));
     }
@@ -236,13 +210,8 @@ export default function CsvTable({
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
-  // Utility: format cell values
   const formatCell = (value: string): React.ReactNode => {
-    if (
-      !value ||
-      value.trim() === "" ||
-      value.toLowerCase().includes("data n/a")
-    ) {
+    if (!value || value.trim() === "" || value.toLowerCase().includes("data n/a")) {
       return <span className="text-brand-1-600 font-medium">Data N/A</span>;
     }
     const num = Number(value);
@@ -250,29 +219,21 @@ export default function CsvTable({
     return value;
   };
 
-  {
-    /* Floating scroll button */
-  }
   const handleScrollRight = () => {
     const tableWrapper = document.getElementById("table-wrapper");
     if (!tableWrapper) return;
-
-    let scrollStep = 160; // default mobile
-    if (window.innerWidth >= 1280)
-      scrollStep = 288; // xl
-    else if (window.innerWidth >= 768) scrollStep = 225; // md
-
+    let scrollStep = 160;
+    if (window.innerWidth >= 1280) scrollStep = 288;
+    else if (window.innerWidth >= 768) scrollStep = 225;
     tableWrapper.scrollBy({ left: scrollStep, behavior: "smooth" });
   };
 
   const handleScrollLeft = () => {
     const tableWrapper = document.getElementById("table-wrapper");
     if (!tableWrapper) return;
-
     let scrollStep = 160;
     if (window.innerWidth >= 1280) scrollStep = 288;
     else if (window.innerWidth >= 768) scrollStep = 225;
-
     tableWrapper.scrollBy({ left: -scrollStep, behavior: "smooth" });
   };
 
@@ -281,10 +242,6 @@ export default function CsvTable({
       <div className="bg-white py-3.5 md:py-5 xl:py-6">
         <div className="mx-auto max-w-7xl">
           <div className="shadow-md border p-4 border-gray-200 rounded-lg">
-            {/**
-             * Enable vertical scrolling inside the table area when there are
-             * 10 or more rows. Keeps existing horizontal scroll behavior.
-             */}
             <div
               id="table-wrapper"
               className={`overflow-x-auto overflow-y-auto max-w-full box-content ${
@@ -335,7 +292,6 @@ export default function CsvTable({
                               </svg>
                             );
                           }
-                          // unsorted icon
                           return (
                             <svg
                               className="ml-1 inline-block align-middle"
@@ -358,11 +314,7 @@ export default function CsvTable({
                           if (!isROA) return;
                           setCurrentPage(1);
                           setRoaSortDir((prev) =>
-                            prev === "desc"
-                              ? "asc"
-                              : prev === "asc"
-                                ? null
-                                : "desc"
+                            prev === "desc" ? "asc" : prev === "asc" ? null : "desc"
                           );
                         };
 
@@ -370,14 +322,16 @@ export default function CsvTable({
                           <th
                             key={i}
                             className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700 sticky top-0 ${
-                              i === 0 ? "left-0 z-20 rounded-tl-lg" : "z-10"
-                            } ${i === displayHeaders.length - 1 ? "rounded-tr-lg" : ""} w-[150px] md:w-[215px] xl:w-[260px]`}
+                              i === 0
+                                ? "left-0 z-20 rounded-tl-lg !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                                : "z-10 w-[160px] md:w-[155px] xl:w-[210px]"
+                            } ${i === displayHeaders.length - 1 ? "rounded-tr-lg" : ""}`}
                           >
                             {isROA ? (
                               <button
                                 type="button"
                                 onClick={onClickHeader}
-                                className="group inline-flex items-center text-left  rounded"
+                                className="group inline-flex items-center text-left rounded"
                                 title="Sort by ROA"
                               >
                                 <span>{header}</span>
@@ -393,7 +347,6 @@ export default function CsvTable({
                   </thead>
 
                   <tbody className="divide-y divide-gray-300">
-                    {/* No data row */}
                     {visibleRows.length === 0 && (
                       <tr>
                         <td
@@ -409,18 +362,16 @@ export default function CsvTable({
                       if (item.type === "sector") {
                         return (
                           <tr key={`sector-${idx}`}>
-                            {/* Sticky first cell with sector name */}
                             <td
-                              className="sector sticky left-0 z-20 bg-brand-white text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold w-[160px] md:w-[250px] xl:w-[315px]"
+                              className="sector sticky left-0 z-20 bg-brand-white border-b border-gray-100 text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold !w-[160px] md:!w-[225px] xl:!w-[300px]"
                               style={{ top: headerOffset }}
                             >
                               {item.sector}
                             </td>
-                            {/* Spacer cells to align columns; these scroll horizontally */}
                             {displayHeaders.slice(1).map((_, i) => (
                               <td
                                 key={`spacer-${i}`}
-                                className="sticky bg-brand-white border-b border-gray-100 px-3 py-3.5 w-[160px] md:w-[250px] xl:w-[315px] z-10"
+                                className="sticky bg-brand-white border-b border-gray-100 px-3 py-3.5 w-[160px] md:w-[155px] xl:w-[210px] z-10"
                                 style={{ top: headerOffset }}
                               />
                             ))}
@@ -441,9 +392,11 @@ export default function CsvTable({
                             return (
                               <td
                                 key={cellIndex}
-                                className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro 
-                                ${cellIndex === 0 ? "sticky left-0 text-brand-black" : "text-gray-500"}
-                                w-[160px] md:w-[250px] xl:w-[315px]`}
+                                className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro ${
+                                  cellIndex === 0
+                                    ? "sticky left-0 text-brand-black !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                                    : "text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
+                                }`}
                               >
                                 {isROA ? (
                                   <span className="inline-flex items-center gap-2">
@@ -456,12 +409,7 @@ export default function CsvTable({
                                         fill="none"
                                         aria-label="ROA indicator"
                                       >
-                                        <circle
-                                          cx="6"
-                                          cy="6"
-                                          r="6"
-                                          fill={color}
-                                        />
+                                        <circle cx="6" cy="6" r="6" fill={color} />
                                       </svg>
                                     )}
                                     <span>{formatCell(cell)}</span>
@@ -480,7 +428,6 @@ export default function CsvTable({
               </div>
             </div>
 
-            {/* Floating scroll button */}
             <button
               onClick={handleScrollRight}
               className="absolute z-20 top-14 right-6 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
@@ -496,130 +443,26 @@ export default function CsvTable({
                 <path
                   d="M7.4248 16.6L12.8581 11.1667C13.4998 10.525 13.4998 9.47503 12.8581 8.83336L7.4248 3.40002"
                   stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-miterlimit="10"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2.5"
+                  strokeMiterlimit="10"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
             </button>
           </div>
 
-          {/* Interpretation legend (optional) */}
           {showInterpretation && (
-            <>
-              <div className="bg-gray-50 rounded-lg mt-3 px-6 py-3.5 mt-6 md:mt-9">
-                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
-                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
-                    <p>
-                      Proxy measures are used for some of the financial
-                      indicators where required data is unavailable. Please
-                      refer to the SOE Fiscal Indicator Methodology under{" "}
-                      <a href="/about-us" className="text-brand-1-600">
-                        FAQs
-                      </a>
-                      .
-                    </p>
-                  </div>
+            <div className="bg-gray-50 rounded-lg px-6 py-3.5 mt-6 md:mt-9">
+              <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+                <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                  <p>
+                    Proxy measures are used for some of the financial indicators where required data is unavailable. Please refer to the SOE Fiscal Indicator Methodology under{" "}
+                    <a href="/about-us" className="text-brand-1-600">FAQs</a>.
+                  </p>
                 </div>
               </div>
-              <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
-                <div>
-                  <div className="grid xl:flex gap-4 xl:gap-7 items-center justify-start xl:justify-end w-full">
-                    <div>
-                      <p className="text-sm xl:text-base/6 font-medium font-sourcecodepro text-slate-600">
-                        Interpretation of the indicators :
-                      </p>
-                    </div>
-                    <div className="grid md:flex items-center gap-2.5 md:gap-5">
-                      {/* Good */}
-                      <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
-                        <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                          Successful
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="12"
-                            height="12"
-                            viewBox="0 0 12 12"
-                            fill="none"
-                          >
-                            <circle cx="6" cy="6" r="6" fill="#22C55E" />
-                          </svg>
-                          {/* <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
-                            1
-                          </span> */}
-                        </div>
-                      </div>
-
-                      {/* Marginal Success */}
-                      <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
-                        <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                          Marginally Successful
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="12"
-                            height="12"
-                            viewBox="0 0 12 12"
-                            fill="none"
-                          >
-                            <circle cx="6" cy="6" r="6" fill="#F59E0B" />
-                          </svg>
-                          {/* <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
-                            1
-                          </span> */}
-                        </div>
-                      </div>
-
-                      {/* Average */}
-                      <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
-                        <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                          Unsuccessful
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="12"
-                            height="12"
-                            viewBox="0 0 12 12"
-                            fill="none"
-                          >
-                            <circle cx="6" cy="6" r="6" fill="#F97316" />
-                          </svg>
-                          {/* <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
-                            0.5
-                          </span> */}
-                        </div>
-                      </div>
-
-                      {/* Poor */}
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
-                          Total Failure
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="12"
-                            height="12"
-                            viewBox="0 0 12 12"
-                            fill="none"
-                          >
-                            <circle cx="6" cy="6" r="6" fill="#DC2626" />
-                          </svg>
-                          {/* <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
-                            0
-                          </span> */}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
+            </div>
           )}
         </div>
       </div>
