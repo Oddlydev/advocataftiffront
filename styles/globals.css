@@ -276,7 +276,11 @@ button {
   }
 }
 
-.full-width-img img {
+.full-width-img {
+  width: 100% !important;
+}
+
+.large-img {
   width: 100% !important;
 }
 
