@@ -120,7 +120,8 @@ export default function CsvTable({
   const useSectorGrouping = detectedSectorIndex >= 0;
   const sectorIndex = detectedSectorIndex;
 
-  const hasSectorFilter = Array.isArray(sectorFilters) && sectorFilters.length > 0;
+  const hasSectorFilter =
+    Array.isArray(sectorFilters) && sectorFilters.length > 0;
   const sectorSet = new Set(sectorFilters.map((s) => norm(s)));
 
   let filteredByText = tokens.length
@@ -142,7 +143,10 @@ export default function CsvTable({
     : headers;
   const roaDisplayIndex =
     roaIndex >= 0
-      ? roaIndex - (useSectorGrouping && sectorIndex >= 0 && sectorIndex < roaIndex ? 1 : 0)
+      ? roaIndex -
+        (useSectorGrouping && sectorIndex >= 0 && sectorIndex < roaIndex
+          ? 1
+          : 0)
       : -1;
 
   const parseNumeric = (v: string): number => {
@@ -186,7 +190,9 @@ export default function CsvTable({
   const end = Math.min(currentPage * pageSize, totalItems);
   const paginatedRows = visibleRows.slice(start - 1, end);
 
-  type RenderItem = { type: "sector"; sector: string } | { type: "data"; row: string[] };
+  type RenderItem =
+    | { type: "sector"; sector: string }
+    | { type: "data"; row: string[] };
   const renderItems: RenderItem[] = (() => {
     const base = visibleRows;
     if (!useSectorGrouping || sectorIndex < 0) {
@@ -318,7 +324,11 @@ export default function CsvTable({
                           if (!isROA) return;
                           setCurrentPage(1);
                           setRoaSortDir((prev) =>
-                            prev === "desc" ? "asc" : prev === "asc" ? null : "desc"
+                            prev === "desc"
+                              ? "asc"
+                              : prev === "asc"
+                                ? null
+                                : "desc"
                           );
                         };
 
@@ -413,7 +423,12 @@ export default function CsvTable({
                                         fill="none"
                                         aria-label="ROA indicator"
                                       >
-                                        <circle cx="6" cy="6" r="6" fill={color} />
+                                        <circle
+                                          cx="6"
+                                          cy="6"
+                                          r="6"
+                                          fill={color}
+                                        />
                                       </svg>
                                     )}
                                     <span>{formatCell(cell)}</span>
@@ -457,16 +472,106 @@ export default function CsvTable({
           </div>
 
           {showInterpretation && (
-            <div className="bg-gray-50 rounded-lg px-6 py-3.5 mt-6 md:mt-9">
-              <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
-                <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
-                  <p>
-                    Proxy measures are used for some of the financial indicators where required data is unavailable. Please refer to the SOE Fiscal Indicator Methodology under{" "}
-                    <a href="/about-us" className="text-brand-1-600">FAQs</a>.
-                  </p>
+            <>
+              <div className="bg-gray-50 rounded-lg px-6 py-3.5 mt-6 md:mt-9">
+                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                    <p>
+                      Proxy measures are used for some of the financial
+                      indicators where required data is unavailable. Please
+                      download the SOE Fiscal Indicator Methodology from{" "}
+                      <a href="#" className="text-brand-1-600">
+                        here.{" "}
+                      </a>
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+              <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
+                <div>
+                  <div className="grid xl:flex gap-4 xl:gap-7 items-center justify-start xl:justify-end w-full">
+                    <div>
+                      <p className="text-sm xl:text-base/6 font-medium font-sourcecodepro text-slate-600">
+                        Interpretation of the indicators :
+                      </p>
+                    </div>
+                    <div className="grid md:flex items-center gap-2.5 md:gap-5">
+                      {/* Good */}
+                      <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
+                        <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                          Successful
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                          >
+                            <circle cx="6" cy="6" r="6" fill="#22C55E" />
+                          </svg>
+                        </div>
+                      </div>
+
+                      {/* Marginal Success */}
+                      <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
+                        <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                          Marginally Successful
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                          >
+                            <circle cx="6" cy="6" r="6" fill="#F59E0B" />
+                          </svg>
+                        </div>
+                      </div>
+
+                      {/* Average */}
+                      <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
+                        <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                          Unsuccessful
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                          >
+                            <circle cx="6" cy="6" r="6" fill="#F97316" />
+                          </svg>
+                        </div>
+                      </div>
+
+                      {/* Poor */}
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                          Total Failure
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                          >
+                            <circle cx="6" cy="6" r="6" fill="#DC2626" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>
