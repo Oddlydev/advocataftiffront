@@ -198,7 +198,7 @@ export default function PageNewsletterConfirmation() {
                           id="country"
                           name="country"
                           defaultValue="+94"
-                          className="appearance-none rounded-md bg-white pr-7 pl-3 text-sm h-9 py-1 text-gray-500 focus:outline-none w-18 overflow-y-auto"
+                          className="appearance-none rounded-md bg-white pr-7 pl-3 text-base text-slate-800 font-sourcecodepro h-9 py-1 focus:outline-none w-18 overflow-y-auto"
                         >
                           {COUNTRY_CODES.map((code) => (
                             <option key={code} value={code}>
