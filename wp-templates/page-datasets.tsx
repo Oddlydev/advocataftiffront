@@ -398,7 +398,7 @@ const DatasetsPage: React.FC<DatasetsPageProps> = ({ data }) => {
         </div>
       </section>
 
-      <section className="bg-white pt-6 pb-12 md:pb-16 xl:pb-20">
+      <section className="bg-white pb-12 md:pb-16 xl:pb-20">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           {hasResults ? (
             <div
