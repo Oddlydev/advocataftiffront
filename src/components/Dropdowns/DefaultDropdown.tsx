@@ -123,11 +123,11 @@ export default function DefaultDropdown({
         aria-labelledby={btnId}
         tabIndex={-1}
       >
-        <div className="py-1" role="none"> {/* overflow-y-scroll h-96 */}
+        <div className="py-1 overflow-y-scroll h-96 " role="none"> {/* overflow-y-scroll h-96 */}
           {items.map((it, idx) => {
             const common = {
               className:
-                "default-dropdown-item block w-full text-left px-4 py-2.5 text-base/6 text-slate-600 hover:bg-brand-white font-sourcecodepro font-normal",
+                "default-dropdown-item block w-full text-left px-4 py-2.5 text-base/6 text-slate-600 hover:bg-brand-1-50 hover:text-slate-800 font-sourcecodepro font-normal",
               role: "menuitem" as const,
               key: idx,
             };
