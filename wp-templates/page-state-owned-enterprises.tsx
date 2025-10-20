@@ -536,6 +536,104 @@ export default function PageStateOwnedDashboard(): JSX.Element {
               No dataset found for selection.
             </p>
           )}
+          <div className="bg-gray-50 rounded-lg px-6 py-3.5 mt-3">
+            <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+              <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                <p>
+                  Proxy measures are used for some of the financial indicators
+                  where required data is unavailable. Please download the SOE
+                  Fiscal Indicator Methodology from{" "}
+                  <a href="#" className="text-brand-1-600">
+                    here.{" "}
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
+            <div>
+              <div className="grid xl:flex gap-4 xl:gap-7 items-center justify-start xl:justify-end w-full">
+                <div>
+                  <p className="text-sm xl:text-base/6 font-medium font-sourcecodepro text-slate-600">
+                    Interpretation of the indicators :
+                  </p>
+                </div>
+                <div className="grid md:flex items-center gap-2.5 md:gap-5">
+                  {/* Good */}
+                  <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
+                    <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                      Successful
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                      >
+                        <circle cx="6" cy="6" r="6" fill="#22C55E" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Marginal Success */}
+                  <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
+                    <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                      Marginally Successful
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                      >
+                        <circle cx="6" cy="6" r="6" fill="#F59E0B" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Average */}
+                  <div className="flex items-center gap-3 md:border-r border-slate-300 pr-3 md:pr-4">
+                    <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                      Unsuccessful
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                      >
+                        <circle cx="6" cy="6" r="6" fill="#F97316" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Poor */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
+                      Total Failure
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                      >
+                        <circle cx="6" cy="6" r="6" fill="#DC2626" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
