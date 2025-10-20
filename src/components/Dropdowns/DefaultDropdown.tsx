@@ -152,7 +152,7 @@ export default function DefaultDropdown({
         <div
           className={[
             "py-1",
-            listScrollable ? "overflow-y-auto max-h-[280px]" : "",
+            listScrollable ? "overflow-y-auto max-h-[280px] custom-scroll" : "",
           ].join(" ")}
           role="none"
         >
