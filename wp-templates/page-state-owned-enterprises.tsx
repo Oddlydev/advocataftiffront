@@ -79,6 +79,7 @@ type SOEPost = {
   industries: TaxNode[];
   years: TaxNode[];
   csvUrl: string | null;
+  methodologyFileUrl?: string | null;
 };
 
 // ----------------------
@@ -185,6 +186,9 @@ async function fetchSOEPosts(): Promise<SOEPost[]> {
         soeIndustries?: { nodes: TaxNode[] };
         sOEYears?: { nodes: TaxNode[] };
         dataSetFields?: { dataSetFile?: { node?: { mediaItemUrl?: string } } };
+        dashboardMethodologyFileSection?: {
+          methodologyFile?: { node?: { mediaItemUrl?: string } };
+        };
       }>;
     };
   }>(`
@@ -199,6 +203,13 @@ async function fetchSOEPosts(): Promise<SOEPost[]> {
           dataSetFields {
             dataSetFile { node { mediaItemUrl } }
           }
+          dashboardMethodologyFileSection{
+            methodologyFile{
+              node{
+                mediaItemUrl
+              }
+            }
+          }
         }
       }
     }
@@ -206,12 +217,15 @@ async function fetchSOEPosts(): Promise<SOEPost[]> {
 
   return (
     data?.stateOwnedEnterprises?.nodes?.map((node) => ({
-      databaseId: node.databaseId, // ✅ include this
+      databaseId: node.databaseId,
       title: node.title,
       slug: node.slug,
       industries: node.soeIndustries?.nodes ?? [],
       years: node.sOEYears?.nodes ?? [],
       csvUrl: node.dataSetFields?.dataSetFile?.node?.mediaItemUrl ?? null,
+      methodologyFileUrl:
+        node.dashboardMethodologyFileSection?.methodologyFile?.node
+          ?.mediaItemUrl ?? null,
     })) ?? []
   );
 }
@@ -543,9 +557,20 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                   Proxy measures are used for some of the financial indicators
                   where required data is unavailable. Please download the SOE
                   Fiscal Indicator Methodology from{" "}
-                  <a href="#" className="text-brand-1-600">
-                    here.{" "}
-                  </a>
+                  {filteredPosts[0]?.methodologyFileUrl ? (
+                    <a
+                      href={filteredPosts[0].methodologyFileUrl}
+                      className="text-brand-1-600"
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      here
+                    </a>
+                  ) : (
+                    <span className="text-slate-500">(not available)</span>
+                  )}
+                  .
                 </p>
               </div>
             </div>
