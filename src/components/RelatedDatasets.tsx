@@ -11,44 +11,47 @@ interface RelatedDatasetsProps {
   datasetId: string;
 }
 
-// Utility functions
+// Utility function to strip <p> tags
 function stripParagraphTags(text: string = ""): string {
   return text.replace(/<\/?p[^>]*>/g, "").trim();
 }
 
-function formatDate(dateValue: string | number | null): string {
-  if (!dateValue) return "";
+// Function to format date as "24th August 2025"
+function formatDate(dateStr?: string | number | null): string {
+  if (!dateStr) return "";
 
-  let d: Date;
-
-  if (typeof dateValue === "number") {
-    // Unix timestamp in seconds
-    d = new Date(dateValue * 1000);
-  } else if (/^\d+$/.test(dateValue)) {
-    // Numeric string -> treat as Unix timestamp
-    d = new Date(parseInt(dateValue, 10) * 1000);
+  let date: Date;
+  if (typeof dateStr === "number") {
+    date = new Date(dateStr * 1000); // Unix timestamp
+  } else if (/^\d+$/.test(dateStr)) {
+    date = new Date(parseInt(dateStr, 10) * 1000); // Numeric string timestamp
   } else {
-    // Normal date string
-    d = new Date(dateValue);
+    date = new Date(dateStr);
   }
 
-  if (isNaN(d.getTime())) return ""; // invalid date
+  if (isNaN(date.getTime())) return "";
 
-  // Format: YYYY-MM-DD
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
+  const day = date.getDate();
+  const month = date.toLocaleString("en-GB", { month: "long" });
+  const year = date.getFullYear();
 
-  return `${year}-${month}-${day}`;
+  const suffix =
+    day % 10 === 1 && day !== 11
+      ? "st"
+      : day % 10 === 2 && day !== 12
+      ? "nd"
+      : day % 10 === 3 && day !== 13
+      ? "rd"
+      : "th";
+
+  return `${day}${suffix} ${month} ${year}`;
 }
 
 export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
   useEffect(() => {
     if (!datasetId) return;
 
-    const recommendObjectID = datasetId.endsWith("-0")
-      ? datasetId
-      : `${datasetId}-0`;
+    const recommendObjectID = datasetId.endsWith("-0") ? datasetId : `${datasetId}-0`;
 
     const searchClient = algoliasearch(
       process.env.NEXT_PUBLIC_ALGOLIA_APP_ID as string,
@@ -122,9 +125,7 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
 
     search.start();
 
-    return () => {
-      search.dispose();
-    };
+    return () => search.dispose();
   }, [datasetId]);
 
   return (
