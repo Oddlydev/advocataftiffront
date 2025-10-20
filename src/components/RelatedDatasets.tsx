@@ -111,7 +111,7 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
                     </div>
                   </div>
                   <div class="card-footer mt-6 flex items-center justify-between">
-                    <time class="text-xs/tight font-medium font-sourcecodepro text-slate-600">
+                    <time class="text-xs/tight uppercase font-medium font-sourcecodepro text-slate-600">
                       ${formatDate(postDate)}
                     </time>
                   </div>
