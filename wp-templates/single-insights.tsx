@@ -3,6 +3,7 @@ import type { GetStaticPropsContext } from "next";
 import React from "react";
 import SEO from "@/src/components/SEO";
 import HeroBlack from "@/src/components/HeroBlocks/HeroBlack";
+import HeroCoverImage from "@/src/components/HeroBlocks/HeroCoverImage";
 import CardType5 from "@/src/components/Cards/CardType5";
 import { PageSubTitle, PageTitle } from "@/src/components/Typography";
 import PostContent from "@/src/components/PostContent";
@@ -42,6 +43,14 @@ export const SINGLE_INSIGHT_QUERY = gql`
           id
           name
           slug
+        }
+      }
+      insightsHeroSection {
+        insightsCoverImage {
+          node {
+            sourceUrl
+            altText
+          }
         }
       }
     }
@@ -90,6 +99,11 @@ interface SingleInsightProps {
           name?: string | null;
           slug?: string | null;
         }> | null;
+      } | null;
+      insightsHeroSection?: {
+        insightsCoverImage?: {
+          node?: { sourceUrl?: string | null; altText?: string | null } | null;
+        } | null;
       } | null;
     } | null;
     insights?: {
@@ -142,12 +156,22 @@ const SingleInsight: React.FC<SingleInsightProps> = ({ data }) => {
     <main>
       <SEO yoast={(insight as any)?.seo} title={insight.title ?? undefined} />
       {/* Hero */}
-      <HeroBlack
-        title={insight.title ?? ""}
-        dateText={dateText}
-        homeHref="/"
-        items={[{ label: "Insights", href: "/insights" }]}
-      />
+      {(insight as any)?.insightsHeroSection?.insightsCoverImage?.node
+        ?.sourceUrl ? (
+        <HeroCoverImage
+          bgUrl={(insight as any).insightsHeroSection.insightsCoverImage.node
+            .sourceUrl as string}
+          title={insight.title ?? ""}
+          dateText={dateText}
+        />
+      ) : (
+        <HeroBlack
+          title={insight.title ?? ""}
+          dateText={dateText}
+          homeHref="/"
+          items={[{ label: "Insights", href: "/insights" }]}
+        />
+      )}
 
       {/* Body */}
       <div className="bg-white py-10 md:py-16 xl:py-20">
