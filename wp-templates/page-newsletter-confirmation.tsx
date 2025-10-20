@@ -33,9 +33,7 @@ export default function PageNewsletterConfirmation() {
 
     const formData = new FormData(e.currentTarget);
     const emailValue = email.trim();
-    const firstName =
-      (formData.get("firstName") as string | null)?.trim() ?? "";
-    const lastName = (formData.get("lastName") as string | null)?.trim() ?? "";
+    const fullName = (formData.get("fullName") as string | null)?.trim() ?? "";
     const countryCode =
       (formData.get("country") as string | null)?.trim() ?? "";
     const phoneNumber =
@@ -53,15 +51,9 @@ export default function PageNewsletterConfirmation() {
       return;
     }
 
-    if (!firstName) {
+    if (!fullName) {
       setStatus("error");
-      setMessage("Please provide your first name.");
-      return;
-    }
-
-    if (!lastName) {
-      setStatus("error");
-      setMessage("Please provide your last name.");
+      setMessage("Please provide your first and last name.");
       return;
     }
 
@@ -83,6 +75,10 @@ export default function PageNewsletterConfirmation() {
     setStatus("loading");
 
     const phone = [countryCode, digitsOnly].filter(Boolean).join(" ").trim();
+
+    // Derive first/last name from the combined full name
+    const [firstName, ...lastParts] = fullName.split(/\s+/);
+    const lastName = lastParts.join(" ");
 
     try {
       const res = await fetch("/api/subscribe", {
@@ -141,47 +137,6 @@ export default function PageNewsletterConfirmation() {
                 noValidate
                 className="w-full lg:pt-2 space-y-6"
               >
-                {/* Name Fields */}
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <div>
-                    <label
-                      htmlFor="first-name"
-                      className="block text-base font-bold text-slate-800 font-sourcecodepro"
-                    >
-                      First Name <span className="text-brand-1-500">*</span>
-                    </label>
-                    <div className="mt-2">
-                      <input
-                        id="first-name"
-                        type="text"
-                        name="firstName"
-                        required
-                        placeholder="First name"
-                        className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400
-                        focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="last-name"
-                      className="block text-base font-bold text-slate-800 font-sourcecodepro"
-                    >
-                      Last Name <span className="text-brand-1-500">*</span>
-                    </label>
-                    <div className="mt-2">
-                      <input
-                        id="last-name"
-                        type="text"
-                        name="lastName"
-                        placeholder="Last name"
-                        className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400
-                        focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                </div>
-
                 {/* Email */}
                 <div>
                   <label
@@ -196,8 +151,29 @@ export default function PageNewsletterConfirmation() {
                       type="email"
                       name="email"
                       value={email}
-                      disabled
-                      readOnly
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Email address"
+                      className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Full Name */}
+                <div>
+                  <label
+                    htmlFor="full-name"
+                    className="block text-base font-bold text-slate-800 font-sourcecodepro"
+                  >
+                    First and Last Name{" "}
+                    <span className="text-brand-1-500">*</span>
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="full-name"
+                      type="text"
+                      name="fullName"
+                      required
+                      placeholder="First and Last Name"
                       className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
                     />
                   </div>
@@ -222,7 +198,7 @@ export default function PageNewsletterConfirmation() {
                           id="country"
                           name="country"
                           defaultValue="+94"
-                          className="appearance-none rounded-md bg-white pr-7 pl-3 text-base text-gray-500 focus:outline-none w-18"
+                          className="appearance-none rounded-md bg-white pr-7 pl-3 text-sm h-9 py-1 text-gray-500 focus:outline-none w-18 overflow-y-auto"
                         >
                           {COUNTRY_CODES.map((code) => (
                             <option key={code} value={code}>
