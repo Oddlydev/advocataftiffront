@@ -200,10 +200,10 @@ const Section: React.FC<SectionProps> = ({
 }) => {
   const href = toInternalHref(url);
   return (
-    <a href={href} className="block pt-8">
+   <a href={href} className="block pt-8 group" aria-label={`Learn more about ${title}`}>
       <div
         className="border border-slate-400 shadow-2xl rounded-lg p-6 md:p-9 lg:px-12 lg:py-16 pr-0 lg:pr-0
-             transition-all duration-300 ease-in-out hover:-translate-y-1.5"
+                transition-all duration-300 ease-in-out hover:-translate-y-1.5"
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-center">
           {/* Left Column */}
@@ -214,10 +214,33 @@ const Section: React.FC<SectionProps> = ({
             <p className="font-sourcecodepro text-slate-950 font-normal text-base/6 mt-0.5 lg:mt-2">
               {text}
             </p>
-            <div className="mt-4 lg:mt-5">
-              {/* Use a non-navigating button so clicks bubble to the anchor wrapper */}
-              <WhiteButton className="!py-2.5 !px-3.5 !text-sm !font-semibold !text-gray-600">
+
+            <div className="mt-4 mb-7 font-semibold font-sourcecodepro transition-all duration-500 ease-in-out">
+              <WhiteButton className="!py-2.5 !px-3.5 !text-sm !font-semibold text-gray-600 flex items-center gap-2">
                 Learn more
+                <svg
+                  className="text-gray-600 size-3.5 opacity-0 translate-x-0 hidden group-hover:block group-focus:block group-hover:opacity-100 transition-all duration-300 ease-in-out"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <path
+                    d="M12.025 4.94165L17.0833 9.99998L12.025 15.0583"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M2.91667 10H16.9417"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </WhiteButton>
             </div>
           </div>
@@ -234,7 +257,7 @@ const Section: React.FC<SectionProps> = ({
             />
             {/* Overlay */}
             <div
-              className="absolute inset-0  rounded-l-lg md:rounded-lg xl:rounded-l-lg xl:rounded-r-none pointer-events-none"
+              className="absolute inset-0 rounded-l-lg md:rounded-lg xl:rounded-l-lg xl:rounded-r-none pointer-events-none"
               style={{
                 background:
                   "linear-gradient(0deg, rgba(235, 26, 82, 0.20), rgba(235, 26, 82, 0.20))",
