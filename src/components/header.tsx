@@ -236,8 +236,8 @@ const DashboardDropdown: React.FC<{
 
   return (
     <div ref={containerRef} className="relative">
-      <button
-        className={`dropdown-btn nav-link text-lg leading-snug font-sourcecodepro uppercase py-2.5 px-3.5 rounded-md transition flex items-center
+     <button
+        className={`group dropdown-btn nav-link text-lg leading-snug font-sourcecodepro uppercase py-2.5 px-3.5 rounded-md transition flex items-center justify-between w-full
           ${
             isDashActive
               ? "bg-transparent text-brand-white font-medium hover:bg-white/10 hover:text-brand-white"
@@ -250,6 +250,7 @@ const DashboardDropdown: React.FC<{
           setOpen((v) => !v);
         }}
       >
+        {/* Label text */}
         <span
           onClick={(e) => {
             e.stopPropagation();
@@ -257,14 +258,20 @@ const DashboardDropdown: React.FC<{
               window.location.href = parentItem.uri;
             }
           }}
+          className="flex-1 text-left group-hover:text-brand-white transition-colors duration-200"
         >
           {parentItem?.label ?? "Dashboard"}
         </span>
+
+        {/* Chevron Icon */}
         <svg
-          className="ml-1 w-3 h-3 text-slate-50"
+          className={`ml-2 w-3.5 h-3.5 transition-transform duration-200 
+            ${
+              open
+                ? "rotate-180 text-slate-50/60"
+                : "rotate-0 text-slate-50/60 group-hover:text-brand-white"
+            }`}
           xmlns="http://www.w3.org/2000/svg"
-          width="12"
-          height="6"
           viewBox="0 0 12 6"
           fill="none"
         >
