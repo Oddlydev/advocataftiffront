@@ -79,6 +79,7 @@ type TransparencyPost = {
   industries: TaxNode[];
   years: TaxNode[];
   csvUrl: string | null;
+  methodologyFileUrl: string | null;
 };
 
 // ----------------------
@@ -168,6 +169,9 @@ async function fetchTransparencyDashboardData(): Promise<{
         slug: string;
         transparanceyIndustries?: { nodes: TaxNode[] };
         transparencyYears?: { nodes: TaxNode[] };
+        dashboardMethodologyFileSection?: {
+          methodologyFile?: { node?: { mediaItemUrl?: string } };
+        };
         dataSetFields?: { dataSetFile?: { node?: { mediaItemUrl?: string } } };
       }>;
     };
@@ -189,6 +193,13 @@ async function fetchTransparencyDashboardData(): Promise<{
           dataSetFields {
             dataSetFile { node { mediaItemUrl } }
           }
+          dashboardMethodologyFileSection{
+            methodologyFile{
+              node{
+                mediaItemUrl
+              }
+            }
+          }
         }
       }
     }
@@ -205,6 +216,9 @@ async function fetchTransparencyDashboardData(): Promise<{
         industries: n.transparanceyIndustries?.nodes ?? [],
         years: n.transparencyYears?.nodes ?? [],
         csvUrl: n.dataSetFields?.dataSetFile?.node?.mediaItemUrl ?? null,
+        methodologyFileUrl:
+          n.dashboardMethodologyFileSection?.methodologyFile?.node
+            ?.mediaItemUrl ?? null,
       })) ?? [],
   };
 }
@@ -518,6 +532,28 @@ export default function PageTransparencyDashboard(): JSX.Element {
             <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
               No dataset found for selection.
             </p>
+          )}
+          {filteredPosts[0]?.methodologyFileUrl && (
+            <div className="bg-gray-50 rounded-lg px-6 py-3.5 mt-3">
+              <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+                <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                  <p>
+                    To access the methodology for the dashboard on the
+                    Transparency in Government Institutions click{" "}
+                    <a
+                      href={filteredPosts[0]?.methodologyFileUrl}
+                      className="text-brand-1-600"
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      here
+                    </a>
+                    .
+                  </p>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </section>

@@ -170,7 +170,12 @@ export default function DefaultDropdown({
                   href={it.href || "#"}
                   target={it.target}
                   rel={it.rel}
-                  onClick={() => setOpenState(false)}
+                  onClick={(e) => {
+                    // Keep menu open when requested
+                    e.stopPropagation();
+                    it.onClick?.();
+                    if (closeOnItemClick) setOpenState(false);
+                  }}
                 >
                   {it.label}
                 </a>
@@ -183,6 +188,7 @@ export default function DefaultDropdown({
                 type="button"
                 onClick={(e) => {
                   e.preventDefault();
+                  e.stopPropagation();
                   it.onClick?.();
                   if (closeOnItemClick) setOpenState(false);
                 }}
