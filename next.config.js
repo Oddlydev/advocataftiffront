@@ -17,6 +17,8 @@ module.exports = withFaust({
       // Keep the category slug in the URL, but render the base pages
       { source: "/datasets/:slug*", destination: "/datasets/" },
       { source: "/insights/:slug*", destination: "/insights/" },
+      // Serve PNG favicon for legacy /favicon.ico requests
+      { source: "/favicon.ico", destination: "/assets/images/favicon.png" },
     ];
   },
 });
