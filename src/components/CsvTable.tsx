@@ -253,7 +253,7 @@ export default function CsvTable({
             <div
               id="table-wrapper"
               className={`overflow-x-auto overflow-y-auto max-w-full box-content ${
-                visibleRows.length >= 10 ? "max-h-[650px]" : ""
+                visibleRows.length >= 10 ? "" : ""   // max-h-[650px]
               }`}
             >
               <div className="w-[1200px] table-inner">
