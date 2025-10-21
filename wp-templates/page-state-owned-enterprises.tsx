@@ -554,9 +554,8 @@ export default function PageStateOwnedDashboard(): JSX.Element {
             <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
               <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                 <p>
-                  Proxy measures are used for some of the financial indicators
-                  where required data is unavailable. Please download the SOE
-                  Fiscal Indicator Methodology from{" "}
+                  To access the methodology for the dashboard on the Finances of
+                  State Owned Enterprises click{" "}
                   {filteredPosts[0]?.methodologyFileUrl ? (
                     <a
                       href={filteredPosts[0].methodologyFileUrl}
