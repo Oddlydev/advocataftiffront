@@ -33,8 +33,18 @@ export default function FilterCarousel({
   const sliderRef = useRef<any>(null);
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
 
-  // 👇 show arrows only if more than 5 items
-  const shouldShowArrows = items.length > 5;
+  // 👇 detect screen size to decide arrow visibility
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const updateIsDesktop = () => setIsDesktop(window.innerWidth >= 1024);
+    updateIsDesktop(); // initial
+    window.addEventListener("resize", updateIsDesktop);
+    return () => window.removeEventListener("resize", updateIsDesktop);
+  }, []);
+
+  // ✅ Arrows shown on mobile/tablet always, hidden on desktop if ≤5 items
+  const shouldShowArrows = !isDesktop || items.length > 5;
 
   useEffect(() => {
     if (trackRef.current && typeof window !== "undefined" && items.length > 1) {
