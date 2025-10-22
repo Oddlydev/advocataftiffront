@@ -12,6 +12,18 @@ module.exports = withFaust({
   },
   trailingSlash: true,
 
+  async headers() {
+    return [
+      {
+        // Strong caching for static public assets
+        source: "/assets/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+    ];
+  },
+
   async rewrites() {
     const wpUrl = process.env.NEXT_PUBLIC_WP_URL || 'https://advocataftifda.wpenginepowered.com'
 
