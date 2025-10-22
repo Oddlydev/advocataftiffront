@@ -3,19 +3,14 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import SEO from "@/src/components/SEO";
-import { COUNTRY_CODES } from "@/src/data/countryCodes";
 import Link from "next/link";
 
 type Status = "idle" | "loading" | "success" | "error";
 
-function isValidE164(countryCode: string, nsnDigits: string) {
-  const cc = (countryCode || "").replace(/\D/g, "");
-  const nsn = (nsnDigits || "").replace(/\D/g, "");
-  const total = cc.length + nsn.length; // E.164 total length (without '+')
-  // Basic, practical guardrails:
-  // - NSN at least 4 digits
-  // - Total (CC + NSN) 8–15 digits (E.164 max is 15)
-  return nsn.length >= 4 && total >= 8 && total <= 15;
+// Validate a single phone input by counting digits only (ignore spaces, '+', etc.)
+function isValidPhoneDigits(raw: string) {
+  const digits = (raw || "").replace(/\D/g, "");
+  return digits.length >= 8 && digits.length <= 15;
 }
 
 export default function PageNewsletterConfirmation() {
@@ -34,8 +29,6 @@ export default function PageNewsletterConfirmation() {
     const formData = new FormData(e.currentTarget);
     const emailValue = email.trim();
     const fullName = (formData.get("fullName") as string | null)?.trim() ?? "";
-    const countryCode =
-      (formData.get("country") as string | null)?.trim() ?? "";
     const phoneNumber =
       (formData.get("phone-number") as string | null)?.trim() ?? "";
     const organisation =
@@ -58,11 +51,9 @@ export default function PageNewsletterConfirmation() {
     }
 
     const digitsOnly = phoneNumber.replace(/\D/g, "");
-    if (!isValidE164(countryCode, digitsOnly)) {
+    if (!isValidPhoneDigits(phoneNumber)) {
       setStatus("error");
-      setMessage(
-        "Please enter a valid contact number (country code + number should be 8–15 digits total)."
-      );
+      setMessage("Please enter a valid contact number (8-15 digits).");
       return;
     }
 
@@ -74,7 +65,7 @@ export default function PageNewsletterConfirmation() {
 
     setStatus("loading");
 
-    const phone = [countryCode, digitsOnly].filter(Boolean).join(" ").trim();
+    const phone = phoneNumber;
 
     // Derive first/last name from the combined full name
     const [firstName, ...lastParts] = fullName.split(/\s+/);
@@ -188,52 +179,15 @@ export default function PageNewsletterConfirmation() {
                     Contact Number <span className="text-brand-1-500">*</span>
                   </label>
                   <div className="mt-2">
-                    <div
-                      className="flex rounded-md bg-white outline-1 -outline-offset-1 outline-gray-200
-                        has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-brand-1-200 w-full px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200"
-                    >
-                      {/* Country Code Select */}
-                      <div className="relative flex items-center">
-                        <select
-                          id="country"
-                          name="country"
-                          defaultValue="+94"
-                          className="appearance-none rounded-md bg-white pr-7 pl-3 text-base text-slate-800 font-sourcecodepro h-9 py-1 focus:outline-none w-18 overflow-y-auto"
-                        >
-                          {COUNTRY_CODES.map((code) => (
-                            <option key={code} value={code}>
-                              {code}
-                            </option>
-                          ))}
-                        </select>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="pointer-events-none absolute right-2 h-5 w-5 text-gray-500"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M5.29289 7.29289C5.68342 6.90237 6.31658 6.90237 6.7071 7.29289L9.99999 10.5858L13.2929 7.29289C13.6834 6.90237 14.3166 6.90237 14.7071 7.29289C15.0976 7.68342 15.0976 8.31658 14.7071 8.70711L10.7071 12.7071C10.3166 13.0976 9.68341 13.0976 9.29289 12.7071L5.29289 8.70711C4.90237 8.31658 4.90237 7.68342 5.29289 7.29289Z"
-                            fill="#1E293B"
-                          />
-                        </svg>
-                      </div>
-
-                      {/* Phone Input */}
-                      <div className="flex -ml-px grow">
-                        <input
-                          id="phone-number"
-                          type="tel"
-                          name="phone-number"
-                          inputMode="numeric"
-                          autoComplete="tel-national"
-                          placeholder="123456789"
-                          className="block w-full grow bg-white pl-2 text-base text-slate-800 font-sourcecodepro placeholder:text-gray-400 focus:outline-none"
-                        />
-                      </div>
-                    </div>
+                    <input
+                      id="phone-number"
+                      type="tel"
+                      name="phone-number"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      placeholder="Phone Number"
+                      className="block w-full rounded-md bg-white px-3 py-2 text-base text-slate-800 font-sourcecodepro border border-gray-200 placeholder:text-gray-400 focus:border-brand-1-200 focus:bg-brand-white focus:shadow-sm focus:ring-1 focus:ring-brand-1-200 focus:outline-none"
+                    />
                   </div>
                 </div>
 
