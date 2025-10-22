@@ -33,58 +33,46 @@ export default function FilterCarousel({
   const sliderRef = useRef<any>(null);
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
 
-  // 👇 detect screen size to decide arrow visibility
-  const [isDesktop, setIsDesktop] = useState(false);
+  // ✅ Hide arrows on desktop only if items === 5
+  const hideArrowsDesktop = items.length === 5;
 
   useEffect(() => {
-    const updateIsDesktop = () => setIsDesktop(window.innerWidth >= 1024);
-    updateIsDesktop(); // initial
-    window.addEventListener("resize", updateIsDesktop);
-    return () => window.removeEventListener("resize", updateIsDesktop);
-  }, []);
+    if (!trackRef.current) return;
+    const { tns } = require("tiny-slider/src/tiny-slider");
 
-  // ✅ Arrows shown on mobile/tablet always, hidden on desktop if ≤5 items
-  const shouldShowArrows = !isDesktop || items.length > 5;
+    sliderRef.current = tns({
+      container: trackRef.current,
+      items: 5,
+      slideBy: 1,
+      autoplay: false,
+      controls: false,
+      mouseDrag: true,
+      nav: false,
+      autoplayButtonOutput: false,
+      gutter: 10,
+      loop: false,
+      responsive: {
+        320: { items: 2 },
+        768: { items: 3 },
+        1024: { items: 5 },
+      },
+    });
 
-  useEffect(() => {
-    if (trackRef.current && typeof window !== "undefined" && items.length > 1) {
-      const { tns } = require("tiny-slider/src/tiny-slider");
+    const prevBtn = document.querySelector(".filter-carousel-prev-arrow");
+    const nextBtn = document.querySelector(".filter-carousel-next-arrow");
 
-      sliderRef.current = tns({
-        container: trackRef.current,
-        items: 9,
-        slideBy: 1,
-        autoplay: false,
-        controls: false,
-        mouseDrag: true,
-        nav: false,
-        autoplayButtonOutput: false,
-        gutter: 10,
-        loop: false,
-        responsive: {
-          320: { items: 2 },
-          768: { items: 3 },
-          1024: { items: 5 },
-        },
-      });
+    const goPrev = () => sliderRef.current?.goTo("prev");
+    const goNext = () => sliderRef.current?.goTo("next");
 
-      if (shouldShowArrows) {
-        const prevBtn = document.querySelector(".filter-carousel-prev-arrow");
-        const nextBtn = document.querySelector(".filter-carousel-next-arrow");
+    prevBtn?.addEventListener("click", goPrev);
+    nextBtn?.addEventListener("click", goNext);
 
-        const goPrev = () => sliderRef.current?.goTo("prev");
-        const goNext = () => sliderRef.current?.goTo("next");
-
-        prevBtn?.addEventListener("click", goPrev);
-        nextBtn?.addEventListener("click", goNext);
-
-        return () => {
-          prevBtn?.removeEventListener("click", goPrev);
-          nextBtn?.removeEventListener("click", goNext);
-        };
-      }
-    }
-  }, [items.length, shouldShowArrows]);
+    return () => {
+      prevBtn?.removeEventListener("click", goPrev);
+      nextBtn?.removeEventListener("click", goNext);
+      sliderRef.current?.destroy();
+    };
+  }, [items.length]);
 
   const handleSelect = (index: number) => {
     setActiveIndex(index);
@@ -94,12 +82,14 @@ export default function FilterCarousel({
   return (
     <div className={`filter-carousel w-full relative ${className}`}>
       {/* Prev button */}
-      {shouldShowArrows && (
-        <button
-          type="button"
-          aria-label="Previous"
-          className="filter-carousel-arrow filter-carousel-prev-arrow absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full backdrop-blur-sm py-1 xl:py-2 pl-0 pr-2 xl:pl-0 xl:pr-3.5 bg-gradient-to-l from-[#F3F4F6] via-white to-white text-brand-1-900"
-        >
+      <button
+        type="button"
+        aria-label="Previous"
+        className={`filter-carousel-arrow filter-carousel-prev-arrow absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full backdrop-blur-sm py-1 xl:py-2 pl-0 pr-2 xl:pl-0 xl:pr-3.5 bg-gradient-to-l from-[#F3F4F6] via-white to-white text-brand-1-900 ${
+          hideArrowsDesktop ? "block lg:hidden" : "block"
+        }`}
+      >
+        {/* SVG here */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -123,14 +113,10 @@ export default function FilterCarousel({
               strokeLinejoin="round"
             />
           </svg>
-        </button>
-      )}
+      </button>
 
       {/* Slider track */}
-      <div
-        ref={trackRef}
-        className="filter-carousel-slider w-full px-7 md:px-8 xl:px-10"
-      >
+      <div ref={trackRef} className="filter-carousel-slider w-full px-7 md:px-8 xl:px-10">
         {items.map((label, index) => (
           <div key={`${label}-${index}`} className="slider-item">
             <button
@@ -148,12 +134,14 @@ export default function FilterCarousel({
       </div>
 
       {/* Next button */}
-      {shouldShowArrows && (
-        <button
-          type="button"
-          aria-label="Next"
-          className="filter-carousel-arrow filter-carousel-next-arrow absolute right-0 top-1/2 -translate-y-1/2 z-10 rounded-full backdrop-blur-sm py-1 xl:py-2 pr-0 pl-2 xl:pr-0 xl:pl-3.5 bg-gradient-to-r from-white via-white to-[#F3F4F6] text-brand-1-900"
-        >
+      <button
+        type="button"
+        aria-label="Next"
+        className={`filter-carousel-arrow filter-carousel-next-arrow absolute right-0 top-1/2 -translate-y-1/2 z-10 rounded-full backdrop-blur-sm py-1 xl:py-2 pr-0 pl-2 xl:pr-0 xl:pl-3.5 bg-gradient-to-r from-white via-white to-[#F3F4F6] text-brand-1-900 ${
+          hideArrowsDesktop ? "block lg:hidden" : "block"
+        }`}
+      >
+        {/* SVG here */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -177,8 +165,7 @@ export default function FilterCarousel({
               strokeLinejoin="round"
             />
           </svg>
-        </button>
-      )}
+      </button>
     </div>
   );
 }

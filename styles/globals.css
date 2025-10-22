@@ -139,6 +139,10 @@ button {
     vertical-align: middle !important;
     text-align: center !important;
   }
+
+  .tns-horizontal {
+    align-items: center !important;
+  }
   /* 
     #tns1 > .tns-item {
         width: calc(2.9991%) !important;
