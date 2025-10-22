@@ -41,8 +41,11 @@ export default function SecondaryNav({
             
             {items.map((it, idx) => {
               const hrefPathNorm = normalizePath(it.href || "");
-              const isActive =
-                !!hrefPathNorm && hrefPathNorm === activePathNorm;
+              const isActive = !!hrefPathNorm && (
+                hrefPathNorm === activePathNorm ||
+                // consider child paths as active (e.g., /macro is active for /macro/foo)
+                (activePathNorm.startsWith(hrefPathNorm + "/"))
+              );
 
               return (
                 <a
