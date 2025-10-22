@@ -1,4 +1,5 @@
-import { gql } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
+import { useRouter } from "next/router";
 import type { GetStaticPropsContext } from "next";
 import SEO from "@/src/components/SEO";
 import SecondaryNav from "@/src/components/SecondaryNav";
@@ -139,7 +140,30 @@ type MacroEconomyPageProps = {
   };
 };
 const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
-  const macroEconomy = data?.macroEconomy;
+  const router = useRouter();
+  const initialMacro = data?.macroEconomy;
+  const initialSlug = initialMacro?.slug ?? FALLBACK_SLUG;
+
+  // Derive slug from URL so shallow route changes can update just the chart area
+  const asPath = (router?.asPath || "").split("?")[0];
+  const pathSegments = asPath.split("/").filter(Boolean);
+  const routeSlug = pathSegments[pathSegments.length - 1] || initialSlug;
+
+  // Fetch new macro entry client-side if URL slug changes via shallow routing
+  const { data: clientSwap, loading: swapLoading } = useQuery(
+    SINGLE_MACRO_ECONOMY_QUERY,
+    {
+      variables: { slug: routeSlug },
+      skip: !routeSlug || routeSlug === initialSlug,
+      // Prefer cache when available (prefetched by nav) and avoid extra flicker
+      fetchPolicy: "cache-first",
+      nextFetchPolicy: "cache-first",
+      returnPartialData: true,
+      notifyOnNetworkStatusChange: true,
+    }
+  );
+
+  const macroEconomy = clientSwap?.macroEconomy ?? initialMacro;
   const slug = macroEconomy?.slug ?? FALLBACK_SLUG;
   const config = MACRO_PAGE_CONFIG[slug] ?? MACRO_PAGE_CONFIG[FALLBACK_SLUG];
   const datasetUrl =
@@ -175,8 +199,11 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
   // Force a remount when the entry changes so any client charts reset properly
   const remountKey = macroEconomy?.id || slug;
 
+  const isSwapping =
+    routeSlug !== (clientSwap?.macroEconomy?.slug ?? initialSlug) && swapLoading;
+
   return (
-    <main key={remountKey}>
+    <main>
       <SEO yoast={(macroEconomy as any)?.seo} title={displayTitle} />
 
       <div className="bg-white border-b border-slate-300">
@@ -205,7 +232,10 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
 
       <div className="bg-white pt-3.5 md:pt-5 xl:pt-6">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-10 md:pb-20">
-          <div className="border border-gray-200 rounded-xl py-6 px-5">
+          <div
+            key={remountKey}
+            className="border border-gray-200 rounded-xl py-6 px-5"
+          >
             <div className="mb-10">
               <h2 className="text-xl/snug md:text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
                 {chartDetails?.chartTitle}
@@ -216,7 +246,11 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
             </div>
 
             <div className="relative">
-              <div className="absolute z-20 -top-3 md:-top-6 lg:top-0 right-4 md:right-10 flex gap-2 hidden">
+              <div
+                className={`absolute z-20 -top-3 md:-top-6 lg:top-0 right-4 md:right-10 flex gap-2 ${
+                  isSwapping ? "hidden" : "hidden"
+                }`}
+              >
                 <button
                   id={controlIds.zoomInId}
                   className="px-1.5 py-1 md:px-2.5 md:py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
@@ -323,7 +357,11 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                   </svg>
                 </button>
               </div>
-              {datasetUrl ? (
+              {isSwapping ? (
+                <div className="relative w-full h-[300px] md:h-[300px] xl:h-[500px]">
+                  <div className="animate-pulse w-full h-full bg-gray-100 rounded-lg" />
+                </div>
+              ) : datasetUrl ? (
                 <ChartComponent
                   key={`${slug}:${datasetUrl}`}
                   datasetUrl={datasetUrl}
@@ -358,7 +396,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
               </div>
             ) : null}
 
-            <div className="mt-2 md:mt-6 xl:mt-10">
+            <div className={`mt-2 md:mt-6 xl:mt-10 ${isSwapping ? "opacity-50" : ""}`}>
               <div className="bg-gray-50 rounded-lg px-6 py-3.5">
                 <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
                   <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
@@ -372,6 +410,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                 </div>
               </div>
             </div>
+            {!isSwapping ? null : null}
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql, useApolloClient } from "@apollo/client";
 import { useRouter } from "next/router";
 
 const MACRO_ECONOMY_POSTS = gql`
@@ -21,6 +21,18 @@ type PostNode = {
   slug?: string;
   uri?: string;
 };
+
+// Minimal query to prefetch the selected macro entry so the chart swaps smoothly
+const MACRO_ENTRY_PREFETCH = gql`
+  query PrefetchMacro($slug: ID!) {
+    macroEconomy(id: $slug, idType: SLUG) {
+      id
+      slug
+      dataSetFields { dataSetFile { node { mediaItemUrl } } }
+      macroChartDetailsSection { chartTitle chartSubtitle dataSource chartLabel }
+    }
+  }
+`;
 
 function normalizePath(input?: string) {
   if (!input) return "";
@@ -49,6 +61,7 @@ export default function MacroEconomySliderNav({
   const [activeIndex, setActiveIndex] = useState(0);
 
   const { data, loading, error } = useQuery(MACRO_ECONOMY_POSTS);
+  const apollo = useApolloClient();
 
   const posts: PostNode[] = data?.macroEconomies?.nodes ?? [];
   const items = useMemo(() => posts.map((p) => p.title), [posts]);
@@ -147,18 +160,31 @@ export default function MacroEconomySliderNav({
     } catch {}
   }, [activeIndex]);
 
-  const handleSelect = (index: number) => {
+  const handleSelect = async (index: number) => {
     setActiveIndex(index);
     const selected = posts[index];
     if (selected?.uri) {
       const target = normalizePath(selected.uri) || "/";
-      // Force a full navigation to ensure template data refreshes correctly
-      if (typeof window !== "undefined") {
-        window.location.assign(target);
-        return;
-      } else {
-        router.push(target, undefined, { scroll: false, shallow: false });
-      }
+      const slug = selected.slug || target.split("/").filter(Boolean).pop() || "";
+      // Warm Apollo cache and Next route assets before navigating for a smoother swap
+      try {
+        await Promise.all([
+          slug
+            ? apollo.query({
+                query: MACRO_ENTRY_PREFETCH,
+                variables: { slug },
+                fetchPolicy: "network-only",
+              })
+            : Promise.resolve(null),
+          // Prefetch the route; ignore failures (dynamic route may not prefetch reliably)
+          typeof router.prefetch === "function"
+            ? router.prefetch(target).catch(() => {})
+            : Promise.resolve(null),
+        ]);
+      } catch {}
+      // Use Next.js client-side navigation to avoid full reload and prevent scroll
+      // Shallow keeps this on the same page component so only client data updates
+      router.push(target, undefined, { scroll: false, shallow: true });
     }
     // Keep the chosen one in view if staying on page
     if (sliderRef.current?.goTo) sliderRef.current.goTo(index);
