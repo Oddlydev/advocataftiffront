@@ -194,6 +194,8 @@ export default function PostContent({ content, variant = "single" }: Props) {
                 {...domNode.attribs}
                 className="h-auto object-cover w-full block "
                 alt={domNode.attribs.alt || ""}
+                loading={domNode.attribs.loading || "lazy"}
+                decoding={domNode.attribs.decoding || "async"}
               />
               {/* <div
                 className="absolute inset-0  pointer-events-none"

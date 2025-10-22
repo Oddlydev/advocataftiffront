@@ -372,24 +372,26 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
       />
       {/* Hero section */}
       <div className="home-hero relative text-white h-screen md:h-[65vh] xl:h-screen bg-[#d3d3d3]">
-        {/* Responsive hero thumbnail image (mobile + desktop) */}
-        <picture className="absolute inset-0 block">
-          <source
-            media="(min-width: 1024px)"
-            srcSet={
-              heroImgLg ??
-              "/assets/images/hero-img/hero-img-urban-market-lg.jpg"
-            }
-          />
-          <img
-            src={
-              heroImageSm ??
-              "/assets/images/hero-img/hero-img-urban-market-sm.jpg"
-            }
-            alt={heroTitle ?? "Home hero background"}
-            className="h-full w-full object-cover"
-          />
-        </picture>
+        {/* Optimized hero image using next/image for responsive, lazy loading, and formats */}
+        {(() => {
+          // Prefer desktop hero if present; otherwise fall back to mobile; then to local asset
+          const heroSrc =
+            heroImgLg ||
+            heroImageSm ||
+            "/assets/images/hero-img/hero-img-urban-market-lg.jpg";
+          return (
+            <div className="absolute inset-0">
+              <Image
+                src={heroSrc}
+                alt={heroTitle ?? "Home hero background"}
+                fill
+                priority
+                sizes="100vw"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          );
+        })()}
         {/* Overlay container */}
         <div className="absolute inset-0 h-full w-full overflow-hidden">
           {/* Blurred overlay */}

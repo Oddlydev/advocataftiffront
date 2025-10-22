@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { HEADER_MENU_QUERY } from "@/queries/MenuQueries";
-import searchClient from "../lib/algolia";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 
@@ -45,6 +44,7 @@ const SearchForm: React.FC<{
   const ref = useRef<HTMLDivElement>(null);
 
   const indexName = "wp_searchable_posts";
+  const searchRef = useRef<any>(null);
 
   // Close on outside click
   useEffect(() => {
@@ -56,7 +56,7 @@ const SearchForm: React.FC<{
     return () => document.removeEventListener("click", handle);
   }, []);
 
-  // Algolia search
+  // Algolia search (lazy-load client on demand)
   useEffect(() => {
     if (!query.trim()) {
       setResults([]);
@@ -64,7 +64,11 @@ const SearchForm: React.FC<{
     }
     const timer = setTimeout(async () => {
       try {
-        const { hits } = await searchClient.searchSingleIndex({
+        if (!searchRef.current) {
+          const mod = await import("../lib/algolia");
+          searchRef.current = mod.default;
+        }
+        const { hits } = await searchRef.current.searchSingleIndex({
           indexName,
           searchParams: { query, hitsPerPage: 5 },
         });

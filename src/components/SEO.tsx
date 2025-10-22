@@ -72,10 +72,22 @@ export default function SEO({
     (process.env.NEXT_PUBLIC_SITE_ICON_URL as string) ||
     "/assets/images/favicon.png";
 
+  const wpUrl =
+    (process.env.NEXT_PUBLIC_WP_URL as string) ||
+    "https://advocataftifda.wpenginepowered.com";
+  let wpOrigin: string | undefined;
+  try {
+    wpOrigin = new URL(wpUrl).origin;
+  } catch {}
+
   return (
     <Head>
       {/* Favicon */}
       {favicon && <link rel="icon" type="image/png" href={favicon} />}
+      {/* Preconnect to WordPress host for hero/media */}
+      {wpOrigin && (
+        <link rel="preconnect" href={wpOrigin} crossOrigin="" />
+      )}
       {theTitle && <title>{theTitle}</title>}
       {theDesc && <meta name="description" content={theDesc} />}
       {theCanonical && <link rel="canonical" href={theCanonical} />}
