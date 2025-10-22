@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+// In a Pages Router app, use `next/router` for client navigation
+import { useRouter } from "next/router";
 
 interface NewsletterFormProps {
   variant?: "desktop" | "mobile";
@@ -30,7 +31,13 @@ export default function NewsletterForm({
 
     setStatus("success");
     setMessage("");
-    router.push(`/newsletter-confirmation?email=${encodeURIComponent(email)}`);
+    // Navigate to confirmation page (force full navigation for reliability)
+    const target = `/newsletter-confirmation/?email=${encodeURIComponent(email)}`;
+    if (typeof window !== "undefined") {
+      window.location.assign(target);
+      return;
+    }
+    router.push(target);
   }
 
   const Header = () => (
