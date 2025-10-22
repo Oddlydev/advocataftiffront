@@ -490,55 +490,49 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                     ? `Sector (${selectedIndustries.length})`
                     : "Sector"
                 }
-                items={[
-                  ...industryOptions.map((ind) => ({
-                    kind: "checkbox" as const,
-                    label: ind.name,
-                    checked: selectedIndustries.includes(ind.name),
-                    onClick: () => {
-                      setSelectedIndustries((prev) =>
-                        prev.includes(ind.name)
-                          ? prev.filter((n) => n !== ind.name)
-                          : [...prev, ind.name]
-                      );
-                    },
-                  })),
-                  {
-                    // Render OK and Clear as two buttons in one row
-                    label: (
-                      <div className="flex w-full justify-end items-center gap-2">
-                        <button
-                          type="button"
-                          className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide rounded-sm bg-white text-gray-600 border border-slate-200 shadow-sm hover:bg-gray-50"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setSelectedIndustries([]);
-                            setOpenId(null);
-                          }}
-                        >
-                          CLEAR
-                        </button>
-                        <button
-                          type="button"
-                          className="px-3 py-2.5 text-xs text-[#f1f2f2] font-semibold uppercase tracking-wide rounded-sm bg-brand-1-900 text-brand-4 border border-slate-200 shadow-sm hover:bg-gray-50 hover:text-brand-1-900"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setOpenId(null);
-                          }}
-                        >
-                          OK
-                        </button>
-                      </div>
-                    ),
-                    onClick: () => {},
+                items={industryOptions.map((ind) => ({
+                  kind: "checkbox" as const,
+                  label: ind.name,
+                  checked: selectedIndustries.includes(ind.name),
+                  onClick: () => {
+                    setSelectedIndustries((prev) =>
+                      prev.includes(ind.name)
+                        ? prev.filter((n) => n !== ind.name)
+                        : [...prev, ind.name]
+                    );
                   },
-                ]}
+                }))}
                 align="right"
                 open={openId === "one"}
                 onOpenChange={(v) => setOpenId(v ? "one" : null)}
                 closeOnItemClick={false}
+                footer={
+                  <div className="flex items-center justify-end gap-2 px-3 py-2 !bg-transparent">
+                    <button
+                      type="button"
+                      className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide rounded-sm bg-white text-gray-600 border border-slate-200 shadow-sm hover:text-gray-50 hover:bg-brand-1-900"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedIndustries([]);
+                        setOpenId(null);
+                      }}
+                    >
+                      CLEAR
+                    </button>
+                    <button
+                      type="button"
+                      className="px-3 py-2.5 text-xs text-brand-white font-semibold uppercase tracking-wide rounded-sm bg-brand-1-900 text-brand-4 border border-slate-200 shadow-sm hover:bg-gray-50 hover:text-brand-1-900"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setOpenId(null);
+                      }}
+                    >
+                      OK
+                    </button>
+                  </div>
+                }
               />
 
               {/* Year Dropdown */}

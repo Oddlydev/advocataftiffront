@@ -11,7 +11,7 @@ type DropdownItem = {
   rel?: string;
   kind?: "checkbox"; // optional checkbox-style row
   checked?: boolean; // for kind === 'checkbox'
-  itemClassName?: string; // 👈 add this line
+  itemClassName?: string;
 };
 
 type DefaultDropdownProps = {
@@ -21,11 +21,12 @@ type DefaultDropdownProps = {
   className?: string;
   menuClassName?: string;
   buttonClassName?: string;
-  idKey?: string; // optional stable id suffix (e.g., "one", "two")
-  open?: boolean; // controlled open state
-  onOpenChange?: (open: boolean) => void; // controlled state setter
-  closeOnItemClick?: boolean; // defaults to true; set false for multi-select menus
-  itemClassName?: string; // 👈 add this line
+  idKey?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  closeOnItemClick?: boolean;
+  itemClassName?: string;
+  footer?: React.ReactNode; // ✅ new prop for footer content (e.g., OK / CLEAR buttons)
 };
 
 function useClickOutside(
@@ -56,20 +57,19 @@ export default function DefaultDropdown({
   open,
   onOpenChange,
   closeOnItemClick = true,
+  footer,
 }: DefaultDropdownProps): JSX.Element {
   const isControlled = typeof open === "boolean";
   const [internalOpen, setInternalOpen] = useState(false);
   const isOpen = isControlled ? (open as boolean) : internalOpen;
+
   const btnRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const reactId = useId();
   const key = idKey ?? reactId;
-  const btnId = idKey
-    ? `default-dropdown-btn-${idKey}`
-    : `default-dropdown-btn-${reactId}`;
-  const menuId = idKey
-    ? `default-dropdown-menu-btn-${idKey}`
-    : `default-dropdown-menu-${reactId}`;
+
+  const btnId = `default-dropdown-btn-${key}`;
+  const menuId = `default-dropdown-menu-${key}`;
 
   const setOpenState = (v: boolean) => {
     if (isControlled) onOpenChange?.(v);
@@ -95,6 +95,7 @@ export default function DefaultDropdown({
         className,
       ].join(" ")}
     >
+      {/* Dropdown Button */}
       <div>
         <button
           ref={btnRef}
@@ -114,12 +115,13 @@ export default function DefaultDropdown({
         >
           {label}
           <svg
-            className="-mr-1 size-5 text-gray-700"
+            className="-mr-1 size-5 text-gray-700 transition-transform duration-150"
             xmlns="http://www.w3.org/2000/svg"
             width="20"
             height="20"
             viewBox="0 0 20 20"
             fill="none"
+            style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
           >
             <path
               fillRule="evenodd"
@@ -131,11 +133,12 @@ export default function DefaultDropdown({
         </button>
       </div>
 
+      {/* Dropdown Menu */}
       <div
         ref={menuRef}
         id={menuId}
         className={[
-          "default-dropdown-menu absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-brand-white shadow-lg ring-1 ring-black/5 focus:outline-none transition ease-out duration-100 transform scale-95",
+          "default-dropdown-menu absolute right-0 z-20 mt-2 origin-top-right rounded-md bg-brand-white shadow-lg ring-1 ring-black/5 focus:outline-none transition ease-out duration-100 transform scale-95",
           align === "right" ? "right-0" : "left-0",
           "transform transition-all duration-200 ease-out z-30",
           isOpen
@@ -149,6 +152,7 @@ export default function DefaultDropdown({
         tabIndex={-1}
         style={{ width: "max-content" }}
       >
+        {/* Scrollable list of items */}
         <div
           className={[
             "py-1",
@@ -163,6 +167,7 @@ export default function DefaultDropdown({
               role: "menuitem" as const,
               key: idx,
             };
+
             if (it.href || it.as === "a") {
               return (
                 <a
@@ -171,7 +176,6 @@ export default function DefaultDropdown({
                   target={it.target}
                   rel={it.rel}
                   onClick={(e) => {
-                    // Keep menu open when requested
                     e.stopPropagation();
                     it.onClick?.();
                     if (closeOnItemClick) setOpenState(false);
@@ -181,7 +185,7 @@ export default function DefaultDropdown({
                 </a>
               );
             }
-            // Button item (supports optional checkbox rendering)
+
             return (
               <button
                 {...common}
@@ -194,34 +198,34 @@ export default function DefaultDropdown({
                 }}
               >
                 {it.kind === "checkbox" ? (
-                <div className="group flex gap-3 items-center cursor-pointer">
-                  <div>
-                    <span
-                      aria-hidden
-                      className="grid size-4 place-items-center border-2 border-slate-600 rounded-sm group-hover:border-brand-1-700"
-                    >
-                      {it.checked ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 8 6"
-                          fill="none"
-                          className="size-3 stroke-slate-600 group-hover:stroke-brand-1-700"
-                        >
-                          <path
-                            d="M1.5 3L3 4.5L6.5 1.5"
-                            stroke="currentColor"
-                            strokeWidth="1.8"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      ) : null}
+                  <div className="group flex gap-3 items-center cursor-pointer">
+                    <div>
+                      <span
+                        aria-hidden
+                        className="grid size-4 place-items-center border-2 border-slate-600 rounded-sm group-hover:border-brand-1-700"
+                      >
+                        {it.checked ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 8 6"
+                            fill="none"
+                            className="size-3 stroke-slate-600 group-hover:stroke-brand-1-700"
+                          >
+                            <path
+                              d="M1.5 3L3 4.5L6.5 1.5"
+                              stroke="currentColor"
+                              strokeWidth="1.8"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        ) : null}
+                      </span>
+                    </div>
+                    <span className="font-normal text-slate-600 group-hover:text-brand-1-700">
+                      {it.label}
                     </span>
                   </div>
-                  <span className="font-normal text-slate-600 group-hover:text-brand-1-700">
-                    {it.label}
-                  </span>
-                </div>
                 ) : (
                   it.label
                 )}
@@ -229,6 +233,13 @@ export default function DefaultDropdown({
             );
           })}
         </div>
+
+        {/* ✅ Footer section (OK / CLEAR) */}
+        {footer && (
+          <div className="!bg-tranparent">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );
