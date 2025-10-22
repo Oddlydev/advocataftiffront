@@ -172,8 +172,11 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
     { label: "State Owned Enterprises", href: "/state-owned-enterprises" },
   ];
 
+  // Force a remount when the entry changes so any client charts reset properly
+  const remountKey = macroEconomy?.id || slug;
+
   return (
-    <main>
+    <main key={remountKey}>
       <SEO yoast={(macroEconomy as any)?.seo} title={displayTitle} />
 
       <div className="bg-white border-b border-slate-300">
@@ -181,7 +184,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
           <SecondaryNav
             className="!font-baskervville"
             items={secondaryNavItems}
-            activePath={macroEconomy?.uri ?? ""}
+            activePath={"/the-macro-economy-of-sri-lanka"}
           />
         </div>
       </div>
@@ -322,6 +325,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
               </div>
               {datasetUrl ? (
                 <ChartComponent
+                  key={`${slug}:${datasetUrl}`}
                   datasetUrl={datasetUrl}
                   controlIds={controlIds}
                 />

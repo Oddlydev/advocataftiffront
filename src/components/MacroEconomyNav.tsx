@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 
 const MACRO_ECONOMY_POSTS = gql`
   query MacroEconomyPosts {
@@ -39,7 +39,7 @@ export default function MacroEconomySliderNav({
   className?: string;
 }) {
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = router.asPath;
 
   const trackRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<any>(null);
@@ -60,8 +60,7 @@ export default function MacroEconomySliderNav({
     const current = normalizePath(pathname);
     let idx = posts.findIndex((p) => {
       const wp = normalizePath(p.uri);
-      const next = p.slug ? normalizePath(`/macro/${p.slug}`) : "";
-      return wp === current || next === current;
+      return wp === current;
     });
 
     if (idx < 0) idx = 0;
@@ -152,9 +151,14 @@ export default function MacroEconomySliderNav({
     setActiveIndex(index);
     const selected = posts[index];
     if (selected?.uri) {
-      router.push(normalizePath(selected.uri) || "/", { scroll: false } as any);
-    } else if (selected?.slug) {
-      router.push(`/macro/${selected.slug}`, { scroll: false } as any);
+      const target = normalizePath(selected.uri) || "/";
+      // Force a full navigation to ensure template data refreshes correctly
+      if (typeof window !== "undefined") {
+        window.location.assign(target);
+        return;
+      } else {
+        router.push(target, undefined, { scroll: false, shallow: false });
+      }
     }
     // Keep the chosen one in view if staying on page
     if (sliderRef.current?.goTo) sliderRef.current.goTo(index);
