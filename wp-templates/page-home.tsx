@@ -372,26 +372,45 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
       />
       {/* Hero section */}
       <div className="home-hero relative text-white h-screen md:h-[65vh] xl:h-screen bg-[#d3d3d3]">
-        {/* Optimized hero image using next/image for responsive, lazy loading, and formats */}
-        {(() => {
-          // Prefer desktop hero if present; otherwise fall back to mobile; then to local asset
-          const heroSrc =
-            heroImgLg ||
-            heroImageSm ||
-            "/assets/images/hero-img/hero-img-urban-market-lg.jpg";
-          return (
-            <div className="absolute inset-0">
+        {/* Show distinct images for desktop and mobile breakpoints */}
+        <div className="absolute inset-0">
+          {heroImgLg && heroImageSm ? (
+            <>
+              {/* Desktop */}
               <Image
-                src={heroSrc}
+                src={heroImgLg}
                 alt={heroTitle ?? "Home hero background"}
                 fill
                 priority
                 sizes="100vw"
-                className="h-full w-full object-cover"
+                className="hidden md:block h-full w-full object-cover"
               />
-            </div>
-          );
-        })()}
+              {/* Mobile */}
+              <Image
+                src={heroImageSm}
+                alt={heroTitle ?? "Home hero background"}
+                fill
+                priority
+                sizes="100vw"
+                className="md:hidden h-full w-full object-cover"
+              />
+            </>
+          ) : (
+            // Fallback to whichever is available, else to local asset
+            <Image
+              src={
+                heroImgLg ||
+                heroImageSm ||
+                "/assets/images/hero-img/hero-img-urban-market-lg.jpg"
+              }
+              alt={heroTitle ?? "Home hero background"}
+              fill
+              priority
+              sizes="100vw"
+              className="h-full w-full object-cover"
+            />
+          )}
+        </div>
         {/* Overlay container */}
         <div className="absolute inset-0 h-full w-full overflow-hidden">
           {/* Blurred overlay */}
