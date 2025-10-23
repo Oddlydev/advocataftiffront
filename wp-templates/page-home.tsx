@@ -382,6 +382,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
                 alt={heroTitle ?? "Home hero background"}
                 fill
                 priority
+                fetchPriority="high"
                 sizes="100vw"
                 className="hidden md:block h-full w-full object-cover"
               />
@@ -391,6 +392,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
                 alt={heroTitle ?? "Home hero background"}
                 fill
                 priority
+                fetchPriority="high"
                 sizes="100vw"
                 className="md:hidden h-full w-full object-cover"
               />
@@ -406,6 +408,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
               alt={heroTitle ?? "Home hero background"}
               fill
               priority
+              fetchPriority="high"
               sizes="100vw"
               className="h-full w-full object-cover"
             />
@@ -608,6 +611,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
                 height={713}
                 alt="Home hero"
                 priority={false}
+                fetchPriority="high"
               />
             </div>
           </div>
