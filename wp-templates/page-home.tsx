@@ -19,9 +19,19 @@ import {
 } from "@/src/components/Typography";
 import SearchFieldHome from "@/src/components/InputFields/SearchFieldHome";
 import WhiteIconButton from "@/src/components/Buttons/WhiteIconBtn";
-import FeaturedDashboardChart, {
-  FeaturedDashboardChartProps,
-} from "@/src/components/HeroBlocks/FeaturedDashboardChart";
+import dynamic from "next/dynamic";
+import type { FeaturedDashboardChartProps } from "@/src/components/HeroBlocks/FeaturedDashboardChart";
+const FeaturedDashboardChart = dynamic(
+  () => import("@/src/components/HeroBlocks/FeaturedDashboardChart"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="mt-6 bg-white rounded-3xl p-6">
+        <div className="h-[200px] md:h-[280px] rounded-3xl bg-slate-100 animate-pulse" />
+      </div>
+    ),
+  }
+);
 
 type DashboardFileNode = { mediaItemUrl?: string | null } | null;
 type DashboardDataSetFields = {
