@@ -213,7 +213,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
             </p>
           </div>
           <div className="flex gap-3 md:gap-2">
-            <SecondaryButton
+            {/* <SecondaryButton
               onClick={() =>
                 downloadPdfFromCsv(downloadUrl, dataset.slug || "dataset")
               }
@@ -255,7 +255,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                   strokeLinejoin="round"
                 />
               </svg>
-            </SecondaryButton>
+            </SecondaryButton> */}
 
             <SecondaryButton
               onClick={() => {
