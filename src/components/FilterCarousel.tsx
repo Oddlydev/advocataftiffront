@@ -33,8 +33,8 @@ export default function FilterCarousel({
   const sliderRef = useRef<any>(null);
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
 
-  // ✅ Hide arrows on desktop only if items === 5
-  const hideArrowsDesktop = items.length === 5;
+  // ✅ Hide arrows on desktop only if items <= 5
+  const hideArrowsDesktop = items.length <= 5;
 
   useEffect(() => {
     if (!trackRef.current) return;
