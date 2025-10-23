@@ -14,13 +14,6 @@ import PageTermsAndConditions from "./page-terms-and-conditions";
 import PageThankYou from "./page-thank-you";
 import PageDashboard from "./page-dashboard";
 import PageNewsletterConfirmation from "./page-newsletter-confirmation";
-import PageInflationDashboard from "./page-inflation-dashboard";
-import PageForeignExchange from "./page-foreign-exchange";
-import PageForeignReserves from "./page-foreign-reserves";
-import PageUnemployment from "./page-unemployment";
-import PageGDPGrowth from "./page-gdp-growth";
-import PageNationalDebt from "./page-national-debt";
-import PageInterestRates from "./page-interest-rates";
 import PageMacroEconomyLanding from "./page-the-macro-economy-of-sri-lanka";
 import SingleMacroEconomy from "./single-macro-economy";
 import PageFiscalOperations from "./page-government-fiscal-operations";
@@ -44,13 +37,6 @@ export default {
   "page-thank-you": PageThankYou,
   "page-dashboard": PageDashboard,
   "page-newsletter-confirmation": PageNewsletterConfirmation,
-  "page-inflation-dashboard": PageInflationDashboard,
-  "page-foreign-exchange": PageForeignExchange,
-  "page-foreign-reserves": PageForeignReserves,
-  "page-unemployment": PageUnemployment,
-  "page-gdp-growth": PageGDPGrowth,
-  "page-national-debt": PageNationalDebt,
-  "page-interest-rates": PageInterestRates,
   "single-macro-economy": SingleMacroEconomy,
   "page-the-macro-economy-of-sri-lanka": PageMacroEconomyLanding,
   "page-government-fiscal-operations": PageFiscalOperations,
