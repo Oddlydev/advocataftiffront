@@ -47,22 +47,5 @@
     "cross-env": "^10.0.0",
     "dotenv-cli": "^10.0.0",
     "typescript": "^5.9.2"
-  },
-  "browserslist": {
-    "production": [
-      "Chrome >= 90",
-      "Firefox >= 90",
-      "Safari >= 14",
-      "iOS >= 14",
-      "Edge >= 90",
-      "not dead",
-      "not op_mini all",
-      "not IE 11"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   }
 }
