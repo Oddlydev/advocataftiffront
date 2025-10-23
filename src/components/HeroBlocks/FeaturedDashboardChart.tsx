@@ -88,9 +88,9 @@ export default function FeaturedDashboardChart(
     return (
       <div className="mt-6 bg-white rounded-3xl p-6">
         <div className="flex flex-col gap-1">
-          <h4 className="text-lg md:text-2xl font-montserrat font-bold text-slate-950">
+          <h3 className="text-lg md:text-2xl font-montserrat font-bold text-slate-950">
             {metadata.chartTitle}
-          </h4>
+          </h3>
           <p className="text-sm md:text-base font-baskervville text-slate-600">
             {metadata.chartSubtitle}
           </p>
@@ -259,9 +259,9 @@ export default function FeaturedDashboardChart(
   return (
     <div className="mt-6 bg-white rounded-3xl p-6">
       <div className="flex flex-col gap-1">
-        <h4 className="text-lg md:text-2xl font-montserrat font-bold text-slate-950">
+        <h3 className="text-lg md:text-2xl font-montserrat font-bold text-slate-950">
           {props.title ?? "Government Fiscal Operations"}
-        </h4>
+        </h3>
       </div>
       <div className="mt-6">
         <FeaturedFiscalSankeyChart
