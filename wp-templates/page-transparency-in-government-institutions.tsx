@@ -557,7 +557,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
           )}
           <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
             <div>
-              <div className="grid xl:flex gap-4 xl:gap-7 items-center justify-start xl:justify-end w-full">
+              <div className="grid xl:flex gap-4 xl:gap-7 items-center justify-start w-full">
                 <div>
                   <p className="text-sm xl:text-base/6 font-medium font-sourcecodepro text-slate-600">
                     Interpretation of the indicators:
@@ -621,7 +621,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
               </div>
             </div>
             <div>
-              <div className="grid xl:flex gap-4 xl:gap-7 mt-3 items-center justify-start xl:justify-end w-full">
+              <div className="grid xl:flex gap-4 xl:gap-7 mt-3 items-center justify-start w-full">
                 <div>
                   <p className="text-sm xl:text-base/6 font-medium font-sourcecodepro text-slate-600">
                     Interpretation of composite score:
