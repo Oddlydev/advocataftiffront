@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://advocatatififront.vercel.app/sitemap.xml
