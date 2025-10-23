@@ -213,50 +213,6 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
             </p>
           </div>
           <div className="flex gap-3 md:gap-2">
-            {/* <SecondaryButton
-              onClick={() =>
-                downloadPdfFromCsv(downloadUrl, dataset.slug || "dataset")
-              }
-            >
-              PDF
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-              >
-                <path
-                  d="M7.5 9.16663V14.1666L9.16667 12.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M7.50016 14.1667L5.8335 12.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M18.3332 8.33329V12.5C18.3332 16.6666 16.6665 18.3333 12.4998 18.3333H7.49984C3.33317 18.3333 1.6665 16.6666 1.6665 12.5V7.49996C1.6665 3.33329 3.33317 1.66663 7.49984 1.66663H11.6665"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M18.3332 8.33329H14.9998C12.4998 8.33329 11.6665 7.49996 11.6665 4.99996V1.66663L18.3332 8.33329Z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </SecondaryButton> */}
-
             <SecondaryButton
               onClick={() => {
                 if (metaUrl) {
