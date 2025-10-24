@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Papa from "papaparse";
 
 interface CsvTransparencyProps {
@@ -128,19 +128,12 @@ export default function CsvTransparency({
     } catch {}
   }, [rows, onMinistriesLoaded]);
 
-  if (error) return <p className="text-red-500">{error}</p>;
-  if (rows.length === 0)
-    return (
-      <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
-        Loading dataset...
-      </p>
-    );
-
   // CSV expected structure: first two rows are headers.
   const headers = rows[0];
   const subHeaders = rows[1] || [];
   const dataRows = rows.slice(2);
   const totalColumns = headers?.length || subHeaders?.length || 0 || 0;
+  // No extra columns added; composite score exists in CSV
 
   const norm = (s: string) =>
     (s ?? "")
@@ -162,6 +155,83 @@ export default function CsvTransparency({
       return true;
     return false;
   };
+
+  // Composite-score quartile coloring over the dataset
+  const compositeIndex = useMemo(() => {
+    const findIn = (arr: string[] | undefined | null): number => {
+      if (!arr) return -1;
+      for (let i = 0; i < arr.length; i++) {
+        const label = norm((arr[i] ?? "").toString());
+        if (!label) continue;
+        if (label.includes("composite") && label.includes("score")) return i;
+        if (label === "composite score") return i;
+      }
+      return -1;
+    };
+    // Prefer subHeaders; if not found, try headers
+    let idx = findIn(subHeaders);
+    if (idx >= 0) return idx;
+    idx = findIn(headers);
+    return idx;
+  }, [headers, subHeaders]);
+
+  const parseNumber = (raw: string): number => {
+    const s = (raw ?? "").toString().replace(/[%\s,]/g, "");
+    const n = parseFloat(s);
+    return Number.isFinite(n) ? n : NaN;
+  };
+
+  const quartiles = useMemo(() => {
+    if (compositeIndex < 0) return { q1: NaN, q2: NaN, q3: NaN };
+    const values: number[] = [];
+    for (const r of dataRows) {
+      const first = (r?.[0] || "").toString();
+      if (/^\s*ministry\b/i.test(first)) continue; // skip ministry header rows
+      const v = parseNumber(r?.[compositeIndex] ?? "");
+      if (!Number.isNaN(v)) values.push(v);
+    }
+    if (values.length === 0) return { q1: NaN, q2: NaN, q3: NaN };
+    values.sort((a, b) => a - b);
+    const idx = (p: number) => Math.floor(p * (values.length - 1));
+    const q1 = values[idx(0.25)];
+    const q2 = values[idx(0.5)];
+    const q3 = values[idx(0.75)];
+    return { q1, q2, q3 };
+  }, [dataRows, compositeIndex]);
+
+  const renderCompositeCell = (cell: string) => {
+    const v = parseNumber(cell);
+    const COLORS = {
+      green: "#22C55E",
+      yellow: "#F59E0B",
+      orange: "#F97316",
+      red: "#DC2626",
+    } as const;
+    let color: (typeof COLORS)[keyof typeof COLORS] = COLORS.red;
+    if (!Number.isNaN(v) && !Number.isNaN(quartiles.q1)) {
+      if (v <= quartiles.q1) color = COLORS.red;
+      else if (v <= quartiles.q2) color = COLORS.orange;
+      else if (v <= quartiles.q3) color = COLORS.yellow;
+      else color = COLORS.green;
+    }
+    return (
+      <div className="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <circle cx="6" cy="6" r="6" fill={color} />
+        </svg>
+        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">{cell}</span>
+      </div>
+    );
+  };
+
+  // Early returns moved below hooks to keep hook order stable across renders
+  if (error) return <p className="text-red-500">{error}</p>;
+  if (rows.length === 0)
+    return (
+      <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
+        Loading dataset...
+      </p>
+    );
 
   const tokens = norm(filterQuery ?? "")
     .split(" ")
@@ -350,6 +420,7 @@ export default function CsvTransparency({
                   >
                     Accessibility of Information
                   </th>
+                  
                 </tr>
                 {/* Second row: detailed column headers styled like the red header */}
                 <tr>
@@ -372,6 +443,7 @@ export default function CsvTransparency({
                       {label}
                     </th>
                   ))}
+                  
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-300">
@@ -418,9 +490,14 @@ export default function CsvTransparency({
                               : "text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
                           }`}
                         >
-                          {i === 0 ? cell : renderStatusCell(cell)}
+                          {i === 0
+                            ? cell
+                            : i === compositeIndex
+                            ? renderCompositeCell(cell)
+                            : renderStatusCell(cell)}
                         </td>
                       ))}
+                      
                     </tr>
                   );
                 })}
