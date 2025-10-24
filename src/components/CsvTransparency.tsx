@@ -6,11 +6,15 @@ import Papa from "papaparse";
 interface CsvTransparencyProps {
   csvUrl: string;
   filterQuery?: string;
+  ministryFilters?: string[];
+  onMinistriesLoaded?: (ministries: string[]) => void;
 }
 
 export default function CsvTransparency({
   csvUrl,
   filterQuery,
+  ministryFilters = [],
+  onMinistriesLoaded,
 }: CsvTransparencyProps) {
   const [rows, setRows] = useState<string[][]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -94,6 +98,30 @@ export default function CsvTransparency({
     return () => window.removeEventListener("resize", updateOffset);
   }, [rows.length]);
 
+  // Provide ministry options to the parent Industry filter as soon as rows are available
+  useEffect(() => {
+    if (!onMinistriesLoaded) return;
+    try {
+      const normLocal = (s: string) =>
+        (s ?? "").toLowerCase().replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
+      const list: string[] = [];
+      const seen = new Set<string>();
+      // Expect first two rows to be headers; ministries appear in first column of subsequent rows
+      const data = rows.slice(2);
+      for (const r of data) {
+        const first = (r?.[0] || "").toString();
+        if (/^\s*ministry\b/i.test(first)) {
+          const key = normLocal(first);
+          if (key && !seen.has(key)) {
+            seen.add(key);
+            list.push(first);
+          }
+        }
+      }
+      onMinistriesLoaded(list);
+    } catch {}
+  }, [rows, onMinistriesLoaded]);
+
   if (error) return <p className="text-red-500">{error}</p>;
   if (rows.length === 0)
     return (
@@ -132,6 +160,8 @@ export default function CsvTransparency({
   const tokens = norm(filterQuery ?? "")
     .split(" ")
     .filter(Boolean);
+  const hasMinistryFilter = Array.isArray(ministryFilters) && ministryFilters.length > 0;
+  const ministrySet = new Set((ministryFilters || []).map((s) => norm(s)));
   const matchesTokens = (row: string[]) =>
     tokens.length
       ? tokens.every((t) => row.some((cell) => norm(cell).includes(t)))
@@ -156,7 +186,16 @@ export default function CsvTransparency({
     return out;
   })();
 
+  
+
   const visibleRows = (() => {
+    if (hasMinistryFilter) {
+      const selected: string[][] = [];
+      for (const g of groups) {
+        if (ministrySet.has(norm(g.label))) selected.push(...g.rows);
+      }
+      return selected;
+    }
     if (tokens.length === 0) return dataRows;
     const selected: string[][] = [];
     for (const g of groups) {
@@ -236,6 +275,14 @@ export default function CsvTransparency({
 
   const renderItems: RenderItem[] = (() => {
     const items: RenderItem[] = [];
+    if (hasMinistryFilter) {
+      for (const g of groups) {
+        if (!ministrySet.has(norm(g.label))) continue;
+        if (g.label) items.push({ type: "ministry", label: g.label });
+        for (const r of g.rows) items.push({ type: "data", row: r });
+      }
+      return items;
+    }
     if (tokens.length === 0) {
       for (const g of groups) {
         if (g.label) items.push({ type: "ministry", label: g.label });
