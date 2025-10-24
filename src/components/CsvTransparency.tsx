@@ -22,6 +22,7 @@ export default function CsvTransparency({
   const topHeaderRowRef = useRef<HTMLTableRowElement | null>(null);
   const [headerOffset, setHeaderOffset] = useState(0);
   const [topHeaderHeight, setTopHeaderHeight] = useState(0);
+  const [wrapperWidth, setWrapperWidth] = useState(0);
 
   const cacheKey = `csvRows:${csvUrl}`;
   const memCache: { [key: string]: string[][] } =
@@ -92,6 +93,11 @@ export default function CsvTransparency({
         ? topRow.offsetHeight || topRow.getBoundingClientRect().height || 0
         : 0;
       setTopHeaderHeight(rh);
+      const wrap = document.getElementById("table-wrapper");
+      const ww = wrap
+        ? wrap.clientWidth || wrap.getBoundingClientRect().width || 0
+        : 0;
+      setWrapperWidth(ww);
     };
     updateOffset();
     window.addEventListener("resize", updateOffset);
@@ -386,11 +392,16 @@ export default function CsvTransparency({
                     return (
                       <tr key={`min-${idx}`}>
                         <td
-                          className="sticky z-10 bg-gray-50 border-b border-gray-100 text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold"
-                          style={{ top: headerOffset }}
+                          className="sticky left-0 z-30 bg-gray-50 border-b border-gray-100 px-0 py-0"
+                          style={{ top: headerOffset, left: 0 }}
                           colSpan={totalColumns}
                         >
-                          {item.label}
+                          <div
+                            className="px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold text-brand-1-700 pointer-events-none"
+                            style={{ width: wrapperWidth ? `${wrapperWidth}px` : undefined }}
+                          >
+                            {item.label}
+                          </div>
                         </td>
                       </tr>
                     );

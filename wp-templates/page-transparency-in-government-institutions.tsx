@@ -237,7 +237,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
   const [queryInput, setQueryInput] = useState("");
   const [industry, setIndustry] = useState<string | null>(null);
   const [year, setYear] = useState<string | null>(null);
-  const [openId, setOpenId] = useState<"one" | "two" | null>(null);
+  const [openId, setOpenId] = useState<"one" | "two" | "ministry" | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [yearOptions, setYearOptions] = useState<TaxNode[]>([]);
@@ -245,6 +245,8 @@ export default function PageTransparencyDashboard(): JSX.Element {
   const [posts, setPosts] = useState<TransparencyPost[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<TransparencyPost[]>([]);
   const [currentCsvUrl, setCurrentCsvUrl] = useState<string | null>(null);
+  const [ministryOptions, setMinistryOptions] = useState<string[]>([]);
+  const [selectedMinistry, setSelectedMinistry] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(true); // ✅ loader
 
@@ -394,6 +396,12 @@ export default function PageTransparencyDashboard(): JSX.Element {
     }
   }, [filteredPosts]);
 
+  // Reset ministry filter/options when dataset changes
+  useEffect(() => {
+    setMinistryOptions([]);
+    setSelectedMinistry(null);
+  }, [currentCsvUrl]);
+
   const paginatedPosts = filteredPosts.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
@@ -481,23 +489,18 @@ export default function PageTransparencyDashboard(): JSX.Element {
               </span>
 
               <DefaultDropdown
-                idKey="one"
-                label={
-                  industry
-                    ? (industryOptions.find((i) => i.slug === industry)?.name ??
-                      "Industry")
-                    : "Industry"
-                }
+                idKey="ministry-top"
+                label={selectedMinistry ?? "Ministry"}
                 items={[
-                  { label: "All Industries", onClick: () => setIndustry(null) },
-                  ...industryOptions.map((ind) => ({
-                    label: ind.name,
-                    onClick: () => setIndustry(ind.slug),
+                  { label: "All Ministries", onClick: () => setSelectedMinistry(null) },
+                  ...ministryOptions.map((m) => ({
+                    label: m,
+                    onClick: () => setSelectedMinistry(m),
                   })),
                 ]}
                 align="right"
-                open={openId === "one"}
-                onOpenChange={(v) => setOpenId(v ? "one" : null)}
+                open={openId === "ministry"}
+                onOpenChange={(v) => setOpenId(v ? "ministry" : null)}
               />
 
               <DefaultDropdown
@@ -527,6 +530,8 @@ export default function PageTransparencyDashboard(): JSX.Element {
             <CsvTableTransparency
               csvUrl={currentCsvUrl}
               filterQuery={queryInput}
+              ministryFilters={selectedMinistry ? [selectedMinistry] : []}
+              onMinistriesLoaded={setMinistryOptions}
             />
           ) : (
             <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
