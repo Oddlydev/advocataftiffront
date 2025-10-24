@@ -101,7 +101,7 @@ async function gql<T>(query: string): Promise<T> {
 
 async function fetchPageSEOByUri(uri: string): Promise<any | null> {
   const wpUri = uri.endsWith("/") ? uri : `${uri}/`;
-  const encoded = wpUri.replace(/"/g, '\\"');
+  const encoded = wpUri.replace(/"/g, '"');
   const data = await gql<{ nodeByUri?: { __typename?: string; seo?: any } }>(
     `query GetSeoByUri {
       nodeByUri(uri: "${encoded}") {
@@ -134,7 +134,7 @@ async function fetchPageMetaByUri(
   uri: string
 ): Promise<{ title?: string | null; content?: string | null } | null> {
   const wpUri = uri.endsWith("/") ? uri : `${uri}/`;
-  const encoded = wpUri.replace(/"/g, '\\"');
+  const encoded = wpUri.replace(/"/g, '"');
   const data = await gql<{
     nodeByUri?: {
       __typename?: string;
@@ -397,6 +397,17 @@ export default function PageStateOwnedDashboard(): JSX.Element {
     }
   }, [filteredPosts]);
 
+  // Remove industry from URL
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (params.has("industry")) {
+      params.delete("industry");
+      const qs = params.toString();
+      const newUrl = `${pathname}${qs ? `?${qs}` : ""}`;
+      router.replace(newUrl);
+    }
+  }, [searchParams, pathname, router]);
+
   const paginatedPosts = filteredPosts.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
@@ -434,8 +445,6 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                 href: (() => {
                   const params = new URLSearchParams();
                   if (year) params.set("year", year);
-                  if (selectedIndustries.length)
-                    params.set("industry", selectedIndustries.join(","));
                   const qs = params.toString();
                   return qs
                     ? `/state-owned-enterprises?${qs}`
@@ -591,8 +600,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                       </a>
                     ) : (
                       <span className="text-slate-500">(not available)</span>
-                    )}
-                    .
+                    )}.
                   </p>
                 </div>
               </div>
@@ -630,7 +638,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                     <span className="text-sm/tight font-medium font-sourcecodepro text-slate-600">
                       Marginally Successful
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-.5">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="12"
