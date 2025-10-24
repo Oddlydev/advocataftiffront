@@ -23,6 +23,7 @@ export default function CsvTransparency({
   const [headerOffset, setHeaderOffset] = useState(0);
   const [topHeaderHeight, setTopHeaderHeight] = useState(0);
   const [wrapperWidth, setWrapperWidth] = useState(0);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
 
   const cacheKey = `csvRows:${csvUrl}`;
   const memCache: { [key: string]: string[][] } =
@@ -109,7 +110,11 @@ export default function CsvTransparency({
     if (!onMinistriesLoaded) return;
     try {
       const normLocal = (s: string) =>
-        (s ?? "").toLowerCase().replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
+        (s ?? "")
+          .toLowerCase()
+          .replace(/\u00a0/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
       const list: string[] = [];
       const seen = new Set<string>();
       // Expect first two rows to be headers; ministries appear in first column of subsequent rows
@@ -216,10 +221,18 @@ export default function CsvTransparency({
     }
     return (
       <div className="flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+        >
           <circle cx="6" cy="6" r="6" fill={color} />
         </svg>
-        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">{cell}</span>
+        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+          {cell}
+        </span>
       </div>
     );
   };
@@ -236,7 +249,8 @@ export default function CsvTransparency({
   const tokens = norm(filterQuery ?? "")
     .split(" ")
     .filter(Boolean);
-  const hasMinistryFilter = Array.isArray(ministryFilters) && ministryFilters.length > 0;
+  const hasMinistryFilter =
+    Array.isArray(ministryFilters) && ministryFilters.length > 0;
   const ministrySet = new Set((ministryFilters || []).map((s) => norm(s)));
   const matchesTokens = (row: string[]) =>
     tokens.length
@@ -261,8 +275,6 @@ export default function CsvTransparency({
     if (current) out.push(current);
     return out;
   })();
-
-  
 
   const visibleRows = (() => {
     if (hasMinistryFilter) {
@@ -350,19 +362,35 @@ export default function CsvTransparency({
     | { type: "data"; row: string[] };
 
   const renderItems: RenderItem[] = (() => {
+    const compareRows = (a: string[], b: string[]) => {
+      if (!sortOrder || compositeIndex < 0) return 0;
+      const av = parseNumber(a?.[compositeIndex] ?? "");
+      const bv = parseNumber(b?.[compositeIndex] ?? "");
+      const aNa = Number.isNaN(av);
+      const bNa = Number.isNaN(bv);
+      if (aNa && bNa) return 0;
+      if (aNa) return 1; // N/A to bottom
+      if (bNa) return -1;
+      return sortOrder === "asc" ? av - bv : bv - av;
+    };
+    const sortRows = (rows: string[][]) => {
+      if (!sortOrder || compositeIndex < 0) return rows;
+      return rows.slice().sort(compareRows);
+    };
+
     const items: RenderItem[] = [];
     if (hasMinistryFilter) {
       for (const g of groups) {
         if (!ministrySet.has(norm(g.label))) continue;
         if (g.label) items.push({ type: "ministry", label: g.label });
-        for (const r of g.rows) items.push({ type: "data", row: r });
+        for (const r of sortRows(g.rows)) items.push({ type: "data", row: r });
       }
       return items;
     }
     if (tokens.length === 0) {
       for (const g of groups) {
         if (g.label) items.push({ type: "ministry", label: g.label });
-        for (const r of g.rows) items.push({ type: "data", row: r });
+        for (const r of sortRows(g.rows)) items.push({ type: "data", row: r });
       }
       return items;
     }
@@ -371,10 +399,11 @@ export default function CsvTransparency({
       const rowMatches = g.rows.filter((r) => matchesTokens(r));
       if (headerHit) {
         if (g.label) items.push({ type: "ministry", label: g.label });
-        for (const r of g.rows) items.push({ type: "data", row: r });
+        for (const r of sortRows(g.rows)) items.push({ type: "data", row: r });
       } else if (rowMatches.length) {
         if (g.label) items.push({ type: "ministry", label: g.label });
-        for (const r of rowMatches) items.push({ type: "data", row: r });
+        for (const r of sortRows(rowMatches))
+          items.push({ type: "data", row: r });
       }
     }
     return items;
@@ -420,7 +449,6 @@ export default function CsvTransparency({
                   >
                     Accessibility of Information
                   </th>
-                  
                 </tr>
                 {/* Second row: detailed column headers styled like the red header */}
                 <tr>
@@ -434,16 +462,68 @@ export default function CsvTransparency({
                       "Department"
                     ).toString()}
                   </th>
-                  {(subHeaders || []).slice(1).map((label, i) => (
-                    <th
-                      key={`sub-${i}`}
-                      className="sticky z-10 bg-brand-1-700 px-3 py-3.5 text-left text-sm md:text-base font-sourcecodepro font-medium text-brand-white w-[160px] md:w-[155px] xl:w-[210px] border-b border-brand-1-300"
-                      style={{ top: topHeaderHeight }}
-                    >
-                      {label}
-                    </th>
-                  ))}
-                  
+                  {(subHeaders || []).slice(1).map((label, i) => {
+                    const absIndex = i + 1; // first column rendered separately
+                    const isComposite = absIndex === compositeIndex;
+                    const clickable = isComposite && compositeIndex >= 0;
+                    const onToggle = () => {
+                      setSortOrder((prev) =>
+                        prev === "asc" ? "desc" : prev === "desc" ? null : "asc"
+                      );
+                    };
+                    return (
+                      <th
+                        key={`sub-${i}`}
+                        className="sticky z-10 bg-brand-1-700 px-3 py-3.5 text-left text-sm md:text-base font-sourcecodepro font-medium text-brand-white w-[160px] md:w-[155px] xl:w-[210px] border-b border-brand-1-300"
+                        style={{
+                          top: topHeaderHeight,
+                          cursor: clickable ? "pointer" : undefined,
+                        }}
+                        onClick={clickable ? onToggle : undefined}
+                      >
+                        {isComposite ? (
+                          <span className="inline-flex items-center gap-1 select-none">
+                            {label}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="25"
+                              height="25"
+                              viewBox="0 0 20 20"
+                              fill="none"
+                              className="inline-block"
+                            >
+                              {sortOrder === "asc" ? (
+                                <path
+                                  d="M10 6L6 10H14L10 6Z"
+                                  fill="currentColor"
+                                />
+                              ) : sortOrder === "desc" ? (
+                                <path
+                                  d="M10 14L6 10H14L10 14Z"
+                                  fill="currentColor"
+                                />
+                              ) : (
+                                <>
+                                  <path
+                                    d="M10 6L6 10H14L10 6Z"
+                                    fill="currentColor"
+                                    opacity="0.65"
+                                  />
+                                  <path
+                                    d="M10 14L6 10H14L10 14Z"
+                                    fill="currentColor"
+                                    opacity="0.65"
+                                  />
+                                </>
+                              )}
+                            </svg>
+                          </span>
+                        ) : (
+                          label
+                        )}
+                      </th>
+                    );
+                  })}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-300">
@@ -470,7 +550,11 @@ export default function CsvTransparency({
                         >
                           <div
                             className="px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold text-brand-1-700 pointer-events-none"
-                            style={{ width: wrapperWidth ? `${wrapperWidth}px` : undefined }}
+                            style={{
+                              width: wrapperWidth
+                                ? `${wrapperWidth}px`
+                                : undefined,
+                            }}
                           >
                             {item.label}
                           </div>
@@ -493,11 +577,10 @@ export default function CsvTransparency({
                           {i === 0
                             ? cell
                             : i === compositeIndex
-                            ? renderCompositeCell(cell)
-                            : renderStatusCell(cell)}
+                              ? renderCompositeCell(cell)
+                              : renderStatusCell(cell)}
                         </td>
                       ))}
-                      
                     </tr>
                   );
                 })}
