@@ -8,7 +8,10 @@ interface CsvTransparencyProps {
   filterQuery?: string;
 }
 
-export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparencyProps) {
+export default function CsvTransparency({
+  csvUrl,
+  filterQuery,
+}: CsvTransparencyProps) {
   const [rows, setRows] = useState<string[][]>([]);
   const [error, setError] = useState<string | null>(null);
   const theadRef = useRef<HTMLTableSectionElement | null>(null);
@@ -17,7 +20,9 @@ export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparency
   const [topHeaderHeight, setTopHeaderHeight] = useState(0);
 
   const cacheKey = `csvRows:${csvUrl}`;
-  const memCache: { [key: string]: string[][] } = (globalThis as any).__csvRowsCache || ((globalThis as any).__csvRowsCache = {});
+  const memCache: { [key: string]: string[][] } =
+    (globalThis as any).__csvRowsCache ||
+    ((globalThis as any).__csvRowsCache = {});
 
   useEffect(() => {
     if (!csvUrl) {
@@ -79,7 +84,9 @@ export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparency
       const h = el.offsetHeight || el.getBoundingClientRect().height || 0;
       setHeaderOffset(h);
       const topRow = topHeaderRowRef.current;
-      const rh = topRow ? topRow.offsetHeight || topRow.getBoundingClientRect().height || 0 : 0;
+      const rh = topRow
+        ? topRow.offsetHeight || topRow.getBoundingClientRect().height || 0
+        : 0;
       setTopHeaderHeight(rh);
     };
     updateOffset();
@@ -88,39 +95,120 @@ export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparency
   }, [rows.length]);
 
   if (error) return <p className="text-red-500">{error}</p>;
-  if (rows.length === 0) return <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">Loading dataset...</p>;
+  if (rows.length === 0)
+    return (
+      <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
+        Loading dataset...
+      </p>
+    );
 
   // CSV expected structure: first two rows are headers.
   const headers = rows[0];
   const subHeaders = rows[1] || [];
   const dataRows = rows.slice(2);
-  const totalColumns = headers?.length || (subHeaders?.length || 0) || 0;
+  const totalColumns = headers?.length || subHeaders?.length || 0 || 0;
 
-  const norm = (s: string) => (s ?? "").toLowerCase().replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
+  const norm = (s: string) =>
+    (s ?? "")
+      .toLowerCase()
+      .replace(/\u00a0/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  const isNA = (raw: string) => {
+    const v = norm((raw ?? "").toString());
+    if (!v) return true;
+    if (v === "-" || /^-+$/.test(v)) return true;
+    if (
+      v === "n/a" ||
+      v === "na" ||
+      v === "not applicable" ||
+      v === "not available" ||
+      v.includes("data n/a")
+    )
+      return true;
+    return false;
+  };
 
-  const tokens = norm(filterQuery ?? "").split(" ").filter(Boolean);
+  const tokens = norm(filterQuery ?? "")
+    .split(" ")
+    .filter(Boolean);
   const matchesTokens = (row: string[]) =>
     tokens.length
       ? tokens.every((t) => row.some((cell) => norm(cell).includes(t)))
       : true;
-  const visibleRows = tokens.length
-    ? dataRows.filter((row) => matchesTokens(row))
-    : dataRows;
+  // Build groups by ministry header so filtering can match either the ministry or rows
+  type Group = { label: string; rows: string[][] };
+  const groups: Group[] = (() => {
+    const out: Group[] = [];
+    let current: Group | null = null;
+    for (const row of dataRows) {
+      const first = (row[0] || "").toString();
+      const isHeader = /^\s*ministry\b/i.test(first);
+      if (isHeader) {
+        if (current) out.push(current);
+        current = { label: first, rows: [] };
+      } else {
+        if (!current) current = { label: "", rows: [] };
+        current.rows.push(row);
+      }
+    }
+    if (current) out.push(current);
+    return out;
+  })();
+
+  const visibleRows = (() => {
+    if (tokens.length === 0) return dataRows;
+    const selected: string[][] = [];
+    for (const g of groups) {
+      const headerHit = tokens.every((t) => norm(g.label).includes(t));
+      const rowMatches = g.rows.filter((r) => matchesTokens(r));
+      if (headerHit) {
+        // If the ministry header matches, include all its rows
+        selected.push(...g.rows);
+      } else if (rowMatches.length) {
+        selected.push(...rowMatches);
+      }
+    }
+    return selected;
+  })();
 
   const renderStatusCell = (value: string) => {
-    const lower = value.toLowerCase();
-    let color = "#9CA3AF"; // gray default
-    if (lower === "yes") color = "#22C55E"; // green
-    else if (lower === "no") color = "#DC2626"; // red
-    else if (lower === "partially") color = "#F59E0B"; // yellow
-    else if (lower.includes("qualified")) color = "#F59E0B"; // orange
+    const raw = (value ?? "").toString();
+    const v = norm(raw);
+    if (isNA(raw)) {
+      return <span className="text-brand-1-600 font-medium">Data N/A</span>;
+    }
+
+    let color: string | null = null;
+    if (v === "yes" || v === "unqualified")
+      color = "#22C55E"; // green
+    else if (v === "no")
+      color = "#DC2626"; // red
+    else if (
+      v === "partially" ||
+      v === "partial" ||
+      v === "partly" ||
+      v === "qualified"
+    )
+      color = "#F59E0B";
 
     return (
       <div className="flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <circle cx="6" cy="6" r="6" fill={color} />
-        </svg>
-        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">{value}</span>
+        {color && (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            aria-label="status"
+          >
+            <circle cx="6" cy="6" r="6" fill={color} />
+          </svg>
+        )}
+        <span className="text-gray-500 font-sourcecodepro text-base/6 font-medium">
+          {raw}
+        </span>
       </div>
     );
   };
@@ -128,47 +216,42 @@ export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparency
   const handleScrollRight = () => {
     const tableWrapper = document.getElementById("table-wrapper");
     if (!tableWrapper) return;
-    let scrollStep = window.innerWidth >= 1280 ? 288 : window.innerWidth >= 768 ? 225 : 160;
+    let scrollStep =
+      window.innerWidth >= 1280 ? 288 : window.innerWidth >= 768 ? 225 : 160;
     tableWrapper.scrollBy({ left: scrollStep, behavior: "smooth" });
   };
 
   const handleScrollLeft = () => {
     const tableWrapper = document.getElementById("table-wrapper");
     if (!tableWrapper) return;
-    let scrollStep = window.innerWidth >= 1280 ? 288 : window.innerWidth >= 768 ? 225 : 160;
+    let scrollStep =
+      window.innerWidth >= 1280 ? 288 : window.innerWidth >= 768 ? 225 : 160;
     tableWrapper.scrollBy({ left: -scrollStep, behavior: "smooth" });
   };
 
-  // Build render items so we can inject sticky row-headers for "Ministry ..." rows
+  // Build render items using groups so filtering can include whole ministries
   type RenderItem =
     | { type: "ministry"; label: string }
     | { type: "data"; row: string[] };
 
   const renderItems: RenderItem[] = (() => {
     const items: RenderItem[] = [];
-    let currentHeader: string | null = null;
-    let headerPrintedForCurrent = false;
-    for (const row of dataRows) {
-      const first = (row[0] || "").toString();
-      const isHeader = /^\s*ministry\b/i.test(first);
-      if (isHeader) {
-        currentHeader = first;
-        headerPrintedForCurrent = false;
-        continue;
+    if (tokens.length === 0) {
+      for (const g of groups) {
+        if (g.label) items.push({ type: "ministry", label: g.label });
+        for (const r of g.rows) items.push({ type: "data", row: r });
       }
-      if (!matchesTokens(row)) continue;
-      if (currentHeader && !headerPrintedForCurrent) {
-        items.push({ type: "ministry", label: currentHeader });
-        headerPrintedForCurrent = true;
-      }
-      items.push({ type: "data", row });
+      return items;
     }
-    // If no data matched but there were ministry lines only, fall back to visibleRows mapping
-    if (items.length === 0 && visibleRows.length > 0) {
-      for (const row of visibleRows) {
-        const first = (row[0] || "").toString();
-        if (/^\s*ministry\b/i.test(first)) items.push({ type: "ministry", label: first });
-        else items.push({ type: "data", row });
+    for (const g of groups) {
+      const headerHit = tokens.every((t) => norm(g.label).includes(t));
+      const rowMatches = g.rows.filter((r) => matchesTokens(r));
+      if (headerHit) {
+        if (g.label) items.push({ type: "ministry", label: g.label });
+        for (const r of g.rows) items.push({ type: "data", row: r });
+      } else if (rowMatches.length) {
+        if (g.label) items.push({ type: "ministry", label: g.label });
+        for (const r of rowMatches) items.push({ type: "data", row: r });
       }
     }
     return items;
@@ -177,25 +260,41 @@ export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparency
   return (
     <div className="relative">
       <div className="shadow-md border p-4 border-gray-200 rounded-lg">
-        <div id="table-wrapper" className="overflow-x-auto overflow-y-auto max-w-full box-content">
+        <div
+          id="table-wrapper"
+          className="overflow-x-auto overflow-y-auto max-w-full box-content"
+        >
           <div className="w-[1200px] table-inner">
             <table className="border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg">
               <thead ref={theadRef}>
                 {/* First row: main grouped headings */}
                 <tr ref={topHeaderRowRef}>
                   <th className="sticky top-0 left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-lg/7 font-semibold uppercase text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]">
-                    {(headers?.[0] ?? "").toString().toUpperCase() || "DEPARTMENT"}
+                    {(headers?.[0] ?? "").toString().toUpperCase() ||
+                      "DEPARTMENT"}
                   </th>
-                  <th className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60" colSpan={3}>
+                  <th
+                    className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
+                    colSpan={3}
+                  >
                     Annual Report
                   </th>
-                  <th className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60" colSpan={2}>
+                  <th
+                    className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
+                    colSpan={2}
+                  >
                     Auditing Standards
                   </th>
-                  <th className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60" colSpan={2}>
+                  <th
+                    className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
+                    colSpan={2}
+                  >
                     Right to Information
                   </th>
-                  <th className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60" colSpan={3}>
+                  <th
+                    className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
+                    colSpan={3}
+                  >
                     Accessibility of Information
                   </th>
                 </tr>
@@ -205,7 +304,11 @@ export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparency
                     className="sticky left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-base font-sourcecodepro font-semibold text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]"
                     style={{ top: topHeaderHeight }}
                   >
-                    {(subHeaders?.[0] ?? headers?.[0] ?? "Department").toString()}
+                    {(
+                      subHeaders?.[0] ??
+                      headers?.[0] ??
+                      "Department"
+                    ).toString()}
                   </th>
                   {(subHeaders || []).slice(1).map((label, i) => (
                     <th
@@ -221,8 +324,13 @@ export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparency
               <tbody className="divide-y divide-gray-300">
                 {visibleRows.length === 0 && (
                   <tr>
-                    <td colSpan={headers.length} className="px-3 py-3.5 text-left text-base/6 font-medium text-gray-500">
-                      {tokens.length ? "No matching results." : "No data available."}
+                    <td
+                      colSpan={totalColumns}
+                      className="px-3 py-3.5 text-left text-base/6 font-medium text-gray-500"
+                    >
+                      {tokens.length
+                        ? "No matching results."
+                        : "No data available."}
                     </td>
                   </tr>
                 )}
@@ -268,7 +376,14 @@ export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparency
           onClick={handleScrollRight}
           className="absolute z-20 top-8 right-6 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
         >
-          <svg className="size-4" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <svg
+            className="size-4"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
             <path
               d="M7.4248 16.6L12.8581 11.1667C13.4998 10.525 13.4998 9.47503 12.8581 8.83336L7.4248 3.40002"
               stroke="currentColor"
