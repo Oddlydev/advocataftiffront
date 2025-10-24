@@ -419,111 +419,115 @@ export default function CsvTransparency({
           <div className="w-[1200px] table-inner">
             <table className="border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg">
               <thead ref={theadRef}>
-                {/* First row: main grouped headings */}
-                <tr ref={topHeaderRowRef}>
-                  <th className="sticky top-0 left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-lg/7 font-semibold uppercase text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]">
-                    {(headers?.[0] ?? "").toString().toUpperCase() || " "}
-                  </th>
-                  <th
-                    className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                    colSpan={3}
-                  >
-                    Annual Report
-                  </th>
-                  <th
-                    className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                    colSpan={2}
-                  >
-                    Auditing Standards
-                  </th>
-                  <th
-                    className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                    colSpan={2}
-                  >
-                    Right to Information
-                  </th>
-                  <th
-                    className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                    colSpan={3}
-                  >
-                    Accessibility of Information
-                  </th>
-                </tr>
-                {/* Second row: detailed column headers styled like the red header */}
-                <tr>
-                  <th
-                    className="sticky left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-base font-sourcecodepro font-semibold text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]"
-                    style={{ top: topHeaderHeight }}
-                  >
-                    {(
-                      subHeaders?.[0] ??
-                      headers?.[0] ??
-                      "Department"
-                    ).toString()}
-                  </th>
-                  {(subHeaders || []).slice(1).map((label, i) => {
-                    const absIndex = i + 1; // first column rendered separately
-                    const isComposite = absIndex === compositeIndex;
-                    const clickable = isComposite && compositeIndex >= 0;
-                    const onToggle = () => {
-                      setSortOrder((prev) =>
-                        prev === "asc" ? "desc" : prev === "desc" ? null : "asc"
-                      );
-                    };
-                    return (
-                      <th
-                        key={`sub-${i}`}
-                        className="sticky z-10 bg-brand-1-700 px-3 py-3.5 text-left text-sm md:text-base font-sourcecodepro font-medium text-brand-white w-[160px] md:w-[155px] xl:w-[210px] border-b border-brand-1-300"
-                        style={{
-                          top: topHeaderHeight,
-                          cursor: clickable ? "pointer" : undefined,
-                        }}
-                        onClick={clickable ? onToggle : undefined}
-                      >
-                        {isComposite ? (
-                          <span className="inline-flex items-center gap-1 select-none">
-                            {label}
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="25"
-                              height="25"
-                              viewBox="0 0 20 20"
-                              fill="none"
-                              className="inline-block"
-                            >
-                              {sortOrder === "asc" ? (
-                                <path
-                                  d="M10 6L6 10H14L10 6Z"
-                                  fill="currentColor"
-                                />
-                              ) : sortOrder === "desc" ? (
-                                <path
-                                  d="M10 14L6 10H14L10 14Z"
-                                  fill="currentColor"
-                                />
-                              ) : (
-                                <>
-                                  <path
-                                    d="M10 6L6 10H14L10 6Z"
-                                    fill="currentColor"
-                                    opacity="0.65"
-                                  />
-                                  <path
-                                    d="M10 14L6 10H14L10 14Z"
-                                    fill="currentColor"
-                                    opacity="0.65"
-                                  />
-                                </>
-                              )}
-                            </svg>
-                          </span>
-                        ) : (
-                          label
-                        )}
-                      </th>
+                {(() => {
+                  const onToggle = () => {
+                    setSortOrder((prev) =>
+                      prev === "asc" ? "desc" : prev === "desc" ? null : "asc"
                     );
-                  })}
-                </tr>
+                  };
+                  const sortIcon = (
+                    <svg
+                      className="ml-1 inline-block align-middle"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      {sortOrder === "asc" ? (
+                        <path d="M6 15l6-6 6 6" />
+                      ) : sortOrder === "desc" ? (
+                        <path d="M18 9l-6 6-6-6" />
+                      ) : (
+                        <path d="M7 15l5 5 5-5M7 9l5-5 5 5" />
+                      )}
+                    </svg>
+                  );
+                  return (
+                    <>
+                      {/* First row: main grouped headings */}
+                      <tr ref={topHeaderRowRef}>
+                        <th className="sticky top-0 left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-lg/7 font-sourcecodepro font-semibold uppercase text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]">
+                          {(headers?.[0] ?? "").toString().toUpperCase() || " "}
+                        </th>
+                        <th
+                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
+                          colSpan={3}
+                        >
+                          Annual Report
+                        </th>
+                        <th
+                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
+                          colSpan={1}
+                        >
+                          Auditing Standards
+                        </th>
+                        <th
+                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
+                          colSpan={2}
+                        >
+                          Right to Information
+                        </th>
+                        <th
+                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
+                          colSpan={3}
+                        >
+                          Accessibility of Information
+                        </th>
+                        <th
+                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
+                          colSpan={1}
+                          onClick={onToggle}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <span className="inline-flex items-center gap-1 select-none"></span>
+                        </th>
+                      </tr>
+                      {/* Second row: detailed column headers styled like the red header */}
+                      <tr>
+                        <th
+                          className="sticky left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-base font-sourcecodepro font-semibold text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                          style={{ top: topHeaderHeight }}
+                        >
+                          {(
+                            subHeaders?.[0] ??
+                            headers?.[0] ??
+                            "Department"
+                          ).toString()}
+                        </th>
+                        {(subHeaders || []).slice(1).map((label, i) => {
+                          const absIndex = i + 1; // first column rendered separately
+                          const isComposite = absIndex === compositeIndex;
+                          const clickable = isComposite && compositeIndex >= 0;
+                          return (
+                            <th
+                              key={`sub-${i}`}
+                              className="sticky z-10 bg-brand-1-700 px-3 py-3.5 text-left text-sm md:text-base font-sourcecodepro font-medium text-brand-white w-[160px] md:w-[155px] xl:w-[210px] border-b border-brand-1-300"
+                              style={{
+                                top: topHeaderHeight,
+                                cursor: clickable ? "pointer" : undefined,
+                              }}
+                              onClick={clickable ? onToggle : undefined}
+                            >
+                              {isComposite ? (
+                                <span className="inline-flex items-center gap-1 select-none">
+                                  {label}
+                                  {sortIcon}
+                                </span>
+                              ) : (
+                                label
+                              )}
+                            </th>
+                          );
+                        })}
+                      </tr>
+                    </>
+                  );
+                })()}
               </thead>
               <tbody className="divide-y divide-gray-300">
                 {visibleRows.length === 0 && (
@@ -543,21 +547,17 @@ export default function CsvTransparency({
                     return (
                       <tr key={`min-${idx}`}>
                         <td
-                          className="sticky left-0 z-30 bg-gray-50 border-b border-gray-100 px-0 py-0"
-                          style={{ top: headerOffset, left: 0 }}
-                          colSpan={totalColumns}
+                          className="sticky left-0 z-20 !w-[160px] border-b border-gray-100 bg-gray-50 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold text-brand-1-700 md:!w-[225px] xl:!w-[300px]"
+                          style={{ top: headerOffset }}
                         >
-                          <div
-                            className="px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold text-brand-1-700 pointer-events-none"
-                            style={{
-                              width: wrapperWidth
-                                ? `${wrapperWidth}px`
-                                : undefined,
-                            }}
-                          >
-                            {item.label}
-                          </div>
+                          {item.label}
                         </td>
+                        {totalColumns > 1 && (
+                          <td
+                            colSpan={totalColumns - 1}
+                            className="border-b border-gray-100 bg-gray-50"
+                          />
+                        )}
                       </tr>
                     );
                   }
