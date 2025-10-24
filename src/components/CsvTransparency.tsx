@@ -422,8 +422,7 @@ export default function CsvTransparency({
                 {/* First row: main grouped headings */}
                 <tr ref={topHeaderRowRef}>
                   <th className="sticky top-0 left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-lg/7 font-semibold uppercase text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]">
-                    {(headers?.[0] ?? "").toString().toUpperCase() ||
-                      "DEPARTMENT"}
+                    {(headers?.[0] ?? "").toString().toUpperCase() || " "}
                   </th>
                   <th
                     className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
