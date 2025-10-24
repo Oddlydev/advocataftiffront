@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Papa from "papaparse";
 
 interface CsvTransparencyProps {
@@ -11,6 +11,10 @@ interface CsvTransparencyProps {
 export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparencyProps) {
   const [rows, setRows] = useState<string[][]>([]);
   const [error, setError] = useState<string | null>(null);
+  const theadRef = useRef<HTMLTableSectionElement | null>(null);
+  const topHeaderRowRef = useRef<HTMLTableRowElement | null>(null);
+  const [headerOffset, setHeaderOffset] = useState(0);
+  const [topHeaderHeight, setTopHeaderHeight] = useState(0);
 
   const cacheKey = `csvRows:${csvUrl}`;
   const memCache: { [key: string]: string[][] } = (globalThis as any).__csvRowsCache || ((globalThis as any).__csvRowsCache = {});
@@ -67,17 +71,40 @@ export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparency
       });
   }, [csvUrl]);
 
+  // measure header height so sticky section headers (ministry rows) sit below it
+  useEffect(() => {
+    const updateOffset = () => {
+      const el = theadRef.current;
+      if (!el) return;
+      const h = el.offsetHeight || el.getBoundingClientRect().height || 0;
+      setHeaderOffset(h);
+      const topRow = topHeaderRowRef.current;
+      const rh = topRow ? topRow.offsetHeight || topRow.getBoundingClientRect().height || 0 : 0;
+      setTopHeaderHeight(rh);
+    };
+    updateOffset();
+    window.addEventListener("resize", updateOffset);
+    return () => window.removeEventListener("resize", updateOffset);
+  }, [rows.length]);
+
   if (error) return <p className="text-red-500">{error}</p>;
   if (rows.length === 0) return <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">Loading dataset...</p>;
 
+  // CSV expected structure: first two rows are headers.
   const headers = rows[0];
-  const dataRows = rows.slice(1);
+  const subHeaders = rows[1] || [];
+  const dataRows = rows.slice(2);
+  const totalColumns = headers?.length || (subHeaders?.length || 0) || 0;
 
   const norm = (s: string) => (s ?? "").toLowerCase().replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
 
   const tokens = norm(filterQuery ?? "").split(" ").filter(Boolean);
+  const matchesTokens = (row: string[]) =>
+    tokens.length
+      ? tokens.every((t) => row.some((cell) => norm(cell).includes(t)))
+      : true;
   const visibleRows = tokens.length
-    ? dataRows.filter((row) => tokens.every((t) => row.some((cell) => norm(cell).includes(t))))
+    ? dataRows.filter((row) => matchesTokens(row))
     : dataRows;
 
   const renderStatusCell = (value: string) => {
@@ -112,17 +139,52 @@ export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparency
     tableWrapper.scrollBy({ left: -scrollStep, behavior: "smooth" });
   };
 
+  // Build render items so we can inject sticky row-headers for "Ministry ..." rows
+  type RenderItem =
+    | { type: "ministry"; label: string }
+    | { type: "data"; row: string[] };
+
+  const renderItems: RenderItem[] = (() => {
+    const items: RenderItem[] = [];
+    let currentHeader: string | null = null;
+    let headerPrintedForCurrent = false;
+    for (const row of dataRows) {
+      const first = (row[0] || "").toString();
+      const isHeader = /^\s*ministry\b/i.test(first);
+      if (isHeader) {
+        currentHeader = first;
+        headerPrintedForCurrent = false;
+        continue;
+      }
+      if (!matchesTokens(row)) continue;
+      if (currentHeader && !headerPrintedForCurrent) {
+        items.push({ type: "ministry", label: currentHeader });
+        headerPrintedForCurrent = true;
+      }
+      items.push({ type: "data", row });
+    }
+    // If no data matched but there were ministry lines only, fall back to visibleRows mapping
+    if (items.length === 0 && visibleRows.length > 0) {
+      for (const row of visibleRows) {
+        const first = (row[0] || "").toString();
+        if (/^\s*ministry\b/i.test(first)) items.push({ type: "ministry", label: first });
+        else items.push({ type: "data", row });
+      }
+    }
+    return items;
+  })();
+
   return (
     <div className="relative">
       <div className="shadow-md border p-4 border-gray-200 rounded-lg">
         <div id="table-wrapper" className="overflow-x-auto overflow-y-auto max-w-full box-content">
           <div className="w-[1200px] table-inner">
             <table className="border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg">
-              <thead>
-                {/* First row: main subheadings */}
-                <tr>
-                  <th className="sticky top-0 left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-lg/7 font-semibold uppercase text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]" rowSpan={2}>
-                    SOE
+              <thead ref={theadRef}>
+                {/* First row: main grouped headings */}
+                <tr ref={topHeaderRowRef}>
+                  <th className="sticky top-0 left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-lg/7 font-semibold uppercase text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]">
+                    {(headers?.[0] ?? "").toString().toUpperCase() || "DEPARTMENT"}
                   </th>
                   <th className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60" colSpan={3}>
                     Annual Report
@@ -137,14 +199,21 @@ export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparency
                     Accessibility of Information
                   </th>
                 </tr>
-                {/* Second row: subheaders from CSV */}
+                {/* Second row: detailed column headers styled like the red header */}
                 <tr>
-                  {headers.slice(1).map((h, i) => (
+                  <th
+                    className="sticky left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-base font-sourcecodepro font-semibold text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                    style={{ top: topHeaderHeight }}
+                  >
+                    {(subHeaders?.[0] ?? headers?.[0] ?? "Department").toString()}
+                  </th>
+                  {(subHeaders || []).slice(1).map((label, i) => (
                     <th
-                      key={i}
-                      className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3.5 text-left text-base/6 font-semibold font-sourcecodepro uppercase text-brand-white w-[160px] md:w-[155px] xl:w-[210px]"
+                      key={`sub-${i}`}
+                      className="sticky z-10 bg-brand-1-700 px-3 py-3.5 text-left text-sm md:text-base font-sourcecodepro font-medium text-brand-white w-[160px] md:w-[155px] xl:w-[210px] border-b border-brand-1-300"
+                      style={{ top: topHeaderHeight }}
                     >
-                      {h}
+                      {label}
                     </th>
                   ))}
                 </tr>
@@ -157,22 +226,38 @@ export default function CsvTransparency({ csvUrl, filterQuery }: CsvTransparency
                     </td>
                   </tr>
                 )}
-                {visibleRows.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {row.map((cell, i) => (
-                      <td
-                        key={i}
-                        className={`border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-medium ${
-                          i === 0
-                            ? "sticky left-0 z-20 text-brand-black !w-[160px] md:!w-[225px] xl:!w-[300px] bg-white"
-                            : "text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
-                        }`}
-                      >
-                        {i === 0 ? cell : renderStatusCell(cell)}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
+                {renderItems.map((item, idx) => {
+                  if (item.type === "ministry") {
+                    return (
+                      <tr key={`min-${idx}`}>
+                        <td
+                          className="sticky z-10 bg-gray-50 border-b border-gray-100 text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold"
+                          style={{ top: headerOffset }}
+                          colSpan={totalColumns}
+                        >
+                          {item.label}
+                        </td>
+                      </tr>
+                    );
+                  }
+                  const row = item.row;
+                  return (
+                    <tr key={`row-${idx}`}>
+                      {row.map((cell, i) => (
+                        <td
+                          key={i}
+                          className={`border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-medium ${
+                            i === 0
+                              ? "sticky left-0 z-20 text-brand-black !w-[160px] md:!w-[225px] xl:!w-[300px] bg-white"
+                              : "text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
+                          }`}
+                        >
+                          {i === 0 ? cell : renderStatusCell(cell)}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
