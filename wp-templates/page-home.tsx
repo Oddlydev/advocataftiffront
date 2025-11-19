@@ -741,7 +741,7 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
           </div>
           <div className="mx-auto max-w-7xl text-center">
             <PrimaryButton onClick={() => router.push("/datasets")}>
-              All Data Sets
+              All Datasets
             </PrimaryButton>
           </div>
         </div>

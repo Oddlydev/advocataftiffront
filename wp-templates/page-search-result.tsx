@@ -19,6 +19,27 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
+// Normalize Algolia post_date (which may be a Unix timestamp or string)
+function normalizePostDate(date: any): string {
+  if (!date) return "";
+
+  if (typeof date === "number") {
+    return new Date(date * 1000).toISOString();
+  }
+
+  if (typeof date === "string") {
+    if (/^\d+$/.test(date)) {
+      const ts = parseInt(date, 10);
+      if (!Number.isNaN(ts)) {
+        return new Date(ts * 1000).toISOString();
+      }
+    }
+    return date;
+  }
+
+  return "";
+}
+
 const SearchAndResults = () => {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("query") || "";
@@ -583,7 +604,7 @@ const SearchAndResults = () => {
                   <CardType6
                     title={item.post_title}
                     excerpt={item.post_excerpt}
-                    postDate={item.post_date}
+                    postDate={normalizePostDate(item.post_date)}
                     fileUrl={item.permalink}
                   />
                 </a>
