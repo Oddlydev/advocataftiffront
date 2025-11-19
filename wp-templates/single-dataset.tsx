@@ -209,7 +209,8 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
         <div className="grid md:flex gap-7 items-center justify-start md:justify-end w-full">
           <div>
             <p className="text-base/6 font-medium font-sourcecodepro text-slate-600">
-              Download data sources :
+              {/* Download data sources : */}
+              Download data and metadata :
             </p>
           </div>
           <div className="flex gap-3 md:gap-2">
