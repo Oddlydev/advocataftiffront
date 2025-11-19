@@ -303,7 +303,7 @@ export default function CsvTransparency({
     const raw = (value ?? "").toString();
     const v = norm(raw);
     if (isNA(raw)) {
-      return <span className="text-brand-1-600 font-medium">Data N/A</span>;
+      return <span>Data N/A</span>; //className="text-brand-1-600 font-medium"
     }
 
     let color: string | null = null;
