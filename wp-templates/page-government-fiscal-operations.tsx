@@ -810,11 +810,11 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
                 href: "/government-fiscal-operations",
               },
               {
-                label: "Transparency in government Institutions",
+                label: "Transparency in Government Institutions",
                 href: "/transparency-in-government-institutions",
               },
               {
-                label: "State Owned Enterprises",
+                label: "The Finances of SOEs",
                 href: "/state-owned-enterprises",
               },
             ]}
@@ -917,7 +917,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
                   </div>
                   <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                     <p>
-                      Periodicity:{" "}
+                      Periodicity- Annual:{" "}
                       {activeDataset?.node.fiscal?.periodicity || "—"}
                     </p>
                   </div>

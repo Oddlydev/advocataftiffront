@@ -414,7 +414,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
   );
   return (
     <main>
-      <SEO yoast={seo as any} title="State Owned Enterprises" />
+      <SEO yoast={seo as any} title="The Finances of SOEs" />
       {/* Secondary Navigation */}
       <div className="bg-white border-b border-slate-300">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-0 lg:py-0">
@@ -430,7 +430,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                 href: "/government-fiscal-operations",
               },
               {
-                label: "Transparency in government Institutions",
+                label: "Transparency in Government Institutions",
                 href: (() => {
                   const params = new URLSearchParams();
                   if (year) params.set("year", year);
@@ -441,7 +441,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                 })(),
               },
               {
-                label: "State Owned Enterprises",
+                label: "The Finances of SOEs",
                 href: (() => {
                   const params = new URLSearchParams();
                   if (year) params.set("year", year);
@@ -460,11 +460,11 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       {/* Hero */}
       <div>
         <HeroWhite
-          title={heroTitle || "State Owned Enterprises"}
+          title={heroTitle || "The Finances of SOEs"}
           paragraph={heroParagraph || ""}
           items={[
             { label: "Dashboards", href: "/dashboard" },
-            { label: "State Owned Dashboard" },
+            { label: "The Finances of SOEs" },
           ]}
         />
       </div>
@@ -564,25 +564,9 @@ export default function PageStateOwnedDashboard(): JSX.Element {
               />
             </div>
           </div>
-
-          {/* CSV Table */}
-          {isLoading ? (
-            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
-              Loading dataset...
-            </p>
-          ) : currentCsvUrl ? (
-            <CsvTable
-              csvUrl={currentCsvUrl}
-              filterQuery={queryInput}
-              sectorFilters={selectedIndustries}
-            />
-          ) : (
-            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
-              No dataset found for selection.
-            </p>
-          )}
+          
           {filteredPosts[0]?.methodologyFileUrl && (
-            <div className="bg-gray-50 rounded-lg px-6 py-3.5 mt-3">
+            <div className="bg-gray-50 rounded-lg px-6 py-3.5 mb-3">
               <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
                 <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                   <p>
@@ -606,6 +590,24 @@ export default function PageStateOwnedDashboard(): JSX.Element {
               </div>
             </div>
           )}
+
+          {/* CSV Table */}
+          {isLoading ? (
+            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
+              Loading dataset...
+            </p>
+          ) : currentCsvUrl ? (
+            <CsvTable
+              csvUrl={currentCsvUrl}
+              filterQuery={queryInput}
+              sectorFilters={selectedIndustries}
+            />
+          ) : (
+            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
+              No dataset found for selection.
+            </p>
+          )}
+
           <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
             <div>
               <div className="grid xl:flex gap-4 xl:gap-7 items-center justify-start xl:justify-end w-full">
