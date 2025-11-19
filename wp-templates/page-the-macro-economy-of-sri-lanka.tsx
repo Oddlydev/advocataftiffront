@@ -421,7 +421,7 @@ export default function PageMacroEconomyLanding() {
                 },
                 {
                   label: "The Finances of SOEs",
-                  href: "/state-owned-enterprises",
+                  href: "/the-finances-of-state-owned-enterprises",
                 },
               ]}
               activePath={pathname}

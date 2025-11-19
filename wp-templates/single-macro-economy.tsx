@@ -26,7 +26,10 @@ type MacroPageConfig = MacroChartMetadata & {
   component: ComponentType<MacroChartWrapperProps>;
 };
 
-const MACRO_CHART_COMPONENTS: Record<string, ComponentType<MacroChartWrapperProps>> = {
+const MACRO_CHART_COMPONENTS: Record<
+  string,
+  ComponentType<MacroChartWrapperProps>
+> = {
   inflation: InflationChart,
   "foreign-exchange": ForeignExchangeChart,
   "foreign-reserves": ForeignReservesChart,
@@ -193,14 +196,18 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
       label: "Transparency in government Institutions",
       href: "/transparency-in-government-institutions",
     },
-    { label: "The Finances of SOEs", href: "/state-owned-enterprises" },
+    {
+      label: "The Finances of SOEs",
+      href: "/the-finances-of-state-owned-enterprises",
+    },
   ];
 
   // Force a remount when the entry changes so any client charts reset properly
   const remountKey = macroEconomy?.id || slug;
 
   const isSwapping =
-    routeSlug !== (clientSwap?.macroEconomy?.slug ?? initialSlug) && swapLoading;
+    routeSlug !== (clientSwap?.macroEconomy?.slug ?? initialSlug) &&
+    swapLoading;
 
   return (
     <main>
@@ -380,7 +387,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                   {config.legendItems.map((item) => (
                     <div key={item.label} className="flex items-center gap-2">
                       <div className="flex items-center gap-2">
-                          <span
+                        <span
                           className={`w-1.5 h-1.5 rounded-full inline-block ${
                             item.indicatorClassName ?? ""
                           }`}
@@ -396,7 +403,9 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
               </div>
             ) : null}
 
-            <div className={`mt-2 md:mt-6 xl:mt-10 ${isSwapping ? "opacity-50" : ""}`}>
+            <div
+              className={`mt-2 md:mt-6 xl:mt-10 ${isSwapping ? "opacity-50" : ""}`}
+            >
               <div className="bg-gray-50 rounded-lg px-6 py-3.5">
                 <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
                   <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">

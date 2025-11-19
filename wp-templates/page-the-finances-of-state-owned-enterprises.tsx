@@ -242,7 +242,7 @@ function sortYearsDesc(years: TaxNode[]): TaxNode[] {
 // ----------------------
 // Component
 // ----------------------
-export default function PageStateOwnedDashboard(): JSX.Element {
+export default function PageTheFinancesofStateOwnedEnterprises(): JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -315,18 +315,18 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       try {
         const [seoRes, meta, yearsRaw, industriesRaw, posts] =
           await Promise.all([
-            fetchPageSEOByUri(pathname || "/state-owned-enterprises/").catch(
-              (e) => {
-                console.warn("SEO fetch failed", e);
-                return null as any;
-              }
-            ),
-            fetchPageMetaByUri(pathname || "/state-owned-enterprises/").catch(
-              (e) => {
-                console.warn("Meta fetch failed", e);
-                return null as any;
-              }
-            ),
+            fetchPageSEOByUri(
+              pathname || "/the-finances-of-state-owned-enterprises/"
+            ).catch((e) => {
+              console.warn("SEO fetch failed", e);
+              return null as any;
+            }),
+            fetchPageMetaByUri(
+              pathname || "/the-finances-of-state-owned-enterprises/"
+            ).catch((e) => {
+              console.warn("Meta fetch failed", e);
+              return null as any;
+            }),
             fetchSOEYears(),
             fetchSOEIndustries(),
             fetchSOEPosts(),
@@ -447,8 +447,8 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                   if (year) params.set("year", year);
                   const qs = params.toString();
                   return qs
-                    ? `/state-owned-enterprises?${qs}`
-                    : "/state-owned-enterprises";
+                    ? `/the-finances-of-state-owned-enterprises?${qs}`
+                    : "/the-finances-of-state-owned-enterprises";
                 })(),
               },
             ]}
@@ -460,7 +460,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       {/* Hero */}
       <div>
         <HeroWhite
-          title={heroTitle || "The Finances of SOEs"}
+          title={heroTitle || "The Finances of State Owned Enterprises"}
           paragraph={heroParagraph || ""}
           items={[
             { label: "Dashboards", href: "/dashboard" },
@@ -564,7 +564,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
               />
             </div>
           </div>
-          
+
           {filteredPosts[0]?.methodologyFileUrl && (
             <div className="bg-gray-50 rounded-lg px-6 py-3.5 mb-3">
               <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
@@ -584,7 +584,8 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                       </a>
                     ) : (
                       <span className="text-slate-500">(not available)</span>
-                    )}.
+                    )}
+                    .
                   </p>
                 </div>
               </div>

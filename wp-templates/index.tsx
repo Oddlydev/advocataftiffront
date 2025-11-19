@@ -8,7 +8,6 @@ import InsightsPage from "./page-insights";
 import HomePage from "./page-home";
 import SingleInsight from "./single-insights";
 import DatasetInnerPage from "./single-dataset";
-import PageStateOwnedDashboard from "./page-state-owned-enterprises";
 import PagePrivacyPolicy from "./page-privacy-policy";
 import PageTermsAndConditions from "./page-terms-and-conditions";
 import PageThankYou from "./page-thank-you";
@@ -19,6 +18,7 @@ import SingleMacroEconomy from "./single-macro-economy";
 import PageFiscalOperations from "./page-government-fiscal-operations";
 import SearchResult from "./page-search-result";
 import PageTransparencyDashboard from "./page-transparency-in-government-institutions";
+import PageTheFinancesofStateOwnedEnterprises from "./page-the-finances-of-state-owned-enterprises";
 
 export default {
   "front-page": frontPage,
@@ -31,7 +31,6 @@ export default {
   "page-home": HomePage,
   "single-insight": SingleInsight,
   "single-data-set": DatasetInnerPage,
-  "page-state-owned-enterprises": PageStateOwnedDashboard,
   "page-privacy-policy": PagePrivacyPolicy,
   "page-terms-and-conditions": PageTermsAndConditions,
   "page-thank-you": PageThankYou,
@@ -42,4 +41,6 @@ export default {
   "page-government-fiscal-operations": PageFiscalOperations,
   "page-search-result": SearchResult,
   "page-transparency-in-government-institutions": PageTransparencyDashboard,
+  "page-the-finances-of-state-owned-enterprises":
+    PageTheFinancesofStateOwnedEnterprises,
 };

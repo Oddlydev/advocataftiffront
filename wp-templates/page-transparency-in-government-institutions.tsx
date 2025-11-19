@@ -444,8 +444,8 @@ export default function PageTransparencyDashboard(): JSX.Element {
                   if (year) params.set("year", year);
                   const qs = params.toString();
                   return qs
-                    ? `/state-owned-enterprises?${qs}`
-                    : "/state-owned-enterprises";
+                    ? `/the-finances-of-state-owned-enterprises?${qs}`
+                    : "/the-finances-of-state-owned-enterprises";
                 })(),
               },
             ]}
@@ -492,7 +492,10 @@ export default function PageTransparencyDashboard(): JSX.Element {
                 idKey="ministry-top"
                 label={selectedMinistry ?? "Ministry"}
                 items={[
-                  { label: "All Ministries", onClick: () => setSelectedMinistry(null) },
+                  {
+                    label: "All Ministries",
+                    onClick: () => setSelectedMinistry(null),
+                  },
                   ...ministryOptions.map((m) => ({
                     label: m,
                     onClick: () => setSelectedMinistry(m),
@@ -521,7 +524,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
             </div>
           </div>
 
-           {filteredPosts[0]?.methodologyFileUrl && (
+          {filteredPosts[0]?.methodologyFileUrl && (
             <div className="bg-gray-50 rounded-lg px-6 py-3.5 mb-8">
               <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
                 <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
@@ -561,7 +564,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
               No dataset found for selection.
             </p>
           )}
-         
+
           <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
             <div>
               <div className="grid xl:flex gap-4 xl:gap-7 items-center justify-start w-full">
