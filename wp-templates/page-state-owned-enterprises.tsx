@@ -564,23 +564,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
               />
             </div>
           </div>
-
-          {/* CSV Table */}
-          {isLoading ? (
-            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
-              Loading dataset...
-            </p>
-          ) : currentCsvUrl ? (
-            <CsvTable
-              csvUrl={currentCsvUrl}
-              filterQuery={queryInput}
-              sectorFilters={selectedIndustries}
-            />
-          ) : (
-            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
-              No dataset found for selection.
-            </p>
-          )}
+          
           {filteredPosts[0]?.methodologyFileUrl && (
             <div className="bg-gray-50 rounded-lg px-6 py-3.5 mt-3">
               <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
@@ -606,6 +590,24 @@ export default function PageStateOwnedDashboard(): JSX.Element {
               </div>
             </div>
           )}
+
+          {/* CSV Table */}
+          {isLoading ? (
+            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
+              Loading dataset...
+            </p>
+          ) : currentCsvUrl ? (
+            <CsvTable
+              csvUrl={currentCsvUrl}
+              filterQuery={queryInput}
+              sectorFilters={selectedIndustries}
+            />
+          ) : (
+            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
+              No dataset found for selection.
+            </p>
+          )}
+
           <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
             <div>
               <div className="grid xl:flex gap-4 xl:gap-7 items-center justify-start xl:justify-end w-full">
