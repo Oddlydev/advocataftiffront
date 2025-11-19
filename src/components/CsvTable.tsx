@@ -8,6 +8,8 @@ interface CsvTableProps {
   filterQuery?: string;
   pageSize?: number;
   sectorFilters?: string[];
+  /** Whether to keep the second column sticky alongside the first */
+  stickySecondColumn?: boolean;
 }
 
 export default function CsvTable({
@@ -15,6 +17,7 @@ export default function CsvTable({
   filterQuery,
   pageSize = 10,
   sectorFilters = [],
+  stickySecondColumn = false,
 }: CsvTableProps) {
   const [rows, setRows] = useState<string[][]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -146,6 +149,9 @@ export default function CsvTable({
           ? 1
           : 0)
       : -1;
+  // Index of the second sticky column in displayHeaders; enabled per usage
+  const stickySecondIndex =
+    stickySecondColumn && displayHeaders.length > 1 ? 1 : -1;
 
   const parseNumeric = (v: string): number => {
     if (!v) return NaN;
@@ -330,13 +336,18 @@ export default function CsvTable({
                           );
                         };
 
+                        const isFirstCol = i === 0;
+                        const isSecondCol = i === stickySecondIndex;
+
                         return (
                           <th
                             key={i}
                             className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700 sticky top-0 ${
-                              i === 0
-                                ? "left-0 z-20 rounded-tl-lg !w-[160px] md:!w-[225px] xl:!w-[300px]"
-                                : "z-10 w-[160px] md:w-[155px] xl:w-[210px]"
+                              isFirstCol
+                                ? "left-0 z-30 rounded-tl-lg !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                                : isSecondCol
+                                  ? "left-[160px] md:left-[225px] xl:left-[300px] z-20 !w-[160px] md:!w-[155px] xl:!w-[210px]"
+                                  : "z-10 w-[160px] md:w-[155px] xl:w-[210px]"
                             } ${i === displayHeaders.length - 1 ? "rounded-tr-lg" : ""}`}
                           >
                             {isROA ? (
@@ -375,18 +386,26 @@ export default function CsvTable({
                         return (
                           <tr key={`sector-${idx}`}>
                             <td
-                              className="sector sticky left-0 z-20 bg-brand-white border-b border-gray-100 text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                              className="sector sticky left-0 z-30 bg-brand-white border-b border-gray-100 text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold !w-[160px] md:!w-[225px] xl:!w-[300px]"
                               style={{ top: headerOffset }}
                             >
                               {item.sector}
                             </td>
-                            {displayHeaders.slice(1).map((_, i) => (
-                              <td
-                                key={`spacer-${i}`}
-                                className="sticky bg-brand-white border-b border-gray-100 px-3 py-3.5 w-[160px] md:w-[155px] xl:w-[210px] z-10"
-                                style={{ top: headerOffset }}
-                              />
-                            ))}
+                            {displayHeaders.slice(1).map((_, i) => {
+                              const headerIndex = i + 1;
+                              const isSecondCol = headerIndex === stickySecondIndex;
+                              return (
+                                <td
+                                  key={`spacer-${i}`}
+                                  className={`sticky bg-brand-white border-b border-gray-100 px-3 py-3.5 w-[160px] md:w-[155px] xl:w-[210px] ${
+                                    isSecondCol
+                                      ? "left-[160px] md:left-[225px] xl:left-[300px] z-20"
+                                      : "z-10"
+                                  }`}
+                                  style={{ top: headerOffset }}
+                                />
+                              );
+                            })}
                           </tr>
                         );
                       }
@@ -401,13 +420,17 @@ export default function CsvTable({
                             const isROA = cellIndex === roaDisplayIndex;
                             const num = isROA ? parseNumeric(cell ?? "") : NaN;
                             const color = isROA ? getRoaColor(num) : null;
+                            const isFirstCol = cellIndex === 0;
+                            const isSecondCol = cellIndex === stickySecondIndex;
                             return (
                               <td
                                 key={cellIndex}
                                 className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro ${
-                                  cellIndex === 0
-                                    ? "sticky left-0 text-brand-black !w-[160px] md:!w-[225px] xl:!w-[300px]"
-                                    : "text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
+                                  isFirstCol
+                                    ? "sticky left-0 z-30 text-brand-black !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                                    : isSecondCol
+                                      ? "sticky left-[160px] md:left-[225px] xl:left-[300px] z-20 text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
+                                      : "text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
                                 }`}
                               >
                                 {isROA ? (
