@@ -409,7 +409,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
 
   return (
     <main>
-      <SEO yoast={seo as any} title="Transparency in government Institutions" />
+      <SEO yoast={seo as any} title="Transparency in Government Institutions" />
       {/* Secondary Navigation */}
       <div className="bg-white border-b border-slate-300">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-0 lg:py-0">
@@ -425,7 +425,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
                 href: "/government-fiscal-operations",
               },
               {
-                label: "Transparency in government Institutions",
+                label: "Transparency in Government Institutions",
                 href: (() => {
                   const params = new URLSearchParams();
                   if (industry) params.set("industry", industry);
@@ -437,7 +437,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
                 })(),
               },
               {
-                label: "State Owned Enterprises",
+                label: "The Finances of SOEs",
                 href: (() => {
                   const params = new URLSearchParams();
                   if (industry) params.set("industry", industry);
@@ -521,25 +521,8 @@ export default function PageTransparencyDashboard(): JSX.Element {
             </div>
           </div>
 
-          {/* CSV Table */}
-          {isLoading ? (
-            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
-              Loading dataset...
-            </p>
-          ) : currentCsvUrl ? (
-            <CsvTableTransparency
-              csvUrl={currentCsvUrl}
-              filterQuery={queryInput}
-              ministryFilters={selectedMinistry ? [selectedMinistry] : []}
-              onMinistriesLoaded={setMinistryOptions}
-            />
-          ) : (
-            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
-              No dataset found for selection.
-            </p>
-          )}
-          {filteredPosts[0]?.methodologyFileUrl && (
-            <div className="bg-gray-50 rounded-lg px-6 py-3.5 mt-8">
+           {filteredPosts[0]?.methodologyFileUrl && (
+            <div className="bg-gray-50 rounded-lg px-6 py-3.5 mb-8">
               <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
                 <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                   <p>
@@ -560,6 +543,25 @@ export default function PageTransparencyDashboard(): JSX.Element {
               </div>
             </div>
           )}
+
+          {/* CSV Table */}
+          {isLoading ? (
+            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
+              Loading dataset...
+            </p>
+          ) : currentCsvUrl ? (
+            <CsvTableTransparency
+              csvUrl={currentCsvUrl}
+              filterQuery={queryInput}
+              ministryFilters={selectedMinistry ? [selectedMinistry] : []}
+              onMinistriesLoaded={setMinistryOptions}
+            />
+          ) : (
+            <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
+              No dataset found for selection.
+            </p>
+          )}
+         
           <div className="mx-auto max-w-7xl pt-6 md:pt-9 pb-16">
             <div>
               <div className="grid xl:flex gap-4 xl:gap-7 items-center justify-start w-full">

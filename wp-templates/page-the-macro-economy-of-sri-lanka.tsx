@@ -420,7 +420,7 @@ export default function PageMacroEconomyLanding() {
                   href: "/transparency-in-government-institutions",
                 },
                 {
-                  label: "State Owned Enterprises",
+                  label: "The Finances of SOEs",
                   href: "/state-owned-enterprises",
                 },
               ]}

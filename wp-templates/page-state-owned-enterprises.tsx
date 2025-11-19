@@ -414,7 +414,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
   );
   return (
     <main>
-      <SEO yoast={seo as any} title="State Owned Enterprises" />
+      <SEO yoast={seo as any} title="The Finances of SOEs" />
       {/* Secondary Navigation */}
       <div className="bg-white border-b border-slate-300">
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 py-0 lg:py-0">
@@ -430,7 +430,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                 href: "/government-fiscal-operations",
               },
               {
-                label: "Transparency in government Institutions",
+                label: "Transparency in Government Institutions",
                 href: (() => {
                   const params = new URLSearchParams();
                   if (year) params.set("year", year);
@@ -441,7 +441,7 @@ export default function PageStateOwnedDashboard(): JSX.Element {
                 })(),
               },
               {
-                label: "State Owned Enterprises",
+                label: "The Finances of SOEs",
                 href: (() => {
                   const params = new URLSearchParams();
                   if (year) params.set("year", year);
@@ -460,11 +460,11 @@ export default function PageStateOwnedDashboard(): JSX.Element {
       {/* Hero */}
       <div>
         <HeroWhite
-          title={heroTitle || "State Owned Enterprises"}
+          title={heroTitle || "The Finances of SOEs"}
           paragraph={heroParagraph || ""}
           items={[
             { label: "Dashboards", href: "/dashboard" },
-            { label: "State Owned Dashboard" },
+            { label: "The Finances of SOEs" },
           ]}
         />
       </div>

@@ -810,11 +810,11 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
                 href: "/government-fiscal-operations",
               },
               {
-                label: "Transparency in government Institutions",
+                label: "Transparency in Government Institutions",
                 href: "/transparency-in-government-institutions",
               },
               {
-                label: "State Owned Enterprises",
+                label: "The Finances of SOEs",
                 href: "/state-owned-enterprises",
               },
             ]}

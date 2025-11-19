@@ -193,7 +193,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
       label: "Transparency in government Institutions",
       href: "/transparency-in-government-institutions",
     },
-    { label: "State Owned Enterprises", href: "/state-owned-enterprises" },
+    { label: "The Finances of SOEs", href: "/state-owned-enterprises" },
   ];
 
   // Force a remount when the entry changes so any client charts reset properly
