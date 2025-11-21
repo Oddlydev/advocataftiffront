@@ -430,7 +430,8 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
             <div className="px-6 py-7">
               <div className="mb-10">
                 <h5 className="text-2xl font-montserrat font-bold text-slate-950 mb-1.5">
-                  {`Understanding ${displayTitle} Metrics`}
+                  {/* {`Understanding ${displayTitle} Metrics`} */}
+                  Notes
                 </h5>
                 {overviewHtml ? (
                   <div
@@ -463,7 +464,8 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                 </div>
                 <div className="mt-6 md:mt-0">
                   <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
-                    Statistical Concept and Methodology
+                    {/* Statistical Concept and Methodology */}
+                    Special Notes (if any)
                   </h3>
                   <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
                     {methodologyHtml ? (
