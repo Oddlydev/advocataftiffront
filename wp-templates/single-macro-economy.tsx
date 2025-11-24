@@ -470,11 +470,11 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                   <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal break-all">
                     {methodologyHtml ? (
                       <div
-                        className="text-slate-800 text-base/6 font-baskervville font-normal"
+                        className="text-slate-800 text-base/6 font-baskervville font-normal break-all"
                         dangerouslySetInnerHTML={{ __html: methodologyHtml }}
                       />
                     ) : (
-                      <p className="text-slate-800 text-base/6 font-baskervville font-normal"></p>
+                      <p className="text-slate-800 text-base/6 font-baskervville font-normal break-all"></p>
                     )}
                   </div>
                 </div>
