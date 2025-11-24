@@ -690,7 +690,8 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
         .nodeWidth(nodeWidth)
         .nodePadding(nodePadding)
         .nodeAlign(sankeyLeft)
-
+        .nodeSort((a: any, b: any) => 0)   // keep input order
+        .linkSort((a: any, b: any) => 0)   // keep input order
         .extent([
           [margin.left, margin.top],
           [

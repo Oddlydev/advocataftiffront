@@ -397,19 +397,19 @@ export function MacroLineChart({
           const tooltipRows = series.map(cfg => {
             const v = d[cfg.key];
             return `<div class="flex items-start justify-between gap-0.5 md:gap-2">
-              <div class="flex items-start md:items-center gap-1">
-                <div class="flex items-center gap-1 pt-1 md:pt-0">
-                  <span style="width:6px;height:6px;background:${cfg.color};
-                        border-radius:50%;display:inline-block;"></span>
-                </div>
-                <span class="text-slate-600 font-sourcecodepro text-[10px] md:text-xs">${cfg.label}:</span>
-              </div>
-              <span style="color:${cfg.color};" class="text-[10px] md:text-xs font-sourcecodepro">
-                ${typeof v === "number"
-                  ? (cfg.valueFormatter?.(Number(v.toFixed(3))) ?? v.toFixed(3))
-                  : "N/A"}
-              </span>
-            </div>`;
+                      <div class="flex items-start md:items-center gap-1">
+                        <div class="flex items-center gap-1 pt-1 md:pt-0">
+                          <span style="width:6px;height:6px;background:${cfg.color};
+                                border-radius:50%;display:inline-block;"></span>
+                        </div>
+                        <div><span class="text-slate-600 font-sourcecodepro text-[10px] md:text-xs">${cfg.label}:</span></div>
+                      </div>
+                      <span style="color:${cfg.color};" class="text-[10px] md:text-xs font-sourcecodepro">
+                        ${typeof v === "number"
+                          ? (cfg.valueFormatter?.(Number(v.toFixed(3))) ?? v.toFixed(3))
+                          : "N/A"}
+                      </span>
+                    </div>`;
           }).join("");
 
           tooltip
@@ -423,11 +423,34 @@ export function MacroLineChart({
               </div>`);
         })
 
+        // .on("mousemove", (event) => {
+        //   const rect = container.getBoundingClientRect();
+        //   tooltip
+        //     .style("left", `${event.clientX - rect.left + 15}px`)
+        //     .style("top", `${event.clientY - rect.top - 50}px`);
+        // })
+
         .on("mousemove", (event) => {
           const rect = container.getBoundingClientRect();
+          const tooltipWidth = tooltipEl.offsetWidth;
+          const tooltipHeight = tooltipEl.offsetHeight;
+
+          let xPos = event.clientX - rect.left + 10;
+          let yPos = event.clientY - rect.top - tooltipHeight - 10;
+
+          // If tooltip goes beyond the right boundary → flip to the left side
+          if (xPos + tooltipWidth > rect.width) {
+            xPos = event.clientX - rect.left - tooltipWidth - 10;
+          }
+
+          // If tooltip goes above top → push below
+          if (yPos < 0) {
+            yPos = event.clientY - rect.top + 20;
+          }
+
           tooltip
-            .style("left", `${event.clientX - rect.left + 15}px`)
-            .style("top", `${event.clientY - rect.top - 50}px`);
+            .style("left", `${xPos}px`)
+            .style("top", `${yPos}px`);
         })
 
         .on("mouseout", () => {
