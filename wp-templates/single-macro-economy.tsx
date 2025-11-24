@@ -446,7 +446,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border-b border-brand-1-100 pb-4 md:border-b-0 md:border-r md:pr-4">
                   <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
-                    Definition
+                    Definition and Statistical Concept
                   </h3>
                   <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
                     {definitionHtml ? (
@@ -472,9 +472,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                         dangerouslySetInnerHTML={{ __html: methodologyHtml }}
                       />
                     ) : (
-                      <p className="text-slate-800 text-base/6 font-baskervville font-normal">
-                        Statistical concept details will be added soon.
-                      </p>
+                      <p className="text-slate-800 text-base/6 font-baskervville font-normal"></p>
                     )}
                   </div>
                 </div>
