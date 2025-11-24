@@ -467,7 +467,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                     {/* Statistical Concept and Methodology */}
                     Special Notes (if any)
                   </h3>
-                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
+                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal break-all">
                     {methodologyHtml ? (
                       <div
                         className="text-slate-800 text-base/6 font-baskervville font-normal"
