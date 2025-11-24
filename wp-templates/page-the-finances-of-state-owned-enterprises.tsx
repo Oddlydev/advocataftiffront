@@ -587,6 +587,8 @@ export default function PageTheFinancesofStateOwnedEnterprises(): JSX.Element {
                     )}
                     .
                   </p>
+
+                  <p>In LKR '000s</p>
                 </div>
               </div>
             </div>
