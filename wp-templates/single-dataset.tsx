@@ -268,9 +268,17 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
             </SecondaryButton>
 
             <SecondaryButton
-              onClick={() =>
-                downloadExcelFromCsv(downloadUrl, dataset.slug || "dataset")
-              }
+              onClick={() => {
+                if (metaUrl) {
+                  try {
+                    downloadExcelFromCsv(
+                      metaUrl,
+                      `${dataset.slug || "dataset"}-meta`
+                    );
+                  } catch {}
+                }
+                downloadExcelFromCsv(downloadUrl, dataset.slug || "dataset");
+              }}
             >
               Excel
               <svg
