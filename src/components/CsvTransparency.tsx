@@ -497,10 +497,17 @@ export default function CsvTransparency({
                           const isComposite =
                             compositeIndex >= 0 && originalIndex === compositeIndex;
                           const clickable = isComposite && compositeIndex >= 0;
+                          const sharedFirstRowClass =
+                            "sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60";
+                          const defaultSecondRowClass =
+                            "sticky z-10 bg-brand-1-700 px-3 py-3.5 text-left text-sm md:text-base font-sourcecodepro font-medium text-brand-white w-[160px] md:w-[155px] xl:w-[210px] border-b border-brand-1-300";
+                          const className = isComposite
+                            ? sharedFirstRowClass
+                            : defaultSecondRowClass;
                           return (
                             <th
                               key={`sub-${i}`}
-                              className="sticky z-10 bg-brand-1-700 px-3 py-3.5 text-left text-sm md:text-base font-sourcecodepro font-medium text-brand-white w-[160px] md:w-[155px] xl:w-[210px] border-b border-brand-1-300"
+                              className={className}
                               style={{
                                 top: topHeaderHeight,
                                 cursor: clickable ? "pointer" : undefined,
