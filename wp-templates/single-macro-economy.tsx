@@ -431,7 +431,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
               <div className="mb-5">
                 <h5 className="text-2xl font-montserrat font-bold text-slate-950 mb-1.5">
                   {/* {`Understanding ${displayTitle} Metrics`} */}
-                  Notes
+                  Notes:
                 </h5>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
