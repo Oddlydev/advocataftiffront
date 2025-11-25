@@ -166,6 +166,31 @@ export default function CsvTransparency({
   const firstColumnLabel = displayHeaders[0] || headers[0] || "Department";
   const secondaryHeaders = displayHeaders.slice(1);
 
+  const firstRowValues = effectiveColumnIndices.map(
+    (idx) => headers[idx] ?? ""
+  );
+  type FirstRowGroup = { label: string; colSpan: number; key: string };
+  const firstRowGroups: FirstRowGroup[] = (() => {
+    const groups: FirstRowGroup[] = [];
+    let current: FirstRowGroup | null = null;
+    for (let i = 1; i < firstRowValues.length; i++) {
+      const label = (firstRowValues[i] ?? "").toString();
+      if (!current || current.label !== label) {
+        current = {
+          label: label || " ",
+          colSpan: 1,
+          key: `${label}-${i}`,
+        };
+        groups.push(current);
+      } else {
+        current.colSpan += 1;
+      }
+    }
+    return groups;
+  })();
+  const firstRowFirstColumnLabel =
+    (firstRowValues[0] ?? "").toString().toUpperCase() || " ";
+
   const compositeIndex = useMemo(() => {
     const findIn = (arr?: string[]): number => {
       if (!arr) return -1;
@@ -447,40 +472,18 @@ export default function CsvTransparency({
                     <>
                       <tr ref={topHeaderRowRef}>
                         <th className="sticky top-0 left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-lg/7 font-sourcecodepro font-semibold uppercase text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]">
-                          {firstColumnLabel.toString().toUpperCase() || " "}
+                          {firstRowFirstColumnLabel}
                         </th>
-                        <th
-                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                          colSpan={3}
-                        >
-                          Annual Report
-                        </th>
-                        <th
-                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                          colSpan={1}
-                        >
-                          Auditing Standards
-                        </th>
-                        <th
-                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                          colSpan={2}
-                        >
-                          Right to Information
-                        </th>
-                        <th
-                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                          colSpan={3}
-                        >
-                          Accessibility of Information
-                        </th>
-                        <th
-                          className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
-                          colSpan={1}
-                          onClick={onToggle}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <span className="inline-flex items-center gap-1 select-none"></span>
-                        </th>
+                        {firstRowGroups.map((group) => (
+                          <th
+                            key={group.key}
+                            className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
+                            colSpan={group.colSpan}
+                          >
+                            {(group.label ?? " ").toString().toUpperCase() ||
+                              " "}
+                          </th>
+                        ))}
                       </tr>
                       <tr>
                         <th
