@@ -3,12 +3,58 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Papa from "papaparse";
 
+const normalize = (value: string) =>
+  (value ?? "")
+    .toString()
+    .toLowerCase()
+    .replace(/\u00a0/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const findColumnIndexByKeyword = (
+  arr: string[] | undefined,
+  keyword: string
+): number => {
+  if (!arr?.length) return -1;
+  const target = keyword.toLowerCase();
+  for (let i = 0; i < arr.length; i++) {
+    if (normalize(arr[i]).includes(target)) return i;
+  }
+  return -1;
+};
+
+const parseNumber = (raw: string): number => {
+  const sanitized = (raw ?? "").toString().replace(/[%\s,]/g, "");
+  const num = parseFloat(sanitized);
+  return Number.isFinite(num) ? num : NaN;
+};
+
+const isNA = (raw: string) => {
+  const value = normalize(raw);
+  if (!value) return true;
+  if (value === "-" || /^-+$/.test(value)) return true;
+  if (
+    value === "n/a" ||
+    value === "na" ||
+    value === "not applicable" ||
+    value === "not available" ||
+    value.includes("data n/a")
+  )
+    return true;
+  return false;
+};
+
 interface CsvTransparencyProps {
   csvUrl: string;
   filterQuery?: string;
   ministryFilters?: string[];
   onMinistriesLoaded?: (ministries: string[]) => void;
 }
+
+type Group = { label: string; rows: string[][] };
+type RenderItem =
+  | { type: "ministry"; label: string }
+  | { type: "data"; row: string[] };
 
 export default function CsvTransparency({
   csvUrl,
@@ -22,7 +68,6 @@ export default function CsvTransparency({
   const topHeaderRowRef = useRef<HTMLTableRowElement | null>(null);
   const [headerOffset, setHeaderOffset] = useState(0);
   const [topHeaderHeight, setTopHeaderHeight] = useState(0);
-  const [wrapperWidth, setWrapperWidth] = useState(0);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
 
   const cacheKey = `csvRows:${csvUrl}`;
@@ -82,7 +127,6 @@ export default function CsvTransparency({
       });
   }, [csvUrl]);
 
-  // measure header height so sticky section headers (ministry rows) sit below it
   useEffect(() => {
     const updateOffset = () => {
       const el = theadRef.current;
@@ -94,118 +138,160 @@ export default function CsvTransparency({
         ? topRow.offsetHeight || topRow.getBoundingClientRect().height || 0
         : 0;
       setTopHeaderHeight(rh);
-      const wrap = document.getElementById("table-wrapper");
-      const ww = wrap
-        ? wrap.clientWidth || wrap.getBoundingClientRect().width || 0
-        : 0;
-      setWrapperWidth(ww);
     };
     updateOffset();
     window.addEventListener("resize", updateOffset);
     return () => window.removeEventListener("resize", updateOffset);
   }, [rows.length]);
 
-  // Provide ministry options to the parent Industry filter as soon as rows are available
-  useEffect(() => {
-    if (!onMinistriesLoaded) return;
-    try {
-      const normLocal = (s: string) =>
-        (s ?? "")
-          .toLowerCase()
-          .replace(/\u00a0/g, " ")
-          .replace(/\s+/g, " ")
-          .trim();
-      const list: string[] = [];
-      const seen = new Set<string>();
-      // Expect first two rows to be headers; ministries appear in first column of subsequent rows
-      const data = rows.slice(2);
-      for (const r of data) {
-        const first = (r?.[0] || "").toString();
-        if (/^\s*ministry\b/i.test(first)) {
-          const key = normLocal(first);
-          if (key && !seen.has(key)) {
-            seen.add(key);
-            list.push(first);
-          }
-        }
-      }
-      onMinistriesLoaded(list);
-    } catch {}
-  }, [rows, onMinistriesLoaded]);
-
-  // CSV expected structure: first two rows are headers.
-  const headers = rows[0];
+  const headers = rows[0] || [];
   const subHeaders = rows[1] || [];
   const dataRows = rows.slice(2);
-  const totalColumns = headers?.length || subHeaders?.length || 0 || 0;
-  // No extra columns added; composite score exists in CSV
 
-  const norm = (s: string) =>
-    (s ?? "")
-      .toLowerCase()
-      .replace(/\u00a0/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-  const isNA = (raw: string) => {
-    const v = norm((raw ?? "").toString());
-    if (!v) return true;
-    if (v === "-" || /^-+$/.test(v)) return true;
-    if (
-      v === "n/a" ||
-      v === "na" ||
-      v === "not applicable" ||
-      v === "not available" ||
-      v.includes("data n/a")
-    )
-      return true;
-    return false;
-  };
+  const subMinistryIndex = findColumnIndexByKeyword(subHeaders, "ministry");
+  const headerMinistryIndex = findColumnIndexByKeyword(headers, "ministry");
+  const ministryIndex =
+    subMinistryIndex >= 0 ? subMinistryIndex : headerMinistryIndex;
 
-  // Composite-score quartile coloring over the dataset
+  const headerLength = Math.max(headers.length, subHeaders.length);
+  const columnIndices = Array.from({ length: headerLength }, (_, idx) => idx).filter(
+    (idx) => idx !== ministryIndex
+  );
+  const effectiveColumnIndices = columnIndices.length ? columnIndices : [0];
+  const displayHeaders = effectiveColumnIndices.map(
+    (idx) => subHeaders[idx] ?? headers[idx] ?? ""
+  );
+  const totalColumns = Math.max(displayHeaders.length, 1);
+  const remainingColumns = Math.max(totalColumns - 1, 0);
+  const firstColumnLabel = displayHeaders[0] || headers[0] || "Department";
+  const secondaryHeaders = displayHeaders.slice(1);
+
   const compositeIndex = useMemo(() => {
-    const findIn = (arr: string[] | undefined | null): number => {
+    const findIn = (arr?: string[]): number => {
       if (!arr) return -1;
       for (let i = 0; i < arr.length; i++) {
-        const label = norm((arr[i] ?? "").toString());
+        const label = normalize(arr[i]);
         if (!label) continue;
         if (label.includes("composite") && label.includes("score")) return i;
         if (label === "composite score") return i;
       }
       return -1;
     };
-    // Prefer subHeaders; if not found, try headers
     let idx = findIn(subHeaders);
     if (idx >= 0) return idx;
     idx = findIn(headers);
     return idx;
   }, [headers, subHeaders]);
 
-  const parseNumber = (raw: string): number => {
-    const s = (raw ?? "").toString().replace(/[%\s,]/g, "");
-    const n = parseFloat(s);
-    return Number.isFinite(n) ? n : NaN;
-  };
+  const compositeDisplayIndex =
+    compositeIndex >= 0
+      ? effectiveColumnIndices.findIndex((idx) => idx === compositeIndex)
+      : -1;
 
-  const quartiles = useMemo(() => {
-    if (compositeIndex < 0) return { q1: NaN, q2: NaN, q3: NaN };
-    const values: number[] = [];
-    for (const r of dataRows) {
-      const first = (r?.[0] || "").toString();
-      if (/^\s*ministry\b/i.test(first)) continue; // skip ministry header rows
-      const v = parseNumber(r?.[compositeIndex] ?? "");
-      if (!Number.isNaN(v)) values.push(v);
+  const groups = useMemo(() => {
+    if (!dataRows.length) return [];
+    if (ministryIndex < 0) {
+      return [{ label: "", rows: dataRows }];
     }
-    if (values.length === 0) return { q1: NaN, q2: NaN, q3: NaN };
-    values.sort((a, b) => a - b);
-    const idx = (p: number) => Math.floor(p * (values.length - 1));
-    const q1 = values[idx(0.25)];
-    const q2 = values[idx(0.5)];
-    const q3 = values[idx(0.75)];
-    return { q1, q2, q3 };
-  }, [dataRows, compositeIndex]);
+    const map = new Map<string, Group>();
+    const order: string[] = [];
+    const fallbackKey = "__NO_MINISTRY__";
+    for (const row of dataRows) {
+      const raw = (row[ministryIndex] ?? "").toString();
+      const label = raw.trim() || "Unknown Ministry";
+      const key = normalize(label) || fallbackKey;
+      if (!map.has(key)) {
+        map.set(key, { label, rows: [] });
+        order.push(key);
+      }
+      map.get(key)!.rows.push(row);
+    }
+    return order.map((key) => map.get(key)!);
+  }, [dataRows, ministryIndex]);
 
-  const renderCompositeCell = (cell: string) => {
-    const v = parseNumber(cell);
+  useEffect(() => {
+    if (!onMinistriesLoaded) return;
+    if (ministryIndex < 0) {
+      onMinistriesLoaded([]);
+      return;
+    }
+    onMinistriesLoaded(groups.map((g) => g.label));
+  }, [groups, ministryIndex, onMinistriesLoaded]);
+
+  const tokens = normalize(filterQuery ?? "")
+    .split(" ")
+    .filter(Boolean);
+  const hasMinistryFilter =
+    Array.isArray(ministryFilters) && ministryFilters.length > 0;
+  const ministrySet = new Set(ministryFilters.map((value) => normalize(value)));
+
+  const sortEnabled = Boolean(sortOrder && compositeIndex >= 0);
+  const compareRows = (a: string[], b: string[]) => {
+    if (!sortOrder || compositeIndex < 0) return 0;
+    const av = parseNumber(a[compositeIndex] ?? "");
+    const bv = parseNumber(b[compositeIndex] ?? "");
+    const aNa = Number.isNaN(av);
+    const bNa = Number.isNaN(bv);
+    if (aNa && bNa) return 0;
+    if (aNa) return 1;
+    if (bNa) return -1;
+    return sortOrder === "asc" ? av - bv : bv - av;
+  };
+  const matchesTokensInRow = (row: string[]) =>
+    tokens.every((token) =>
+      row.some((cell) => normalize(cell).includes(token))
+    );
+
+  const filteredRowsWithLabel = (() => {
+    const list: { label: string; row: string[] }[] = [];
+    for (const group of groups) {
+      const normalizedGroupLabel = normalize(group.label);
+      if (hasMinistryFilter && !ministrySet.has(normalizedGroupLabel)) {
+        continue;
+      }
+      let rowsForGroup = group.rows;
+      if (tokens.length) {
+        const headerMatches = tokens.every((token) =>
+          normalizedGroupLabel.includes(token)
+        );
+        const rowMatches = rowsForGroup.filter(matchesTokensInRow);
+        rowsForGroup = headerMatches ? rowsForGroup : rowMatches;
+      }
+      if (!rowsForGroup.length) continue;
+      for (const row of rowsForGroup) {
+        list.push({ label: group.label, row });
+      }
+    }
+    return list;
+  })();
+
+  const sortedRowsWithLabel = sortEnabled
+    ? [...filteredRowsWithLabel].sort((a, b) => compareRows(a.row, b.row))
+    : filteredRowsWithLabel;
+
+  const renderItems: RenderItem[] = (() => {
+    const items: RenderItem[] = [];
+    let lastNormalizedLabel: string | null = null;
+    for (const entry of sortedRowsWithLabel) {
+      const normalizedLabel = normalize(entry.label);
+      if (entry.label && normalizedLabel !== lastNormalizedLabel) {
+        items.push({ type: "ministry", label: entry.label });
+        lastNormalizedLabel = normalizedLabel;
+      } else if (!entry.label) {
+        lastNormalizedLabel = null;
+      }
+      items.push({ type: "data", row: entry.row });
+    }
+    return items;
+  })();
+
+  const hasDataRows = renderItems.some((item) => item.type === "data");
+
+  const renderCompositeCell = (
+    cell: string,
+    quartiles: { q1: number; q2: number; q3: number }
+  ) => {
+    const value = parseNumber(cell);
     const COLORS = {
       green: "#22C55E",
       yellow: "#F59E0B",
@@ -213,10 +299,10 @@ export default function CsvTransparency({
       red: "#DC2626",
     } as const;
     let color: (typeof COLORS)[keyof typeof COLORS] = COLORS.red;
-    if (!Number.isNaN(v) && !Number.isNaN(quartiles.q1)) {
-      if (v <= quartiles.q1) color = COLORS.red;
-      else if (v <= quartiles.q2) color = COLORS.orange;
-      else if (v <= quartiles.q3) color = COLORS.yellow;
+    if (!Number.isNaN(value) && !Number.isNaN(quartiles.q1)) {
+      if (value <= quartiles.q1) color = COLORS.red;
+      else if (value <= quartiles.q2) color = COLORS.orange;
+      else if (value <= quartiles.q3) color = COLORS.yellow;
       else color = COLORS.green;
     }
     return (
@@ -237,85 +323,21 @@ export default function CsvTransparency({
     );
   };
 
-  // Early returns moved below hooks to keep hook order stable across renders
-  if (error) return <p className="text-red-500">{error}</p>;
-  if (rows.length === 0)
-    return (
-      <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
-        Loading dataset...
-      </p>
-    );
-
-  const tokens = norm(filterQuery ?? "")
-    .split(" ")
-    .filter(Boolean);
-  const hasMinistryFilter =
-    Array.isArray(ministryFilters) && ministryFilters.length > 0;
-  const ministrySet = new Set((ministryFilters || []).map((s) => norm(s)));
-  const matchesTokens = (row: string[]) =>
-    tokens.length
-      ? tokens.every((t) => row.some((cell) => norm(cell).includes(t)))
-      : true;
-  // Build groups by ministry header so filtering can match either the ministry or rows
-  type Group = { label: string; rows: string[][] };
-  const groups: Group[] = (() => {
-    const out: Group[] = [];
-    let current: Group | null = null;
-    for (const row of dataRows) {
-      const first = (row[0] || "").toString();
-      const isHeader = /^\s*ministry\b/i.test(first);
-      if (isHeader) {
-        if (current) out.push(current);
-        current = { label: first, rows: [] };
-      } else {
-        if (!current) current = { label: "", rows: [] };
-        current.rows.push(row);
-      }
-    }
-    if (current) out.push(current);
-    return out;
-  })();
-
-  const visibleRows = (() => {
-    if (hasMinistryFilter) {
-      const selected: string[][] = [];
-      for (const g of groups) {
-        if (ministrySet.has(norm(g.label))) selected.push(...g.rows);
-      }
-      return selected;
-    }
-    if (tokens.length === 0) return dataRows;
-    const selected: string[][] = [];
-    for (const g of groups) {
-      const headerHit = tokens.every((t) => norm(g.label).includes(t));
-      const rowMatches = g.rows.filter((r) => matchesTokens(r));
-      if (headerHit) {
-        // If the ministry header matches, include all its rows
-        selected.push(...g.rows);
-      } else if (rowMatches.length) {
-        selected.push(...rowMatches);
-      }
-    }
-    return selected;
-  })();
-
   const renderStatusCell = (value: string) => {
     const raw = (value ?? "").toString();
-    const v = norm(raw);
     if (isNA(raw)) {
-      return <span>Data N/A</span>; //className="text-brand-1-600 font-medium"
+      return <span>Data N/A</span>;
     }
-
+    const normalized = normalize(raw);
     let color: string | null = null;
-    if (v === "yes" || v === "unqualified")
-      color = "#22C55E"; // green
-    else if (v === "no")
-      color = "#DC2626"; // red
+    if (normalized === "yes" || normalized === "unqualified")
+      color = "#22C55E";
+    else if (normalized === "no") color = "#DC2626";
     else if (
-      v === "partially" ||
-      v === "partial" ||
-      v === "partly" ||
-      v === "qualified"
+      normalized === "partially" ||
+      normalized === "partial" ||
+      normalized === "partly" ||
+      normalized === "qualified"
     )
       color = "#F59E0B";
 
@@ -340,6 +362,25 @@ export default function CsvTransparency({
     );
   };
 
+  const quartiles = useMemo(() => {
+    if (compositeIndex < 0) return { q1: NaN, q2: NaN, q3: NaN };
+    const values: number[] = [];
+    for (const row of dataRows) {
+      const first = (row?.[0] ?? "").toString();
+      if (/^\s*ministry\b/i.test(first)) continue;
+      const value = parseNumber(row?.[compositeIndex] ?? "");
+      if (!Number.isNaN(value)) values.push(value);
+    }
+    if (values.length === 0) return { q1: NaN, q2: NaN, q3: NaN };
+    values.sort((a, b) => a - b);
+    const idx = (p: number) => Math.floor(p * (values.length - 1));
+    return {
+      q1: values[idx(0.25)],
+      q2: values[idx(0.5)],
+      q3: values[idx(0.75)],
+    };
+  }, [dataRows, compositeIndex]);
+
   const handleScrollRight = () => {
     const tableWrapper = document.getElementById("table-wrapper");
     if (!tableWrapper) return;
@@ -356,58 +397,13 @@ export default function CsvTransparency({
     tableWrapper.scrollBy({ left: -scrollStep, behavior: "smooth" });
   };
 
-  // Build render items using groups so filtering can include whole ministries
-  type RenderItem =
-    | { type: "ministry"; label: string }
-    | { type: "data"; row: string[] };
-
-  const renderItems: RenderItem[] = (() => {
-    const compareRows = (a: string[], b: string[]) => {
-      if (!sortOrder || compositeIndex < 0) return 0;
-      const av = parseNumber(a?.[compositeIndex] ?? "");
-      const bv = parseNumber(b?.[compositeIndex] ?? "");
-      const aNa = Number.isNaN(av);
-      const bNa = Number.isNaN(bv);
-      if (aNa && bNa) return 0;
-      if (aNa) return 1; // N/A to bottom
-      if (bNa) return -1;
-      return sortOrder === "asc" ? av - bv : bv - av;
-    };
-    const sortRows = (rows: string[][]) => {
-      if (!sortOrder || compositeIndex < 0) return rows;
-      return rows.slice().sort(compareRows);
-    };
-
-    const items: RenderItem[] = [];
-    if (hasMinistryFilter) {
-      for (const g of groups) {
-        if (!ministrySet.has(norm(g.label))) continue;
-        if (g.label) items.push({ type: "ministry", label: g.label });
-        for (const r of sortRows(g.rows)) items.push({ type: "data", row: r });
-      }
-      return items;
-    }
-    if (tokens.length === 0) {
-      for (const g of groups) {
-        if (g.label) items.push({ type: "ministry", label: g.label });
-        for (const r of sortRows(g.rows)) items.push({ type: "data", row: r });
-      }
-      return items;
-    }
-    for (const g of groups) {
-      const headerHit = tokens.every((t) => norm(g.label).includes(t));
-      const rowMatches = g.rows.filter((r) => matchesTokens(r));
-      if (headerHit) {
-        if (g.label) items.push({ type: "ministry", label: g.label });
-        for (const r of sortRows(g.rows)) items.push({ type: "data", row: r });
-      } else if (rowMatches.length) {
-        if (g.label) items.push({ type: "ministry", label: g.label });
-        for (const r of sortRows(rowMatches))
-          items.push({ type: "data", row: r });
-      }
-    }
-    return items;
-  })();
+  if (error) return <p className="text-red-500">{error}</p>;
+  if (rows.length === 0)
+    return (
+      <p className="text-gray-500 pb-6 text-xl font-sourcecodepro font-medium">
+        Loading dataset...
+      </p>
+    );
 
   return (
     <div className="relative">
@@ -449,10 +445,9 @@ export default function CsvTransparency({
                   );
                   return (
                     <>
-                      {/* First row: main grouped headings */}
                       <tr ref={topHeaderRowRef}>
                         <th className="sticky top-0 left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-lg/7 font-sourcecodepro font-semibold uppercase text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]">
-                          {(headers?.[0] ?? "").toString().toUpperCase() || " "}
+                          {firstColumnLabel.toString().toUpperCase() || " "}
                         </th>
                         <th
                           className="sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60"
@@ -487,21 +482,17 @@ export default function CsvTransparency({
                           <span className="inline-flex items-center gap-1 select-none"></span>
                         </th>
                       </tr>
-                      {/* Second row: detailed column headers styled like the red header */}
                       <tr>
                         <th
                           className="sticky left-0 z-20 bg-brand-1-700 px-3 py-3.5 text-left text-base font-sourcecodepro font-semibold text-brand-white !w-[160px] md:!w-[225px] xl:!w-[300px]"
                           style={{ top: topHeaderHeight }}
                         >
-                          {(
-                            subHeaders?.[0] ??
-                            headers?.[0] ??
-                            "Department"
-                          ).toString()}
+                          {firstColumnLabel.toString()}
                         </th>
-                        {(subHeaders || []).slice(1).map((label, i) => {
-                          const absIndex = i + 1; // first column rendered separately
-                          const isComposite = absIndex === compositeIndex;
+                        {secondaryHeaders.map((label, i) => {
+                          const originalIndex = effectiveColumnIndices[i + 1];
+                          const isComposite =
+                            compositeIndex >= 0 && originalIndex === compositeIndex;
                           const clickable = isComposite && compositeIndex >= 0;
                           return (
                             <th
@@ -530,10 +521,10 @@ export default function CsvTransparency({
                 })()}
               </thead>
               <tbody className="divide-y divide-gray-300">
-                {visibleRows.length === 0 && (
+                {!hasDataRows && (
                   <tr>
                     <td
-                      colSpan={totalColumns}
+                      colSpan={Math.max(totalColumns, 1)}
                       className="px-3 py-3.5 text-left text-base/6 font-medium text-gray-500"
                     >
                       {tokens.length
@@ -545,41 +536,47 @@ export default function CsvTransparency({
                 {renderItems.map((item, idx) => {
                   if (item.type === "ministry") {
                     return (
-                      <tr key={`min-${idx}`}>
+                      <tr key={`min-${item.label}-${idx}`}>
                         <td
                           className="sticky left-0 z-20 !w-[160px] border-b border-gray-100 bg-gray-50 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold text-brand-1-700 md:!w-[225px] xl:!w-[300px]"
                           style={{ top: headerOffset }}
                         >
                           {item.label}
                         </td>
-                        {totalColumns > 1 && (
+                        {remainingColumns > 0 && (
                           <td
-                            colSpan={totalColumns - 1}
+                            colSpan={remainingColumns}
                             className="border-b border-gray-100 bg-gray-50"
                           />
                         )}
                       </tr>
                     );
                   }
-                  const row = item.row;
+                  const displayRow = effectiveColumnIndices.map(
+                    (colIdx) => item.row[colIdx] ?? ""
+                  );
                   return (
                     <tr key={`row-${idx}`}>
-                      {row.map((cell, i) => (
-                        <td
-                          key={i}
-                          className={`border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-medium ${
-                            i === 0
-                              ? "sticky left-0 z-20 text-brand-black !w-[160px] md:!w-[225px] xl:!w-[300px] bg-white"
-                              : "text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
-                          }`}
-                        >
-                          {i === 0
-                            ? cell
-                            : i === compositeIndex
-                              ? renderCompositeCell(cell)
-                              : renderStatusCell(cell)}
-                        </td>
-                      ))}
+                      {displayRow.map((cell, cellIndex) => {
+                        const isComposite = cellIndex === compositeDisplayIndex;
+                        const isFirstColumn = cellIndex === 0;
+                        return (
+                          <td
+                            key={cellIndex}
+                            className={`border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-medium ${
+                              isFirstColumn
+                                ? "sticky left-0 z-20 text-brand-black !w-[160px] md:!w-[225px] xl:!w-[300px] bg-white"
+                                : "text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
+                            }`}
+                          >
+                            {isFirstColumn
+                              ? cell
+                              : isComposite
+                                ? renderCompositeCell(cell, quartiles)
+                                : renderStatusCell(cell)}
+                          </td>
+                        );
+                      })}
                     </tr>
                   );
                 })}
@@ -588,7 +585,6 @@ export default function CsvTransparency({
           </div>
         </div>
 
-        {/* Floating scroll button */}
         <button
           onClick={handleScrollRight}
           className="absolute z-20 top-8 right-6 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
