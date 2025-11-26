@@ -286,7 +286,9 @@ export function MacroLineChart({
       .attr("y1", yLeft(0))
       .attr("y2", yLeft(0))
       .attr("stroke", "#475569")
-      .attr("stroke-width", 1);
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "4,4")
+      .attr("opacity", 0.8);
 
     // vertical dashed grid lines
     gridLayer
