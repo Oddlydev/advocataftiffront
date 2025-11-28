@@ -154,9 +154,10 @@ export default function CsvTransparency({
     subMinistryIndex >= 0 ? subMinistryIndex : headerMinistryIndex;
 
   const headerLength = Math.max(headers.length, subHeaders.length);
-  const columnIndices = Array.from({ length: headerLength }, (_, idx) => idx).filter(
-    (idx) => idx !== ministryIndex
-  );
+  const columnIndices = Array.from(
+    { length: headerLength },
+    (_, idx) => idx
+  ).filter((idx) => idx !== ministryIndex);
   const effectiveColumnIndices = columnIndices.length ? columnIndices : [0];
   const displayHeaders = effectiveColumnIndices.map(
     (idx) => subHeaders[idx] ?? headers[idx] ?? ""
@@ -355,7 +356,11 @@ export default function CsvTransparency({
     }
     const normalized = normalize(raw);
     let color: string | null = null;
-    if (normalized === "yes" || normalized === "unqualified")
+    if (
+      normalized === "yes" ||
+      normalized === "available" ||
+      normalized === "clean"
+    )
       color = "#22C55E";
     else if (normalized === "no") color = "#DC2626";
     else if (
@@ -495,7 +500,8 @@ export default function CsvTransparency({
                         {secondaryHeaders.map((label, i) => {
                           const originalIndex = effectiveColumnIndices[i + 1];
                           const isComposite =
-                            compositeIndex >= 0 && originalIndex === compositeIndex;
+                            compositeIndex >= 0 &&
+                            originalIndex === compositeIndex;
                           const clickable = isComposite && compositeIndex >= 0;
                           const sharedFirstRowClass =
                             "sticky top-0 z-10 bg-brand-1-700 px-3 py-3 text-center border-b border-brand-1-300 font-sourcecodepro text-lg/7 font-semibold uppercase text-brand-white/60";
