@@ -362,7 +362,12 @@ export default function CsvTransparency({
       normalized === "clean"
     )
       color = "#22C55E";
-    else if (normalized === "no" || normalized === "unqualified")
+    else if (
+      normalized === "no" ||
+      normalized === "unqualified" ||
+      normalized === "not available" ||
+      normalized === "disclaimer"
+    )
       color = "#DC2626";
     else if (
       normalized === "partially" ||

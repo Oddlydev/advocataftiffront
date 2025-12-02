@@ -579,9 +579,8 @@ export default function Footer(): JSX.Element {
         <div className="footer-bottom mt-10 md:mt-11 border-t border-white/50 pt-6 xl:pt-8 xl:flex xl:items-center xl:justify-between text-center xl:text-left">
           <div>
             <p className="footer-bottom-text text-sm/tight font-sourcecodepro font-normal text-brand-white">
-              {/* &copy; {new Date().getFullYear()} Advocata, Inc. All rights
-              reserved. */}
-              &copy; 2020 Advocata Institute. All Rights Reserved.
+              &copy; {new Date().getFullYear()} Advocata Institute. All Rights
+              Reserved.
             </p>
           </div>
           <div>

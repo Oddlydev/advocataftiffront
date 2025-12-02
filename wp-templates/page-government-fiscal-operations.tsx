@@ -690,8 +690,8 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
         .nodeWidth(nodeWidth)
         .nodePadding(nodePadding)
         .nodeAlign(sankeyLeft)
-        .nodeSort((a: any, b: any) => 0)   // keep input order
-        .linkSort((a: any, b: any) => 0)   // keep input order
+        .nodeSort((a: any, b: any) => 0) // keep input order
+        .linkSort((a: any, b: any) => 0) // keep input order
         .extent([
           [margin.left, margin.top],
           [
@@ -819,7 +819,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
                 href: "/the-finances-of-state-owned-enterprises",
               },
             ]}
-            activePath={pathname}
+            activePath={pathname ?? undefined}
           />
         </div>
       </div>
@@ -918,7 +918,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
                   </div>
                   <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                     <p>
-                      Periodicity- Annual:{" "}
+                      Periodicity - Annual{" "}
                       {activeDataset?.node.fiscal?.periodicity || "—"}
                     </p>
                   </div>
