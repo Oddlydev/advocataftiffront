@@ -919,7 +919,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
                   <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                     <p>
                       Periodicity - Annual{" "}
-                      {activeDataset?.node.fiscal?.periodicity || "—"}
+                      {activeDataset?.node.fiscal?.periodicity}
                     </p>
                   </div>
                 </div>
