@@ -348,6 +348,8 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
     ?.mediaItemUrl;
 
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // z-index toggle effect
   useEffect(() => {
@@ -363,6 +365,25 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
     }
   }, [isSearchVisible]);
 
+  // Detect viewport width on client to avoid loading large desktop hero on mobile
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    setIsClient(true);
+
+    const mq = window.matchMedia("(max-width: 767px)");
+    const handleChange = (event: MediaQueryListEvent) => {
+      setIsMobile(event.matches);
+    };
+
+    setIsMobile(mq.matches);
+
+    mq.addEventListener("change", handleChange);
+    return () => {
+      mq.removeEventListener("change", handleChange);
+    };
+  }, []);
+
   return (
     <div className="bg-white overflow-x-hidden">
       <SEO
@@ -372,47 +393,30 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
       />
       {/* Hero section */}
       <div className="home-hero relative text-white h-screen md:h-[65vh] xl:h-screen bg-[#d3d3d3]">
-        {/* Show distinct images for desktop and mobile breakpoints */}
+        {/* Hero background image */}
         <div className="absolute inset-0">
-          {heroImgLg && heroImageSm ? (
-            <>
-              {/* Desktop */}
-              <Image
-                src={heroImgLg}
-                alt={heroTitle ?? "Home hero background"}
-                fill
-                priority
-                fetchPriority="high"
-                sizes="100vw"
-                className="hidden md:block h-full w-full object-cover"
-              />
-              {/* Mobile */}
-              <Image
-                src={heroImageSm}
-                alt={heroTitle ?? "Home hero background"}
-                fill
-                priority
-                fetchPriority="high"
-                sizes="100vw"
-                className="md:hidden h-full w-full object-cover"
-              />
-            </>
-          ) : (
-            // Fallback to whichever is available, else to local asset
-            <Image
-              src={
-                heroImgLg ||
-                heroImageSm ||
-                "/assets/images/hero-img/hero-img-urban-market-lg.jpg"
-              }
-              alt={heroTitle ?? "Home hero background"}
-              fill
-              priority
-              fetchPriority="high"
-              sizes="100vw"
-              className="h-full w-full object-cover"
-            />
-          )}
+          <Image
+            src={
+              // On server and initial client render, default to mobile image to keep mobile fast
+              !isClient
+                ? heroImageSm ||
+                  heroImgLg ||
+                  "/assets/images/hero-img/hero-img-urban-market-lg.jpg"
+                : isMobile
+                ? heroImageSm ||
+                  heroImgLg ||
+                  "/assets/images/hero-img/hero-img-urban-market-lg.jpg"
+                : heroImgLg ||
+                  heroImageSm ||
+                  "/assets/images/hero-img/hero-img-urban-market-lg.jpg"
+            }
+            alt={heroTitle ?? "Home hero background"}
+            fill
+            priority
+            fetchPriority="high"
+            sizes="100vw"
+            className="h-full w-full object-cover"
+          />
         </div>
         {/* Overlay container */}
         <div className="absolute inset-0 h-full w-full overflow-hidden">
