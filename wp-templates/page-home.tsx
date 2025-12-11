@@ -6,6 +6,7 @@ import type { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import SEO from "@/src/components/SEO";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 
 // Components
 import Card from "@/src/components/Cards/DashboardCard";
@@ -19,9 +20,19 @@ import {
 } from "@/src/components/Typography";
 import SearchFieldHome from "@/src/components/InputFields/SearchFieldHome";
 import WhiteIconButton from "@/src/components/Buttons/WhiteIconBtn";
-import FeaturedDashboardChart, {
-  FeaturedDashboardChartProps,
-} from "@/src/components/HeroBlocks/FeaturedDashboardChart";
+import type { FeaturedDashboardChartProps } from "@/src/components/HeroBlocks/FeaturedDashboardChart";
+
+const FeaturedDashboardChart = dynamic(
+  () => import("@/src/components/HeroBlocks/FeaturedDashboardChart"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="mt-6 bg-white rounded-3xl p-6">
+        <div className="h-[220px] md:h-[260px] xl:h-[300px] rounded-2xl bg-slate-100 animate-pulse" />
+      </div>
+    ),
+  }
+);
 
 type DashboardFileNode = { mediaItemUrl?: string | null } | null;
 type DashboardDataSetFields = {
@@ -350,6 +361,8 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [shouldLoadFeaturedDashboard, setShouldLoadFeaturedDashboard] =
+    useState(false);
 
   // z-index toggle effect
   useEffect(() => {
@@ -383,6 +396,42 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
       mq.removeEventListener("change", handleChange);
     };
   }, []);
+
+  // Defer loading of heavy featured dashboard charts until section is near viewport
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!featuredDashboardChart) return;
+
+    if (!("IntersectionObserver" in window)) {
+      setShouldLoadFeaturedDashboard(true);
+      return;
+    }
+
+    const target = document.getElementById("featured-section");
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShouldLoadFeaturedDashboard(true);
+            observer.disconnect();
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "200px 0px",
+        threshold: 0,
+      }
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [featuredDashboardChart]);
 
   return (
     <div className="bg-white overflow-x-hidden">
@@ -511,7 +560,9 @@ export default function PageHome({ data }: HomePageProps): JSX.Element {
                   />
                 </div>
               </div>
-              <FeaturedDashboardChart {...featuredDashboardChart} />
+              {shouldLoadFeaturedDashboard && (
+                <FeaturedDashboardChart {...featuredDashboardChart} />
+              )}
             </div>
           </div>
         </div>
