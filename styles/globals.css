@@ -153,6 +153,23 @@ button {
   }
 }
 
+@layer utilities {
+  .thinking-spinner {
+    animation: thinking-spinner 0.9s linear infinite;
+    transform-origin: 50% 50%;
+    transform-box: fill-box;
+  }
+}
+
+@keyframes thinking-spinner {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @theme {
   /* Map next/font variables to Tailwind font tokens */
   --font-inter: var(--font-inter);
@@ -308,6 +325,5 @@ button {
     padding-right: 4rem;
   }
 }
-
 
 
