@@ -209,6 +209,11 @@ export function MacroLineChart({
     } else if (maxAbs >= 1_000_000_000) {
       scaleLevel = "billion";
     }
+
+    let valueDivisor = 1;
+    if (scaleLevel === "thousand") valueDivisor = 1000;
+    else if (scaleLevel === "million") valueDivisor = 1_000_000;
+    else if (scaleLevel === "billion") valueDivisor = 1_000_000_000;
     const x = d3
       .scalePoint<number>()
       .domain(years)
@@ -479,6 +484,8 @@ export function MacroLineChart({
             const tooltipRows = series
               .map((cfg) => {
                 const v = d[cfg.key];
+                const scaled =
+                  typeof v === "number" ? v / valueDivisor : null;
                 return `
                   <div class="flex items-start justify-between gap-1">
                     <div class="flex items-center gap-1">
@@ -487,8 +494,8 @@ export function MacroLineChart({
                     </div>
                     <span style="color:${cfg.color}" class="text-[10px] md:text-xs">
                       ${
-                        typeof v === "number"
-                          ? (cfg.valueFormatter?.(v) ?? v.toFixed(3))
+                        typeof scaled === "number"
+                          ? (cfg.valueFormatter?.(scaled) ?? scaled.toFixed(3))
                           : "N/A"
                       }
                     </span>
