@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import LoadingIcon from "./LoadingIcon";
 import MethodologyCard from "./MethodologyCard";
 import TakeawaysCard from "./TakeawaysCard";
 
@@ -30,22 +29,6 @@ const recommendations = [
 export default function DetailCard() {
   return (
     <section className="flex w-full flex-col gap-3.5">
-      {/* Thinking row */}
-      <div className="flex items-center gap-1 p-5">
-        <LoadingIcon />
-        <span
-          className="text-xs font-semibold font-[Montserrat]"
-          style={{
-            background: "linear-gradient(90deg,#64748B,#CBD5E1)",
-            backgroundClip: "text",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          Thinking...
-        </span>
-      </div>
-
       {/* Main card */}
       <article className="flex flex-col gap-4 rounded-[18px] border border-slate-200 bg-white p-5 drop-shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
         <div className="space-y-2.5">
@@ -82,7 +65,7 @@ export default function DetailCard() {
           </div>
 
           <p className="pt-2.5 text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Data Quality & Trend Insights
+            Data Quality &amp; Trend Insights
           </p>
 
           <div className="space-y-1.5 pl-1.5">

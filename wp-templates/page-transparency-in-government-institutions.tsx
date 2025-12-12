@@ -154,7 +154,7 @@ async function fetchPageMetaByUri(
   return { title: node?.title ?? null, content: node?.content ?? null };
 }
 
-// ✅ Combined query for years, industries, and posts
+//   Combined query for years, industries, and posts
 async function fetchTransparencyDashboardData(): Promise<{
   years: TaxNode[];
   industries: TaxNode[];
@@ -248,7 +248,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
   const [ministryOptions, setMinistryOptions] = useState<string[]>([]);
   const [selectedMinistry, setSelectedMinistry] = useState<string | null>(null);
 
-  const [isLoading, setIsLoading] = useState(true); // ✅ loader
+  const [isLoading, setIsLoading] = useState(true); //   loader
 
   const pageSize = 10;
 
@@ -353,7 +353,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
         setFilteredPosts(initialResults);
         setCurrentCsvUrl(initialResults[0]?.csvUrl ?? null);
 
-        // ✅ Only set defaults if nothing is chosen in the URL
+        //   Only set defaults if nothing is chosen in the URL
         const yearInUrl = !!searchParams.get("year");
         const industryInUrl = !!searchParams.get("industry");
 

@@ -154,7 +154,7 @@ const SearchAndResults = () => {
             Loading results...
           </p>
         ) : search.trim() === "" ? (
-          // ✅ Show prompt when search is empty
+          //   Show prompt when search is empty
 
           <div className="bg-white">
             <div className="mx-auto max-w-4xl px-5 md:px-10 xl:px-16 pt-8 pb-10 lg:pt-12 lg:pb-20">

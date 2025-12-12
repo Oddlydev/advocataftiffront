@@ -26,7 +26,7 @@ type DefaultDropdownProps = {
   onOpenChange?: (open: boolean) => void;
   closeOnItemClick?: boolean;
   itemClassName?: string;
-  footer?: React.ReactNode; // ✅ new prop for footer content (e.g., OK / CLEAR buttons)
+  footer?: React.ReactNode; //   new prop for footer content (e.g., OK / CLEAR buttons)
 };
 
 function useClickOutside(
@@ -234,12 +234,8 @@ export default function DefaultDropdown({
           })}
         </div>
 
-        {/* ✅ Footer section (OK / CLEAR) */}
-        {footer && (
-          <div className="!bg-tranparent">
-            {footer}
-          </div>
-        )}
+        {/*   Footer section (OK / CLEAR) */}
+        {footer && <div className="!bg-tranparent">{footer}</div>}
       </div>
     </div>
   );

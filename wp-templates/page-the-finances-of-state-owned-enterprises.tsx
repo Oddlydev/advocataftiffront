@@ -264,7 +264,7 @@ export default function PageTheFinancesofStateOwnedEnterprises(): JSX.Element {
   const [currentCsvUrl, setCurrentCsvUrl] = useState<string | null>(null);
   const [currentPostTitle, setCurrentPostTitle] = useState("");
 
-  const [isLoading, setIsLoading] = useState(true); // ✅ loader state
+  const [isLoading, setIsLoading] = useState(true); //   loader state
 
   const pageSize = 10;
 
@@ -560,7 +560,7 @@ export default function PageTheFinancesofStateOwnedEnterprises(): JSX.Element {
                 align="right"
                 open={openId === "two"}
                 onOpenChange={(v) => setOpenId(v ? "two" : null)}
-                itemClassName="w-full text-left" // ✅ full width applied
+                itemClassName="w-full text-left" //   full width applied
               />
             </div>
           </div>

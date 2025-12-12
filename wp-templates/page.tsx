@@ -72,7 +72,7 @@ export default function SinglePage({ data, loading }: SinglePageProps) {
   );
 }
 
-// ✅ Faust-style static query injection
+//   Faust-style static query injection
 (SinglePage as any).query = PAGE_QUERY;
 
 (SinglePage as any).variables = (

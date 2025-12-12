@@ -84,7 +84,6 @@ export default function ComponentsPage() {
               </p>
             </div>
             <div className="mt-6 flex justify-center">
-              {/* ✅ DetailCard no longer takes activePanel/onPanelSelect */}
               <DetailCard />
             </div>
           </div>
@@ -92,11 +91,11 @@ export default function ComponentsPage() {
           <div className="rounded-3xl border-2 border-dashed border-violet-300/70 p-6">
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-500">
-                Suggested Action
+                Suggested Action (click → thinking → detail)
               </p>
             </div>
             <div className="mt-6 flex justify-center">
-              <SuggestedActionCard />
+              <SuggestedActionCard showDetailOnClick />
             </div>
           </div>
 
@@ -125,7 +124,6 @@ export default function ComponentsPage() {
               </p>
             </div>
             <div className="mt-6 flex justify-center">
-              {/* No more external autoOpen control */}
               <TakeawaysCard />
             </div>
           </div>

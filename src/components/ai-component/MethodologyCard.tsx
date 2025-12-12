@@ -77,7 +77,7 @@ export default function MethodologyCard({
         ) : state === "analyzing" ? (
           <div className="inline-flex items-center gap-1 text-xs font-semibold leading-4 font-[Montserrat]">
             <LoadingIcon />
-            {/* ✅ solid color — no flicker */}
+            {/*   solid color — no flicker */}
             <span className="text-slate-600">Analyzing...</span>
           </div>
         ) : null}
@@ -85,7 +85,7 @@ export default function MethodologyCard({
 
       {state === "revealed" && (
         <div className="mt-3">
-          {/* ✅ Grid reveal — no empty space flash */}
+          {/*   Grid reveal — no empty space flash */}
           <div
             className="grid overflow-hidden transition-[grid-template-rows,opacity,transform]"
             style={{

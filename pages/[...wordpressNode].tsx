@@ -12,13 +12,13 @@ export default function Page(props: any) {
   return <WordPressTemplate {...props} />;
 }
 
-// ✅ Type the ctx param so TS doesn't complain about implicit any
+//   Type the ctx param so TS doesn't complain about implicit any
 export async function getStaticProps(ctx: GetStaticPropsContext) {
   const props = await getWordPressProps({ ctx });
   return { ...props, revalidate: 120 };
 }
 
-// ✅ Type getStaticPaths too
+//   Type getStaticPaths too
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [],
