@@ -21,7 +21,7 @@ export default function TitleCard() {
         aria-expanded={expanded}
         className="flex w-full flex-col gap-[6px] text-left"
       >
-        <div className="flex items-center gap-2 relative group">
+        <div className="flex items-center gap-2">
           <p
             className="text-xs uppercase tracking-[0.3px] text-slate-500 leading-4"
             style={{ fontFamily: '"Source Code Pro"' }}
@@ -29,58 +29,60 @@ export default function TitleCard() {
             AI-generated analysis
           </p>
 
-          {/* Info icon */}
-          <span className="inline-flex items-center justify-center text-[#94A3B8] transition-colors hover:text-[var(--brand-1-500)] group-hover:text-[var(--brand-1-500)]">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              aria-hidden="true"
-              className="stroke-[#94A3B8] transition group-hover:stroke-[var(--brand-1-500)]"
-            >
-              <g clipPath="url(#clip0_8707_3265)">
-                <path
-                  d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8.00001C14.6666 4.31811 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.31811 1.33331 8.00001C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z"
-                  stroke="currentColor"
-                  strokeWidth="1.33333"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M8 10.6667V8"
-                  stroke="currentColor"
-                  strokeWidth="1.33333"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M8 5.33334H8.00667"
-                  stroke="currentColor"
-                  strokeWidth="1.33333"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </g>
-              <defs>
-                <clipPath id="clip0_8707_3265">
-                  <rect width="16" height="16" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
-          </span>
+          {/* Info icon + tooltip */}
+          <span className="relative inline-flex items-center justify-center group">
+            <span className="inline-flex items-center justify-center text-[#94A3B8] transition-colors hover:text-[var(--brand-1-500)] group-hover:text-[var(--brand-1-500)]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+                className="stroke-[#94A3B8] transition group-hover:stroke-[var(--brand-1-500)]"
+              >
+                <g clipPath="url(#clip0_8707_3265)">
+                  <path
+                    d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8.00001C14.6666 4.31811 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.31811 1.33331 8.00001C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z"
+                    stroke="currentColor"
+                    strokeWidth="1.33333"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M8 10.6667V8"
+                    stroke="currentColor"
+                    strokeWidth="1.33333"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M8 5.33334H8.00667"
+                    stroke="currentColor"
+                    strokeWidth="1.33333"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_8707_3265">
+                    <rect width="16" height="16" fill="white" />
+                  </clipPath>
+                </defs>
+              </svg>
+            </span>
 
-          <span
-            className="
-            pointer-events-none absolute right-[65px] top-[17px] hidden 
-            min-w-[200px] bg-[#1A1A1A] px-1.5 py-1 text-xs leading-4
-            text-[10px] font-['Source_Code_Pro'] text-white rounded-sm
-            shadow-lg
-            group-hover:flex
-          "
-          >
-            Show methodology, Source & Limitations
+            {/* Tooltip: left edge starts at icon center */}
+            <span
+              className="
+                pointer-events-none absolute left-1/2 top-full hidden
+                min-w-[200px] bg-[#1A1A1A] px-1.5 py-1 text-xs leading-4
+                text-[8px] font-['Source_Code_Pro'] text-white rounded-sm
+                shadow-lg group-hover:flex
+              "
+            >
+              Show methodology, Source &amp; Limitations
+            </span>
           </span>
         </div>
 
@@ -129,9 +131,9 @@ export default function TitleCard() {
               style={{ fontFamily: '"Source Code Pro"' }}
             >
               Private Consumption Expenditure across 12 categories: Food,
-              Alcohol & Tobacco, Clothing, Housing, Furnishings, Health,
-              Transport, Communication, Recreation, Education, Restaurants &
-              Hotels, and Miscellaneous Goods & Services. All values are at
+              Alcohol &amp; Tobacco, Clothing, Housing, Furnishings, Health,
+              Transport, Communication, Recreation, Education, Restaurants &amp;
+              Hotels, and Miscellaneous Goods &amp; Services. All values are at
               current market prices in Sri Lankan Rupees (Rs).
             </p>
 
@@ -167,7 +169,6 @@ export default function TitleCard() {
             </ul>
           </section>
 
-          {/* Footer Divider — matches screenshot */}
           <div
             className="mt-4 pt-1.5 text-[9px] tracking-[0.4px] text-slate-500"
             style={{
