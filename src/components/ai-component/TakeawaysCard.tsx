@@ -41,33 +41,39 @@ export default function TakeawaysCard({
   }, []);
 
   useEffect(() => {
-    let frame: number | null = null;
     if (state === "revealed") {
-      frame = requestAnimationFrame(() => {
-        setContentVisible(true);
-      });
+      requestAnimationFrame(() => setContentVisible(true));
     } else {
       setContentVisible(false);
     }
-
-    return () => {
-      if (frame !== null) cancelAnimationFrame(frame);
-    };
   }, [state]);
 
   const animationStyle = (delay: number) =>
     contentVisible
       ? {
-          animation: `fade-slide-down 0.9s cubic-bezier(0.4,0,0.2,1) ${delay}s both`,
+          opacity: 1,
+          animation: `fade-slide-down-slow 1.4s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s both`,
         }
-      : undefined;
+      : { opacity: 0 };
 
   return (
     <article className="w-full">
+      <style>{`
+        @keyframes fade-slide-down-slow {
+          0% { opacity: 0; transform: translateY(-10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes takeaways-expand-slow {
+          0% { opacity: 0; max-height: 0px; transform: translateY(-6px); }
+          100% { opacity: 1; max-height: 800px; transform: translateY(0); }
+        }
+      `}</style>
+
       <div className="flex flex-col gap-2">
         {state === "idle" ? (
           <a
-            className="inline-flex text-sm font-medium tracking-normal leading-5 underline decoration-solid decoration-[var(--brand-1-600)] underline-offset-[20.5%] text-[var(--color-brand-1-600)] font-[Montserrat]"
+            className="inline-flex text-sm font-medium leading-5 underline decoration-solid decoration-[var(--brand-1-600)] underline-offset-[20.5%] text-[var(--color-brand-1-600)] font-[Montserrat]"
             href="#"
             onClick={(event) => {
               event.preventDefault();
@@ -77,26 +83,25 @@ export default function TakeawaysCard({
             Click to see Key Takeaways
           </a>
         ) : state === "analyzing" ? (
-          <div className="inline-flex items-center gap-1 text-xs font-semibold leading-4 tracking-normal font-[Montserrat]">
+          <div className="inline-flex items-center gap-1 text-xs font-semibold leading-4 font-[Montserrat]">
             <LoadingIcon />
-            <span
-              style={{
-                background: "linear-gradient(90deg,#64748B,#CBD5E1)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Analyzing...
-            </span>
+            {/* ✅ Removed gradient-clipped text to prevent flicker/glitch */}
+            <span className="text-slate-600">Analyzing...</span>
           </div>
         ) : null}
       </div>
 
       {state === "revealed" && (
-        <div className="mt-3 space-y-4">
-          <div className="opacity-0" style={animationStyle(0)}>
-            <h3 className="text-sm font-semibold tracking-normal leading-5 text-slate-700 font-[Montserrat]">
+        <div
+          className="mt-3 space-y-4 overflow-hidden"
+          style={{
+            animation: contentVisible
+              ? "takeaways-expand-slow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both"
+              : undefined,
+          }}
+        >
+          <div className="opacity-0" style={animationStyle(0.2)}>
+            <h3 className="text-sm font-semibold leading-5 text-slate-700 font-[Montserrat]">
               Key Takeaways
             </h3>
           </div>
@@ -106,7 +111,7 @@ export default function TakeawaysCard({
               <div
                 key={point}
                 className="opacity-0"
-                style={animationStyle(0.15 * (index + 1))}
+                style={animationStyle(0.6 + index * 0.35)}
               >
                 <ListBulletItem
                   text={point}
