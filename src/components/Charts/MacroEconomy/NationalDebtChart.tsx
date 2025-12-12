@@ -10,22 +10,6 @@ import {
 } from "./MacroLineChart";
 import { extractYear, pickNumeric } from "./utils";
 
-const TOTAL_DEBT_HEADERS = [
-  "Total Govt Debt (Rs. Mn)",
-  "Total Government Debt (Rs. Mn)",
-  "Total Debt",
-  "TD",
-];
-
-const POPULATION_HEADERS = [
-  "Total Mid Year Population",
-  "Mid Year Population",
-  "Total Population",
-  "Population",
-];
-
-const DPP_RS_HEADERS = ["Debt Per Person (Rs.)", "Debt Per Person", "DPP"];
-
 // Formatters
 const fmt0 = (v: number | null) =>
   v === null ? "N/A" : v.toLocaleString("en-US", { maximumFractionDigits: 0 });
@@ -35,18 +19,19 @@ const fmt3 = (v: number | null) =>
 const seriesConfig: MacroSeriesConfig[] = [
   {
     key: "TD",
-    label: "Total Debt (Rs. Mn)",
+    label: "Debt as a % of GDP",
     color: "#4B0619",
     valueFormatter: fmt0,
     axis: "left",
-    formatInMillions: true,
+    tooltipUseRawValue: true,
   },
   {
     key: "DPP_MN",
-    label: "Debt Per Person (Rs. Mn)",
+    label: "Debt Per Person (Rs.)",
     color: "#EB1A52",
     valueFormatter: fmt3,
     axis: "right",
+    tooltipUseRawValue: true,
   },
 ];
 
@@ -61,21 +46,16 @@ export function NationalDebtChart({
       const year = extractYear(row);
       if (year === null) return null;
 
-      // Total Govt Debt in Rs. Mn (3rd column)
-      const totalDebtMn = pickNumeric(row, TOTAL_DEBT_HEADERS);
+      const columnKeys = Object.keys(row).filter((key) => key);
 
-      // Population (4th column)
-      const population = pickNumeric(row, POPULATION_HEADERS);
+      // 2nd column (index 1) -> Total Debt (left axis)
+      const totalDebtKey = columnKeys[1];
+      const totalDebtMn =
+        totalDebtKey != null ? pickNumeric(row, [totalDebtKey]) : null;
 
-      // Derived Debt Per Person in Rs. Mn = (Total Debt Rs. Mn) / Population
-      let dppMn: number | null = null;
-      if (totalDebtMn !== null && population !== null && population !== 0) {
-        dppMn = totalDebtMn / population;
-      } else {
-        // Fallback: if dataset already includes "Debt Per Person (Rs.)", convert to Rs. Mn
-        const dppRs = pickNumeric(row, DPP_RS_HEADERS);
-        if (dppRs !== null) dppMn = dppRs / 1_000_000;
-      }
+      // 5th column (index 4) -> Debt Per Person (right axis)
+      const dppKey = columnKeys[4];
+      const dppMn = dppKey != null ? pickNumeric(row, [dppKey]) : null;
 
       return {
         year,
@@ -94,6 +74,7 @@ export function NationalDebtChart({
       series={series}
       yAxisLabel="Total Debt (Rs. Mn.)"
       yAxisRightLabel="Debt Per Person (Rs. Mn.)" // dual axis enabled here only
+      yAxisLabelColumnIndexes={{ left: 1, right: 4 }}
       yMaxPadding={2}
     />
   );

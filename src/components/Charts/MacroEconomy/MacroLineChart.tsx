@@ -14,6 +14,12 @@ export type MacroSeriesConfig = {
   valueFormatter?: (value: number | null) => string;
   axis?: "left" | "right";
   formatInMillions?: boolean;
+  /**
+   * When true, the tooltip shows the raw
+   * series value instead of the auto-scaled
+   * (divided) value used for axis ticks.
+   */
+  tooltipUseRawValue?: boolean;
 };
 
 export type MacroLineChartProps = {
@@ -27,6 +33,10 @@ export type MacroLineChartProps = {
    * and the second column header for the (left) Y‑axis label.
    */
   axisLabelsFromCsv?: boolean;
+  yAxisLabelColumnIndexes?: {
+    left?: number;
+    right?: number;
+  };
   controlIds: {
     zoomInId: string;
     zoomOutId: string;
@@ -81,6 +91,7 @@ export function MacroLineChart({
   yAxisLabel,
   yAxisRightLabel,
   axisLabelsFromCsv,
+  yAxisLabelColumnIndexes,
   controlIds,
   yMaxPadding = 2,
   minY,
@@ -91,6 +102,7 @@ export function MacroLineChart({
   const [axisLabels, setAxisLabels] = useState<{
     x?: string;
     yLeft?: string;
+    yRight?: string;
   }>({});
 
   // ----------------
@@ -111,12 +123,30 @@ export function MacroLineChart({
         const cleanedText = text.replace(/\uFEFF/g, "");
         const raw = d3.csvParse(cleanedText);
 
-        if (axisLabelsFromCsv) {
-          const [firstCol, secondCol] = raw.columns ?? [];
+        const columns = raw.columns ?? [];
+        const [firstCol] = columns;
+
+        const leftIndex =
+          axisLabelsFromCsv && columns.length > 1
+            ? 1
+            : yAxisLabelColumnIndexes?.left ?? undefined;
+        const rightIndex = yAxisLabelColumnIndexes?.right ?? undefined;
+
+        const yLeftHeader =
+          leftIndex != null && leftIndex >= 0 && leftIndex < columns.length
+            ? columns[leftIndex]
+            : undefined;
+        const yRightHeader =
+          rightIndex != null && rightIndex >= 0 && rightIndex < columns.length
+            ? columns[rightIndex]
+            : undefined;
+
+        if (axisLabelsFromCsv || yAxisLabelColumnIndexes) {
           if (isMounted) {
             setAxisLabels({
-              x: firstCol || undefined,
-              yLeft: secondCol || undefined,
+              x: axisLabelsFromCsv ? firstCol || undefined : undefined,
+              yLeft: yLeftHeader,
+              yRight: yRightHeader,
             });
           }
         } else if (isMounted) {
@@ -144,7 +174,7 @@ export function MacroLineChart({
         );
         if (isMounted) {
           setData([]);
-          if (axisLabelsFromCsv) {
+          if (axisLabelsFromCsv || yAxisLabelColumnIndexes) {
             setAxisLabels({});
           }
         }
@@ -154,7 +184,7 @@ export function MacroLineChart({
     return () => {
       isMounted = false;
     };
-  }, [datasetUrl, parseRow, series, axisLabelsFromCsv]);
+  }, [datasetUrl, parseRow, series, axisLabelsFromCsv, yAxisLabelColumnIndexes]);
 
   useEffect(() => {
     const container = chartRef.current;
@@ -281,6 +311,7 @@ export function MacroLineChart({
     const resolvedYAxisLabel = adjustLabelForScale(
       axisLabels.yLeft || yAxisLabel
     );
+    const resolvedYAxisRightLabel = axisLabels.yRight || yAxisRightLabel;
 
     // AXES
     svg
@@ -332,7 +363,7 @@ export function MacroLineChart({
         .attr(
           "class", "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
         )
-        .text(yAxisRightLabel);
+        .text(resolvedYAxisRightLabel ?? "");
     }
 
     // GRID LINES
@@ -483,9 +514,13 @@ export function MacroLineChart({
 
             const tooltipRows = series
               .map((cfg) => {
-                const v = d[cfg.key];
-                const scaled =
-                  typeof v === "number" ? v / valueDivisor : null;
+                const rawValue = d[cfg.key];
+                const valueForTooltip =
+                  typeof rawValue === "number"
+                    ? cfg.tooltipUseRawValue
+                      ? rawValue
+                      : rawValue / valueDivisor
+                    : null;
                 return `
                   <div class="flex items-start justify-between gap-1">
                     <div class="flex items-center gap-1">
@@ -494,8 +529,9 @@ export function MacroLineChart({
                     </div>
                     <span style="color:${cfg.color}" class="text-[10px] md:text-xs">
                       ${
-                        typeof scaled === "number"
-                          ? (cfg.valueFormatter?.(scaled) ?? scaled.toFixed(3))
+                        typeof valueForTooltip === "number"
+                          ? (cfg.valueFormatter?.(valueForTooltip) ??
+                            valueForTooltip.toFixed(3))
                           : "N/A"
                       }
                     </span>

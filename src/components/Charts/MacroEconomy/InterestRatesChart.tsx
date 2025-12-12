@@ -10,23 +10,11 @@ import {
 } from "./MacroLineChart";
 import { extractYear, pickNumeric, percentFormatter } from "./utils";
 
-const AWNFDR_HEADERS = [
-  "AWNFDR (%)",
-  "AWNFDR %",
-  "AWNFDR",
-];
+const AWNFDR_HEADERS = ["AWNFDR (%)", "AWNFDR %", "AWNFDR"];
 
-const AWNDR_HEADERS = [
-  "AWNDR (%)",
-  "AWNDR %",
-  "AWNDR",
-];
+const AWNDR_HEADERS = ["AWNDR (%)", "AWNDR %", "AWNDR"];
 
-const AWNLR_HEADERS = [
-  "AWNLR (%)",
-  "AWNLR %",
-  "AWNLR",
-];
+const AWNLR_HEADERS = ["AWNLR (%)", "AWNLR %", "AWNLR"];
 
 const AWPLR_HEADERS = [
   "AWPLR (%)",
@@ -36,13 +24,36 @@ const AWPLR_HEADERS = [
 ];
 
 const seriesConfig: MacroSeriesConfig[] = [
-  { key: "AWNFDR", label: "AWNFDR", color: "#F58FAA", valueFormatter: percentFormatter },
-  { key: "AWNDR", label: "AWNDR", color: "#1C0209", valueFormatter: percentFormatter },
-  { key: "AWNLR", label: "AWNLR", color: "#A90E38", valueFormatter: percentFormatter },
-  { key: "AWPLR", label: "AWPLR", color: "#EA1A52", valueFormatter: percentFormatter },
+  {
+    key: "AWNFDR",
+    label: "AWNFDR",
+    color: "#F58FAA",
+    valueFormatter: percentFormatter,
+  },
+  {
+    key: "AWNDR",
+    label: "AWNDR",
+    color: "#1C0209",
+    valueFormatter: percentFormatter,
+  },
+  {
+    key: "AWNLR",
+    label: "AWNLR",
+    color: "#A90E38",
+    valueFormatter: percentFormatter,
+  },
+  {
+    key: "AWPLR",
+    label: "AWPLR",
+    color: "#EA1A52",
+    valueFormatter: percentFormatter,
+  },
 ];
 
-export function InterestRatesChart({ datasetUrl, controlIds }: MacroChartWrapperProps) {
+export function InterestRatesChart({
+  datasetUrl,
+  controlIds,
+}: MacroChartWrapperProps) {
   const series = useMemo(() => seriesConfig, []);
 
   const parseRow = useCallback(
