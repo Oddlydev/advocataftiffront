@@ -19,6 +19,7 @@ export default function TakeawaysCard({
 }: TakeawaysCardProps) {
   const [state, setState] = useState<"idle" | "analyzing" | "revealed">("idle");
   const delayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [contentVisible, setContentVisible] = useState(false);
 
   const reveal = useCallback(() => {
     if (state !== "idle") return;
@@ -38,6 +39,21 @@ export default function TakeawaysCard({
       if (delayRef.current) clearTimeout(delayRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    let frame: number | null = null;
+    if (state === "revealed") {
+      frame = requestAnimationFrame(() => {
+        setContentVisible(true);
+      });
+    } else {
+      setContentVisible(false);
+    }
+
+    return () => {
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
+  }, [state]);
 
   return (
     <article className="w-full">
@@ -71,12 +87,18 @@ export default function TakeawaysCard({
       </div>
 
       {state === "revealed" && (
-        <>
-          <h3 className="mt-3 text-sm font-semibold tracking-normal leading-5 text-slate-700 font-[Montserrat]">
+        <div
+          className={`mt-3 space-y-3 transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+            contentVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-3"
+          }`}
+        >
+          <h3 className="text-sm font-semibold tracking-normal leading-5 text-slate-700 font-[Montserrat]">
             Key Takeaways
           </h3>
 
-          <div className="mt-2.5 space-y-3">
+          <div className="space-y-3">
             {takeawayPoints.map((point) => (
               <ListBulletItem
                 key={point}
@@ -85,7 +107,7 @@ export default function TakeawaysCard({
               />
             ))}
           </div>
-        </>
+        </div>
       )}
     </article>
   );
