@@ -6,7 +6,7 @@ export default function TitleCard() {
   return (
     <article
       className="
-        w-[431px]
+        w-full
         rounded-lg
         border border-slate-200
         bg-slate-50

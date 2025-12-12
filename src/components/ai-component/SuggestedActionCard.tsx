@@ -6,7 +6,7 @@ export default function SuggestedActionCard() {
   return (
     <article
       onClick={() => setActive((prev) => !prev)}
-      className={`group flex w-[431px] items-start gap-[16px] rounded-2xl border px-5 py-4 transition-all duration-200 ${
+      className={`group flex w-full items-start gap-[16px] rounded-2xl border px-5 py-4 transition-all duration-200 ${
         active
           ? "border-[rgba(234,25,82,0.3)] bg-[linear-gradient(135deg,rgba(234,25,82,0.05)_0%,rgba(227,63,255,0.05)_100%)]"
           : "border-slate-200 bg-white hover:border-[rgba(234,25,82,0.2)] hover:bg-[#F8FAFC] hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]"

@@ -55,6 +55,13 @@ export default function TakeawaysCard({
     };
   }, [state]);
 
+  const animationStyle = (delay: number) =>
+    contentVisible
+      ? {
+          animation: `fade-slide-down 0.9s cubic-bezier(0.4,0,0.2,1) ${delay}s both`,
+        }
+      : undefined;
+
   return (
     <article className="w-full">
       <div className="flex flex-col gap-2">
@@ -87,24 +94,25 @@ export default function TakeawaysCard({
       </div>
 
       {state === "revealed" && (
-        <div
-          className={`mt-3 space-y-3 transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-            contentVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-3"
-          }`}
-        >
-          <h3 className="text-sm font-semibold tracking-normal leading-5 text-slate-700 font-[Montserrat]">
-            Key Takeaways
-          </h3>
+        <div className="mt-3 space-y-4">
+          <div className="opacity-0" style={animationStyle(0)}>
+            <h3 className="text-sm font-semibold tracking-normal leading-5 text-slate-700 font-[Montserrat]">
+              Key Takeaways
+            </h3>
+          </div>
 
           <div className="space-y-3">
-            {takeawayPoints.map((point) => (
-              <ListBulletItem
+            {takeawayPoints.map((point, index) => (
+              <div
                 key={point}
-                text={point}
-                className="bg-transparent px-0 py-0"
-              />
+                className="opacity-0"
+                style={animationStyle(0.15 * (index + 1))}
+              >
+                <ListBulletItem
+                  text={point}
+                  className="bg-transparent px-0 py-0"
+                />
+              </div>
             ))}
           </div>
         </div>

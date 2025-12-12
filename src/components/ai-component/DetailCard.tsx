@@ -64,7 +64,7 @@ export default function DetailCard({
   };
 
   return (
-    <section className="flex w-[431px] flex-col gap-3.5">
+    <section className="flex w-full flex-col gap-3.5">
       {/* Thinking row (text EXACT like your original) */}
       <div className="flex items-center gap-1 p-5">
         <LoadingIcon />

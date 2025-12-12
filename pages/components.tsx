@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import AIButton from "@/src/components/ai-component/AIButton";
+import AIInsightsPanel from "@/src/components/ai-component/AIInsightsPanel";
 import DetailCard from "@/src/components/ai-component/DetailCard";
 import KeyInsightsCard from "@/src/components/ai-component/KeyInsightsCard";
 import ListBulletItem from "@/src/components/ai-component/ListBulletItem";
@@ -149,6 +150,17 @@ export default function ComponentsPage() {
             </div>
             <div className="mt-6 flex justify-center">
               <MethodologyCard autoOpen={visiblePanel === "methodology"} />
+            </div>
+          </div>
+
+          <div className="rounded-3xl border-2 border-dashed border-violet-300/70 p-6">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-500">
+                AI Chatbot View
+              </p>
+            </div>
+            <div className="mt-6 flex justify-center">
+              <AIInsightsPanel />
             </div>
           </div>
         </div>

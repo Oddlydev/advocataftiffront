@@ -70,7 +70,7 @@ export default function KeyInsightsCard() {
   const [thumbFeedback, setThumbFeedback] = useState<ThumbFeedback>(null);
 
   return (
-    <article className="flex w-[431px] flex-col rounded-2xl border border-slate-200 bg-white px-4 py-5">
+    <article className="flex w-full flex-col rounded-2xl border border-slate-200 bg-white px-4 py-5">
       <div className="grid gap-x-3">
         <div className="row-span-2">
           <KeyInsightsIcon />

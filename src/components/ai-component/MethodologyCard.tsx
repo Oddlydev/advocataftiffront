@@ -48,6 +48,13 @@ export default function MethodologyCard({
     };
   }, [state]);
 
+  const animationStyle = (delay: number) =>
+    contentVisible
+      ? {
+          animation: `fade-slide-down 0.9s cubic-bezier(0.4,0,0.2,1) ${delay}s both`,
+        }
+      : undefined;
+
   return (
     <article className="w-full">
       <div className="flex flex-col gap-2">
@@ -80,20 +87,19 @@ export default function MethodologyCard({
       </div>
 
       {state === "revealed" && (
-        <div
-          className={`mt-3 space-y-3 transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-            contentVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-3"
-          }`}
-        >
-          <h3 className="text-sm font-semibold tracking-normal leading-5 text-slate-700 font-[Montserrat]">
-            Methodology
-          </h3>
+        <div className="mt-3 space-y-2">
+          <div className="opacity-0" style={animationStyle(0)}>
+            <h3 className="text-sm font-semibold tracking-normal leading-5 text-slate-700 font-[Montserrat]">
+              Methodology
+            </h3>
+          </div>
 
           <p
-            className="text-xs leading-5 tracking-[0px] text-slate-600"
-            style={{ fontFamily: '"Source Code Pro"' }}
+            className="text-xs leading-5 tracking-[0px] text-slate-600 opacity-0"
+            style={{
+              fontFamily: '"Source Code Pro"',
+              ...animationStyle(0.15),
+            }}
           >
             Analysis performed using descriptive statistics, variance analysis,
             and correlation matrices. All figures are inflation-adjusted to 2024
