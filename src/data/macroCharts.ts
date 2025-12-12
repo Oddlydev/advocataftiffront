@@ -69,7 +69,7 @@ export const MACRO_CHART_METADATA: Record<string, MacroChartMetadata> = {
       { indicatorClassName: "bg-brand-1-200", label: "AWNFDR" },
       { indicatorClassName: "bg-brand-1-950", label: "AWNDR" },
       { indicatorClassName: "bg-brand-1-700", label: "AWNLR" },
-      { indicatorClassName: "bg-brand-1-500", label: "AWPLR" },
+      // { indicatorClassName: "bg-brand-1-500", label: "AWPLR" },
     ],
     dataSource: "Data Source: Central Bank of Sri Lanka",
     dataSourceNote: "Annual Average Interest Rates 2010 - 2024",
@@ -80,9 +80,12 @@ export const MACRO_CHART_METADATA: Record<string, MacroChartMetadata> = {
     legendItems: [
       {
         indicatorClassName: "bg-brand-1-900 inset-shadow-brand-1-950",
-        label: "Total Debt (Rs. Mn)",
+        label: "Debt as a % of GDP",
       },
-      { indicatorClassName: "bg-brand-1-500", label: "Debt Per Person (Rs.)" },
+      {
+        indicatorClassName: "bg-brand-1-500",
+        label: "Debt Per Person (Rs. '000)",
+      },
     ],
     dataSource: "Data Source: Central Bank of Sri Lanka",
     dataSourceNote: "Government Debt 2010 - 2024",
