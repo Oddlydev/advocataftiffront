@@ -450,7 +450,7 @@ export function MacroLineChart({
         .defined((d) => typeof d[key] === "number")
         .x((d) => x(d.year)!)
         .y((d) => yScale!(d[key] as number))
-        .curve(d3.curveMonotoneX);
+        .curve(d3.curveLinear);
 
       const path = plotLayer
         .append("path")
