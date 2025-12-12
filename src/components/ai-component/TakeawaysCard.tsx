@@ -26,7 +26,7 @@ export default function TakeawaysCard({
     setState("analyzing");
     delayRef.current = setTimeout(() => {
       setState("revealed");
-    }, 650);
+    }, 1500);
   }, [state]);
 
   useEffect(() => {
@@ -42,34 +42,33 @@ export default function TakeawaysCard({
   return (
     <article className="w-full">
       <div className="flex flex-col gap-2">
-        <a
-          className="inline-flex text-sm font-medium tracking-normal leading-5 underline decoration-solid  decoration-[var(--brand-1-600)] underline-offset-[20.5%] text-[var(--color-brand-1-600)] font-[Montserrat]"
-          href="#"
-          onClick={(event) => {
-            event.preventDefault();
-            reveal();
-          }}
-        >
-          Click to see Key Takeaways
-        </a>
-      </div>
-
-      {state !== "idle" && (
-        <div className="mt-3 flex items-center gap-1 p-5">
-          <LoadingIcon />
-          <span
-            className="text-xs font-semibold leading-4 tracking-normal font-[Montserrat]"
-            style={{
-              background: "linear-gradient(90deg,#64748B,#CBD5E1)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+        {state === "idle" ? (
+          <a
+            className="inline-flex text-sm font-medium tracking-normal leading-5 underline decoration-solid decoration-[var(--brand-1-600)] underline-offset-[20.5%] text-[var(--color-brand-1-600)] font-[Montserrat]"
+            href="#"
+            onClick={(event) => {
+              event.preventDefault();
+              reveal();
             }}
           >
-            Analyzing...
-          </span>
-        </div>
-      )}
+            Click to see Key Takeaways
+          </a>
+        ) : state === "analyzing" ? (
+          <div className="inline-flex items-center gap-1 text-xs font-semibold leading-4 tracking-normal font-[Montserrat]">
+            <LoadingIcon />
+            <span
+              style={{
+                background: "linear-gradient(90deg,#64748B,#CBD5E1)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Analyzing...
+            </span>
+          </div>
+        ) : null}
+      </div>
 
       {state === "revealed" && (
         <>
