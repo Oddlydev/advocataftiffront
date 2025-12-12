@@ -2,12 +2,17 @@ import React from "react";
 
 export type ListBulletItemProps = {
   text: string;
+  className?: string;
 };
 
-export default function ListBulletItem({ text }: ListBulletItemProps) {
+export default function ListBulletItem({
+  text,
+  className = "",
+}: ListBulletItemProps) {
   return (
-    <article className="flex items-start gap-3 rounded-[12px] bg-white">
-      {/* Gradient bullet */}
+    <article
+      className={`flex items-start gap-3 rounded-[12px] ${className}`.trim()}
+    >
       <span
         className="
           mt-[6px]

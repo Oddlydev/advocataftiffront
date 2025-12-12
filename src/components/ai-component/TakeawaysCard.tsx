@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import LoadingIcon from "./LoadingIcon";
+import ListBulletItem from "./ListBulletItem";
 
 const takeawayPoints = [
   "Average annual growth: Food (5.8%), Housing (4.2%), Alcohol & Tobacco (12.3%).",
@@ -39,10 +40,10 @@ export default function TakeawaysCard({
   }, []);
 
   return (
-    <article className="w-full rounded-[24px] p-6">
+    <article className="w-full">
       <div className="flex flex-col gap-2">
         <a
-          className="inline-flex text-sm font-semibold tracking-[0px] leading-5 underline decoration-solid underline-offset-[20.5%] text-[#CF1244] font-[Montserrat]"
+          className="inline-flex text-sm font-medium tracking-normal leading-5 underline decoration-solid  decoration-[var(--brand-1-600)] underline-offset-[20.5%] text-[var(--color-brand-1-600)] font-[Montserrat]"
           href="#"
           onClick={(event) => {
             event.preventDefault();
@@ -54,10 +55,10 @@ export default function TakeawaysCard({
       </div>
 
       {state !== "idle" && (
-        <div className="mt-4 flex items-center gap-2">
+        <div className="mt-3 flex items-center gap-1 p-5">
           <LoadingIcon />
           <span
-            className="text-xs font-semibold leading-4 tracking-[0px] font-[Montserrat]"
+            className="text-xs font-semibold leading-4 tracking-normal font-[Montserrat]"
             style={{
               background: "linear-gradient(90deg,#64748B,#CBD5E1)",
               backgroundClip: "text",
@@ -72,19 +73,17 @@ export default function TakeawaysCard({
 
       {state === "revealed" && (
         <>
-          <h3 className="mt-5 text-lg font-semibold tracking-[0px] leading-5 text-slate-700 font-[Montserrat]">
+          <h3 className="mt-3 text-sm font-semibold tracking-normal leading-5 text-slate-700 font-[Montserrat]">
             Key Takeaways
           </h3>
 
-          <div className="mt-3 space-y-3">
+          <div className="mt-2.5 space-y-3">
             {takeawayPoints.map((point) => (
-              <div
+              <ListBulletItem
                 key={point}
-                className="flex items-start gap-2 text-sm leading-[1.6] text-slate-600"
-              >
-                <span className="mt-[6px] h-[8px] w-[8px] rounded-full bg-gradient-to-b from-[#ea1952] to-[#aa1e58]" />
-                <p className="flex-1 font-['Source Code Pro']">{point}</p>
-              </div>
+                text={point}
+                className="bg-transparent px-0 py-0"
+              />
             ))}
           </div>
         </>

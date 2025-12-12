@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import LoadingIcon from "./LoadingIcon";
 import MethodologyCard from "./MethodologyCard";
 import TakeawaysCard from "./TakeawaysCard";
@@ -37,15 +37,36 @@ export default function DetailCard({
   onPanelSelect,
 }: DetailCardProps) {
   const [openPanel, setOpenPanel] = useState<PanelKey | null>(null);
+  const [analysisPanel, setAnalysisPanel] = useState<PanelKey | null>(null);
+  const [showAnalyzing, setShowAnalyzing] = useState(false);
+  const analyzingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (activePanel) setOpenPanel(activePanel);
   }, [activePanel]);
 
+  useEffect(() => {
+    return () => {
+      if (analyzingTimer.current) clearTimeout(analyzingTimer.current);
+    };
+  }, []);
+
+  const handleLinkClick = (panel: PanelKey) => {
+    setShowAnalyzing(true);
+    setAnalysisPanel(panel);
+    setOpenPanel(panel);
+    onPanelSelect(panel);
+
+    if (analyzingTimer.current) clearTimeout(analyzingTimer.current);
+    analyzingTimer.current = setTimeout(() => {
+      setShowAnalyzing(false);
+    }, 650);
+  };
+
   return (
-    <section className="flex w-[431px] flex-col gap-2">
+    <section className="flex w-[431px] flex-col gap-3.5">
       {/* Thinking row (text EXACT like your original) */}
-      <div className="flex items-center gap-1 px-0.5">
+      <div className="flex items-center gap-1 p-5">
         <LoadingIcon />
         <span
           className="text-xs font-semibold font-[Montserrat]"
@@ -61,7 +82,7 @@ export default function DetailCard({
       </div>
 
       {/* Main white card (UNCHANGED) */}
-      <article className="flex flex-col gap-4 rounded-[18px] border border-slate-200 bg-white px-6 py-5 drop-shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
+      <article className="flex flex-col gap-4 rounded-[18px] border border-slate-200 bg-white p-5 drop-shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
         <div className="space-y-2.5">
           <p className="text-sm leading-5 text-slate-700 font-[Montserrat]">
             We've analyzed 26 years of consumption data (1998-2024) across all
@@ -74,7 +95,7 @@ export default function DetailCard({
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Overall Growth Patterns
           </p>
-          <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro',monospace]">
+          <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
             The total private consumption expenditure has grown from Rs 8.2T in
             1998 to Rs 24.7T in 2024, representing a compound annual growth rate
             (CAGR) of 4.3%. Growth has been uneven across categories, with some
@@ -91,7 +112,7 @@ export default function DetailCard({
             {firstMetrics.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
                 <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro',monospace]">
+                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
               </div>
@@ -107,7 +128,7 @@ export default function DetailCard({
             {secondMetrics.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
                 <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro',monospace]">
+                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
               </div>
@@ -125,17 +146,35 @@ export default function DetailCard({
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  onPanelSelect(key as PanelKey);
-                  setOpenPanel(key as PanelKey);
+                  handleLinkClick(key as PanelKey);
                 }}
                 className={`block text-sm font-medium underline decoration-solid underline-offset-[20.5%] font-[Montserrat] ${
-                  activePanel === key ? "text-[#CF1244]" : "text-[#CF1244]/70"
+                  activePanel === key
+                    ? "text-[var(--brand-1-500)]"
+                    : "text-[var(--brand-1-500)]/70"
                 }`}
               >
                 {text}
               </a>
             ))}
           </div>
+
+          {showAnalyzing && analysisPanel && (
+            <div className="flex items-center gap-2 pt-2 text-xs font-semibold text-slate-600">
+              <LoadingIcon />
+              <span
+                className="font-[Montserrat]"
+                style={{
+                  background: "linear-gradient(90deg,#64748B,#CBD5E1)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Analyzing...
+              </span>
+            </div>
+          )}
 
           {openPanel === "takeaways" && (
             <div className="mt-4">
@@ -148,18 +187,21 @@ export default function DetailCard({
             </div>
           )}
 
+          {/* Divider before recommendations */}
+          <div className="pt-5 mt-3.5 mb-0 border-t border-slate-200" />
+
           {/* Recommendations – plain numbered list */}
-          <div className="pt-4">
-            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+          <div>
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat] leading-5">
               Recommendations
             </p>
             <div className="mt-2 space-y-1">
               {recommendations.map((line, idx) => (
                 <div key={line} className="flex items-start gap-2">
-                  <span className="mt-0.5 w-3 text-xs font-medium text-[var(--brand-1-500)] font-['Source_Code_Pro',monospace]">
+                  <span className="mt-0.5 w-3 text-xs font-medium text-[var(--brand-1-500)] font-['Source_Code_Pro']">
                     {idx + 1}.
                   </span>
-                  <p className="flex-1 text-xs leading-5 text-slate-600 font-['Source_Code_Pro',monospace]">
+                  <p className="flex-1 text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                     {line}
                   </p>
                 </div>
@@ -168,10 +210,10 @@ export default function DetailCard({
           </div>
 
           {/* Divider + button + caption */}
-          <div className="mt-4.5 border-t border-slate-200 pt-4">
+          <div className="mt-5 mb-0  border-t border-slate-200 pt-3.5">
             <button
               type="button"
-              className="flex w-full items-center justify-center gap-2 rounded-[8px] bg-gradient-to-r from-[#EA1952] to-[#AA1E58] px-2.5 py-3 text-sm font-semibold text-white shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)]"
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#EA1952] to-[#AA1E58] px-2.5 py-3 text-xs font-semibold text-white shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -179,28 +221,27 @@ export default function DetailCard({
                 height="16"
                 viewBox="0 0 16 16"
                 fill="none"
-                aria-hidden="true"
               >
                 <path
                   d="M8 10V2"
                   stroke="white"
-                  strokeWidth="1.33333"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  stroke-width="1.33333"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
                 />
                 <path
                   d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10"
                   stroke="white"
-                  strokeWidth="1.33333"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  stroke-width="1.33333"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
                 />
                 <path
                   d="M4.66663 6.66663L7.99996 9.99996L11.3333 6.66663"
                   stroke="white"
-                  strokeWidth="1.33333"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  stroke-width="1.33333"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
                 />
               </svg>
               <span className="text-sm font-[Montserrat]">
@@ -208,7 +249,7 @@ export default function DetailCard({
               </span>
             </button>
 
-            <p className="mt-2 text-center text-xs leading-4 text-slate-500 font-['Source_Code_Pro',monospace]">
+            <p className="mt-2 text-center text-xs leading-4 text-slate-500 font-['Source_Code_Pro']">
               Formatted .txt file • Ready for sharing
             </p>
           </div>

@@ -66,7 +66,8 @@ button {
 /* ----------------------------------------------------------------------- 
  *  Scroll container (table wrapper) 
  * --------------------------------------------------------------------- */
-#table-wrapper, .custom-scroll {
+#table-wrapper,
+.custom-scroll {
   background-clip: content-box; /* keeps table background intact */
   scrollbar-gutter: stable both-edges; /* Chrome/Edge/Firefox */
   overflow-y: auto;
@@ -203,13 +204,13 @@ button {
   --color-brand-black: #1a1a1a;
   --color-brand-white: #f1f2f2;
 
-  --brand-1-500: #EB1A52;
+  --brand-1-500: #eb1a52;
   --color-brand-1-50: #fdedf1;
   --color-brand-1-100: #f9bece;
   --color-brand-1-200: #f58faa;
   --color-brand-1-300: #f16087;
   --color-brand-1-400: #ed3a6a;
-  --color-brand-1-500: #EB1A52;
+  --color-brand-1-500: #eb1a52;
   --color-brand-1-600: #cf1244;
   --color-brand-1-700: #a90e38;
   --color-brand-1-800: #7a0a28;
@@ -304,26 +305,27 @@ button {
 }
 
 .large-img img {
-  width: 100% !important;       /* fills container width */
-  display: block;               /* centers with margin auto */
+  width: 100% !important; /* fills container width */
+  display: block; /* centers with margin auto */
   margin-left: auto;
   margin-right: auto;
-  max-width: 56rem;             /* Tailwind max-w-4xl = 64rem */
-  padding-left: 1.25rem;        /* Tailwind px-5 = 1.25rem */
+  max-width: 56rem; /* Tailwind max-w-4xl = 64rem */
+  padding-left: 1.25rem; /* Tailwind px-5 = 1.25rem */
   padding-right: 1.25rem;
 }
 
-@media (min-width: 768px) {     /* md */
+@media (min-width: 768px) {
+  /* md */
   .large-img img {
-    padding-left: 2.5rem;       /* Tailwind md:px-10 */
+    padding-left: 2.5rem; /* Tailwind md:px-10 */
     padding-right: 2.5rem;
   }
 }
 
-@media (min-width: 1280px) {    /* xl */
+@media (min-width: 1280px) {
+  /* xl */
   .large-img img {
-    padding-left: 4rem;         /* Tailwind xl:px-16 */
+    padding-left: 4rem; /* Tailwind xl:px-16 */
     padding-right: 4rem;
   }
 }
-
