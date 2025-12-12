@@ -8,8 +8,13 @@ export default function AIButton({ label = "AI Insights" }: AIButtonProps) {
   return (
     <button
       type="button"
-      style={{ fontFamily: "Montserrat" }}
-      className="flex w-[144px] items-center justify-center gap-[10px] rounded-[8px] bg-gradient-to-r from-[#EA1952] via-[#AA1E58] to-[#E33FFF] px-4 py-3.5 text-sm font-medium leading-5 text-center text-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-shadow duration-200 hover:shadow-[10px_10px_40px_-3px_rgba(234,25,82,0.2),4px_4px_40px_-4px_rgba(234,25,82,0.2)]"
+      style={{
+        fontFamily: "Montserrat",
+        borderRadius: "var(--border-radius-rounded-lg, 8px)",
+        background:
+          "linear-gradient(90deg, #EA1952 0%, #AA1E58 50%, #E33FFF 100%)",
+      }}
+      className="flex w-[144px] items-center justify-center gap-2.5 px-4 py-3.5 text-sm font-medium leading-5 text-center text-white transition-shadow duration-200 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] hover:shadow-[10px_10px_40px_-3px_rgba(234,25,82,0.2),4px_4px_40px_-4px_rgba(234,25,82,0.2)]"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

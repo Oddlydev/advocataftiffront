@@ -4,8 +4,10 @@ type LoadingIconProps = {
   className?: string;
 };
 
+const PETALS = 12;
+const RADIUS = 5.5;
+
 export default function LoadingIcon({ className = "" }: LoadingIconProps) {
-  const petals = 12;
   const baseClassName =
     "h-4 w-4 flex-shrink-0 overflow-hidden rounded-sm";
   const classes = [baseClassName, className].filter(Boolean).join(" ");
@@ -29,18 +31,18 @@ export default function LoadingIcon({ className = "" }: LoadingIconProps) {
         `}</style>
       </defs>
 
-      {Array.from({ length: petals }).map((_, i) => {
-        const angle = (360 / petals) * i;
-        const fill = i < 6 ? "#EA1952" : "#F3A9BA";
-        const baseOpacity = i < 6 ? 0.95 : 0.55;
+      {Array.from({ length: PETALS }).map((_, i) => {
+        const angle = (360 / PETALS) * i;
+        const fill = i < PETALS / 2 ? "#EA1952" : "#F3A9BA";
+        const baseOpacity = i < PETALS / 2 ? 0.95 : 0.55;
 
         return (
-          <g key={i} transform={`rotate(${angle}) translate(0 -5.2)`}>
+          <g key={i} transform={`rotate(${angle}) translate(0 -${RADIUS})`}>
             <ellipse
               cx="0"
               cy="0"
-              rx="1.05"
-              ry="2.1"
+              rx="0.85"
+              ry="1.95"
               fill={fill}
               style={{
                 opacity: baseOpacity,

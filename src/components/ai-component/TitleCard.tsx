@@ -7,10 +7,10 @@ export default function TitleCard() {
     <article
       className="
         w-[431px]
-        rounded-[8px]
-        border border-[#E2E8F0]
-        bg-[#F8FAFC]
-        px-4 py-4
+        rounded-lg
+        border border-slate-200
+        bg-slate-50
+        p-4
         shadow-[0_10px_30px_-25px_rgba(15,23,42,0.1)]
         transition-shadow
         duration-200
@@ -24,16 +24,16 @@ export default function TitleCard() {
         aria-expanded={expanded}
         className="flex w-full flex-col gap-[6px] text-left"
       >
-        <div className="flex items-center gap-[8px]">
+        <div className="flex items-center gap-2">
           <p
-            className="text-xs uppercase tracking-[0.3px] text-[#64748B]"
+            className="text-xs uppercase tracking-[0.3px] text-slate-500 leading-4"
             style={{ fontFamily: '"Source Code Pro", monospace' }}
           >
             AI-generated analysis
           </p>
 
           {/* Info icon */}
-          <span className="group relative inline-flex h-[18px] w-[18px] items-center justify-center">
+          <span className="group relative inline-flex h-[18px] w-[18px] items-center justify-center text-[#94A3B8] transition-colors hover:text-[#EB1A52] group-hover:text-[#EB1A52]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -41,14 +41,35 @@ export default function TitleCard() {
               viewBox="0 0 16 16"
               fill="none"
               aria-hidden="true"
-              className="stroke-[#94A3B8] transition group-hover:stroke-[#EB1A52]"
             >
-              <path
-                d="M8 10.7V8M8 5.3H8.01M8 14.7C11.68 14.7 14.67 11.68 14.67 8C14.67 4.32 11.68 1.33 8 1.33C4.32 1.33 1.33 4.32 1.33 8C1.33 11.68 4.32 14.7 8 14.7Z"
-                strokeWidth="1.3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+              <g clipPath="url(#clip0_8707_3265)">
+                <path
+                  d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8.00001C14.6666 4.31811 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.31811 1.33331 8.00001C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z"
+                  stroke="currentColor"
+                  strokeWidth="1.33333"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M8 10.6667V8"
+                  stroke="currentColor"
+                  strokeWidth="1.33333"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M8 5.33334H8.00667"
+                  stroke="currentColor"
+                  strokeWidth="1.33333"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_8707_3265">
+                  <rect width="16" height="16" fill="white" />
+                </clipPath>
+              </defs>
             </svg>
 
             {/* Tooltip */}
@@ -67,7 +88,7 @@ export default function TitleCard() {
 
         {/* Title */}
         <p
-          className="text-sm font-medium leading-5 text-[#0F172A]"
+          className="text-sm font-medium leading-5 text-slate-900"
           style={{ fontFamily: "Montserrat" }}
         >
           Composition of Private Consumption Expenditure at Current Market

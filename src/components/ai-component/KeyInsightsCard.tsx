@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import KeyInsightsIcon from "./KeyInsightsIcon";
 
 const ConfidenceIcon = ({ active }: { active: boolean }) => {
   const fillColor = active ? "#475569" : "none";
@@ -63,58 +64,27 @@ const HelpfulIcon = ({ active }: { active: boolean }) => {
   );
 };
 
-const CardIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M15.8333 8.01725C15.8333 10.1666 14.7751 11.821 13.1652 12.9098C12.7902 13.1633 12.6027 13.2902 12.5101 13.4343C12.4176 13.5785 12.3861 13.7678 12.323 14.1464L12.2739 14.4407C12.1631 15.1058 12.1076 15.4383 11.8745 15.6358C11.6414 15.8333 11.3042 15.8333 10.6299 15.8333H8.45365C7.77938 15.8333 7.44222 15.8333 7.2091 15.6358C6.97598 15.4383 6.92055 15.1058 6.8097 14.4407L6.76065 14.1464C6.69776 13.7691 6.66632 13.5804 6.57471 13.4369C6.48311 13.2934 6.29521 13.165 5.91941 12.9081C4.32656 11.8193 3.33331 10.1655 3.33331 8.01725C3.33331 4.50992 6.13153 1.66667 9.58331 1.66667C10.0114 1.66667 10.4294 1.71041 10.8333 1.79371"
-      stroke="#EB1A52"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M13.75 1.66667L13.9649 2.24753C14.2467 3.00919 14.3876 3.39002 14.6655 3.66783C14.9433 3.94565 15.3241 4.08656 16.0858 4.36841L16.6666 4.58334L16.0858 4.79827C15.3241 5.08011 14.9433 5.22104 14.6655 5.49885C14.3876 5.77666 14.2467 6.15749 13.9649 6.91915L13.75 7.50001L13.5351 6.91915C13.2532 6.15749 13.1123 5.77666 12.8345 5.49885C12.5566 5.22104 12.1758 5.08011 11.4141 4.79827L10.8333 4.58334L11.4141 4.36841C12.1758 4.08656 12.5566 3.94565 12.8345 3.66783C13.1123 3.39002 13.2532 3.00919 13.5351 2.24753L13.75 1.66667Z"
-      stroke="#EB1A52"
-      strokeWidth="1.25"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M11.25 15.8333V16.6667C11.25 17.4523 11.25 17.8452 11.0059 18.0892C10.7619 18.3333 10.369 18.3333 9.58335 18.3333C8.79769 18.3333 8.40485 18.3333 8.16076 18.0892C7.91669 17.8452 7.91669 17.4523 7.91669 16.6667V15.8333"
-      stroke="#EB1A52"
-      strokeWidth="1.25"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
 type ThumbFeedback = "up" | "down" | null;
 
 export default function KeyInsightsCard() {
   const [thumbFeedback, setThumbFeedback] = useState<ThumbFeedback>(null);
 
   return (
-    <article className="flex w-[431px] flex-col rounded-[16px] border border-[#E2E8F0] bg-white px-4 py-5">
-      <div className="grid grid-cols-[auto,1fr] gap-[12px]">
-        <div className="row-span-2 flex h-[40px] w-[40px] items-center justify-center rounded-[12px] bg-[rgba(234,25,82,0.08)] p-3">
-          <CardIcon />
+    <article className="flex w-[431px] flex-col rounded-2xl border border-slate-200 bg-white px-4 py-5">
+      <div className="grid gap-x-3">
+        <div className="row-span-2">
+          <KeyInsightsIcon />
         </div>
 
         <div className="space-y-2">
           <h3
-            className="text-sm font-semibold leading-5 text-[#0F172A]"
+            className="text-sm font-semibold leading-5 text-slate-900"
             style={{ fontFamily: "Montserrat" }}
           >
             Significant Growth in Food Consumption
           </h3>
           <p
-            className="text-xs leading-5 text-[#475569]"
+            className="text-xs leading-5 text-slate-600 font-normal"
             style={{ fontFamily: '"Source Code Pro", monospace' }}
           >
             Food spending rose from Rs 5.38T (2022) to Rs 6.13T (2024), driven
@@ -122,22 +92,22 @@ export default function KeyInsightsCard() {
           </p>
         </div>
 
-        <div className="col-start-2 border-t border-[#F1F5F9] pt-[12px]">
-            <div className="flex items-center justify-between text-xs leading-4 text-[#64748B]">
+        <div className="col-start-2 border-t border-slate-100 pt-1.5 mt-2">
+          <div className="flex items-center justify-between text-xs leading-4 text-[#64748B]">
             <div
-              className="flex items-center gap-[6px]"
+              className="flex items-center gap-1"
               style={{ fontFamily: '"Source Code Pro", monospace' }}
             >
-              <span className="text-[#64748B]">Confidence:</span>
-              <span className="text-[#475569]">High (85%)</span>
+              <span className="text-slate-500">Confidence:</span>
+              <span className="text-slate-600">High (85%)</span>
             </div>
 
             <div
-              className="flex items-center gap-[6px]"
+              className="flex items-center gap-2.5"
               style={{ fontFamily: '"Source Code Pro", monospace' }}
             >
-              <span className="text-[#64748B]">Helpful?</span>
-              <div className="flex items-center gap-[4px] rounded-full px-2 py-1 text-xs text-[#64748B]">
+              <span className="text-slate-500 leading-4">Helpful?</span>
+              <div className="flex items-center gap-1.5 rounded-full text-xs text-slate-600">
                 {/* THUMB UP */}
                 <button
                   type="button"
@@ -145,7 +115,7 @@ export default function KeyInsightsCard() {
                     setThumbFeedback(thumbFeedback === "up" ? null : "up")
                   }
                   aria-pressed={thumbFeedback === "up"}
-                  className="rounded-full p-[2px] transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CF1244]"
+                  className="rounded-full transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CF1244]"
                 >
                   <ConfidenceIcon active={thumbFeedback === "up"} />
                 </button>
@@ -157,7 +127,7 @@ export default function KeyInsightsCard() {
                     setThumbFeedback(thumbFeedback === "down" ? null : "down")
                   }
                   aria-pressed={thumbFeedback === "down"}
-                  className="rounded-full p-[2px] transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CF1244]"
+                  className="rounded-full transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CF1244]"
                 >
                   <HelpfulIcon active={thumbFeedback === "down"} />
                 </button>

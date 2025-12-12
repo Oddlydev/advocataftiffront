@@ -10,6 +10,7 @@ import SuggestedActionCard from "@/src/components/ai-component/SuggestedActionCa
 import TakeawaysCard from "@/src/components/ai-component/TakeawaysCard";
 import TitleCard from "@/src/components/ai-component/TitleCard";
 import InsightsDisclaimerCard from "@/src/components/ai-component/InsightsDisclaimerCard";
+import KeyInsightsIcon from "@/src/components/ai-component/KeyInsightsIcon";
 
 type PanelKey = "takeaways" | "methodology";
 
@@ -22,12 +23,12 @@ export default function ComponentsPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f4f4fb] p-6">
-      <section className="w-full max-w-4xl space-y-6 rounded-[32px] bg-white/80 py-12 px-10 shadow-[0_35px_80px_-30px_rgba(0,0,0,0.45)]">
+      <section className="w-full max-w-5/6 space-y-6 rounded-[32px] bg-white/80 py-12 px-10 shadow-[0_35px_80px_-30px_rgba(0,0,0,0.45)]">
         <header className="flex flex-col gap-1 text-slate-700">
           <h1 className="text-3xl font-semibold">Components</h1>
         </header>
 
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="rounded-3xl border-2 border-dashed border-violet-300/70 p-6">
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-500">
@@ -58,6 +59,17 @@ export default function ComponentsPage() {
             </div>
             <div className="mt-6 flex justify-center">
               <KeyInsightsCard />
+            </div>
+          </div>
+
+          <div className="rounded-3xl border-2 border-dashed border-violet-300/70 p-6">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-500">
+                Key Insights Icon
+              </p>
+            </div>
+            <div className="mt-6 flex justify-center">
+              <KeyInsightsIcon />
             </div>
           </div>
 
