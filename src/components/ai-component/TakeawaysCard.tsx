@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import LoadingPatternIcon from "./LoadingPatternIcon";
+import LoadingIcon from "./LoadingIcon";
 
 const takeawayPoints = [
   "Average annual growth: Food (5.8%), Housing (4.2%), Alcohol & Tobacco (12.3%).",
@@ -20,9 +20,8 @@ export default function TakeawaysCard({
   const delayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const reveal = useCallback(() => {
-    if (state !== "idle") {
-      return;
-    }
+    if (state !== "idle") return;
+
     setState("analyzing");
     delayRef.current = setTimeout(() => {
       setState("revealed");
@@ -30,16 +29,12 @@ export default function TakeawaysCard({
   }, [state]);
 
   useEffect(() => {
-    if (autoOpen && state === "idle") {
-      reveal();
-    }
+    if (autoOpen && state === "idle") reveal();
   }, [autoOpen, reveal, state]);
 
   useEffect(() => {
     return () => {
-      if (delayRef.current) {
-        clearTimeout(delayRef.current);
-      }
+      if (delayRef.current) clearTimeout(delayRef.current);
     };
   }, []);
 
@@ -47,7 +42,7 @@ export default function TakeawaysCard({
     <article className="w-full rounded-[24px] p-6">
       <div className="flex flex-col gap-2">
         <a
-          className="inline-flex text-sm font-semibold tracking-[0px] leading-[20px] underline decoration-solid underline-offset-[20.5%] text-[#CF1244] font-[Montserrat]"
+          className="inline-flex text-sm font-semibold tracking-[0px] leading-5 underline decoration-solid underline-offset-[20.5%] text-[#CF1244] font-[Montserrat]"
           href="#"
           onClick={(event) => {
             event.preventDefault();
@@ -59,9 +54,17 @@ export default function TakeawaysCard({
       </div>
 
       {state !== "idle" && (
-        <div className="mt-4 flex items-center gap-2 text-[11px] font-semibold text-[#f472b6]">
-          <LoadingPatternIcon className="h-4 w-4" />
-          <span className="text-xs font-semibold leading-[16px] tracking-[0px] bg-gradient-to-r from-[#64748B] to-[#CBD5E1] bg-clip-text text-transparent">
+        <div className="mt-4 flex items-center gap-2">
+          <LoadingIcon />
+          <span
+            className="text-xs font-semibold leading-4 tracking-[0px] font-[Montserrat]"
+            style={{
+              background: "linear-gradient(90deg,#64748B,#CBD5E1)",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
             Analyzing...
           </span>
         </div>
@@ -69,7 +72,7 @@ export default function TakeawaysCard({
 
       {state === "revealed" && (
         <>
-          <h3 className="mt-5 text-lg font-semibold tracking-[0px] leading-[20px] text-[#334155] font-[Montserrat]">
+          <h3 className="mt-5 text-lg font-semibold tracking-[0px] leading-5 text-[#334155] font-[Montserrat]">
             Key Takeaways
           </h3>
 

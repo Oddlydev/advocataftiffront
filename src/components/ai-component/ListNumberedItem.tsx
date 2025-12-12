@@ -10,17 +10,17 @@ export default function ListNumberedItem({
   text,
 }: ListNumberedItemProps) {
   return (
-    <article className="flex w-[431px] items-start gap-[16px] rounded-[12px] border border-[#E2E8F0] bg-white px-[16px] py-[12px]">
+    <article className="flex w-[431px] items-start gap-[16px] rounded-[12px] border border-[#E2E8F0] bg-white px-4 py-3">
       {/* Number label */}
       <span
-        className="mt-[2px] text-[12px] font-medium text-[#EB1A52]"
+        className="mt-[2px] text-xs font-medium text-[#EB1A52]"
         style={{ fontFamily: '"Source Code Pro", monospace' }}
       >
         {number}.
       </span>
 
       <p
-        className="text-[12px] leading-[20px] text-[#475569]"
+        className="text-xs leading-5 text-[#475569]"
         style={{
           fontFamily: '"Source Code Pro", monospace',
           letterSpacing: "0",

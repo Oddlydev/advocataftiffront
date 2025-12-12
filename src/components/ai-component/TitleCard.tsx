@@ -10,7 +10,7 @@ export default function TitleCard() {
         rounded-[8px]
         border border-[#E2E8F0]
         bg-[#F8FAFC]
-        px-[16px] py-[16px]
+        px-4 py-4
         shadow-[0_10px_30px_-25px_rgba(15,23,42,0.1)]
         transition-shadow
         duration-200
@@ -26,7 +26,7 @@ export default function TitleCard() {
       >
         <div className="flex items-center gap-[8px]">
           <p
-            className="text-[12px] uppercase tracking-[0.3px] text-[#64748B]"
+            className="text-xs uppercase tracking-[0.3px] text-[#64748B]"
             style={{ fontFamily: '"Source Code Pro", monospace' }}
           >
             AI-generated analysis
@@ -56,7 +56,7 @@ export default function TitleCard() {
               className="
               pointer-events-none absolute left-full ml-2 top-1/2 hidden 
               h-5 min-w-[200px] -translate-y-1/2 items-center rounded-[4px] 
-              bg-black px-1.5 py-1 text-[8px] leading-[8px] font-['Source_Code_Pro'] 
+              bg-black px-1.5 py-1 text-xs leading-2 text-[8px] font-['Source_Code_Pro'] 
               text-white group-hover:flex
             "
             >
@@ -67,7 +67,7 @@ export default function TitleCard() {
 
         {/* Title */}
         <p
-          className="text-[14px] font-medium leading-[20px] text-[#0F172A]"
+          className="text-sm font-medium leading-5 text-[#0F172A]"
           style={{ fontFamily: "Montserrat" }}
         >
           Composition of Private Consumption Expenditure at Current Market
@@ -75,62 +75,69 @@ export default function TitleCard() {
         </p>
       </button>
 
-      {/* Expanded Content — matches screenshot exactly */}
+      {/* Expanded Content */}
       {expanded && (
-        <section className="mt-[14px] border-t border-[#E2E8F0] pt-[14px]">
-          <p
-            className="text-[10px] font-semibold uppercase tracking-[0.4px] text-[#334155] mb-[4px]"
-            style={{ fontFamily: '"Source Code Pro", monospace' }}
-          >
-            How Insights are Generated:
-          </p>
+        <>
+          <section className="mt-[14px] border-t border-[#E2E8F0] pt-[14px]">
+            <p
+              className="text-xs font-semibold uppercase tracking-[0.4px] text-[#334155] mb-[4px]"
+              style={{ fontFamily: '"Source Code Pro", monospace' }}
+            >
+              How Insights are Generated:
+            </p>
 
-          <p
-            className="text-[10px] leading-[16px] text-[#475569] mb-[8px]"
-            style={{ fontFamily: '"Source Code Pro", monospace' }}
-          >
-            AI analyzes 26 years (1998–2024) of Central Bank data using
-            statistical methods including trend analysis (linear regression,
-            CAGR), anomaly detection (z-score analysis), and volatility
-            measurement (standard deviation). Confidence scores are calculated
-            based on data quality, statistical significance, pattern strength,
-            and model agreement.
-          </p>
+            <p
+              className="text-xs leading-4 text-[#475569] mb-[8px]"
+              style={{ fontFamily: '"Source Code Pro", monospace' }}
+            >
+              AI analyzes 26 years (1998–2024) of Central Bank data using
+              statistical methods including trend analysis (linear regression,
+              CAGR), anomaly detection (z-score analysis), and volatility
+              measurement (standard deviation). Confidence scores are calculated
+              based on data quality, statistical significance, pattern strength,
+              and model agreement.
+            </p>
 
-          <p
-            className="text-[10px] leading-[16px] text-[#475569] mb-[8px]"
-            style={{ fontFamily: '"Source Code Pro", monospace' }}
-          >
-            <strong>Dataset Coverage:</strong> Private Consumption Expenditure
-            across 12 categories: Food, Alcohol & Tobacco, Clothing, Housing,
-            Furnishings, Health, Transport, Communication, Recreation,
-            Education, Restaurants & Hotels, and Miscellaneous Goods & Services.
-            All values are at current market prices in Sri Lankan Rupees (Rs).
-          </p>
+            <p
+              className="text-xs leading-4 text-[#475569] mb-[8px]"
+              style={{ fontFamily: '"Source Code Pro", monospace' }}
+            >
+              <strong>Dataset Coverage:</strong> Private Consumption Expenditure
+              across 12 categories: Food, Alcohol & Tobacco, Clothing, Housing,
+              Furnishings, Health, Transport, Communication, Recreation,
+              Education, Restaurants & Hotels, and Miscellaneous Goods &
+              Services. All values are at current market prices in Sri Lankan
+              Rupees (Rs).
+            </p>
 
-          <p
-            className="text-[10px] font-semibold uppercase tracking-[0.4px] text-[#334155] mb-[4px]"
-            style={{ fontFamily: '"Source Code Pro", monospace' }}
-          >
-            Limitations:
-          </p>
+            <p
+              className="text-xs font-semibold uppercase tracking-[0.4px] text-[#334155] mb-[4px]"
+              style={{ fontFamily: '"Source Code Pro", monospace' }}
+            >
+              Limitations:
+            </p>
 
-          <ul
-            className="text-[10px] leading-[16px] text-[#475569] list-disc pl-4 mb-[10px]"
-            style={{ fontFamily: '"Source Code Pro", monospace' }}
-          >
-            <li>Historical analysis only – does not predict future trends</li>
-            <li>Nominal values not adjusted for inflation</li>
-            <li>Cannot identify causation, only correlations</li>
-          </ul>
+            <ul
+              className="text-xs leading-4 text-[#475569] list-disc pl-4 mb-[10px]"
+              style={{ fontFamily: '"Source Code Pro", monospace' }}
+            >
+              <li>Historical analysis only – does not predict future trends</li>
+              <li>Nominal values not adjusted for inflation</li>
+              <li>Cannot identify causation, only correlations</li>
+            </ul>
+          </section>
 
-          <p
-            className="text-[9px] uppercase tracking-[0.4px] text-[#64748B]"
-            style={{ fontFamily: '"Source Code Pro", monospace' }}
+          {/* Footer Divider — matches screenshot */}
+          <div
+            className="mt-[14px] pt-[10px] text-xs uppercase tracking-[0.4px] text-[#64748B]"
+            style={{
+              fontFamily: '"Source Code Pro", monospace',
+              borderTop: "1px solid var(--slate-300, #CBD5E1)",
+            }}
           >
             Analysis generated: Dec 8, 2024 · Data version: CBSL Q4 2024 Release
-          </p>
-        </section>
+          </div>
+        </>
       )}
     </article>
   );

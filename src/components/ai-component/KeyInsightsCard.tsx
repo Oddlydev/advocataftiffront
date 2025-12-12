@@ -100,7 +100,7 @@ export default function KeyInsightsCard() {
   const [thumbFeedback, setThumbFeedback] = useState<ThumbFeedback>(null);
 
   return (
-    <article className="flex w-[431px] flex-col rounded-[16px] border border-[#E2E8F0] bg-white px-[16px] py-[20px]">
+    <article className="flex w-[431px] flex-col rounded-[16px] border border-[#E2E8F0] bg-white px-4 py-5">
       <div className="grid grid-cols-[auto,1fr] gap-[12px]">
         <div className="row-span-2 flex h-[40px] w-[40px] items-center justify-center rounded-[12px] bg-[rgba(234,25,82,0.08)] p-3">
           <CardIcon />
@@ -108,13 +108,13 @@ export default function KeyInsightsCard() {
 
         <div className="space-y-2">
           <h3
-            className="text-[14px] font-semibold leading-[20px] text-[#0F172A]"
+            className="text-sm font-semibold leading-5 text-[#0F172A]"
             style={{ fontFamily: "Montserrat" }}
           >
             Significant Growth in Food Consumption
           </h3>
           <p
-            className="text-[12px] leading-[20px] text-[#475569]"
+            className="text-xs leading-5 text-[#475569]"
             style={{ fontFamily: '"Source Code Pro", monospace' }}
           >
             Food spending rose from Rs 5.38T (2022) to Rs 6.13T (2024), driven
@@ -123,7 +123,7 @@ export default function KeyInsightsCard() {
         </div>
 
         <div className="col-start-2 border-t border-[#F1F5F9] pt-[12px]">
-          <div className="flex items-center justify-between text-[10px] leading-[16px] text-[#64748B]">
+            <div className="flex items-center justify-between text-xs leading-4 text-[#64748B]">
             <div
               className="flex items-center gap-[6px]"
               style={{ fontFamily: '"Source Code Pro", monospace' }}
@@ -137,7 +137,7 @@ export default function KeyInsightsCard() {
               style={{ fontFamily: '"Source Code Pro", monospace' }}
             >
               <span className="text-[#64748B]">Helpful?</span>
-              <div className="flex items-center gap-[4px] rounded-full px-[8px] py-[4px] text-[10px] text-[#64748B]">
+              <div className="flex items-center gap-[4px] rounded-full px-2 py-1 text-xs text-[#64748B]">
                 {/* THUMB UP */}
                 <button
                   type="button"

@@ -24,11 +24,7 @@ export default function ComponentsPage() {
     <main className="flex min-h-screen items-center justify-center bg-[#f4f4fb] p-6">
       <section className="w-full max-w-4xl space-y-6 rounded-[32px] bg-white/80 py-12 px-10 shadow-[0_35px_80px_-30px_rgba(0,0,0,0.45)]">
         <header className="flex flex-col gap-1 text-slate-700">
-          <p className="text-sm uppercase tracking-[0.3em] text-violet-500">Components</p>
-          <h1 className="text-3xl font-semibold">AI component library</h1>
-          <p className="text-base text-slate-500">
-            Showcase of the gradient "AI Insights" button and the key insights card.
-          </p>
+          <h1 className="text-3xl font-semibold">Components</h1>
         </header>
 
         <div className="space-y-6">
@@ -83,7 +79,10 @@ export default function ComponentsPage() {
               </p>
             </div>
             <div className="mt-6 flex justify-center">
-              <DetailCard activePanel={visiblePanel} onPanelSelect={handlePanelSelect} />
+              <DetailCard
+                activePanel={visiblePanel}
+                onPanelSelect={handlePanelSelect}
+              />
             </div>
           </div>
 

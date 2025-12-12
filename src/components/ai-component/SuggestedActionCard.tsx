@@ -6,7 +6,7 @@ export default function SuggestedActionCard() {
   return (
     <article
       onClick={() => setActive((prev) => !prev)}
-      className={`group flex w-[431px] items-start gap-[16px] rounded-[16px] border px-[20px] py-[16px] transition-all duration-200 ${
+      className={`group flex w-[431px] items-start gap-[16px] rounded-[16px] border px-5 py-4 transition-all duration-200 ${
         active
           ? "border-[rgba(234,25,82,0.3)] bg-[linear-gradient(135deg,rgba(234,25,82,0.05)_0%,rgba(227,63,255,0.05)_100%)] shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-4px_rgba(0,0,0,0.1)]"
           : "border-[#E2E8F0] bg-white hover:border-[rgba(234,25,82,0.2)] hover:bg-[#F8FAFC] hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]"
@@ -39,7 +39,7 @@ export default function SuggestedActionCard() {
 
       <div className="space-y-[4px]">
         <h3
-          className={`text-[14px] font-semibold leading-[20px] transition-colors duration-200 ${
+          className={`text-sm font-semibold leading-5 transition-colors duration-200 ${
             active
               ? "text-[#EB1A52]"
               : "text-[#0F172A] group-hover:text-[#EB1A52]"
@@ -49,7 +49,7 @@ export default function SuggestedActionCard() {
           Generate Summary Statistics Report
         </h3>
         <p
-          className="text-[12px] leading-[16px] text-[#475569]"
+          className="text-xs leading-4 text-[#475569]"
           style={{
             fontFamily: '"Source Code Pro", monospace',
             letterSpacing: "0",

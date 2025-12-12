@@ -6,7 +6,7 @@ export type ListBulletItemProps = {
 
 export default function ListBulletItem({ text }: ListBulletItemProps) {
   return (
-    <article className="flex w-[431px] items-start gap-[16px] rounded-[12px] border border-[#E2E8F0] bg-white px-[16px] py-[12px]">
+    <article className="flex w-[431px] items-start gap-[16px] rounded-[12px] border border-[#E2E8F0] bg-white px-4 py-3">
       {/* Gradient bullet */}
       <span
         className="
@@ -19,7 +19,7 @@ export default function ListBulletItem({ text }: ListBulletItemProps) {
       />
 
       <p
-        className="text-[12px] leading-[20px] text-[#475569]"
+        className="text-xs leading-5 text-[#475569]"
         style={{
           fontFamily: '"Source Code Pro", monospace',
           letterSpacing: "0",
