@@ -80,12 +80,20 @@ export default function AIInsightsPanel() {
 
           <section className="space-y-3">
             <div className="flex items-center justify-between">
-              <p
-                className="text-base leading-6 font-semibold text-slate-900"
-                style={{ fontFamily: "Montserrat" }}
-              >
-                Key Insights <span className="text-xs text-slate-500">(2)</span>
-              </p>
+              <div className="flex items-center gap-2">
+                <p
+                  className="text-base leading-6 font-semibold text-slate-900"
+                  style={{ fontFamily: "Montserrat" }}
+                >
+                  Key Insights
+                </p>
+                <span
+                  className="flex h-5 items-center justify-center rounded-[var(--border-radius-rounded-full,9999px)] bg-[var(--slate-200,#E2E8F0)] px-2 text-[var(--slate-700,#334155)] text-[10px] font-semibold leading-[15px]"
+                  style={{ fontFamily: "Arial" }}
+                >
+                  2
+                </span>
+              </div>
               <span
                 className="text-xs font-normal leading-5 text-slate-500"
                 style={{ fontFamily: '"Source Code Pro"' }}
@@ -98,13 +106,20 @@ export default function AIInsightsPanel() {
 
           <section className="space-y-3">
             <div className="flex items-center justify-between">
-              <p
-                className="text-base leading-6 font-semibold text-slate-900"
-                style={{ fontFamily: "Montserrat" }}
-              >
-                More Insights{" "}
-                <span className="text-xs text-slate-500">(6)</span>
-              </p>
+              <div className="flex items-center gap-2">
+                <p
+                  className="text-base leading-6 font-semibold text-slate-900"
+                  style={{ fontFamily: "Montserrat" }}
+                >
+                  More Insights
+                </p>
+                <span
+                  className="flex h-5 items-center justify-center rounded-[var(--border-radius-rounded-full,9999px)] bg-[var(--slate-200,#E2E8F0)] px-2 text-[var(--slate-700,#334155)] text-[10px] font-semibold leading-[15px]"
+                  style={{ fontFamily: "Arial" }}
+                >
+                  6
+                </span>
+              </div>
               <span
                 className="text-[11px] text-slate-500"
                 style={{ fontFamily: '"Source Code Pro"' }}
