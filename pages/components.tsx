@@ -125,7 +125,7 @@ export default function ComponentsPage() {
               </p>
             </div>
             <div className="mt-6 flex justify-center">
-              {/* ✅ No more external autoOpen control */}
+              {/* No more external autoOpen control */}
               <TakeawaysCard />
             </div>
           </div>

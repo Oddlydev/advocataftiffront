@@ -19,6 +19,8 @@ export default function TakeawaysCard({
 }: TakeawaysCardProps) {
   const [state, setState] = useState<"idle" | "analyzing" | "revealed">("idle");
   const delayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Used to trigger transitions/animations on reveal
   const [contentVisible, setContentVisible] = useState(false);
 
   const reveal = useCallback(() => {
@@ -48,11 +50,15 @@ export default function TakeawaysCard({
     }
   }, [state]);
 
+  // Slower start (no “fast drop”)
+  const EASING = "cubic-bezier(0.4, 0, 0.2, 1)";
+
+  // Keep your stagger, but start earlier so no empty space appears
   const animationStyle = (delay: number) =>
     contentVisible
       ? {
           opacity: 1,
-          animation: `fade-slide-down-slow 1.4s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s both`,
+          animation: `fade-slide-down-slow 1.6s ${EASING} ${delay}s both`,
         }
       : { opacity: 0 };
 
@@ -62,11 +68,6 @@ export default function TakeawaysCard({
         @keyframes fade-slide-down-slow {
           0% { opacity: 0; transform: translateY(-10px); }
           100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes takeaways-expand-slow {
-          0% { opacity: 0; max-height: 0px; transform: translateY(-6px); }
-          100% { opacity: 1; max-height: 800px; transform: translateY(0); }
         }
       `}</style>
 
@@ -85,40 +86,50 @@ export default function TakeawaysCard({
         ) : state === "analyzing" ? (
           <div className="inline-flex items-center gap-1 text-xs font-semibold leading-4 font-[Montserrat]">
             <LoadingIcon />
-            {/* ✅ Removed gradient-clipped text to prevent flicker/glitch */}
             <span className="text-slate-600">Analyzing...</span>
           </div>
         ) : null}
       </div>
 
       {state === "revealed" && (
-        <div
-          className="mt-3 space-y-4 overflow-hidden"
-          style={{
-            animation: contentVisible
-              ? "takeaways-expand-slow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both"
-              : undefined,
-          }}
-        >
-          <div className="opacity-0" style={animationStyle(0.2)}>
-            <h3 className="text-sm font-semibold leading-5 text-slate-700 font-[Montserrat]">
-              Key Takeaways
-            </h3>
-          </div>
+        <div className="mt-3">
+          {/* Grid reveal: no max-height jump, no empty space flash */}
+          <div
+            className="grid overflow-hidden transition-[grid-template-rows,opacity,transform]"
+            style={{
+              gridTemplateRows: contentVisible ? "1fr" : "0fr",
+              transitionDuration: "1200ms",
+              transitionTimingFunction: EASING,
+              opacity: contentVisible ? 1 : 0,
+              transform: contentVisible ? "translateY(0)" : "translateY(-6px)",
+            }}
+          >
+            <div className="min-h-0">
+              <div className="space-y-4">
+                {/* Title */}
+                <div className="opacity-0" style={animationStyle(0.08)}>
+                  <h3 className="text-sm font-semibold leading-5 text-slate-700 font-[Montserrat]">
+                    Key Takeaways
+                  </h3>
+                </div>
 
-          <div className="space-y-3">
-            {takeawayPoints.map((point, index) => (
-              <div
-                key={point}
-                className="opacity-0"
-                style={animationStyle(0.6 + index * 0.35)}
-              >
-                <ListBulletItem
-                  text={point}
-                  className="bg-transparent px-0 py-0"
-                />
+                {/* Points */}
+                <div className="space-y-3">
+                  {takeawayPoints.map((point, index) => (
+                    <div
+                      key={point}
+                      className="opacity-0"
+                      style={animationStyle(0.18 + index * 0.22)}
+                    >
+                      <ListBulletItem
+                        text={point}
+                        className="bg-transparent px-0 py-0"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       )}
