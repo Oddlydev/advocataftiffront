@@ -203,12 +203,13 @@ button {
   --color-brand-black: #1a1a1a;
   --color-brand-white: #f1f2f2;
 
+  --brand-1-500: #EB1A52;
   --color-brand-1-50: #fdedf1;
   --color-brand-1-100: #f9bece;
   --color-brand-1-200: #f58faa;
   --color-brand-1-300: #f16087;
   --color-brand-1-400: #ed3a6a;
-  --color-brand-1-500: #ea1a52;
+  --color-brand-1-500: #EB1A52;
   --color-brand-1-600: #cf1244;
   --color-brand-1-700: #a90e38;
   --color-brand-1-800: #7a0a28;
@@ -325,5 +326,4 @@ button {
     padding-right: 4rem;
   }
 }
-
 

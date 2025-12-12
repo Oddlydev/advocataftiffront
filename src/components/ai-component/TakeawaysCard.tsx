@@ -72,7 +72,7 @@ export default function TakeawaysCard({
 
       {state === "revealed" && (
         <>
-          <h3 className="mt-5 text-lg font-semibold tracking-[0px] leading-5 text-[#334155] font-[Montserrat]">
+          <h3 className="mt-5 text-lg font-semibold tracking-[0px] leading-5 text-slate-700 font-[Montserrat]">
             Key Takeaways
           </h3>
 
@@ -80,7 +80,7 @@ export default function TakeawaysCard({
             {takeawayPoints.map((point) => (
               <div
                 key={point}
-                className="flex items-start gap-2 text-sm leading-[1.6] text-[#475569]"
+                className="flex items-start gap-2 text-sm leading-[1.6] text-slate-600"
               >
                 <span className="mt-[6px] h-[8px] w-[8px] rounded-full bg-gradient-to-b from-[#ea1952] to-[#aa1e58]" />
                 <p className="flex-1 font-['Source Code Pro']">{point}</p>

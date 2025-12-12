@@ -61,9 +61,9 @@ export default function DetailCard({
       </div>
 
       {/* Main white card (UNCHANGED) */}
-      <article className="flex flex-col gap-4 rounded-[18px] border border-[#E2E8F0] bg-white px-6 py-5 drop-shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
+      <article className="flex flex-col gap-4 rounded-[18px] border border-slate-200 bg-white px-6 py-5 drop-shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
         <div className="space-y-2.5">
-          <p className="text-sm leading-5 text-[#334155] font-[Montserrat]">
+          <p className="text-sm leading-5 text-slate-700 font-[Montserrat]">
             We've analyzed 26 years of consumption data (1998-2024) across all
             12 categories. This comprehensive statistical report reveals
             significant patterns in household spending behavior and identifies
@@ -71,10 +71,10 @@ export default function DetailCard({
           </p>
 
           {/* Overall Growth Patterns */}
-          <p className="text-sm font-semibold text-[#334155] font-[Montserrat]">
+          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Overall Growth Patterns
           </p>
-          <p className="text-xs leading-5 text-[#475569] font-['Source_Code_Pro',monospace]">
+          <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro',monospace]">
             The total private consumption expenditure has grown from Rs 8.2T in
             1998 to Rs 24.7T in 2024, representing a compound annual growth rate
             (CAGR) of 4.3%. Growth has been uneven across categories, with some
@@ -83,17 +83,15 @@ export default function DetailCard({
           </p>
 
           {/* Category Performance Metrics – List 1 */}
-          <p className="text-sm font-semibold text-[#334155] font-[Montserrat]">
+          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Category Performance Metrics
           </p>
 
           <div className="space-y-1.5 pl-1.5">
             {firstMetrics.map((line) => (
-                <div key={line} className="flex items-start gap-2.5">
-                  <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p
-                  className="text-xs leading-5 text-[#475569] font-['Source_Code_Pro',monospace]"
-                >
+              <div key={line} className="flex items-start gap-2.5">
+                <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro',monospace]">
                   {line}
                 </p>
               </div>
@@ -101,17 +99,15 @@ export default function DetailCard({
           </div>
 
           {/* Category Performance Metrics – List 2 */}
-          <p className="pt-2.5 text-sm font-semibold text-[#334155] font-[Montserrat]">
+          <p className="pt-2.5 text-sm font-semibold text-slate-700 font-[Montserrat]">
             Category Performance Metrics
           </p>
 
           <div className="space-y-1.5 pl-1.5">
             {secondMetrics.map((line) => (
-                <div key={line} className="flex items-start gap-2.5">
-                  <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p
-                  className="text-xs leading-5 text-[#475569] font-['Source_Code_Pro',monospace]"
-                >
+              <div key={line} className="flex items-start gap-2.5">
+                <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro',monospace]">
                   {line}
                 </p>
               </div>
@@ -119,7 +115,7 @@ export default function DetailCard({
           </div>
 
           {/* Links to other panels */}
-          <div className="space-y-1 border-t border-[#E2E8F0] pt-4">
+          <div className="space-y-1 border-t border-slate-200 pt-4">
             {[
               { key: "takeaways", text: "Click to see Key Takeaways" },
               { key: "methodology", text: "Click to see Methodology" },
@@ -154,20 +150,16 @@ export default function DetailCard({
 
           {/* Recommendations – plain numbered list */}
           <div className="pt-4">
-          <p className="text-sm font-semibold text-[#334155] font-[Montserrat]">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
               Recommendations
             </p>
             <div className="mt-2 space-y-1">
               {recommendations.map((line, idx) => (
                 <div key={line} className="flex items-start gap-2">
-                  <span
-                    className="mt-0.5 w-3 text-xs font-medium text-[#EB1A52] font-['Source_Code_Pro',monospace]"
-                  >
+                  <span className="mt-0.5 w-3 text-xs font-medium text-[var(--brand-1-500)] font-['Source_Code_Pro',monospace]">
                     {idx + 1}.
                   </span>
-                  <p
-                    className="flex-1 text-xs leading-5 text-[#475569] font-['Source_Code_Pro',monospace]"
-                  >
+                  <p className="flex-1 text-xs leading-5 text-slate-600 font-['Source_Code_Pro',monospace]">
                     {line}
                   </p>
                 </div>
@@ -176,11 +168,11 @@ export default function DetailCard({
           </div>
 
           {/* Divider + button + caption */}
-          <div className="mt-4.5 border-t border-[#E2E8F0] pt-4">
-              <button
-                type="button"
-                className="flex w-full items-center justify-center gap-2 rounded-[8px] bg-gradient-to-r from-[#EA1952] to-[#AA1E58] px-2.5 py-3 text-sm font-semibold text-white shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)]"
-              >
+          <div className="mt-4.5 border-t border-slate-200 pt-4">
+            <button
+              type="button"
+              className="flex w-full items-center justify-center gap-2 rounded-[8px] bg-gradient-to-r from-[#EA1952] to-[#AA1E58] px-2.5 py-3 text-sm font-semibold text-white shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)]"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -216,7 +208,7 @@ export default function DetailCard({
               </span>
             </button>
 
-            <p className="mt-2 text-center text-xs leading-4 text-[#64748B] font-['Source_Code_Pro',monospace]">
+            <p className="mt-2 text-center text-xs leading-4 text-slate-500 font-['Source_Code_Pro',monospace]">
               Formatted .txt file • Ready for sharing
             </p>
           </div>

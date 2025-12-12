@@ -6,22 +6,27 @@ export type ListBulletItemProps = {
 
 export default function ListBulletItem({ text }: ListBulletItemProps) {
   return (
-    <article className="flex w-[431px] items-start gap-[16px] rounded-[12px] border border-[#E2E8F0] bg-white px-4 py-3">
+    <article className="flex items-start gap-3 rounded-[12px] bg-white">
       {/* Gradient bullet */}
       <span
         className="
           mt-[6px]
-          p-1
+          h-[8px]
+          w-[8px]
+          min-h-[8px]
+          min-w-[8px]
+          shrink-0
           rounded-full
           bg-[linear-gradient(270deg,#EA1952_0%,#AA1E58_100%)]
           shadow-[0_1px_3px_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)]
         "
+        aria-hidden="true"
       />
 
       <p
-        className="text-xs leading-5 text-[#475569]"
+        className="text-xs leading-5 text-slate-600"
         style={{
-          fontFamily: '"Source Code Pro", monospace',
+          fontFamily: '"Source Code Pro"',
           letterSpacing: "0",
         }}
       >

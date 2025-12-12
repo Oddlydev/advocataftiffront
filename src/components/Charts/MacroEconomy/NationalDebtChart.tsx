@@ -44,7 +44,7 @@ const seriesConfig: MacroSeriesConfig[] = [
   {
     key: "DPP_MN",
     label: "Debt Per Person (Rs. Mn)",
-    color: "#EB1A52",
+    color: "var(--brand-1-500)",
     valueFormatter: fmt3,
     axis: "right",
   },

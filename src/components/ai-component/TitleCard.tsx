@@ -11,10 +11,7 @@ export default function TitleCard() {
         border border-slate-200
         bg-slate-50
         p-4
-        shadow-[0_10px_30px_-25px_rgba(15,23,42,0.1)]
-        transition-shadow
         duration-200
-        hover:shadow-[0_10px_30px_-15px_rgba(15,23,42,0.15)]
       "
     >
       {/* Header Area */}
@@ -24,16 +21,16 @@ export default function TitleCard() {
         aria-expanded={expanded}
         className="flex w-full flex-col gap-[6px] text-left"
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative group">
           <p
             className="text-xs uppercase tracking-[0.3px] text-slate-500 leading-4"
-            style={{ fontFamily: '"Source Code Pro", monospace' }}
+            style={{ fontFamily: '"Source Code Pro"' }}
           >
             AI-generated analysis
           </p>
 
           {/* Info icon */}
-          <span className="group relative inline-flex h-[18px] w-[18px] items-center justify-center text-[#94A3B8] transition-colors hover:text-[#EB1A52] group-hover:text-[#EB1A52]">
+          <span className="inline-flex items-center justify-center text-[#94A3B8] transition-colors hover:text-[var(--brand-1-500)] group-hover:text-[var(--brand-1-500)]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -41,6 +38,7 @@ export default function TitleCard() {
               viewBox="0 0 16 16"
               fill="none"
               aria-hidden="true"
+              className="stroke-[#94A3B8] transition group-hover:stroke-[var(--brand-1-500)]"
             >
               <g clipPath="url(#clip0_8707_3265)">
                 <path
@@ -71,18 +69,18 @@ export default function TitleCard() {
                 </clipPath>
               </defs>
             </svg>
+          </span>
 
-            {/* Tooltip */}
-            <span
-              className="
-              pointer-events-none absolute left-full ml-2 top-1/2 hidden 
-              h-5 min-w-[200px] -translate-y-1/2 items-center rounded-[4px] 
-              bg-black px-1.5 py-1 text-xs leading-2 text-[8px] font-['Source_Code_Pro'] 
-              text-white group-hover:flex
-            "
-            >
-              Show methodology, Source & Limitations
-            </span>
+          <span
+            className="
+            pointer-events-none absolute right-[-15px] top-[17px] hidden 
+            min-w-[200px] bg-[#1A1A1A] px-1.5 py-1 text-xs leading-4
+            text-[10px] font-['Source_Code_Pro'] text-white rounded-sm
+            shadow-lg
+            group-hover:flex
+          "
+          >
+            Show methodology, Source & Limitations
           </span>
         </div>
 
@@ -99,17 +97,17 @@ export default function TitleCard() {
       {/* Expanded Content */}
       {expanded && (
         <>
-          <section className="mt-[14px] border-t border-[#E2E8F0] pt-[14px]">
+          <section className="mt-4 border-t border-slate-300 pt-3">
             <p
-              className="text-xs font-semibold uppercase tracking-[0.4px] text-[#334155] mb-[4px]"
-              style={{ fontFamily: '"Source Code Pro", monospace' }}
+              className="text-xs font-semibold tracking-[0.4px] text-slate-700 mb-1"
+              style={{ fontFamily: '"Source Code Pro"' }}
             >
               How Insights are Generated:
             </p>
 
             <p
-              className="text-xs leading-4 text-[#475569] mb-[8px]"
-              style={{ fontFamily: '"Source Code Pro", monospace' }}
+              className="text-[10px] leading-4 text-slate-600 mb-2 font-normal"
+              style={{ fontFamily: '"Source Code Pro"' }}
             >
               AI analyzes 26 years (1998–2024) of Central Bank data using
               statistical methods including trend analysis (linear regression,
@@ -120,39 +118,60 @@ export default function TitleCard() {
             </p>
 
             <p
-              className="text-xs leading-4 text-[#475569] mb-[8px]"
-              style={{ fontFamily: '"Source Code Pro", monospace' }}
+              className="text-xs font-semibold tracking-[0.4px] text-slate-700 mb-1"
+              style={{ fontFamily: '"Source Code Pro"' }}
             >
-              <strong>Dataset Coverage:</strong> Private Consumption Expenditure
-              across 12 categories: Food, Alcohol & Tobacco, Clothing, Housing,
-              Furnishings, Health, Transport, Communication, Recreation,
-              Education, Restaurants & Hotels, and Miscellaneous Goods &
-              Services. All values are at current market prices in Sri Lankan
-              Rupees (Rs).
+              Dataset Coverage:
             </p>
 
             <p
-              className="text-xs font-semibold uppercase tracking-[0.4px] text-[#334155] mb-[4px]"
-              style={{ fontFamily: '"Source Code Pro", monospace' }}
+              className="text-[10px] leading-4 text-slate-600 mb-2 font-normal"
+              style={{ fontFamily: '"Source Code Pro"' }}
+            >
+              Private Consumption Expenditure across 12 categories: Food,
+              Alcohol & Tobacco, Clothing, Housing, Furnishings, Health,
+              Transport, Communication, Recreation, Education, Restaurants &
+              Hotels, and Miscellaneous Goods & Services. All values are at
+              current market prices in Sri Lankan Rupees (Rs).
+            </p>
+
+            <p
+              className="text-xs font-semibold tracking-[0.4px] text-slate-700 mb-[4px]"
+              style={{ fontFamily: '"Source Code Pro"' }}
             >
               Limitations:
             </p>
 
             <ul
-              className="text-xs leading-4 text-[#475569] list-disc pl-4 mb-[10px]"
-              style={{ fontFamily: '"Source Code Pro", monospace' }}
+              className="text-[10px] leading-4 text-slate-600 list-disc pl-3.5"
+              style={{ fontFamily: '"Source Code Pro"' }}
             >
-              <li>Historical analysis only – does not predict future trends</li>
-              <li>Nominal values not adjusted for inflation</li>
-              <li>Cannot identify causation, only correlations</li>
+              <li
+                className="text-[10px] leading-4 text-slate-600 list-disc"
+                style={{ fontFamily: '"Source Code Pro"' }}
+              >
+                Historical analysis only – does not predict future trends
+              </li>
+              <li
+                className="text-[10px] leading-4 text-slate-600 list-disc"
+                style={{ fontFamily: '"Source Code Pro"' }}
+              >
+                Nominal values not adjusted for inflation
+              </li>
+              <li
+                className="text-[10px] leading-4 text-slate-600 list-disc"
+                style={{ fontFamily: '"Source Code Pro"' }}
+              >
+                Cannot identify causation, only correlations
+              </li>
             </ul>
           </section>
 
           {/* Footer Divider — matches screenshot */}
           <div
-            className="mt-[14px] pt-[10px] text-xs uppercase tracking-[0.4px] text-[#64748B]"
+            className="mt-4 pt-1.5 text-[9px] tracking-[0.4px] text-slate-500"
             style={{
-              fontFamily: '"Source Code Pro", monospace',
+              fontFamily: '"Source Code Pro"',
               borderTop: "1px solid var(--slate-300, #CBD5E1)",
             }}
           >

@@ -15,7 +15,7 @@ const COLOR_PALETTE = [
   "#F16087",
   "#F58FAA",
   "#ED3A6A",
-  "#EB1A52",
+  "var(--brand-1-500)",
   "#1C0209",
   "#7A0A28",
   "#A90E38",

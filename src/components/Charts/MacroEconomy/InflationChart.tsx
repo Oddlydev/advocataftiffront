@@ -15,7 +15,7 @@ const seriesConfig: MacroSeriesConfig[] = [
   {
     key: "food",
     label: "Food & Non-Alcoholic Beverages",
-    color: "#EB1A52",
+    color: "var(--brand-1-500)",
     valueFormatter: percentFormatter,
   },
   {

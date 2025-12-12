@@ -66,10 +66,10 @@ export default function MethodologyCard({
 
       {state === "revealed" && (
         <>
-          <h3 className="mt-5 text-lg font-semibold tracking-[0px] leading-5 text-[#334155] font-[Montserrat]">
+          <h3 className="mt-5 text-lg font-semibold tracking-[0px] leading-5 text-slate-700 font-[Montserrat]">
             Methodology
           </h3>
-          <p className="mt-3 text-xs leading-5 tracking-[0px] text-[#475569] font-['Source Code Pro']">
+          <p className="mt-3 text-xs leading-5 tracking-[0px] text-slate-600 font-['Source Code Pro']">
             Analysis performed using descriptive statistics, variance analysis,
             and correlation matrices. All figures are inflation-adjusted to 2024
             prices using the Consumer Price Index (CPI) provided by the Reserve

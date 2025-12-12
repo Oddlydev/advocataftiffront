@@ -85,7 +85,7 @@ export default function KeyInsightsCard() {
           </h3>
           <p
             className="text-xs leading-5 text-slate-600 font-normal"
-            style={{ fontFamily: '"Source Code Pro", monospace' }}
+            style={{ fontFamily: '"Source Code Pro"' }}
           >
             Food spending rose from Rs 5.38T (2022) to Rs 6.13T (2024), driven
             by 9.2% growth in 2023 and 4.4% in 2024.
@@ -93,10 +93,10 @@ export default function KeyInsightsCard() {
         </div>
 
         <div className="col-start-2 border-t border-slate-100 pt-1.5 mt-2">
-          <div className="flex items-center justify-between text-xs leading-4 text-[#64748B]">
+          <div className="flex items-center justify-between text-xs leading-4 text-slate-500">
             <div
               className="flex items-center gap-1"
-              style={{ fontFamily: '"Source Code Pro", monospace' }}
+              style={{ fontFamily: '"Source Code Pro"' }}
             >
               <span className="text-slate-500">Confidence:</span>
               <span className="text-slate-600">High (85%)</span>
@@ -104,7 +104,7 @@ export default function KeyInsightsCard() {
 
             <div
               className="flex items-center gap-2.5"
-              style={{ fontFamily: '"Source Code Pro", monospace' }}
+              style={{ fontFamily: '"Source Code Pro"' }}
             >
               <span className="text-slate-500 leading-4">Helpful?</span>
               <div className="flex items-center gap-1.5 rounded-full text-xs text-slate-600">
