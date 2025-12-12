@@ -52,6 +52,7 @@ export function ForeignReservesChart({ datasetUrl, controlIds }: MacroChartWrapp
       parseRow={parseRow}
       series={series}
       yAxisLabel="Official Reserve Assets (USD Mn.)"
+      axisLabelsFromCsv
       yMaxPadding={2}
     />
   );

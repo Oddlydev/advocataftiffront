@@ -22,6 +22,11 @@ export type MacroLineChartProps = {
   series: MacroSeriesConfig[];
   yAxisLabel: string;
   yAxisRightLabel?: string;
+  /**
+   * When true, use the CSV's first column header for the X‑axis label
+   * and the second column header for the (left) Y‑axis label.
+   */
+  axisLabelsFromCsv?: boolean;
   controlIds: {
     zoomInId: string;
     zoomOutId: string;
@@ -75,6 +80,7 @@ export function MacroLineChart({
   series,
   yAxisLabel,
   yAxisRightLabel,
+  axisLabelsFromCsv,
   controlIds,
   yMaxPadding = 2,
   minY,
@@ -82,6 +88,10 @@ export function MacroLineChart({
   const chartRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [data, setData] = useState<MacroLineDatum[]>([]);
+  const [axisLabels, setAxisLabels] = useState<{
+    x?: string;
+    yLeft?: string;
+  }>({});
 
   // ----------------
   // Load CSV data
@@ -91,13 +101,31 @@ export function MacroLineChart({
     async function loadDataset() {
       if (!datasetUrl) {
         setData([]);
+        if (axisLabelsFromCsv) {
+          setAxisLabels({});
+        }
         return;
       }
       try {
         const text = await fetchCsvWithFallback(datasetUrl);
-        const parsed = d3
-          .csvParse(text.replace(/\uFEFF/g, ""), (row) => {
-            const parsedRow = parseRow(row);
+        const cleanedText = text.replace(/\uFEFF/g, "");
+        const raw = d3.csvParse(cleanedText);
+
+        if (axisLabelsFromCsv) {
+          const [firstCol, secondCol] = raw.columns ?? [];
+          if (isMounted) {
+            setAxisLabels({
+              x: firstCol || undefined,
+              yLeft: secondCol || undefined,
+            });
+          }
+        } else if (isMounted) {
+          setAxisLabels({});
+        }
+
+        const parsed = raw
+          .map((row) => {
+            const parsedRow = parseRow(row as d3.DSVRowString<string>);
             if (!parsedRow) return null;
             const sanitized: MacroLineDatum = { year: parsedRow.year };
             series.forEach(({ key }) => {
@@ -114,14 +142,19 @@ export function MacroLineChart({
           `[MacroLineChart] Failed to load dataset ${datasetUrl} ::`,
           error
         );
-        if (isMounted) setData([]);
+        if (isMounted) {
+          setData([]);
+          if (axisLabelsFromCsv) {
+            setAxisLabels({});
+          }
+        }
       }
     }
     loadDataset();
     return () => {
       isMounted = false;
     };
-  }, [datasetUrl, parseRow, series]);
+  }, [datasetUrl, parseRow, series, axisLabelsFromCsv]);
 
   useEffect(() => {
     const container = chartRef.current;
@@ -154,6 +187,33 @@ export function MacroLineChart({
       .attr("transform", `translate(${MARGIN.left},${MARGIN.top})`);
 
     const years = data.map((d) => d.year);
+
+    // Determine overall magnitude of Y values so we can
+    // keep axis label units in sync with compact tick format.
+    const allValues: number[] = [];
+    data.forEach((d) => {
+      series.forEach(({ key }) => {
+        const v = d[key];
+        if (typeof v === "number" && Number.isFinite(v)) {
+          allValues.push(Math.abs(v));
+        }
+      });
+    });
+
+    const maxAbs = allValues.length ? (d3.max(allValues) as number) : 0;
+    let scaleLevel: "base" | "thousand" | "million" | "billion" = "base";
+    if (maxAbs >= 1000 && maxAbs < 1_000_000) {
+      scaleLevel = "thousand";
+    } else if (maxAbs >= 1_000_000 && maxAbs < 1_000_000_000) {
+      scaleLevel = "million";
+    } else if (maxAbs >= 1_000_000_000) {
+      scaleLevel = "billion";
+    }
+
+    let valueDivisor = 1;
+    if (scaleLevel === "thousand") valueDivisor = 1000;
+    else if (scaleLevel === "million") valueDivisor = 1_000_000;
+    else if (scaleLevel === "billion") valueDivisor = 1_000_000_000;
     const x = d3
       .scalePoint<number>()
       .domain(years)
@@ -207,6 +267,21 @@ export function MacroLineChart({
       return (num / 1_000_000_000).toFixed(num >= 10_000_000_000 ? 0 : 1);
     };
 
+    const adjustLabelForScale = (label: string): string => {
+      if (scaleLevel !== "thousand") return label;
+      let next = label;
+      // Convert common "USD mn" patterns to "USD (Bn)" when values are compacted 1000 -> 1.0.
+      next = next.replace(/USD\s*\(?\s*mn\)?\.?/i, "USD (Bn)");
+      next = next.replace(/\(USD\s*mn\)/i, "(USD Bn)");
+      next = next.replace(/\bmn\b\.?/i, "Bn");
+      next = next.replace(/\bmillions?\b/i, "Billions");
+      return next;
+    };
+
+    const resolvedYAxisLabel = adjustLabelForScale(
+      axisLabels.yLeft || yAxisLabel
+    );
+
     // AXES
     svg
       .append("g")
@@ -247,7 +322,7 @@ export function MacroLineChart({
       .attr(
         "class", "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
       )
-      .text(yAxisLabel);
+      .text(resolvedYAxisLabel);
 
     if (useDualAxis && yAxisRightLabel) {
       svg
@@ -409,6 +484,8 @@ export function MacroLineChart({
             const tooltipRows = series
               .map((cfg) => {
                 const v = d[cfg.key];
+                const scaled =
+                  typeof v === "number" ? v / valueDivisor : null;
                 return `
                   <div class="flex items-start justify-between gap-1">
                     <div class="flex items-center gap-1">
@@ -417,8 +494,8 @@ export function MacroLineChart({
                     </div>
                     <span style="color:${cfg.color}" class="text-[10px] md:text-xs">
                       ${
-                        typeof v === "number"
-                          ? (cfg.valueFormatter?.(v) ?? v.toFixed(3))
+                        typeof scaled === "number"
+                          ? (cfg.valueFormatter?.(scaled) ?? scaled.toFixed(3))
                           : "N/A"
                       }
                     </span>
@@ -539,7 +616,16 @@ export function MacroLineChart({
       zoomOutBtn.removeEventListener("click", onZoomOut);
       resetZoomBtn.removeEventListener("click", onReset);
     };
-  }, [data, series, yAxisLabel, yAxisRightLabel, controlIds, yMaxPadding, minY]);
+  }, [
+    data,
+    series,
+    yAxisLabel,
+    yAxisRightLabel,
+    controlIds,
+    yMaxPadding,
+    minY,
+    axisLabels,
+  ]);
 
   return (
     <div className="relative w-full">

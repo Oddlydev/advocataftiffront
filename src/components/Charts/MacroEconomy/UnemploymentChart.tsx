@@ -51,6 +51,7 @@ export function UnemploymentChart({ datasetUrl, controlIds }: MacroChartWrapperP
       parseRow={parseRow}
       series={series}
       yAxisLabel="Unemployment Rate (%)"
+      axisLabelsFromCsv
       yMaxPadding={2}
     />
   );
