@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import AIButton from "@/src/components/ai-component/AIButton";
 import AIInsightsPanel from "@/src/components/ai-component/AIInsightsPanel";
@@ -13,18 +13,10 @@ import TitleCard from "@/src/components/ai-component/TitleCard";
 import InsightsDisclaimerCard from "@/src/components/ai-component/InsightsDisclaimerCard";
 import KeyInsightsIcon from "@/src/components/ai-component/KeyInsightsIcon";
 
-type PanelKey = "takeaways" | "methodology";
-
 export default function ComponentsPage() {
-  const [visiblePanel, setVisiblePanel] = useState<PanelKey | null>(null);
-
-  const handlePanelSelect = (panel: PanelKey) => {
-    setVisiblePanel(panel);
-  };
-
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f4f4fb] p-6">
-      <section className="w-full max-w-5/6 space-y-6 rounded-[32px] bg-white/80 py-12 px-10 shadow-[0_35px_80px_-30px_rgba(0,0,0,0.45)]">
+      <section className="w-full space-y-6 rounded-[32px] bg-white/80 py-12 px-10 shadow-[0_35px_80px_-30px_rgba(0,0,0,0.45)]">
         <header className="flex flex-col gap-1 text-slate-700">
           <h1 className="text-3xl font-semibold">Components</h1>
         </header>
@@ -92,10 +84,8 @@ export default function ComponentsPage() {
               </p>
             </div>
             <div className="mt-6 flex justify-center">
-              <DetailCard
-                activePanel={visiblePanel}
-                onPanelSelect={handlePanelSelect}
-              />
+              {/* ✅ DetailCard no longer takes activePanel/onPanelSelect */}
+              <DetailCard />
             </div>
           </div>
 
@@ -135,7 +125,8 @@ export default function ComponentsPage() {
               </p>
             </div>
             <div className="mt-6 flex justify-center">
-              <TakeawaysCard autoOpen={visiblePanel === "takeaways"} />
+              {/* ✅ No more external autoOpen control */}
+              <TakeawaysCard />
             </div>
           </div>
 
@@ -149,7 +140,7 @@ export default function ComponentsPage() {
               </p>
             </div>
             <div className="mt-6 flex justify-center">
-              <MethodologyCard autoOpen={visiblePanel === "methodology"} />
+              <MethodologyCard />
             </div>
           </div>
 
