@@ -53,6 +53,7 @@ export function ForeignExchangeChart({ datasetUrl, controlIds }: MacroChartWrapp
       parseRow={parseRow}
       series={series}
       yAxisLabel="Balance of Payments (USD Mn.)"
+      axisLabelsFromCsv
       yMaxPadding={2}
     />
   );

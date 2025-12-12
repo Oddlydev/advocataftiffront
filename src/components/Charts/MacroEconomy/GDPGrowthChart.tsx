@@ -51,6 +51,7 @@ export function GDPGrowthChart({ datasetUrl, controlIds }: MacroChartWrapperProp
       parseRow={parseRow}
       series={series}
       yAxisLabel="GDP Growth Rate (%)"
+      axisLabelsFromCsv
       yMaxPadding={2}
     />
   );
