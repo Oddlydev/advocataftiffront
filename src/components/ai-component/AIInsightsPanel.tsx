@@ -7,7 +7,7 @@ import TitleCard from "./TitleCard";
 
 export default function AIInsightsPanel() {
   return (
-    <section className="flex w-full flex-col gap-6">
+    <div className="flex w-full flex-col gap-3">
       <article className="rounded-[14px] bg-white">
         <header className="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
           <div className="flex items-center gap-3">
@@ -123,6 +123,6 @@ export default function AIInsightsPanel() {
       </article>
 
       <InsightsDisclaimerCard />
-    </section>
+    </div>
   );
 }

@@ -73,7 +73,7 @@ export default function TitleCard() {
 
           <span
             className="
-            pointer-events-none absolute right-[-15px] top-[17px] hidden 
+            pointer-events-none absolute right-[65px] top-[17px] hidden 
             min-w-[200px] bg-[#1A1A1A] px-1.5 py-1 text-xs leading-4
             text-[10px] font-['Source_Code_Pro'] text-white rounded-sm
             shadow-lg
