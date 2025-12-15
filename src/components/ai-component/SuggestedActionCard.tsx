@@ -3,12 +3,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import LoadingIcon from "./LoadingIcon";
 import DetailCard, { DetailVariant } from "./DetailCard";
+import type { DetailContentMap } from "./detailContent.types";
 
 type SuggestedActionCardProps = {
   showDetailOnClick?: boolean;
   title?: string;
   description?: string;
   detailVariant?: DetailVariant;
+  detailContent?: DetailContentMap[DetailVariant];
 };
 
 type FlowState = "idle" | "thinking" | "revealing" | "detail";
@@ -18,8 +20,11 @@ export default function SuggestedActionCard({
   title = "Generate Summary Statistics Report",
   description = "Get mean, median, growth rates & volatility for all 12 categories",
   detailVariant,
+  detailContent,
 }: SuggestedActionCardProps) {
   const [active, setActive] = useState(false);
+
+  const resolvedVariant = detailVariant ?? "composition";
 
   const [flow, setFlow] = useState<FlowState>("idle");
   const [detailVisible, setDetailVisible] = useState(false);
@@ -167,7 +172,12 @@ export default function SuggestedActionCard({
                 }}
               >
                 <div className="min-h-0">
-                  <DetailCard variant={detailVariant} />
+                  {detailContent ? (
+                    <DetailCard
+                      variant={resolvedVariant}
+                      detailContent={detailContent}
+                    />
+                  ) : null}
                 </div>
               </div>
             </div>

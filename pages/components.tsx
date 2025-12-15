@@ -1,7 +1,9 @@
 import React from "react";
 
 import AIButton from "@/src/components/ai-component/AIButton";
-import AIInsightsPanel from "@/src/components/ai-component/AIInsightsPanel";
+import AIInsightsPanel, {
+  detailContentByVariant,
+} from "@/src/components/ai-component/AIInsightsPanel";
 import DetailCard from "@/src/components/ai-component/DetailCard";
 import KeyInsightsCard from "@/src/components/ai-component/KeyInsightsCard";
 import ListBulletItem from "@/src/components/ai-component/ListBulletItem";
@@ -84,7 +86,10 @@ export default function ComponentsPage() {
               </p>
             </div>
             <div className="mt-6 flex justify-center">
-              <DetailCard />
+              <DetailCard
+                variant="composition"
+                detailContent={detailContentByVariant.composition}
+              />
             </div>
           </div>
 
@@ -95,7 +100,11 @@ export default function ComponentsPage() {
               </p>
             </div>
             <div className="mt-6 flex justify-center">
-              <SuggestedActionCard showDetailOnClick />
+              <SuggestedActionCard
+                showDetailOnClick
+                detailVariant="composition"
+                detailContent={detailContentByVariant.composition}
+              />
             </div>
           </div>
 
