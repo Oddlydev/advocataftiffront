@@ -220,6 +220,19 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     setPushAmount(clamped);
   }, [SIDEBAR_WIDTH]);
 
+  const scrollToTable = () => {
+    const el = tableWrapRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 16;
+    const navHeight =
+      document.querySelector("header")?.getBoundingClientRect().height ?? 0;
+    const offsetTop = Math.max(0, top - navHeight - 12);
+    window.scrollTo({ top: offsetTop, behavior: "smooth" });
+
+    const tableWrapper = document.getElementById("table-wrapper");
+    if (tableWrapper) tableWrapper.scrollTop = 0;
+  };
+
   const openInsightsPanel = () => {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
@@ -231,7 +244,10 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     // mount → measure → animate
     requestAnimationFrame(() => {
       recomputePush();
-      requestAnimationFrame(() => setIsInsightsPanelOpen(true));
+      requestAnimationFrame(() => {
+        setIsInsightsPanelOpen(true);
+        requestAnimationFrame(() => scrollToTable());
+      });
     });
   };
 
@@ -268,6 +284,11 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     ? "pl-5 md:pl-10 xl:pl-16 pr-0"
     : "px-5 md:px-10 xl:px-16";
 
+  const heroSectionClass = `bg-white ${isInsightsPanelOpen ? "hidden" : ""}`;
+  const tableSectionMarginClass = isInsightsPanelOpen
+    ? "mt-0"
+    : "-mt-4 md:-mt-5 xl:-mt-8";
+
   return (
     <div className="relative">
       {/* PUSHED CONTENT */}
@@ -286,7 +307,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
           />
 
           {/* Hero */}
-          <section className="bg-white">
+          <section className={heroSectionClass}>
             <div className="px-5 md:px-10 xl:px-16 mx-auto w-full">
               <div className="">
                 <HeroWhite
@@ -311,16 +332,18 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
 
           {/* Preview table if CSV source is available */}
           {downloadUrl?.toLowerCase().endsWith(".csv") && (
-            <section className="bg-white -mt-4 md:-mt-5 xl:-mt-8">
+            <section className={`bg-white ${tableSectionMarginClass}`}>
               <div
                 ref={tableWrapRef}
                 className={`mx-auto max-w-7xl ${contentPaddingClass}`}
               >
-                <div className="flex flex-wrap items-start justify-end gap-6 mb-3.5">
-                  <div className="flex items-center">
-                    <AIButton onClick={openInsightsPanel} />
+                {!isInsightsPanelOpen && (
+                  <div className="flex flex-wrap items-start justify-end gap-6 mb-3.5">
+                    <div className="flex items-center">
+                      <AIButton onClick={openInsightsPanel} />
+                    </div>
                   </div>
-                </div>
+                )}
                 <CsvTable csvUrl={downloadUrl} stickySecondColumn />
               </div>
             </section>
