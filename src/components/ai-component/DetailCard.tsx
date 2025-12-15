@@ -363,7 +363,7 @@ function TrendDetail() {
           </p>
         </div>
 
-        {/*   same exact two-link UI */}
+        {/* wo-link reveal back for trend detail */}
         <DetailRevealLinks />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200">
@@ -419,15 +419,15 @@ function RankingDetail() {
 
         <div className="space-y-1 text-xs text-[var(--brand-1-500)] font-normal font-['Source_Code_Pro'] mt-2.5 mb-8">
           {rankingLinks.map((text) => (
-            <div key={text} className="flex items-center gap-2">
+            <div key={text} className="flex items-center gap-1.5">
               <RankingLinkIcon />
               <span className="cursor-pointer">{text}</span>
             </div>
           ))}
         </div>
 
-        {/*   same exact two-link UI */}
-        <DetailRevealLinks />
+        {/*   only reveal the key takeaways link on the ranking card */}
+        <TakeawaysCard />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
