@@ -19,8 +19,6 @@ export default function TakeawaysCard({
 }: TakeawaysCardProps) {
   const [state, setState] = useState<"idle" | "analyzing" | "revealed">("idle");
   const delayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Used to trigger transitions/animations on reveal
   const [contentVisible, setContentVisible] = useState(false);
 
   const reveal = useCallback(() => {
@@ -50,10 +48,8 @@ export default function TakeawaysCard({
     }
   }, [state]);
 
-  // Slower start (no “fast drop”)
   const EASING = "cubic-bezier(0.4, 0, 0.2, 1)";
 
-  // Keep your stagger, but start earlier so no empty space appears
   const animationStyle = (delay: number) =>
     contentVisible
       ? {
@@ -71,11 +67,12 @@ export default function TakeawaysCard({
         }
       `}</style>
 
+      {/* Trigger */}
       <div className="flex flex-col gap-2">
         {state === "idle" ? (
           <a
-            className="inline-flex text-sm font-medium leading-5 underline decoration-solid decoration-[var(--brand-1-600)] underline-offset-[20.5%] text-[var(--color-brand-1-600)] font-[Montserrat]"
             href="#"
+            className="block w-fit text-sm font-medium leading-5 underline decoration-solid decoration-[var(--brand-1-600)] underline-offset-[20.5%] text-[var(--color-brand-1-600)] font-[Montserrat]"
             onClick={(event) => {
               event.preventDefault();
               reveal();
@@ -91,9 +88,9 @@ export default function TakeawaysCard({
         ) : null}
       </div>
 
+      {/* Content */}
       {state === "revealed" && (
         <div className="mt-3">
-          {/* Grid reveal: no max-height jump, no empty space flash */}
           <div
             className="grid overflow-hidden transition-[grid-template-rows,opacity,transform]"
             style={{
@@ -106,14 +103,12 @@ export default function TakeawaysCard({
           >
             <div className="min-h-0">
               <div className="space-y-4">
-                {/* Title */}
                 <div className="opacity-0" style={animationStyle(0.08)}>
                   <h3 className="text-sm font-semibold leading-5 text-slate-700 font-[Montserrat]">
                     Key Takeaways
                   </h3>
                 </div>
 
-                {/* Points */}
                 <div className="space-y-3">
                   {takeawayPoints.map((point, index) => (
                     <div

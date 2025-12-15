@@ -65,9 +65,6 @@ const rankingLinks = [
   "Compare with international consumption patterns",
 ];
 
-const detailLinkClass =
-  "text-sm font-[Montserrat] text-[var(--brand-1-500)] underline decoration-[var(--brand-1-500)] underline-offset-3 leading-5";
-
 const RankingLinkIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -211,7 +208,9 @@ const CTA_SECTION = (
       type="button"
       className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#EA1952] to-[#AA1E58] px-2.5 py-3 text-xs font-semibold text-white shadow"
     >
-      <span className="text-sm font-[Montserrat]">Download Full Analysis Report</span>
+      <span className="text-sm font-[Montserrat]">
+        Download Full Analysis Report
+      </span>
     </button>
 
     <p className="mt-2 text-center text-xs text-slate-500 font-['Source_Code_Pro']">
@@ -220,15 +219,25 @@ const CTA_SECTION = (
   </div>
 );
 
+//   One consistent “two links” block everywhere.
+function DetailRevealLinks() {
+  return (
+    <div className="space-y-2">
+      <TakeawaysCard />
+      <MethodologyCard />
+    </div>
+  );
+}
+
 function CompositionDetail() {
   return (
     <article className="flex flex-col gap-4 rounded-[18px] border border-slate-200 bg-white p-5 drop-shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
       <div className="space-y-2.5">
         <p className="text-sm leading-5 text-slate-700 font-[Montserrat]">
-          We've analyzed 26 years of consumption data (1998-2024) across all
-          12 categories. This comprehensive statistical report reveals
-          significant patterns in household spending behavior and identifies
-          key opportunities for deeper investigation.
+          We've analyzed 26 years of consumption data (1998-2024) across all 12
+          categories. This comprehensive statistical report reveals significant
+          patterns in household spending behavior and identifies key
+          opportunities for deeper investigation.
         </p>
 
         <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -241,7 +250,7 @@ function CompositionDetail() {
           (CAGR) of 4.3%.
         </p>
 
-        <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+        <p className="text-sm font-semibold text-slate-700 font-['Montserrat']">
           Category Performance Metrics
         </p>
 
@@ -272,11 +281,7 @@ function CompositionDetail() {
         </div>
 
         <div className="mt-5 border-t border-slate-200 pt-4">
-          <TakeawaysCard />
-        </div>
-
-        <div className="mt-4">
-          <MethodologyCard />
+          <DetailRevealLinks />
         </div>
 
         <div className="pt-5 mt-3.5 border-t border-slate-200">
@@ -311,8 +316,8 @@ function TrendDetail() {
         <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
           Trend visualization across 26 years reveals distinct consumption
           patterns shaped by economic cycles, technological disruption, and
-          societal shifts. Our analysis identifies three major inflection
-          points that fundamentally altered spending behavior.
+          societal shifts. Our analysis identifies three major inflection points
+          that fundamentally altered spending behavior.
         </p>
 
         <div className="space-y-1">
@@ -320,12 +325,12 @@ function TrendDetail() {
             The Three Major Disruption Periods
           </p>
           <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-            Three distinct events created lasting changes in consumption patterns:
-            (1) The 2008 Global Financial Crisis, which suppressed discretionary
-            spending for 3-4 years; (2) The 2016 Demonetization event, which
-            temporarily disrupted all categories; (3) The 2020-2021 COVID-19
-            pandemic, which permanently reshaped Restaurants, Recreation, and
-            Communication spending.
+            Three distinct events created lasting changes in consumption
+            patterns: (1) The 2008 Global Financial Crisis, which suppressed
+            discretionary spending for 3-4 years; (2) The 2016 Demonetization
+            event, which temporarily disrupted all categories; (3) The 2020-2021
+            COVID-19 pandemic, which permanently reshaped Restaurants,
+            Recreation, and Communication spending.
           </p>
         </div>
 
@@ -358,10 +363,8 @@ function TrendDetail() {
           </p>
         </div>
 
-        <div className="space-y-3">
-          <TakeawaysCard />
-          <MethodologyCard />
-        </div>
+        {/*   same exact two-link UI */}
+        <DetailRevealLinks />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -414,7 +417,7 @@ function RankingDetail() {
           </div>
         </div>
 
-        <div className="space-y-1 text-xs text-[var(--brand-1-500)] font-semibold">
+        <div className="space-y-1 text-xs text-[var(--brand-1-500)] font-normal font-['Source_Code_Pro'] mt-2.5 mb-8">
           {rankingLinks.map((text) => (
             <div key={text} className="flex items-center gap-2">
               <RankingLinkIcon />
@@ -423,14 +426,8 @@ function RankingDetail() {
           ))}
         </div>
 
-        <div className="space-y-2">
-          <a href="#" className={detailLinkClass}>
-            Click to see Key Takeaways
-          </a>
-          <a href="#" className={detailLinkClass}>
-            Click to see Methodology
-          </a>
-        </div>
+        {/*   same exact two-link UI */}
+        <DetailRevealLinks />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -473,8 +470,8 @@ function DataQualityDetail() {
           </p>
           <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
             A total of 127 cells contain "Data N/A" entries, representing 40.7%
-            of the dataset. This missing rate raises concerns about
-            systematic collection gaps during earlier periods.
+            of the dataset. This missing rate raises concerns about systematic
+            collection gaps during earlier periods.
           </p>
         </div>
 
@@ -542,14 +539,8 @@ function DataQualityDetail() {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <a href="#" className={detailLinkClass}>
-            Click to see Key Takeaways
-          </a>
-          <a href="#" className={detailLinkClass}>
-            Click to see Methodology
-          </a>
-        </div>
+        {/*   same exact two-link UI */}
+        <DetailRevealLinks />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -645,14 +636,8 @@ function ForecastDetail() {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <a href="#" className={detailLinkClass}>
-            Click to see Key Takeaways
-          </a>
-          <a href="#" className={detailLinkClass}>
-            Click to see Methodology
-          </a>
-        </div>
+        {/*   same exact two-link UI */}
+        <DetailRevealLinks />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -753,14 +738,8 @@ function DatasetDetail() {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <a href="#" className={detailLinkClass}>
-            Click to see Key Takeaways
-          </a>
-          <a href="#" className={detailLinkClass}>
-            Click to see Methodology
-          </a>
-        </div>
+        {/*   same exact two-link UI */}
+        <DetailRevealLinks />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -786,7 +765,9 @@ function DatasetDetail() {
   );
 }
 
-export default function DetailCard({ variant = "composition" }: DetailCardProps) {
+export default function DetailCard({
+  variant = "composition",
+}: DetailCardProps) {
   return (
     <section className="flex w-full flex-col gap-3.5">
       {variant === "trend" ? (

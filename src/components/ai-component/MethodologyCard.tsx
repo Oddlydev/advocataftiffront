@@ -41,7 +41,6 @@ export default function MethodologyCard({
     }
   }, [state]);
 
-  // Same easing as Takeaways
   const EASING = "cubic-bezier(0.4, 0, 0.2, 1)";
 
   const animationStyle = (delay: number) =>
@@ -61,12 +60,12 @@ export default function MethodologyCard({
         }
       `}</style>
 
-      {/* Trigger / analyzing */}
+      {/* Trigger */}
       <div className="flex flex-col gap-2">
         {state === "idle" ? (
           <a
-            className="inline-flex text-sm font-medium tracking-normal leading-5 underline decoration-solid decoration-[var(--brand-1-600)] underline-offset-[20.5%] text-[var(--color-brand-1-600)] font-[Montserrat]"
             href="#"
+            className="block w-fit text-sm font-medium leading-5 underline decoration-solid decoration-[var(--brand-1-600)] underline-offset-[20.5%] text-[var(--color-brand-1-600)] font-[Montserrat]"
             onClick={(event) => {
               event.preventDefault();
               reveal();
@@ -77,15 +76,14 @@ export default function MethodologyCard({
         ) : state === "analyzing" ? (
           <div className="inline-flex items-center gap-1 text-xs font-semibold leading-4 font-[Montserrat]">
             <LoadingIcon />
-            {/*   solid color — no flicker */}
             <span className="text-slate-600">Analyzing...</span>
           </div>
         ) : null}
       </div>
 
+      {/* Content */}
       {state === "revealed" && (
         <div className="mt-3">
-          {/*   Grid reveal — no empty space flash */}
           <div
             className="grid overflow-hidden transition-[grid-template-rows,opacity,transform]"
             style={{
@@ -98,14 +96,12 @@ export default function MethodologyCard({
           >
             <div className="min-h-0">
               <div className="space-y-2">
-                {/* Title */}
                 <div className="opacity-0" style={animationStyle(0.08)}>
-                  <h3 className="text-sm font-semibold tracking-normal leading-5 text-slate-700 font-[Montserrat]">
+                  <h3 className="text-sm font-semibold leading-5 text-slate-700 font-[Montserrat]">
                     Methodology
                   </h3>
                 </div>
 
-                {/* Description */}
                 <p
                   className="text-xs leading-5 tracking-[0px] text-slate-600 opacity-0"
                   style={{
