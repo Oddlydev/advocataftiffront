@@ -251,7 +251,7 @@ function RankingDetail({ content }: { content: RankingDetailContent }) {
 
         <div className="space-y-1 text-xs text-[var(--brand-1-500)] font-normal font-['Source_Code_Pro'] mt-2.5 mb-8">
           {content.linkTexts.map((text) => (
-            <div key={text} className="flex items-center gap-1.5">
+            <div key={text} className="flex items-start gap-3">
               <RankingLinkIcon />
               <span className="cursor-pointer">{text}</span>
             </div>

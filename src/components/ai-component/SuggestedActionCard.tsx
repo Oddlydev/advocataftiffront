@@ -147,11 +147,11 @@ export default function SuggestedActionCard({
         </div>
       </article>
 
-      {/*   SINGLE OUTPUT REGION (cannot overlap) */}
+      {/* SINGLE OUTPUT REGION */}
       {showDetailOnClick && (
         <div>
           {flow === "thinking" ? (
-            <div className="flex items-center gap-1 px-5 py-2">
+            <div className="flex items-center gap-1 px-5 py-5">
               <LoadingIcon />
               <span className="text-xs font-semibold font-[Montserrat] text-slate-500">
                 Thinking...
