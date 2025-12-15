@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { gql } from "@apollo/client";
 import type { GetStaticPropsContext } from "next";
 import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
@@ -160,9 +160,6 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   // Sidebar width must be 480px
   const SIDEBAR_WIDTH = 480;
 
-  // Dynamic push so there is ZERO gap between table and sidebar
-  const [pushAmount, setPushAmount] = useState(0);
-
   // measure the table wrapper
   const tableWrapRef = useRef<HTMLDivElement | null>(null);
 
@@ -195,33 +192,6 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     };
   }, []);
 
-  /**
-   * Compute exact push needed so:
-   *   right edge of TABLE wrapper == left edge of sidebar
-   *
-   * sidebarLeft = window.innerWidth - SIDEBAR_WIDTH
-   * push = tableRight - sidebarLeft
-   */
-  const recomputePush = useCallback(() => {
-    const el = tableWrapRef.current;
-
-    // If table isn't rendered (non-CSV), fall back to sidebar width
-    if (!el) {
-      setPushAmount(SIDEBAR_WIDTH);
-      return;
-    }
-
-    const rect = el.getBoundingClientRect();
-    const sidebarLeft = window.innerWidth - SIDEBAR_WIDTH;
-
-    const needed = rect.right - sidebarLeft;
-
-    // Only push left (positive values). If already beyond, no push.
-    const clamped = Math.max(0, needed);
-
-    setPushAmount(clamped);
-  }, [SIDEBAR_WIDTH]);
-
   const scrollToTable = () => {
     const el = tableWrapRef.current;
     if (!el) return;
@@ -244,14 +214,11 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     setIsVerticalTransitionSuppressed(true);
     setIsPanelVisible(true);
 
-    // mount → measure → animate
+    // mount → animate
     requestAnimationFrame(() => {
-      recomputePush();
-      requestAnimationFrame(() => {
-        setIsInsightsPanelOpen(true);
-        setIsVerticalTransitionSuppressed(false);
-        requestAnimationFrame(() => scrollToTable());
-      });
+      setIsInsightsPanelOpen(true);
+      setIsVerticalTransitionSuppressed(false);
+      requestAnimationFrame(() => scrollToTable());
     });
   };
 
@@ -261,7 +228,6 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     closeTimeoutRef.current = window.setTimeout(() => {
       setIsPanelVisible(false);
       closeTimeoutRef.current = null;
-      setPushAmount(0);
     }, 620); // duration-600 + buffer
   };
 
@@ -276,37 +242,31 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPanelVisible]);
 
-  // Keep alignment perfect on resize while open
-  useEffect(() => {
-    if (!isPanelVisible) return;
-    const onResize = () => recomputePush();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [isPanelVisible, recomputePush]);
-
-  // ✅ Reduce visible gap by removing RIGHT padding while open (keeps design when closed)
+  // Remove RIGHT padding while open (keeps design when closed)
   const contentPaddingClass = isInsightsPanelOpen
     ? "pl-5 md:pl-10 xl:pl-16 pr-0"
     : "px-5 md:px-10 xl:px-16";
+
+  // Allow content/table to stretch when open so it can reach sidebar edge
+  const maxWidthClass = isInsightsPanelOpen ? "max-w-none w-full" : "max-w-7xl";
 
   const heroSectionClass = `bg-white ${isInsightsPanelOpen ? "hidden" : ""}`;
   const tableSectionMarginClass = isInsightsPanelOpen
     ? "mt-0"
     : "-mt-4 md:-mt-5 xl:-mt-8";
+
   const verticalTransitionDuration = isVerticalTransitionSuppressed
     ? "0ms"
     : "600ms";
 
   return (
     <div className="relative">
-      {/* PUSHED CONTENT */}
-      {/** Use a temporary translateY while the panel is sliding in */}
+      {/* CONTENT (reserve sidebar space with margin-right; NO translateX) */}
       <div
-        className="transition-transform duration-600 ease-[cubic-bezier(0.7,0,0.3,1)] will-change-transform"
+        className="transition-[margin,transform] duration-600 ease-[cubic-bezier(0.7,0,0.3,1)] will-change-transform"
         style={{
-          transform: `translateX(${
-            isInsightsPanelOpen ? `-${pushAmount}px` : "0px"
-          }) translateY(${
+          marginRight: isPanelVisible ? `${SIDEBAR_WIDTH}px` : "0px",
+          transform: `translateY(${
             isPanelVisible ? (isInsightsPanelOpen ? "0px" : "120px") : "0px"
           })`,
           transitionDuration: verticalTransitionDuration,
@@ -321,13 +281,11 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
           {/* Hero */}
           <section className={heroSectionClass}>
             <div className="px-5 md:px-10 xl:px-16 mx-auto w-full">
-              <div className="">
-                <HeroWhite
-                  title={dataset.title ?? ""}
-                  paragraph={heroParagraph}
-                  items={[{ label: "Datasets", href: "/datasets" }]}
-                />
-              </div>
+              <HeroWhite
+                title={dataset.title ?? ""}
+                paragraph={heroParagraph}
+                items={[{ label: "Datasets", href: "/datasets" }]}
+              />
             </div>
           </section>
 
@@ -335,7 +293,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
           <section
             className={`bg-white ${isInsightsPanelOpen ? "hidden" : ""}`}
           >
-            <div className={`mx-auto max-w-7xl ${contentPaddingClass}`}>
+            <div className={`mx-auto ${maxWidthClass} ${contentPaddingClass}`}>
               <WysiwygInner>
                 <div
                   dangerouslySetInnerHTML={{ __html: dataset.content ?? "" }}
@@ -349,7 +307,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
             <section className={`bg-white ${tableSectionMarginClass}`}>
               <div
                 ref={tableWrapRef}
-                className={`mx-auto max-w-7xl ${contentPaddingClass}`}
+                className={`mx-auto ${maxWidthClass} ${contentPaddingClass}`}
               >
                 {!isInsightsPanelOpen && (
                   <div className="flex flex-wrap items-start justify-end gap-6 mb-3.5">
@@ -358,14 +316,18 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                     </div>
                   </div>
                 )}
-                <CsvTable csvUrl={downloadUrl} stickySecondColumn />
+
+                {/* CRITICAL: horizontal scroll so wide tables never crop */}
+                <div className="relative overflow-x-auto">
+                  <CsvTable csvUrl={downloadUrl} stickySecondColumn />
+                </div>
               </div>
             </section>
           )}
 
           {/* Download actions */}
           <div
-            className={`mx-auto max-w-7xl ${contentPaddingClass} pt-6 md:pt-9 pb-16`}
+            className={`mx-auto ${maxWidthClass} ${contentPaddingClass} pt-6 md:pt-9 pb-16`}
           >
             <div className="grid md:flex gap-7 items-center justify-start md:justify-end w-full">
               <div>
@@ -513,12 +475,15 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
         </main>
       </div>
 
-      {/* Click outside to close */}
+      {/* Overlay: does NOT close sidebar (close icon only) */}
       {isPanelVisible && (
-        <div className="fixed inset-0 z-40 bg-transparent" aria-hidden="true" />
+        <div
+          className="fixed inset-0 z-40 bg-transparent pointer-events-none"
+          aria-hidden="true"
+        />
       )}
 
-      {/* Sidebar (push-style) */}
+      {/* Sidebar (slides in) */}
       {isPanelVisible && (
         <div
           className="fixed inset-y-0 right-0 z-50 pointer-events-auto overflow-y-auto bg-white
@@ -529,9 +494,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
               isInsightsPanelOpen
                 ? "translateX(0px)"
                 : `translateX(${SIDEBAR_WIDTH}px)`
-            } translateY(${
-              isInsightsPanelOpen ? "0px" : isPanelVisible ? "120px" : "0px"
-            })`,
+            }`,
             transitionDuration: verticalTransitionDuration,
           }}
           role="dialog"
