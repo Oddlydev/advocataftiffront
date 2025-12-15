@@ -130,7 +130,7 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
           <DetailRevealLinks />
         </div>
 
-        <div className="pt-5 mt-3.5 border-t border-slate-200">
+        <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Recommendations
           </p>
@@ -200,7 +200,7 @@ function TrendDetail({ content }: { content: TrendDetailContent }) {
 
         <DetailRevealLinks />
 
-        <div className="pt-5 mt-3.5 border-t border-slate-200">
+        <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Recommendations
           </p>
@@ -260,7 +260,7 @@ function RankingDetail({ content }: { content: RankingDetailContent }) {
 
         <TakeawaysCard />
 
-        <div className="pt-5 mt-3.5 border-t border-slate-200">
+        <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Recommendations
           </p>
@@ -367,7 +367,7 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
 
         <DetailRevealLinks />
 
-        <div className="pt-5 mt-3.5 border-t border-slate-200">
+        <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Recommendations
           </p>
@@ -458,7 +458,7 @@ function ForecastDetail({ content }: { content: ForecastDetailContent }) {
 
         <DetailRevealLinks />
 
-        <div className="pt-5 mt-3.5 border-t border-slate-200">
+        <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Recommendations
           </p>
@@ -556,7 +556,7 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
 
         <DetailRevealLinks />
 
-        <div className="pt-5 mt-3.5 border-t border-slate-200">
+        <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Recommendations
           </p>
