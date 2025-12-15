@@ -154,6 +154,8 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const [isInsightsPanelOpen, setIsInsightsPanelOpen] = useState(false);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
   const closeTimeoutRef = useRef<number | null>(null);
+  const [isVerticalTransitionSuppressed, setIsVerticalTransitionSuppressed] =
+    useState(false);
 
   // Sidebar width must be 480px
   const SIDEBAR_WIDTH = 480;
@@ -239,6 +241,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       closeTimeoutRef.current = null;
     }
 
+    setIsVerticalTransitionSuppressed(true);
     setIsPanelVisible(true);
 
     // mount → measure → animate
@@ -246,12 +249,14 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       recomputePush();
       requestAnimationFrame(() => {
         setIsInsightsPanelOpen(true);
+        setIsVerticalTransitionSuppressed(false);
         requestAnimationFrame(() => scrollToTable());
       });
     });
   };
 
   const closeInsightsPanel = () => {
+    setIsVerticalTransitionSuppressed(false);
     setIsInsightsPanelOpen(false);
     closeTimeoutRef.current = window.setTimeout(() => {
       setIsPanelVisible(false);
@@ -288,16 +293,23 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const tableSectionMarginClass = isInsightsPanelOpen
     ? "mt-0"
     : "-mt-4 md:-mt-5 xl:-mt-8";
+  const verticalTransitionDuration = isVerticalTransitionSuppressed
+    ? "0ms"
+    : "600ms";
 
   return (
     <div className="relative">
       {/* PUSHED CONTENT */}
+      {/** Use a temporary translateY while the panel is sliding in */}
       <div
         className="transition-transform duration-600 ease-[cubic-bezier(0.7,0,0.3,1)] will-change-transform"
         style={{
-          transform: isInsightsPanelOpen
-            ? `translateX(-${pushAmount}px)`
-            : "translateX(0px)",
+          transform: `translateX(${
+            isInsightsPanelOpen ? `-${pushAmount}px` : "0px"
+          }) translateY(${
+            isPanelVisible ? (isInsightsPanelOpen ? "0px" : "120px") : "0px"
+          })`,
+          transitionDuration: verticalTransitionDuration,
         }}
       >
         <main>
@@ -320,7 +332,9 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
           </section>
 
           {/* Body content */}
-          <section className="bg-white">
+          <section
+            className={`bg-white ${isInsightsPanelOpen ? "hidden" : ""}`}
+          >
             <div className={`mx-auto max-w-7xl ${contentPaddingClass}`}>
               <WysiwygInner>
                 <div
@@ -501,10 +515,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
 
       {/* Click outside to close */}
       {isPanelVisible && (
-        <div
-          className="fixed inset-0 z-40 bg-transparent"
-          aria-hidden="true"
-        />
+        <div className="fixed inset-0 z-40 bg-transparent" aria-hidden="true" />
       )}
 
       {/* Sidebar (push-style) */}
@@ -514,9 +525,14 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                      transition-transform duration-600 ease-[cubic-bezier(0.7,0,0.3,1)]"
           style={{
             width: `${SIDEBAR_WIDTH}px`,
-            transform: isInsightsPanelOpen
-              ? "translateX(0px)"
-              : `translateX(${SIDEBAR_WIDTH}px)`,
+            transform: `${
+              isInsightsPanelOpen
+                ? "translateX(0px)"
+                : `translateX(${SIDEBAR_WIDTH}px)`
+            } translateY(${
+              isInsightsPanelOpen ? "0px" : isPanelVisible ? "120px" : "0px"
+            })`,
+            transitionDuration: verticalTransitionDuration,
           }}
           role="dialog"
           aria-modal="true"
