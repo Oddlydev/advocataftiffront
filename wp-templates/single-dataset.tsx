@@ -255,16 +255,6 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPanelVisible]);
 
-  // Lock body scroll while panel open
-  useEffect(() => {
-    if (!isPanelVisible) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [isPanelVisible]);
-
   // Keep alignment perfect on resize while open
   useEffect(() => {
     if (!isPanelVisible) return;
@@ -490,7 +480,6 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       {isPanelVisible && (
         <div
           className="fixed inset-0 z-40 bg-transparent"
-          onClick={closeInsightsPanel}
           aria-hidden="true"
         />
       )}
