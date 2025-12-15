@@ -149,7 +149,7 @@ export default function SuggestedActionCard({
 
       {/*   SINGLE OUTPUT REGION (cannot overlap) */}
       {showDetailOnClick && (
-        <div className="mt-3">
+        <div>
           {flow === "thinking" ? (
             <div className="flex items-center gap-1 px-5 py-2">
               <LoadingIcon />

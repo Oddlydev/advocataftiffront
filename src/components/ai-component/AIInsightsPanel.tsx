@@ -75,7 +75,7 @@ export const detailContentByVariant: DetailContentMap = {
     intro:
       "Data quality assessment is critical before any advanced analysis. We performed comprehensive validation checks across all 312 data points (12 categories A- 26 years) and surfaced issues that need attention before downstream modeling.",
     missingDataSummary:
-      "A total of 127 cells contain \"Data N/A\" entries, representing 40.7% of the dataset. This missing rate raises concerns about systematic collection gaps during earlier periods.",
+      'A total of 127 cells contain "Data N/A" entries, representing 40.7% of the dataset. This missing rate raises concerns about systematic collection gaps during earlier periods.',
     breakdown: [
       "Recreation & Culture: 45 missing entries (34% missing) - most affected",
       "Restaurants & Hotels: 21 missing entries (29% missing)",
@@ -196,8 +196,7 @@ const moreInsightsDetails: {
   },
   {
     title: "Compare Category Performance Ranking",
-    description:
-      "Rank all 12 categories by total spending, growth & stability",
+    description: "Rank all 12 categories by total spending, growth & stability",
     detailVariant: "ranking",
     detailContent: detailContentByVariant.ranking,
   },
@@ -209,24 +208,26 @@ const moreInsightsDetails: {
   },
   {
     title: "Project 2025-2027 Spending Patterns",
-    description:
-      "AI forecasts using time-series analysis on 26 years of data",
+    description: "AI forecasts using time-series analysis on 26 years of data",
     detailVariant: "forecast",
     detailContent: detailContentByVariant.forecast,
   },
   {
     title: "Export Analysis-Ready Dataset",
-    description:
-      "Download cleaned CSV with calculated fields & corrections",
+    description: "Download cleaned CSV with calculated fields & corrections",
     detailVariant: "dataset",
     detailContent: detailContentByVariant.dataset,
   },
 ];
 
-export default function AIInsightsPanel() {
+export type AIInsightsPanelProps = {
+  onClose?: () => void;
+};
+
+export default function AIInsightsPanel({ onClose }: AIInsightsPanelProps) {
   return (
     <div className="flex w-full flex-col gap-3">
-      <article className="rounded-[14px] bg-white">
+      <article className="rounded-[14px] bg-white px-6 pb-6 pt-6">
         <header className="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
           <div className="flex items-center gap-3">
             <span className="flex h-12 w-12 items-center justify-center rounded-[16px] bg-gradient-to-br from-[#EA1952] to-[#AA1E58]">
@@ -264,8 +265,9 @@ export default function AIInsightsPanel() {
 
           <button
             type="button"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full  text-slate-400 transition hover:text-slate-600"
+            className="inline-flex h-8 w-8 items-center justify-end rounded-full  text-slate-400 transition hover:text-slate-600"
             aria-label="Close AI insights"
+            onClick={onClose}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -346,22 +348,24 @@ export default function AIInsightsPanel() {
               </span>
             </div>
             <div className="space-y-2">
-            {moreInsightsDetails.map((insight) => (
-              <SuggestedActionCard
-                key={insight.title}
-                showDetailOnClick
-                title={insight.title}
-                description={insight.description}
-                detailVariant={insight.detailVariant}
-                detailContent={insight.detailContent}
-              />
-            ))}
+              {moreInsightsDetails.map((insight) => (
+                <SuggestedActionCard
+                  key={insight.title}
+                  showDetailOnClick
+                  title={insight.title}
+                  description={insight.description}
+                  detailVariant={insight.detailVariant}
+                  detailContent={insight.detailContent}
+                />
+              ))}
             </div>
           </section>
         </div>
-      </article>
 
-      <InsightsDisclaimerCard />
+        <div className="mt-6">
+          <InsightsDisclaimerCard />
+        </div>
+      </article>
     </div>
   );
 }

@@ -2,12 +2,17 @@ import React from "react";
 
 export type AIButtonProps = {
   label?: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
-export default function AIButton({ label = "AI Insights" }: AIButtonProps) {
+export default function AIButton({
+  label = "AI Insights",
+  onClick,
+}: AIButtonProps) {
   return (
     <button
       type="button"
+      onClick={onClick}
       style={{
         fontFamily: "Montserrat",
         borderRadius: "var(--border-radius-rounded-lg, 8px)",

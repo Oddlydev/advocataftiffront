@@ -253,13 +253,13 @@ export default function CsvTable({
 
   return (
     <div className="relative">
-      <div className="bg-white py-3.5 md:py-5 xl:py-6">
+      <div className="py-3.5 md:py-5 xl:py-6">
         <div className="mx-auto max-w-7xl">
           <div className="shadow-md border p-4 border-gray-200 rounded-lg">
             <div
               id="table-wrapper"
               className={`overflow-x-auto overflow-y-auto max-w-full box-content ${
-                visibleRows.length >= 10 ? "" : ""   // max-h-[650px]
+                visibleRows.length >= 10 ? "" : "" // max-h-[650px]
               }`}
             >
               <div className="w-[1200px] table-inner">
@@ -393,7 +393,8 @@ export default function CsvTable({
                             </td>
                             {displayHeaders.slice(1).map((_, i) => {
                               const headerIndex = i + 1;
-                              const isSecondCol = headerIndex === stickySecondIndex;
+                              const isSecondCol =
+                                headerIndex === stickySecondIndex;
                               return (
                                 <td
                                   key={`spacer-${i}`}
