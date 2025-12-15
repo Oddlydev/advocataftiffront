@@ -28,7 +28,7 @@ const CTA_SECTION = (
     </button>
 
     <p className="mt-2 text-center text-xs text-slate-500 font-['Source_Code_Pro']">
-      Formatted .txt file ƒ?› Ready for sharing
+      Formatted .txt file • Ready for sharing
     </p>
   </div>
 );
@@ -611,5 +611,7 @@ export default function DetailCard({
     return <DatasetDetail content={detailContent as DatasetDetailContent} />;
   }
 
-  return <CompositionDetail content={detailContent as CompositionDetailContent} />;
+  return (
+    <CompositionDetail content={detailContent as CompositionDetailContent} />
+  );
 }
