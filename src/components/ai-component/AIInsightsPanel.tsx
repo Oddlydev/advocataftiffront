@@ -4,6 +4,48 @@ import InsightsDisclaimerCard from "./InsightsDisclaimerCard";
 import KeyInsightsCard from "./KeyInsightsCard";
 import SuggestedActionCard from "./SuggestedActionCard";
 import TitleCard from "./TitleCard";
+import type { DetailVariant } from "./DetailCard";
+
+const moreInsightsDetails: {
+  title: string;
+  description: string;
+  detailVariant?: DetailVariant;
+}[] = [
+  {
+    title: "Generate Summary Statistics Report",
+    description:
+      "Get mean, median, growth rates & volatility for all 12 categories",
+    detailVariant: "composition",
+  },
+  {
+    title: "Visualize 26-Year Trend Lines",
+    description: "See spending patterns across all categories from 1998-2024",
+    detailVariant: "trend",
+  },
+  {
+    title: "Compare Category Performance Ranking",
+    description:
+      "Rank all 12 categories by total spending, growth & stability",
+    detailVariant: "ranking",
+  },
+  {
+    title: "Identify & Flag Data Quality Issues",
+    description: "Detect missing values, outliers & anomalies in the dataset",
+    detailVariant: "dataQuality",
+  },
+  {
+    title: "Project 2025-2027 Spending Patterns",
+    description:
+      "AI forecasts using time-series analysis on 26 years of data",
+    detailVariant: "forecast",
+  },
+  {
+    title: "Export Analysis-Ready Dataset",
+    description:
+      "Download cleaned CSV with calculated fields & corrections",
+    detailVariant: "dataset",
+  },
+];
 
 export default function AIInsightsPanel() {
   return (
@@ -128,10 +170,15 @@ export default function AIInsightsPanel() {
               </span>
             </div>
             <div className="space-y-2">
-              <SuggestedActionCard />
-              <SuggestedActionCard />
-              <SuggestedActionCard />
-              <SuggestedActionCard />
+              {moreInsightsDetails.map((insight) => (
+                <SuggestedActionCard
+                  key={insight.title}
+                  showDetailOnClick
+                  title={insight.title}
+                  description={insight.description}
+                  detailVariant={insight.detailVariant}
+                />
+              ))}
             </div>
           </section>
         </div>

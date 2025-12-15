@@ -2,16 +2,22 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import LoadingIcon from "./LoadingIcon";
-import DetailCard from "./DetailCard";
+import DetailCard, { DetailVariant } from "./DetailCard";
 
 type SuggestedActionCardProps = {
   showDetailOnClick?: boolean;
+  title?: string;
+  description?: string;
+  detailVariant?: DetailVariant;
 };
 
 type FlowState = "idle" | "thinking" | "revealing" | "detail";
 
 export default function SuggestedActionCard({
   showDetailOnClick = false,
+  title = "Generate Summary Statistics Report",
+  description = "Get mean, median, growth rates & volatility for all 12 categories",
+  detailVariant,
 }: SuggestedActionCardProps) {
   const [active, setActive] = useState(false);
 
@@ -69,7 +75,7 @@ export default function SuggestedActionCard({
           active
             ? "border-[rgba(234,25,82,0.3)] bg-[linear-gradient(135deg,rgba(234,25,82,0.05)_0%,rgba(227,63,255,0.05)_100%)]"
             : "border-slate-200 bg-white hover:border-[rgba(234,25,82,0.2)] hover:bg-[#F8FAFC] hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]"
-        }`}
+        } ${showDetailOnClick ? "cursor-pointer" : ""}`}
       >
         <span
           className={`flex h-[44px] w-[44px] min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-[10px] p-4 transition duration-200 ${
@@ -124,15 +130,14 @@ export default function SuggestedActionCard({
             }`}
             style={{ fontFamily: "Montserrat" }}
           >
-            Generate Summary Statistics Report
+            {title}
           </h3>
 
           <p
             className="text-xs leading-4 text-slate-600 tracking-normal"
             style={{ fontFamily: '"Source Code Pro"' }}
           >
-            Get mean, median, growth rates &amp; volatility for all 12
-            categories
+            {description}
           </p>
         </div>
       </article>
@@ -162,7 +167,7 @@ export default function SuggestedActionCard({
                 }}
               >
                 <div className="min-h-0">
-                  <DetailCard />
+                  <DetailCard variant={detailVariant} />
                 </div>
               </div>
             </div>
