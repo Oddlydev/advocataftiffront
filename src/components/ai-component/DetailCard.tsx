@@ -3,6 +3,8 @@
 import React from "react";
 import MethodologyCard from "./MethodologyCard";
 import TakeawaysCard from "./TakeawaysCard";
+import ListBulletItem from "./ListBulletItem";
+import ListNumberedItem from "./ListNumberedItem";
 import type {
   CompositionDetailContent,
   DataQualityDetailContent,
@@ -101,13 +103,8 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
         </p>
 
         <div className="space-y-1.5 pl-1.5">
-          {content.firstMetrics.map((line) => (
-            <div key={line} className="flex items-start gap-2.5">
-              <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-              <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                {line}
-              </p>
-            </div>
+          {content.firstMetrics.map((line, idx) => (
+            <ListBulletItem key={`${line}-${idx}`} text={line} />
           ))}
         </div>
 
@@ -116,13 +113,8 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
         </p>
 
         <div className="space-y-1.5 pl-1.5">
-          {content.secondMetrics.map((line) => (
-            <div key={line} className="flex items-start gap-2.5">
-              <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-              <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                {line}
-              </p>
-            </div>
+          {content.secondMetrics.map((line, idx) => (
+            <ListBulletItem key={`${line}-${idx}`} text={line} />
           ))}
         </div>
 
@@ -137,14 +129,11 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
 
           <div className="mt-2 space-y-1">
             {content.recommendations.map((line, idx) => (
-              <div key={line} className="flex items-start gap-2">
-                <span className="mt-0.5 w-3 text-xs font-medium text-[var(--brand-1-500)] font-['Source_Code_Pro']">
-                  {idx + 1}.
-                </span>
-                <p className="flex-1 text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+              <ListNumberedItem
+                key={`${line}-${idx}`}
+                number={idx + 1}
+                text={line}
+              />
             ))}
           </div>
         </div>
@@ -178,13 +167,8 @@ function TrendDetail({ content }: { content: TrendDetailContent }) {
           </p>
 
           <div className="space-y-1 pl-1.5">
-            {content.longTermTrends.map((trend) => (
-              <div key={trend} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {trend}
-                </p>
-              </div>
+            {content.longTermTrends.map((trend, idx) => (
+              <ListBulletItem key={`${trend}-${idx}`} text={trend} />
             ))}
           </div>
         </div>
@@ -207,14 +191,11 @@ function TrendDetail({ content }: { content: TrendDetailContent }) {
 
           <div className="mt-2 space-y-1">
             {content.recommendations.map((line, idx) => (
-              <div key={line} className="flex items-start gap-2">
-                <span className="mt-0.5 w-3 text-xs font-medium text-[var(--brand-1-500)] font-['Source_Code_Pro']">
-                  {idx + 1}.
-                </span>
-                <p className="flex-1 text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+              <ListNumberedItem
+                key={`${line}-${idx}`}
+                number={idx + 1}
+                text={line}
+              />
             ))}
           </div>
         </div>
@@ -238,13 +219,8 @@ function RankingDetail({ content }: { content: RankingDetailContent }) {
             Ranking by Stability (Lowest Volatility)
           </p>
           <div className="space-y-1 pl-1.5">
-            {content.stabilityRanking.map((line) => (
-              <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+            {content.stabilityRanking.map((line, idx) => (
+              <ListBulletItem key={`${line}-${idx}`} text={line} />
             ))}
           </div>
         </div>
@@ -266,14 +242,11 @@ function RankingDetail({ content }: { content: RankingDetailContent }) {
           </p>
           <div className="mt-2 space-y-1">
             {content.recommendations.map((line, idx) => (
-              <div key={line} className="flex items-start gap-2">
-                <span className="mt-0.5 w-3 text-xs font-medium text-[var(--brand-1-500)] font-['Source_Code_Pro']">
-                  {idx + 1}.
-                </span>
-                <p className="flex-1 text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+              <ListNumberedItem
+                key={`${line}-${idx}`}
+                number={idx + 1}
+                text={line}
+              />
             ))}
           </div>
         </div>
@@ -306,13 +279,8 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
             Missing Data Breakdown by Category
           </p>
           <div className="space-y-1 pl-1.5">
-            {content.breakdown.map((line) => (
-              <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+            {content.breakdown.map((line, idx) => (
+              <ListBulletItem key={`${line}-${idx}`} text={line} />
             ))}
           </div>
         </div>
@@ -322,13 +290,8 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
             Missing Data by Time Period
           </p>
           <div className="space-y-1 pl-1.5">
-            {content.timeline.map((line) => (
-              <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+            {content.timeline.map((line, idx) => (
+              <ListBulletItem key={`${line}-${idx}`} text={line} />
             ))}
           </div>
         </div>
@@ -338,13 +301,8 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
             Outliers &amp; Anomalies Detected
           </p>
           <div className="space-y-1 pl-1.5">
-            {content.outliers.map((line) => (
-              <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+            {content.outliers.map((line, idx) => (
+              <ListBulletItem key={`${line}-${idx}`} text={line} />
             ))}
           </div>
         </div>
@@ -354,13 +312,8 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
             Data Consistency Checks
           </p>
           <div className="space-y-1 pl-1.5">
-            {content.checks.map((line) => (
-              <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+            {content.checks.map((line, idx) => (
+              <ListBulletItem key={`${line}-${idx}`} text={line} />
             ))}
           </div>
         </div>
@@ -373,14 +326,11 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
           </p>
           <div className="mt-2 space-y-1">
             {content.recommendations.map((line, idx) => (
-              <div key={line} className="flex items-start gap-2">
-                <span className="mt-0.5 w-3 text-xs font-medium text-[var(--brand-1-500)] font-['Source_Code_Pro']">
-                  {idx + 1}.
-                </span>
-                <p className="flex-1 text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+              <ListNumberedItem
+                key={`${line}-${idx}`}
+                number={idx + 1}
+                text={line}
+              />
             ))}
           </div>
         </div>
@@ -413,13 +363,8 @@ function ForecastDetail({ content }: { content: ForecastDetailContent }) {
             Category-Specific Projections (2025-2027)
           </p>
           <div className="space-y-1 pl-1.5">
-            {content.categoryProjections.map((line) => (
-              <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+            {content.categoryProjections.map((line, idx) => (
+              <ListBulletItem key={`${line}-${idx}`} text={line} />
             ))}
           </div>
         </div>
@@ -429,13 +374,8 @@ function ForecastDetail({ content }: { content: ForecastDetailContent }) {
             Model Performance &amp; Validation
           </p>
           <div className="space-y-1 pl-1.5">
-            {content.validationNotes.map((line) => (
-              <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+            {content.validationNotes.map((line, idx) => (
+              <ListBulletItem key={`${line}-${idx}`} text={line} />
             ))}
           </div>
         </div>
@@ -445,13 +385,8 @@ function ForecastDetail({ content }: { content: ForecastDetailContent }) {
             Risk Factors &amp; Uncertainty
           </p>
           <div className="space-y-1 pl-1.5">
-            {content.riskFactors.map((line) => (
-              <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+            {content.riskFactors.map((line, idx) => (
+              <ListBulletItem key={`${line}-${idx}`} text={line} />
             ))}
           </div>
         </div>
@@ -464,14 +399,11 @@ function ForecastDetail({ content }: { content: ForecastDetailContent }) {
           </p>
           <div className="mt-2 space-y-1">
             {content.recommendations.map((line, idx) => (
-              <div key={line} className="flex items-start gap-2">
-                <span className="mt-0.5 w-3 text-xs font-medium text-[var(--brand-1-500)] font-['Source_Code_Pro']">
-                  {idx + 1}.
-                </span>
-                <p className="flex-1 text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+              <ListNumberedItem
+                key={`${line}-${idx}`}
+                number={idx + 1}
+                text={line}
+              />
             ))}
           </div>
         </div>
@@ -495,13 +427,8 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
             Enhancements &amp; Transformations Applied
           </p>
           <div className="space-y-1 pl-1.5">
-            {content.enhancements.map((line) => (
-              <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+            {content.enhancements.map((line, idx) => (
+              <ListBulletItem key={`${line}-${idx}`} text={line} />
             ))}
           </div>
         </div>
@@ -511,13 +438,8 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
             File Formats Available
           </p>
           <div className="space-y-1 pl-1.5">
-            {content.fileFormats.map((line) => (
-              <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+            {content.fileFormats.map((line, idx) => (
+              <ListBulletItem key={`${line}-${idx}`} text={line} />
             ))}
           </div>
         </div>
@@ -527,13 +449,8 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
             New Columns Added
           </p>
           <div className="space-y-1 pl-1.5">
-            {content.newColumns.map((line) => (
-              <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+            {content.newColumns.map((line, idx) => (
+              <ListBulletItem key={`${line}-${idx}`} text={line} />
             ))}
           </div>
         </div>
@@ -543,13 +460,8 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
             Quality Assurance
           </p>
           <div className="space-y-1 pl-1.5">
-            {content.qaChecks.map((line) => (
-              <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
-                <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+            {content.qaChecks.map((line, idx) => (
+              <ListBulletItem key={`${line}-${idx}`} text={line} />
             ))}
           </div>
         </div>
@@ -562,14 +474,11 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
           </p>
           <div className="mt-2 space-y-1">
             {content.recommendations.map((line, idx) => (
-              <div key={line} className="flex items-start gap-2">
-                <span className="mt-0.5 w-3 text-xs font-medium text-[var(--brand-1-500)] font-['Source_Code_Pro']">
-                  {idx + 1}.
-                </span>
-                <p className="flex-1 text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-                  {line}
-                </p>
-              </div>
+              <ListNumberedItem
+                key={`${line}-${idx}`}
+                number={idx + 1}
+                text={line}
+              />
             ))}
           </div>
         </div>
