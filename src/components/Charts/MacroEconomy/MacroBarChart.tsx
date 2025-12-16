@@ -247,20 +247,18 @@ export function MacroBarChart({
       .attr(
         "class",
         "font-sourcecodepro text-slate-600 text-xs md:text-sm font-semibold"
-      );
+    );
 
-    /* 👉 DASHED X-AXIS LINE */
-    xAxis
-      .select(".domain")
-      .attr("stroke", "#CBD5E1")
-      .attr("stroke-dasharray", "4,4");
+    /* Solid X-axis line (bottom) */
+    xAxis.select(".domain")
+      .attr("stroke", "#475569") // same color as zero line or your choice
+      .attr("stroke-dasharray", null); // remove dash
 
     /* Optional: cleaner look */
     xAxis.selectAll(".tick line").remove();
 
     /* -------- Grid Lines -------- */
-    svg
-      .append("g")
+    svg.append("g")
       .call(d3.axisLeft(y).tickSize(-width).tickFormat(() => ""))
       .call((g) => g.select(".domain").remove())
       .selectAll("line")
@@ -275,7 +273,8 @@ export function MacroBarChart({
       .attr("y1", y(0))
       .attr("y2", y(0))
       .attr("stroke", "#475569")
-      .attr("stroke-width", 1.5);
+      .attr("stroke-dasharray", "4,4")
+      .attr("opacity", "0.8");
 
     /* -------- Bars -------- */
     const groups = svg
@@ -304,6 +303,7 @@ export function MacroBarChart({
       .attr("y", y(0))
       .attr("height", 0)
       .attr("fill", (d) => d.color)
+
       /* -------- Hover Effect -------- */
       .on("mouseover", function (event, d) {
         tooltip
@@ -322,13 +322,30 @@ export function MacroBarChart({
         d3.select(this)
           .transition()
           .duration(150)
-          .attr("fill", d3.color(d.color)?.darker(0.7)?.toString() ?? d.color);
+          .attr("fill", d3.color(d.color)?.darker(0.3)?.toString() ?? d.color);
       })
+      
       .on("mousemove", (event) => {
-        tooltip
-          .style("left", `${event.offsetX + 12}px`)
-          .style("top", `${event.offsetY - 28}px`);
+        const tooltipEl = tooltipRef.current!;
+        const container = chartRef.current!.parentElement!; // the div wrapping the svg
+        const rect = container.getBoundingClientRect();
+        const tw = tooltipEl.offsetWidth;
+        const th = tooltipEl.offsetHeight;
+
+        let xPos = event.clientX - rect.left + 10;
+        let yPos = event.clientY - rect.top - th - 10;
+
+        if (xPos + tw > rect.width) {
+          xPos = event.clientX - rect.left - tw - 10;
+        }
+
+        if (yPos < 0) {
+          yPos = event.clientY - rect.top + 20;
+        }
+
+        tooltip.style("left", `${xPos}px`).style("top", `${yPos}px`);
       })
+      
       .on("mouseout", function (event, d) {
         tooltip.style("display", "none");
         d3.select(this)
