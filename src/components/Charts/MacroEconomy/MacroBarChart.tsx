@@ -22,11 +22,6 @@ export type MacroBarChartProps = {
   series: MacroSeriesConfig[];
   yAxisLabel: string;
   yAxisRightLabel?: string;
-  axisLabelsFromCsv?: boolean;
-  yAxisLabelColumnIndexes?: {
-    left?: number;
-    right?: number;
-  };
   controlIds: {
     zoomInId: string;
     zoomOutId: string;
@@ -43,8 +38,6 @@ export function MacroBarChart({
   datasetUrl,
   parseRow,
   series,
-  yAxisLabel,
-  yAxisRightLabel,
   controlIds,
   yMaxPadding = 2,
 }: MacroBarChartProps) {
@@ -52,22 +45,20 @@ export function MacroBarChart({
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [data, setData] = useState<MacroBarDatum[]>([]);
 
-  // ----------------
-  // Load CSV
-  // ----------------
+  /* ---------------- Load CSV ---------------- */
   useEffect(() => {
     if (!datasetUrl) return;
+
     d3.csv(datasetUrl).then((raw) => {
       const parsed = raw
         .map((r) => parseRow(r as d3.DSVRowString<string>))
         .filter(Boolean) as MacroBarDatum[];
+
       setData(parsed);
     });
   }, [datasetUrl, parseRow]);
 
-  // ----------------
-  // Render chart
-  // ----------------
+  /* ---------------- Render Chart ---------------- */
   useEffect(() => {
     if (!chartRef.current || !tooltipRef.current || !data.length) return;
 
@@ -81,6 +72,7 @@ export function MacroBarChart({
 
     const viewBoxWidth = 1200;
     const viewBoxHeight = 500;
+
     const width = viewBoxWidth - MARGIN.left - MARGIN.right;
     const height = viewBoxHeight - MARGIN.top - MARGIN.bottom;
 
@@ -91,7 +83,7 @@ export function MacroBarChart({
 
     const years = data.map((d) => d.year);
 
-    // -------- X SCALE (grouped bars)
+    /* -------- X Scales -------- */
     const x0 = d3
       .scaleBand<number>()
       .domain(years)
@@ -104,13 +96,13 @@ export function MacroBarChart({
       .range([0, x0.bandwidth()])
       .padding(0.15);
 
-    // -------- Y SCALE
+    /* -------- Y Scale -------- */
     const allValues: number[] = [];
-    data.forEach((d) => {
+    data.forEach((d) =>
       series.forEach((s) => {
         if (typeof d[s.key] === "number") allValues.push(d[s.key]!);
-      });
-    });
+      })
+    );
 
     const maxVal = d3.max(allValues) ?? 0;
     const minVal = d3.min(allValues) ?? 0;
@@ -123,21 +115,50 @@ export function MacroBarChart({
       ])
       .range([height, 0]);
 
-    // -------- AXES
+    /* -------- Left Y-Axis Label -------- */
+    svg
+      .append("text")
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(${-50},${height / 2}) rotate(-90)`)
+      .attr(
+        "class",
+        "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
+      )
+      .text("Balance of Payment (BOP) USD (Bn)");
+
+    /* -------- Left Y-Axis -------- */
     svg
       .append("g")
       .call(d3.axisLeft(y).ticks(5))
       .selectAll("text")
-      .attr("class", "font-sourcecodepro text-slate-600 text-xs md:text-base font-semibold");
+      .attr(
+        "class",
+        "font-sourcecodepro text-slate-600 text-xs md:text-base font-semibold"
+      );
 
-    svg
+    /* -------- X-Axis -------- */
+    const xAxis = svg
       .append("g")
       .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(x0).tickFormat(d3.format("d")))
-      .selectAll("text")
-      .attr("class", "font-sourcecodepro text-slate-600 text-xs md:text-base font-semibold");
+      .call(d3.axisBottom(x0).tickFormat(d3.format("d")));
 
-    // -------- GRID + ZERO LINE
+    xAxis
+      .selectAll("text")
+      .attr(
+        "class",
+        "font-sourcecodepro text-slate-600 text-xs md:text-base font-semibold"
+      );
+
+    /* 👉 DASHED X-AXIS LINE */
+    xAxis
+      .select(".domain")
+      .attr("stroke", "#CBD5E1")
+      .attr("stroke-dasharray", "4,4");
+
+    /* Optional: cleaner look */
+    xAxis.selectAll(".tick line").remove();
+
+    /* -------- Grid Lines -------- */
     svg
       .append("g")
       .call(d3.axisLeft(y).tickSize(-width).tickFormat(() => ""))
@@ -146,6 +167,7 @@ export function MacroBarChart({
       .attr("stroke", "#CBD5E1")
       .attr("stroke-dasharray", "4,4");
 
+    /* -------- Zero Line -------- */
     svg
       .append("line")
       .attr("x1", 0)
@@ -155,7 +177,7 @@ export function MacroBarChart({
       .attr("stroke", "#475569")
       .attr("stroke-dasharray", "4,4");
 
-    // -------- BARS
+    /* -------- Bars -------- */
     const groups = svg
       .append("g")
       .selectAll("g")
@@ -186,7 +208,9 @@ export function MacroBarChart({
         tooltip
           .style("display", "block")
           .html(`
-            <div class='font-semibold text-slate-600 text-[10px] md:text-xs mb-1'>Year: ${d.year}</div>
+            <div class='font-semibold text-slate-600 text-[10px] md:text-xs mb-1'>
+              Year: ${d.year}
+            </div>
             <div class='flex items-center gap-1'>
               <span style='width:6px;height:6px;background:${d.color};border-radius:50%'></span>
               <span class='text-[10px] md:text-xs'>${d.label}:</span>
@@ -207,8 +231,9 @@ export function MacroBarChart({
         d.value != null ? Math.abs(y(d.value) - y(0)) : 0
       );
 
-    // -------- ZOOM (same behavior)
+    /* -------- Zoom Controls -------- */
     let currentScale = 1;
+
     const zoomInBtn = document.getElementById(controlIds.zoomInId)!;
     const zoomOutBtn = document.getElementById(controlIds.zoomOutId)!;
     const resetBtn = document.getElementById(controlIds.resetId)!;
@@ -216,10 +241,14 @@ export function MacroBarChart({
     const applyZoom = () => {
       const midX = width / 2;
       const tx = midX - midX * currentScale;
+
       svg
         .transition()
         .duration(300)
-        .attr("transform", `translate(${MARGIN.left + tx},${MARGIN.top}) scale(${currentScale},1)`);
+        .attr(
+          "transform",
+          `translate(${MARGIN.left + tx},${MARGIN.top}) scale(${currentScale},1)`
+        );
     };
 
     zoomInBtn.onclick = () => {
@@ -236,15 +265,14 @@ export function MacroBarChart({
       currentScale = 1;
       applyZoom();
     };
-  }, [data, series, yAxisLabel, yAxisRightLabel, controlIds, yMaxPadding]);
+  }, [data, series, controlIds, yMaxPadding]);
 
   return (
     <div className="relative w-full">
       <svg ref={chartRef} className="w-full h-full" />
       <div
         ref={tooltipRef}
-        className="absolute hidden bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1 md:py-2 md:px-3 rounded shadow-lg pointer-events-none"
-        style={{ border: "1px solid #E2E8F0" }}
+        className="absolute bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1 rounded shadow-lg"
       />
     </div>
   );
