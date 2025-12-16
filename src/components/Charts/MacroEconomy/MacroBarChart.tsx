@@ -219,10 +219,10 @@ export function MacroBarChart({
     svg
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("transform", `translate(${-60},${height / 2}) rotate(-90)`)
+      .attr("transform", `translate(${-65},${height / 2}) rotate(-90)`)
       .attr(
         "class",
-        "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
+        "font-baskervville text-slate-600 text-sm md:text-base xl:text-base font-normal"
       )
       .text(dynamicYAxisLabel);
 
@@ -233,7 +233,7 @@ export function MacroBarChart({
       .selectAll("text")
       .attr(
         "class",
-        "font-sourcecodepro text-slate-600 text-xs md:text-base font-semibold"
+        "font-sourcecodepro text-slate-600 text-xs md:text-sm font-semibold"
       );
 
     /* -------- X-Axis -------- */
@@ -246,26 +246,39 @@ export function MacroBarChart({
       .selectAll("text")
       .attr(
         "class",
-        "font-sourcecodepro text-slate-600 text-xs md:text-base font-semibold"
-      );
+        "font-sourcecodepro text-slate-600 text-xs md:text-sm font-semibold"
+    );
 
-    /* 👉 DASHED X-AXIS LINE */
-    xAxis
-      .select(".domain")
-      .attr("stroke", "#CBD5E1")
-      .attr("stroke-dasharray", "4,4");
+    /* Solid X-axis line (bottom) */
+    // xAxis.select(".domain")
+    //   .attr("stroke", "#475569") // same color as zero line or your choice
+    //   .attr("stroke-dasharray", null); // remove dash
 
     /* Optional: cleaner look */
-    xAxis.selectAll(".tick line").remove();
+    // xAxis.selectAll(".tick line").remove();
 
     /* -------- Grid Lines -------- */
-    svg
-      .append("g")
+    svg.append("g")
       .call(d3.axisLeft(y).tickSize(-width).tickFormat(() => ""))
       .call((g) => g.select(".domain").remove())
       .selectAll("line")
       .attr("stroke", "#CBD5E1")
       .attr("stroke-dasharray", "4,4");
+
+      /* -------- Vertical Grid Lines -------- */
+    svg.append("g")
+      .attr("class", "v-grid")
+      .selectAll("line")
+      .data(x0.domain())
+      .enter()
+      .append("line")
+      .attr("x1", (d) => x0(d)! + x0.bandwidth() / 2)
+      .attr("x2", (d) => x0(d)! + x0.bandwidth() / 2)
+      .attr("y1", 0)
+      .attr("y2", height)
+      .attr("stroke", "#CBD5E1")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "4,4"); // ALL dashed now
 
     /* -------- Zero Line -------- */
     svg
@@ -275,7 +288,8 @@ export function MacroBarChart({
       .attr("y1", y(0))
       .attr("y2", y(0))
       .attr("stroke", "#475569")
-      .attr("stroke-width", 1.5);
+      .attr("stroke-dasharray", "4,4")
+      .attr("opacity", "0.8");
 
     /* -------- Bars -------- */
     const groups = svg
@@ -304,8 +318,15 @@ export function MacroBarChart({
       .attr("y", y(0))
       .attr("height", 0)
       .attr("fill", (d) => d.color)
+      .attr("rx", 2) // horizontal radius
+      .attr("ry", 2) // vertical radius
+
       /* -------- Hover Effect -------- */
       .on("mouseover", function (event, d) {
+        const cfg = series.find((s) => s.key === d.key)!;
+        const valueForTooltip = d.value;
+        const formatCurrency = d3.format(",.2f"); // format like 14,539.50
+
         tooltip
           .style("display", "block")
           .html(`
@@ -313,22 +334,45 @@ export function MacroBarChart({
               Year: ${d.year}
             </div>
             <div class='flex items-center gap-1'>
-              <span style='width:6px;height:6px;background:${d.color};border-radius:50%'></span>
-              <span class='text-[10px] md:text-xs'>${d.label}:</span>
-              <strong class='text-[10px] md:text-xs'>${d.value ?? "N/A"}</strong>
+              <span style='width:6px;height:6px;background:${cfg.color};border-radius:50%'></span>
+              <span class='text-[10px] md:text-xs'>${cfg.label}:</span>
+              <span class='ml-4' style="color:${cfg.color}" class="text-[10px] md:text-xs">
+                ${
+                  typeof valueForTooltip === "number"
+                    ? (cfg.valueFormatter?.(valueForTooltip) ?? formatCurrency(valueForTooltip))
+                    : "N/A"
+                }
+              </span>
             </div>
           `);
 
         d3.select(this)
           .transition()
           .duration(150)
-          .attr("fill", d3.color(d.color)?.darker(0.7)?.toString() ?? d.color);
+          .attr("fill", d3.color(cfg.color)?.darker(0.3)?.toString() ?? cfg.color);
       })
+      
       .on("mousemove", (event) => {
-        tooltip
-          .style("left", `${event.offsetX + 12}px`)
-          .style("top", `${event.offsetY - 28}px`);
+        const tooltipEl = tooltipRef.current!;
+        const container = chartRef.current!.parentElement!; // the div wrapping the svg
+        const rect = container.getBoundingClientRect();
+        const tw = tooltipEl.offsetWidth;
+        const th = tooltipEl.offsetHeight;
+
+        let xPos = event.clientX - rect.left + 10;
+        let yPos = event.clientY - rect.top - th - 10;
+
+        if (xPos + tw > rect.width) {
+          xPos = event.clientX - rect.left - tw - 10;
+        }
+
+        if (yPos < 0) {
+          yPos = event.clientY - rect.top + 20;
+        }
+
+        tooltip.style("left", `${xPos}px`).style("top", `${yPos}px`);
       })
+      
       .on("mouseout", function (event, d) {
         tooltip.style("display", "none");
         d3.select(this)
