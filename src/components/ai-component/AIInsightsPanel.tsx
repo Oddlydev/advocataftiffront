@@ -308,7 +308,7 @@ export default function AIInsightsPanel({ onClose }: AIInsightsPanelProps) {
                   Key Insights
                 </p>
                 <span
-                  className="flex h-5 items-center justify-center rounded-[var(--border-radius-rounded-full,9999px)] bg-[var(--slate-200,#E2E8F0)] px-2 text-[var(--slate-700,#334155)] text-[10px] font-semibold leading-[15px]"
+                  className="flex h-5 items-center justify-center rounded-full bg-slate-200 px-2 text-slate-700 text-[10px] font-semibold leading-3"
                   style={{ fontFamily: "Arial" }}
                 >
                   2
@@ -334,7 +334,7 @@ export default function AIInsightsPanel({ onClose }: AIInsightsPanelProps) {
                   More Insights
                 </p>
                 <span
-                  className="flex h-5 items-center justify-center rounded-[var(--border-radius-rounded-full,9999px)] bg-[var(--slate-200,#E2E8F0)] px-2 text-[var(--slate-700,#334155)] text-[10px] font-semibold leading-[15px]"
+                  className="flex h-5 items-center justify-center rounded-full bg-slate-200 px-2 text-slate-700 text-[10px] font-semibold leading-3"
                   style={{ fontFamily: "Arial" }}
                 >
                   6
