@@ -170,10 +170,9 @@ export default function TitleCard() {
           </section>
 
           <div
-            className="mt-4 pt-1.5 text-xs leading-5 text-slate-500"
+            className="mt-4 pt-1.5 text-xs leading-5 text-slate-500 border-t border-slate-300"
             style={{
               fontFamily: '"Source Code Pro"',
-              borderTop: "1px solid var(--slate-300, #CBD5E1)",
             }}
           >
             Analysis generated: Dec 8, 2024 · Data version: CBSL Q4 2024 Release

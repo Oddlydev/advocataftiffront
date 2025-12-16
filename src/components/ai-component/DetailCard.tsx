@@ -103,7 +103,7 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
         <div className="space-y-1.5 pl-1.5">
           {content.firstMetrics.map((line) => (
             <div key={line} className="flex items-start gap-2.5">
-              <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+              <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
               <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                 {line}
               </p>
@@ -118,7 +118,7 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
         <div className="space-y-1.5 pl-1.5">
           {content.secondMetrics.map((line) => (
             <div key={line} className="flex items-start gap-2.5">
-              <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+              <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
               <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                 {line}
               </p>
@@ -180,7 +180,7 @@ function TrendDetail({ content }: { content: TrendDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.longTermTrends.map((trend) => (
               <div key={trend} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {trend}
                 </p>
@@ -240,7 +240,7 @@ function RankingDetail({ content }: { content: RankingDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.stabilityRanking.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
@@ -308,7 +308,7 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.breakdown.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
@@ -324,7 +324,7 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.timeline.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
@@ -340,7 +340,7 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.outliers.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
@@ -356,7 +356,7 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.checks.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
@@ -415,7 +415,7 @@ function ForecastDetail({ content }: { content: ForecastDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.categoryProjections.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
@@ -431,7 +431,7 @@ function ForecastDetail({ content }: { content: ForecastDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.validationNotes.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
@@ -447,7 +447,7 @@ function ForecastDetail({ content }: { content: ForecastDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.riskFactors.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
@@ -497,7 +497,7 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.enhancements.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
@@ -513,7 +513,7 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.fileFormats.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
@@ -529,7 +529,7 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.newColumns.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>
@@ -545,7 +545,7 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
           <div className="space-y-1 pl-1.5">
             {content.qaChecks.map((line) => (
               <div key={line} className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
+                <span className="mt-1.5 h-2 w-2 p-1 rounded-full bg-gradient-to-b from-[#EA1952] to-[#AA1E58]" />
                 <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
                   {line}
                 </p>

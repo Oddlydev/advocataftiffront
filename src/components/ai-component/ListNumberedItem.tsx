@@ -28,10 +28,9 @@ export default function ListNumberedItem({
       </span>
 
       <p
-        className="text-xs leading-5 text-slate-600"
+        className="text-xs leading-5 text-slate-600 tracking-normal"
         style={{
           fontFamily: '"Source Code Pro"',
-          letterSpacing: "0",
         }}
       >
         {text}
