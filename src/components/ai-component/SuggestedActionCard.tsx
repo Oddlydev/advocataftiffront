@@ -32,11 +32,22 @@ export default function SuggestedActionCard({
   const thinkingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const clearTimers = () => {
+    if (thinkingTimerRef.current) {
+      clearTimeout(thinkingTimerRef.current);
+      thinkingTimerRef.current = null;
+    }
+    if (revealTimerRef.current) {
+      clearTimeout(revealTimerRef.current);
+      revealTimerRef.current = null;
+    }
+  };
+
   useEffect(() => {
     return () => {
-      if (thinkingTimerRef.current) clearTimeout(thinkingTimerRef.current);
-      if (revealTimerRef.current) clearTimeout(revealTimerRef.current);
+      clearTimers();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -48,19 +59,27 @@ export default function SuggestedActionCard({
   }, [flow]);
 
   const handleClick = () => {
+    // Toggle active UI state always
     setActive((prev) => !prev);
 
     if (!showDetailOnClick) return;
 
-    if (flow === "revealing" || flow === "detail") return;
+    const isOpen = flow !== "idle";
 
+    // If open (thinking/revealing/detail), clicking again closes it
+    if (isOpen) {
+      clearTimers();
+      setFlow("idle");
+      return;
+    }
+
+    // Start open sequence
     setFlow("thinking");
 
-    if (thinkingTimerRef.current) clearTimeout(thinkingTimerRef.current);
+    clearTimers();
     thinkingTimerRef.current = setTimeout(() => {
       setFlow("revealing");
 
-      if (revealTimerRef.current) clearTimeout(revealTimerRef.current);
       revealTimerRef.current = setTimeout(() => {
         setFlow("detail");
       }, 1200);
