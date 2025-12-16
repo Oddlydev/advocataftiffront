@@ -76,7 +76,7 @@ export default function TitleCard() {
             <span
               className="
                 pointer-events-none absolute left-1/2 top-full hidden
-                min-w-[200px] bg-[#1A1A1A] px-1.5 py-1 text-xs leading-4
+                min-w-[200px] bg-[#1A1A1A] px-1.5 py-1 leading-4
                 text-[8px] font-['Source_Code_Pro'] text-white rounded-sm
                 shadow-lg group-hover:flex
               "
@@ -108,7 +108,7 @@ export default function TitleCard() {
             </p>
 
             <p
-              className="text-[10px] leading-4 text-slate-600 mb-2 font-normal"
+              className="text-xs leading-5 text-slate-600 mb-2 font-normal"
               style={{ fontFamily: '"Source Code Pro"' }}
             >
               AI analyzes 26 years (1998–2024) of Central Bank data using
@@ -127,7 +127,7 @@ export default function TitleCard() {
             </p>
 
             <p
-              className="text-[10px] leading-4 text-slate-600 mb-2 font-normal"
+              className="text-xs leading-5 text-slate-600 mb-2 font-normal"
               style={{ fontFamily: '"Source Code Pro"' }}
             >
               Private Consumption Expenditure across 12 categories: Food,
@@ -145,23 +145,23 @@ export default function TitleCard() {
             </p>
 
             <ul
-              className="text-[10px] leading-4 text-slate-600 list-disc pl-3.5"
+              className="text-xs leading-5 text-slate-600 list-disc pl-3.5"
               style={{ fontFamily: '"Source Code Pro"' }}
             >
               <li
-                className="text-[10px] leading-4 text-slate-600 list-disc"
+                className="text-xs leading-5 text-slate-600 list-disc"
                 style={{ fontFamily: '"Source Code Pro"' }}
               >
                 Historical analysis only – does not predict future trends
               </li>
               <li
-                className="text-[10px] leading-4 text-slate-600 list-disc"
+                className="text-xs leading-5 text-slate-600 list-disc"
                 style={{ fontFamily: '"Source Code Pro"' }}
               >
                 Nominal values not adjusted for inflation
               </li>
               <li
-                className="text-[10px] leading-4 text-slate-600 list-disc"
+                className="text-xs leading-5 text-slate-600 list-disc"
                 style={{ fontFamily: '"Source Code Pro"' }}
               >
                 Cannot identify causation, only correlations
@@ -170,7 +170,7 @@ export default function TitleCard() {
           </section>
 
           <div
-            className="mt-4 pt-1.5 text-[9px] tracking-[0.4px] text-slate-500"
+            className="mt-4 pt-1.5 text-xs leading-5 text-slate-500"
             style={{
               fontFamily: '"Source Code Pro"',
               borderTop: "1px solid var(--slate-300, #CBD5E1)",
