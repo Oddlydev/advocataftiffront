@@ -30,14 +30,38 @@ export type MacroBarChartProps = {
   yMaxPadding?: number;
 };
 
-const MARGIN = { top: 40, right: 40, bottom: 60, left: 70 };
+const MARGIN = { top: 40, right: 40, bottom: 60, left: 90 };
 const SCALE_STEP = 1.2;
 const DURATION = 2000;
+const HTTP_URL_REGEX = /^https?:\/\//i;
+
+async function fetchCsvWithFallback(url: string): Promise<string> {
+  const attempt = async (target: string) => {
+    const response = await fetch(target, { cache: "no-cache" });
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+    return response.text();
+  };
+
+  try {
+    return await attempt(url);
+  } catch (primaryError) {
+    if (HTTP_URL_REGEX.test(url)) {
+      const proxied = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+      return attempt(proxied).catch((proxyError) => {
+        throw proxyError ?? primaryError;
+      });
+    }
+    throw primaryError;
+  }
+}
 
 export function MacroBarChart({
   datasetUrl,
   parseRow,
   series,
+  yAxisLabel,
   controlIds,
   yMaxPadding = 2,
 }: MacroBarChartProps) {
@@ -47,15 +71,46 @@ export function MacroBarChart({
 
   /* ---------------- Load CSV ---------------- */
   useEffect(() => {
-    if (!datasetUrl) return;
+    let isMounted = true;
 
-    d3.csv(datasetUrl).then((raw) => {
-      const parsed = raw
-        .map((r) => parseRow(r as d3.DSVRowString<string>))
-        .filter(Boolean) as MacroBarDatum[];
+    async function loadDataset() {
+      if (!datasetUrl) {
+        if (isMounted) setData([]);
+        return;
+      }
 
-      setData(parsed);
-    });
+      try {
+        const text = await fetchCsvWithFallback(datasetUrl);
+        const cleanedText = text.replace(/\uFEFF/g, "");
+        const raw = d3.csvParse(cleanedText);
+
+        const parsed = raw
+          .map((row) => parseRow(row as d3.DSVRowString<string>))
+          .filter((item): item is MacroBarDatum => item !== null);
+
+        if (!parsed.length) {
+          throw new Error("Dataset did not contain any rows");
+        }
+
+        if (isMounted) {
+          setData(parsed);
+        }
+      } catch (error) {
+        console.error(
+          `[MacroBarChart] Failed to load dataset ${datasetUrl} ::`,
+          error
+        );
+        if (isMounted) {
+          setData([]);
+        }
+      }
+    }
+
+    loadDataset();
+
+    return () => {
+      isMounted = false;
+    };
   }, [datasetUrl, parseRow]);
 
   /* ---------------- Render Chart ---------------- */
@@ -119,12 +174,12 @@ export function MacroBarChart({
     svg
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("transform", `translate(${-50},${height / 2}) rotate(-90)`)
+      .attr("transform", `translate(${-60},${height / 2}) rotate(-90)`)
       .attr(
         "class",
         "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
       )
-      .text("Balance of Payment (BOP) USD (Bn)");
+      .text(yAxisLabel);
 
     /* -------- Left Y-Axis -------- */
     svg
@@ -175,7 +230,7 @@ export function MacroBarChart({
       .attr("y1", y(0))
       .attr("y2", y(0))
       .attr("stroke", "#475569")
-      .attr("stroke-dasharray", "4,4");
+      .attr("stroke-width", 1.5);
 
     /* -------- Bars -------- */
     const groups = svg
@@ -265,7 +320,7 @@ export function MacroBarChart({
       currentScale = 1;
       applyZoom();
     };
-  }, [data, series, controlIds, yMaxPadding]);
+  }, [data, series, controlIds, yAxisLabel, yMaxPadding]);
 
   return (
     <div className="relative w-full">

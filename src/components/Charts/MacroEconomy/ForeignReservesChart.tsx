@@ -2,12 +2,12 @@
 
 import { useCallback, useMemo } from "react";
 import type { DSVRowString } from "d3-dsv";
+import { MacroChartWrapperProps } from "./MacroLineChart";
 import {
-  MacroChartWrapperProps,
-  MacroLineChart,
-  MacroLineDatum,
-  MacroSeriesConfig,
-} from "./MacroLineChart";
+  MacroBarChart,
+  type MacroBarDatum,
+  type MacroSeriesConfig,
+} from "./MacroBarChart";
 import { extractYear, pickNumeric } from "./utils";
 
 const ORA_HEADERS = [
@@ -27,11 +27,14 @@ const seriesConfig: MacroSeriesConfig[] = [
   },
 ];
 
-export function ForeignReservesChart({ datasetUrl, controlIds }: MacroChartWrapperProps) {
+export function ForeignReservesChart({
+  datasetUrl,
+  controlIds,
+}: MacroChartWrapperProps) {
   const series = useMemo(() => seriesConfig, []);
 
   const parseRow = useCallback(
-    (row: DSVRowString<string>): MacroLineDatum | null => {
+    (row: DSVRowString<string>): MacroBarDatum | null => {
       const year = extractYear(row);
       if (year === null) {
         return null;
@@ -46,13 +49,12 @@ export function ForeignReservesChart({ datasetUrl, controlIds }: MacroChartWrapp
   );
 
   return (
-    <MacroLineChart
+    <MacroBarChart
       datasetUrl={datasetUrl}
       controlIds={controlIds}
       parseRow={parseRow}
       series={series}
       yAxisLabel="Official Reserve Assets (USD Mn.)"
-      axisLabelsFromCsv
       yMaxPadding={2}
     />
   );
