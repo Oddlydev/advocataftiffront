@@ -219,10 +219,10 @@ export function MacroBarChart({
     svg
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("transform", `translate(${-60},${height / 2}) rotate(-90)`)
+      .attr("transform", `translate(${-65},${height / 2}) rotate(-90)`)
       .attr(
         "class",
-        "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
+        "font-baskervville text-slate-600 text-sm md:text-base xl:text-base font-normal"
       )
       .text(dynamicYAxisLabel);
 
@@ -233,7 +233,7 @@ export function MacroBarChart({
       .selectAll("text")
       .attr(
         "class",
-        "font-sourcecodepro text-slate-600 text-xs md:text-base font-semibold"
+        "font-sourcecodepro text-slate-600 text-xs md:text-sm font-semibold"
       );
 
     /* -------- X-Axis -------- */
@@ -246,7 +246,7 @@ export function MacroBarChart({
       .selectAll("text")
       .attr(
         "class",
-        "font-sourcecodepro text-slate-600 text-xs md:text-base font-semibold"
+        "font-sourcecodepro text-slate-600 text-xs md:text-sm font-semibold"
       );
 
     /* 👉 DASHED X-AXIS LINE */
