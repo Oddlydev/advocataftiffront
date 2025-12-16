@@ -308,8 +308,9 @@ export function MacroBarChart({
 
       /* -------- Hover Effect -------- */
       .on("mouseover", function (event, d) {
-        const cfg = series.find((s) => s.key === d.key)!; // get series config
+        const cfg = series.find((s) => s.key === d.key)!;
         const valueForTooltip = d.value;
+        const formatCurrency = d3.format(",.2f"); // format like 14,539.50
 
         tooltip
           .style("display", "block")
@@ -323,7 +324,7 @@ export function MacroBarChart({
               <span class='ml-4' style="color:${cfg.color}" class="text-[10px] md:text-xs">
                 ${
                   typeof valueForTooltip === "number"
-                    ? (cfg.valueFormatter?.(valueForTooltip) ?? valueForTooltip.toFixed(3))
+                    ? (cfg.valueFormatter?.(valueForTooltip) ?? formatCurrency(valueForTooltip))
                     : "N/A"
                 }
               </span>
