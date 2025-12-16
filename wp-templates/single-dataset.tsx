@@ -146,6 +146,8 @@ interface SingleDatasetProps {
 }
 
 /** Dataset details page */
+const FOOTER_HIDE_CLASS = "ai-insights-sidebar-open";
+
 const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const dataset = data?.dataSet;
   const allRelated = data?.dataSets?.nodes ?? [];
@@ -191,6 +193,17 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    const body = document.body;
+    if (!body) return;
+    if (isPanelVisible) {
+      body.classList.add(FOOTER_HIDE_CLASS);
+    } else {
+      body.classList.remove(FOOTER_HIDE_CLASS);
+    }
+    return () => body.classList.remove(FOOTER_HIDE_CLASS);
+  }, [isPanelVisible]);
 
   const scrollToTable = () => {
     const el = tableWrapRef.current;
@@ -447,7 +460,9 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
           </div>
 
           {/* Related datasets */}
-          <RelatedDatasets datasetId={String(dataset.databaseId)} />
+          {!isPanelVisible && (
+            <RelatedDatasets datasetId={String(dataset.databaseId)} />
+          )}
 
           {/* Keep your commented related section as-is */}
           {/* {related.length > 0 && (

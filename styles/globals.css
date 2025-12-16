@@ -329,3 +329,7 @@ button {
     padding-right: 4rem;
   }
 }
+
+.ai-insights-sidebar-open footer.footer {
+  display: none;
+}
