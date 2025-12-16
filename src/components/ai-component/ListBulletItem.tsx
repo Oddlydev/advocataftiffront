@@ -11,7 +11,7 @@ export default function ListBulletItem({
 }: ListBulletItemProps) {
   return (
     <article
-      className={`flex items-start gap-3 rounded-[12px] ${className}`.trim()}
+      className={`flex items-start gap-3 rounded-xl mb-2 last:mb-0 pl-1.5 ${className}`.trim()}
     >
       <span
         className="

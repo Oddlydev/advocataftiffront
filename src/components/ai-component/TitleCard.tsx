@@ -31,7 +31,15 @@ export default function TitleCard() {
 
           {/* Info icon + tooltip */}
           <span className="relative inline-flex items-center justify-center group">
-            <span className="inline-flex items-center justify-center text-[#94A3B8] transition-colors hover:text-[var(--brand-1-500)] group-hover:text-[var(--brand-1-500)]">
+            {/* Icon */}
+            <span
+              className="
+                inline-flex items-center justify-center
+                text-[#64748B]
+                transition-colors
+                group-hover:text-[var(--brand-1-500)]
+              "
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -39,7 +47,6 @@ export default function TitleCard() {
                 viewBox="0 0 16 16"
                 fill="none"
                 aria-hidden="true"
-                className="stroke-[#94A3B8] transition group-hover:stroke-[var(--brand-1-500)]"
               >
                 <g clipPath="url(#clip0_8707_3265)">
                   <path
@@ -72,13 +79,14 @@ export default function TitleCard() {
               </svg>
             </span>
 
-            {/* Tooltip: left edge starts at icon center */}
+            {/* Tooltip */}
             <span
               className="
                 pointer-events-none absolute left-1/2 top-full hidden
                 min-w-[200px] bg-[#1A1A1A] px-1.5 py-1 leading-4
-                text-[8px] font-['Source_Code_Pro'] text-white rounded-sm
-                shadow-lg group-hover:flex
+                text-[8px] font-['Source_Code_Pro'] text-white
+                rounded-sm shadow-lg
+                group-hover:flex
               "
             >
               Show methodology, Source &amp; Limitations
@@ -88,7 +96,7 @@ export default function TitleCard() {
 
         {/* Title */}
         <p
-          className="text-sm font-medium leading-5 text-slate-900"
+          className="text-sm font-medium leading-5 text-slate-900a"
           style={{ fontFamily: "Montserrat" }}
         >
           Composition of Private Consumption Expenditure at Current Market

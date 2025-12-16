@@ -2,7 +2,7 @@ import React from "react";
 
 export default function InsightsDisclaimerCard() {
   return (
-    <article className="w-full rounded-[16px] border border-[#BFDBFE] bg-gradient-to-r from-[#EFF6FF] to-[#EEF2FF] p-6 shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)]">
+    <article className="w-full rounded-[16px] border border-[#BFDBFE] bg-gradient-to-r from-[#EFF6FF] to-[#EEF2FF] p-4 shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)]">
       <div className="flex gap-4">
         <div className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[#DBEAFE]">
           <svg

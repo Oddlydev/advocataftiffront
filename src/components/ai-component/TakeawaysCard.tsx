@@ -68,7 +68,7 @@ export default function TakeawaysCard({
       `}</style>
 
       {/* Trigger */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 pt-5 px-5">
         {state === "idle" ? (
           <a
             href="#"
@@ -109,7 +109,7 @@ export default function TakeawaysCard({
                   </h3>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {takeawayPoints.map((point, index) => (
                     <div
                       key={point}

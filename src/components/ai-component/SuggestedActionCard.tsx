@@ -52,15 +52,12 @@ export default function SuggestedActionCard({
 
     if (!showDetailOnClick) return;
 
-    // If already revealing/detail, do nothing
     if (flow === "revealing" || flow === "detail") return;
 
-    // Start thinking
     setFlow("thinking");
 
     if (thinkingTimerRef.current) clearTimeout(thinkingTimerRef.current);
     thinkingTimerRef.current = setTimeout(() => {
-      //   As soon as we start reveal, thinking is gone (because we render ONLY one block)
       setFlow("revealing");
 
       if (revealTimerRef.current) clearTimeout(revealTimerRef.current);
@@ -78,14 +75,14 @@ export default function SuggestedActionCard({
         onClick={handleClick}
         className={`group flex w-full items-start gap-[16px] rounded-2xl border px-5 py-4 transition-all duration-200 ${
           active
-            ? "border-[rgba(234,25,82,0.3)] bg-[linear-gradient(135deg,rgba(234,25,82,0.05)_0%,rgba(227,63,255,0.05)_100%)]"
+            ? "border-[rgba(234,25,82,0.3)] bg-[linear-gradient(135deg,rgba(234,25,82,0.05)_0%,rgba(227,63,255,0.05)_100%)] shadow-[0_10px_15px_-3px_rgba(0,0,0,0.10),0_4px_6px_-4px_rgba(0,0,0,0.10)]"
             : "border-slate-200 bg-white hover:border-[rgba(234,25,82,0.2)] hover:bg-[#F8FAFC] hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]"
         } ${showDetailOnClick ? "cursor-pointer" : ""}`}
       >
         <span
           className={`flex h-[44px] w-[44px] min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-[10px] p-4 transition duration-200 ${
             active
-              ? "bg-[linear-gradient(270deg,#EA1952_0%,#AA1E58_100%)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] text-white"
+              ? "bg-[linear-gradient(270deg,#EA1952_0%,#AA1E58_100%)] shadow-[0_10px_15px_-3px_rgba(0,0,0,0.10),0_4px_6px_-4px_rgba(0,0,0,0.10)] text-white"
               : "bg-slate-100 text-[#64748B] group-hover:text-[var(--brand-1-500)] group-hover:bg-[linear-gradient(135deg,rgba(234,25,82,0.1)_0%,rgba(227,63,255,0.1)_100%)]"
           }`}
         >

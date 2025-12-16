@@ -61,7 +61,7 @@ export default function MethodologyCard({
       `}</style>
 
       {/* Trigger */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 pt-5 px-5">
         {state === "idle" ? (
           <a
             href="#"

@@ -22,8 +22,37 @@ const CTA_SECTION = (
   <div className="mt-5 border-t border-slate-200 pt-3.5">
     <button
       type="button"
-      className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#EA1952] to-[#AA1E58] px-2.5 py-3 text-xs font-semibold text-white shadow"
+      className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#EA1952] to-[#AA1E58] p-2.5 text-xs font-semibold text-white shadow"
     >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+      >
+        <path
+          d="M8 10V2"
+          stroke="white"
+          stroke-width="1.33333"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10"
+          stroke="white"
+          stroke-width="1.33333"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M4.66663 6.66663L7.99996 9.99996L11.3333 6.66663"
+          stroke="white"
+          stroke-width="1.33333"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
       <span className="text-sm font-[Montserrat]">
         Download Full Analysis Report
       </span>
@@ -37,7 +66,7 @@ const CTA_SECTION = (
 
 function DetailRevealLinks() {
   return (
-    <div className="space-y-2">
+    <div className="space-y-3.5">
       <TakeawaysCard />
       <MethodologyCard />
     </div>
@@ -79,8 +108,8 @@ const RankingLinkIcon = () => (
 
 function CompositionDetail({ content }: { content: CompositionDetailContent }) {
   return (
-    <article className="flex flex-col gap-4 rounded-[18px] border border-slate-200 bg-white p-5 drop-shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
-      <div className="space-y-2.5">
+    <article className="flex flex-col rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="space-y-3.5">
         {content.introParagraphs.map((paragraph) => (
           <p
             key={paragraph}
@@ -102,7 +131,7 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
           Category Performance Metrics
         </p>
 
-        <div className="space-y-1.5 pl-1.5">
+        <div className="mb-0">
           {content.firstMetrics.map((line, idx) => (
             <ListBulletItem key={`${line}-${idx}`} text={line} />
           ))}
@@ -112,13 +141,13 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
           Data Quality &amp; Trend Insights
         </p>
 
-        <div className="space-y-1.5 pl-1.5">
+        <div className="mb-0">
           {content.secondMetrics.map((line, idx) => (
             <ListBulletItem key={`${line}-${idx}`} text={line} />
           ))}
         </div>
 
-        <div className="mt-5 border-t border-slate-200 pt-4">
+        <div className="pt-3.5">
           <DetailRevealLinks />
         </div>
 
@@ -127,7 +156,7 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
             Recommendations
           </p>
 
-          <div className="mt-2 space-y-1">
+          <div className="mt-2 space-y-3.5">
             {content.recommendations.map((line, idx) => (
               <ListNumberedItem
                 key={`${line}-${idx}`}
@@ -146,7 +175,7 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
 
 function TrendDetail({ content }: { content: TrendDetailContent }) {
   return (
-    <article className="flex flex-col gap-4 rounded-[18px] border border-slate-200 bg-white p-5 drop-shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
+    <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
         <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
           {content.intro}
@@ -189,7 +218,7 @@ function TrendDetail({ content }: { content: TrendDetailContent }) {
             Recommendations
           </p>
 
-          <div className="mt-2 space-y-1">
+          <div className="mt-2 space-y-3.5">
             {content.recommendations.map((line, idx) => (
               <ListNumberedItem
                 key={`${line}-${idx}`}
@@ -208,7 +237,7 @@ function TrendDetail({ content }: { content: TrendDetailContent }) {
 
 function RankingDetail({ content }: { content: RankingDetailContent }) {
   return (
-    <article className="flex flex-col gap-4 rounded-[18px] border border-slate-200 bg-white p-5 drop-shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
+    <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
         <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
           {content.intro}
@@ -240,7 +269,7 @@ function RankingDetail({ content }: { content: RankingDetailContent }) {
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Recommendations
           </p>
-          <div className="mt-2 space-y-1">
+          <div className="mt-2 space-y-3.5">
             {content.recommendations.map((line, idx) => (
               <ListNumberedItem
                 key={`${line}-${idx}`}
@@ -259,7 +288,7 @@ function RankingDetail({ content }: { content: RankingDetailContent }) {
 
 function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
   return (
-    <article className="flex flex-col gap-4 rounded-[18px] border border-slate-200 bg-white p-5 drop-shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
+    <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
         <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
           {content.intro}
@@ -324,7 +353,7 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Recommendations
           </p>
-          <div className="mt-2 space-y-1">
+          <div className="mt-2 space-y-3.5">
             {content.recommendations.map((line, idx) => (
               <ListNumberedItem
                 key={`${line}-${idx}`}
@@ -343,7 +372,7 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
 
 function ForecastDetail({ content }: { content: ForecastDetailContent }) {
   return (
-    <article className="flex flex-col gap-4 rounded-[18px] border border-slate-200 bg-white p-5 drop-shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
+    <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
         <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
           {content.intro}
@@ -397,7 +426,7 @@ function ForecastDetail({ content }: { content: ForecastDetailContent }) {
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Recommendations
           </p>
-          <div className="mt-2 space-y-1">
+          <div className="mt-2 space-y-3.5">
             {content.recommendations.map((line, idx) => (
               <ListNumberedItem
                 key={`${line}-${idx}`}
@@ -416,7 +445,7 @@ function ForecastDetail({ content }: { content: ForecastDetailContent }) {
 
 function DatasetDetail({ content }: { content: DatasetDetailContent }) {
   return (
-    <article className="flex flex-col gap-4 rounded-[18px] border border-slate-200 bg-white p-5 drop-shadow-[0_30px_60px_-40px_rgba(15,23,42,0.9)]">
+    <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
         <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
           {content.intro}
@@ -472,7 +501,7 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
             Recommendations
           </p>
-          <div className="mt-2 space-y-1">
+          <div className="mt-2 space-y-3.5">
             {content.recommendations.map((line, idx) => (
               <ListNumberedItem
                 key={`${line}-${idx}`}

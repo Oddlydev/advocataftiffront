@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import KeyInsightsIcon from "./KeyInsightsIcon";
 
@@ -83,6 +85,7 @@ export default function KeyInsightsCard() {
           >
             Significant Growth in Food Consumption
           </h3>
+
           <p
             className="text-xs leading-5 text-slate-600 font-normal"
             style={{ fontFamily: '"Source Code Pro"' }}
@@ -92,8 +95,11 @@ export default function KeyInsightsCard() {
           </p>
         </div>
 
-        <div className="col-start-2 border-t border-slate-100 pt-1.5 mt-2">
-          <div className="flex items-center justify-between text-xs leading-4 text-slate-500">
+        {/* ✅ Crisp 1px divider */}
+        <div className="col-start-2 mt-2 pt-1.5 relative">
+          <span className="absolute left-0 right-0 top-0 h-px bg-slate-100" />
+
+          <div className="flex items-center justify-between text-[10px] leading-4 text-slate-500">
             <div
               className="flex items-center gap-1"
               style={{ fontFamily: '"Source Code Pro"' }}
@@ -107,8 +113,8 @@ export default function KeyInsightsCard() {
               style={{ fontFamily: '"Source Code Pro"' }}
             >
               <span className="text-slate-500 leading-4">Helpful?</span>
+
               <div className="flex items-center gap-1.5 rounded-full text-xs text-slate-600">
-                {/* THUMB UP */}
                 <button
                   type="button"
                   onClick={() =>
@@ -120,7 +126,6 @@ export default function KeyInsightsCard() {
                   <ConfidenceIcon active={thumbFeedback === "up"} />
                 </button>
 
-                {/* THUMB DOWN */}
                 <button
                   type="button"
                   onClick={() =>
