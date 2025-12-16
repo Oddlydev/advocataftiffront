@@ -250,12 +250,12 @@ export function MacroBarChart({
     );
 
     /* Solid X-axis line (bottom) */
-    xAxis.select(".domain")
-      .attr("stroke", "#475569") // same color as zero line or your choice
-      .attr("stroke-dasharray", null); // remove dash
+    // xAxis.select(".domain")
+    //   .attr("stroke", "#475569") // same color as zero line or your choice
+    //   .attr("stroke-dasharray", null); // remove dash
 
     /* Optional: cleaner look */
-    xAxis.selectAll(".tick line").remove();
+    // xAxis.selectAll(".tick line").remove();
 
     /* -------- Grid Lines -------- */
     svg.append("g")
@@ -264,6 +264,21 @@ export function MacroBarChart({
       .selectAll("line")
       .attr("stroke", "#CBD5E1")
       .attr("stroke-dasharray", "4,4");
+
+      /* -------- Vertical Grid Lines -------- */
+    svg.append("g")
+      .attr("class", "v-grid")
+      .selectAll("line")
+      .data(x0.domain())
+      .enter()
+      .append("line")
+      .attr("x1", (d) => x0(d)! + x0.bandwidth() / 2)
+      .attr("x2", (d) => x0(d)! + x0.bandwidth() / 2)
+      .attr("y1", 0)
+      .attr("y2", height)
+      .attr("stroke", "#CBD5E1")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "4,4"); // ALL dashed now
 
     /* -------- Zero Line -------- */
     svg
