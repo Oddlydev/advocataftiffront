@@ -56,6 +56,7 @@ export function ForeignReservesChart({
       series={series}
       yAxisLabel="Official Reserve Assets (USD Mn.)"
       yMaxPadding={2}
+      axisLabelsFromCsv
     />
   );
 }

@@ -57,6 +57,7 @@ export function ForeignExchangeChart({
       series={series}
       yAxisLabel="Balance of Payments (USD Mn.)"
       yMaxPadding={2}
+      axisLabelsFromCsv
     />
   );
 }

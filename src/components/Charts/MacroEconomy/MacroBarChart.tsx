@@ -41,6 +41,8 @@ export type MacroBarChartProps = {
     resetId: string;
   };
   yMaxPadding?: number;
+  axisLabelsFromCsv?: boolean;
+  yAxisLabelColumnIndex?: number;
 };
 
 const MARGIN = { top: 40, right: 40, bottom: 60, left: 90 };
@@ -77,10 +79,18 @@ export function MacroBarChart({
   yAxisLabel,
   controlIds,
   yMaxPadding = 2,
+  axisLabelsFromCsv = false,
+  yAxisLabelColumnIndex,
 }: MacroBarChartProps) {
   const chartRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [data, setData] = useState<MacroBarDatum[]>([]);
+  const [dynamicYAxisLabel, setDynamicYAxisLabel] =
+    useState<string>(yAxisLabel);
+
+  useEffect(() => {
+    setDynamicYAxisLabel(yAxisLabel);
+  }, [yAxisLabel]);
 
   /* ---------------- Load CSV ---------------- */
   useEffect(() => {
@@ -88,7 +98,10 @@ export function MacroBarChart({
 
     async function loadDataset() {
       if (!datasetUrl) {
-        if (isMounted) setData([]);
+        if (isMounted) {
+          setData([]);
+          setDynamicYAxisLabel(yAxisLabel);
+        }
         return;
       }
 
@@ -96,6 +109,21 @@ export function MacroBarChart({
         const text = await fetchCsvWithFallback(datasetUrl);
         const cleanedText = text.replace(/\uFEFF/g, "");
         const raw = d3.csvParse(cleanedText);
+
+        const columns = raw.columns ?? [];
+        const leftIndex =
+          axisLabelsFromCsv && columns.length > 1
+            ? 1
+            : yAxisLabelColumnIndex ?? undefined;
+        const leftLabel =
+          leftIndex != null &&
+          leftIndex >= 0 &&
+          leftIndex < columns.length
+            ? columns[leftIndex]
+            : undefined;
+        if (isMounted) {
+          setDynamicYAxisLabel(leftLabel ?? yAxisLabel);
+        }
 
         const parsed = raw
           .map((row) => parseRow(row as d3.DSVRowString<string>))
@@ -115,6 +143,7 @@ export function MacroBarChart({
         );
         if (isMounted) {
           setData([]);
+          setDynamicYAxisLabel(yAxisLabel);
         }
       }
     }
@@ -124,7 +153,13 @@ export function MacroBarChart({
     return () => {
       isMounted = false;
     };
-  }, [datasetUrl, parseRow]);
+  }, [
+    datasetUrl,
+    parseRow,
+    axisLabelsFromCsv,
+    yAxisLabel,
+    yAxisLabelColumnIndex,
+  ]);
 
   /* ---------------- Render Chart ---------------- */
   useEffect(() => {
@@ -189,7 +224,7 @@ export function MacroBarChart({
         "class",
         "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
       )
-      .text(yAxisLabel);
+      .text(dynamicYAxisLabel);
 
     /* -------- Left Y-Axis -------- */
     svg
@@ -341,7 +376,7 @@ export function MacroBarChart({
       currentScale = 1;
       applyZoom();
     };
-  }, [data, series, controlIds, yAxisLabel, yMaxPadding]);
+  }, [data, series, controlIds, dynamicYAxisLabel, yMaxPadding]);
 
   return (
     <div className="relative w-full">
