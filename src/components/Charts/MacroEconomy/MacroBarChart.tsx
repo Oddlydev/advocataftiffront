@@ -303,9 +303,14 @@ export function MacroBarChart({
       .attr("y", y(0))
       .attr("height", 0)
       .attr("fill", (d) => d.color)
+      .attr("rx", 2) // horizontal radius
+      .attr("ry", 2) // vertical radius
 
       /* -------- Hover Effect -------- */
       .on("mouseover", function (event, d) {
+        const cfg = series.find((s) => s.key === d.key)!; // get series config
+        const valueForTooltip = d.value;
+
         tooltip
           .style("display", "block")
           .html(`
@@ -313,16 +318,22 @@ export function MacroBarChart({
               Year: ${d.year}
             </div>
             <div class='flex items-center gap-1'>
-              <span style='width:6px;height:6px;background:${d.color};border-radius:50%'></span>
-              <span class='text-[10px] md:text-xs'>${d.label}:</span>
-              <strong class='text-[10px] md:text-xs'>${d.value ?? "N/A"}</strong>
+              <span style='width:6px;height:6px;background:${cfg.color};border-radius:50%'></span>
+              <span class='text-[10px] md:text-xs'>${cfg.label}:</span>
+              <span class='ml-4' style="color:${cfg.color}" class="text-[10px] md:text-xs">
+                ${
+                  typeof valueForTooltip === "number"
+                    ? (cfg.valueFormatter?.(valueForTooltip) ?? valueForTooltip.toFixed(3))
+                    : "N/A"
+                }
+              </span>
             </div>
           `);
 
         d3.select(this)
           .transition()
           .duration(150)
-          .attr("fill", d3.color(d.color)?.darker(0.3)?.toString() ?? d.color);
+          .attr("fill", d3.color(cfg.color)?.darker(0.3)?.toString() ?? cfg.color);
       })
       
       .on("mousemove", (event) => {
