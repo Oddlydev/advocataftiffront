@@ -210,11 +210,19 @@ export function MacroLineChart({
     const width = viewBoxWidth - MARGIN.left - MARGIN.right;
     const height = viewBoxHeight - MARGIN.top - MARGIN.bottom;
 
-    const svg = d3
-      .select(container)
-      .attr("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`)
-      .append("g")
-      .attr("transform", `translate(${MARGIN.left},${MARGIN.top})`);
+    // --- root svg ---
+    const root = d3.select(container).attr("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
+    root.selectAll("*").remove();
+
+    // --- zoom group (everything zooms inside this group) ---
+    const zoomGroup = root.append("g").attr("transform", `translate(${MARGIN.left},${MARGIN.top})`);
+    const svg = zoomGroup; // keep your naming
+
+    // const svg = d3
+    //   .select(container)
+    //   .attr("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`)
+    //   .append("g")
+    //   .attr("transform", `translate(${MARGIN.left},${MARGIN.top})`);
 
     const years = data.map((d) => d.year);
 
@@ -584,73 +592,100 @@ export function MacroLineChart({
       });
     });
 
-    // ZOOM (unchanged)
-    let currentScale = 1,
-      zoomInCount = 0,
-      zoomOutCount = 0;
-    const maxClicks = 2;
 
-    const zoomInBtn = document.getElementById(
-      controlIds.zoomInId
-    ) as HTMLButtonElement;
-    const zoomOutBtn = document.getElementById(
-      controlIds.zoomOutId
-    ) as HTMLButtonElement;
-    const resetZoomBtn = document.getElementById(
-      controlIds.resetId
-    ) as HTMLButtonElement;
+    // =========================
+    // ZOOM (buttons + d3.zoom)
+    // =========================
+    const zoom = d3
+      .zoom<SVGSVGElement, unknown>()
+      .scaleExtent([1, 8])
+      .translateExtent([
+        [0, 0],
+        [viewBoxWidth, viewBoxHeight],
+      ])
+      .extent([
+        [0, 0],
+        [viewBoxWidth, viewBoxHeight],
+      ])
+      .on("zoom", (event) => {
+        // keep margins fixed, zoom inside
+        zoomGroup.attr(
+          "transform",
+          `translate(${MARGIN.left},${MARGIN.top}) ${event.transform.toString()}`
+        );
+      });
 
-    const applyZoom = () => {
-      const clampedScale = Math.max(
-        1 / Math.pow(SCALE_STEP, maxClicks),
-        Math.min(currentScale, Math.pow(SCALE_STEP, maxClicks))
-      );
+    let zoomInCount = 0;
+    let zoomOutCount = 0;
+    const MAX_ZOOM_CLICKS = 2;
 
-      const midX = width / 2;
-      const transformX = midX - midX * clampedScale;
+    // attach zoom to root svg (but disable mouse/touch interactions)
+    // buttons will still work because they call zoom programmatically
+    root
+      .style("touch-action", "none")
+      .call(zoom as any)
+      .on("wheel.zoom", null)
+      .on("mousedown.zoom", null)
+      .on("dblclick.zoom", null)
+      .on("touchstart.zoom", null)
+      .on("touchmove.zoom", null)
+      .on("touchend.zoom", null);
 
-      plotLayer
-        .transition()
-        .duration(300)
-        .attr("transform", `translate(${transformX},0) scale(${clampedScale},1)`);
+    const zoomInSel = d3.select(`#${controlIds.zoomInId}`) as unknown as d3.Selection<HTMLButtonElement, unknown, null, undefined>;
+    const zoomOutSel = d3.select(`#${controlIds.zoomOutId}`) as unknown as d3.Selection<HTMLButtonElement, unknown, null, undefined>;
+    const resetSel = d3.select(`#${controlIds.resetId}`) as unknown as d3.Selection<HTMLButtonElement, unknown, null, undefined>;
 
-      zoomInBtn.disabled = zoomInCount >= maxClicks;
-      zoomOutBtn.disabled = zoomOutCount >= maxClicks;
+    const setDisabled = (
+      sel: d3.Selection<HTMLButtonElement, unknown, null, undefined>,
+      disabled: boolean
+    ) => {
+      if (sel.empty()) return; // safety
+      sel.property("disabled", disabled).style("opacity", disabled ? 0.7 : 1);
     };
 
-    const onZoomIn = () => {
-      if (zoomInCount < maxClicks) {
-        currentScale *= SCALE_STEP;
-        zoomInCount++;
-        zoomOutCount = Math.max(0, zoomOutCount - 1);
-        applyZoom();
-      }
-    };
+    // Zoom IN (max 2)
+    zoomInSel.on("click.trajectoryZoom", () => {
+      if (zoomInCount >= MAX_ZOOM_CLICKS) return;
 
-    const onZoomOut = () => {
-      if (zoomOutCount < maxClicks) {
-        currentScale /= SCALE_STEP;
-        zoomOutCount++;
-        zoomInCount = Math.max(0, zoomInCount - 1);
-        applyZoom();
-      }
-    };
+      zoomInCount++;
+      zoomOutCount = Math.max(0, zoomOutCount - 1);
 
-    const onReset = () => {
-      currentScale = 1;
+      root.transition().duration(200).call(zoom.scaleBy as any, SCALE_STEP);
+
+      setDisabled(zoomInSel, zoomInCount >= MAX_ZOOM_CLICKS);
+      setDisabled(zoomOutSel, false); // re-enable opposite
+    });
+
+    // Zoom OUT (max 2)
+    zoomOutSel.on("click.trajectoryZoom", () => {
+      if (zoomOutCount >= MAX_ZOOM_CLICKS) return;
+
+      zoomOutCount++;
+      zoomInCount = Math.max(0, zoomInCount - 1);
+
+      root.transition().duration(200).call(zoom.scaleBy as any, 1 / SCALE_STEP);
+
+      setDisabled(zoomOutSel, zoomOutCount >= MAX_ZOOM_CLICKS);
+      setDisabled(zoomInSel, false); // re-enable opposite
+    });
+
+    // Reset (restore zoom + buttons)
+    resetSel.on("click.trajectoryZoom", () => {
       zoomInCount = 0;
       zoomOutCount = 0;
-      applyZoom();
-    };
 
-    zoomInBtn.addEventListener("click", onZoomIn);
-    zoomOutBtn.addEventListener("click", onZoomOut);
-    resetZoomBtn.addEventListener("click", onReset);
+      root.transition().duration(250).call(zoom.transform as any, d3.zoomIdentity);
 
+      setDisabled(zoomInSel, false);
+      setDisabled(zoomOutSel, false);
+    });
+
+    // cleanup
     return () => {
-      zoomInBtn.removeEventListener("click", onZoomIn);
-      zoomOutBtn.removeEventListener("click", onZoomOut);
-      resetZoomBtn.removeEventListener("click", onReset);
+      root.on(".zoom", null); // remove zoom listeners from root
+      zoomInSel.on(".trajectoryZoom", null);
+      zoomOutSel.on(".trajectoryZoom", null);
+      resetSel.on(".trajectoryZoom", null);
     };
   }, [
     data,

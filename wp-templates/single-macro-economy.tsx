@@ -255,7 +255,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
             <div className="relative">
               <div
                 className={`absolute z-20 -top-3 md:-top-6 lg:top-0 right-4 md:right-10 flex gap-2 ${
-                  isSwapping ? "hidden" : "hidden"
+                  isSwapping ? "block" : "block"
                 }`}
               >
                 <button
