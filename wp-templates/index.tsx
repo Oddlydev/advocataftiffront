@@ -19,6 +19,7 @@ import PageFiscalOperations from "./page-government-fiscal-operations";
 import SearchResult from "./page-search-result";
 import PageTransparencyDashboard from "./page-transparency-in-government-institutions";
 import PageTheFinancesofStateOwnedEnterprises from "./page-the-finances-of-state-owned-enterprises";
+import PageBarChartTest from "./page-bar-chart-test";
 
 export default {
   "front-page": frontPage,
@@ -43,4 +44,5 @@ export default {
   "page-transparency-in-government-institutions": PageTransparencyDashboard,
   "page-the-finances-of-state-owned-enterprises":
     PageTheFinancesofStateOwnedEnterprises,
+  "page-bar-chart-test": PageBarChartTest,
 };
