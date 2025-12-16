@@ -16,6 +16,19 @@ export type MacroSeriesConfig = {
   tooltipUseRawValue?: boolean;
 };
 
+const series: MacroSeriesConfig[] = [
+  {
+    key: "bop",
+    label: "Balance of Payment",
+    color: "#3B82F6",
+  },
+  {
+    key: "exports",
+    label: "Exports",
+    color: "#10B981",
+  },
+];
+
 export type MacroBarChartProps = {
   datasetUrl?: string | null;
   parseRow: (row: d3.DSVRowString<string>) => MacroBarDatum | null;
@@ -164,10 +177,7 @@ export function MacroBarChart({
 
     const y = d3
       .scaleLinear()
-      .domain([
-        Math.min(0, minVal - yMaxPadding),
-        Math.max(0, maxVal + yMaxPadding),
-      ])
+      .domain([Math.min(0, minVal - yMaxPadding), Math.max(0, maxVal + yMaxPadding)])
       .range([height, 0]);
 
     /* -------- Left Y-Axis Label -------- */
@@ -259,7 +269,8 @@ export function MacroBarChart({
       .attr("y", y(0))
       .attr("height", 0)
       .attr("fill", (d) => d.color)
-      .on("mouseover", (event, d) => {
+      /* -------- Hover Effect -------- */
+      .on("mouseover", function (event, d) {
         tooltip
           .style("display", "block")
           .html(`
@@ -272,19 +283,29 @@ export function MacroBarChart({
               <strong class='text-[10px] md:text-xs'>${d.value ?? "N/A"}</strong>
             </div>
           `);
+
+        d3.select(this)
+          .transition()
+          .duration(150)
+          .attr("fill", d3.color(d.color)?.darker(0.7)?.toString() ?? d.color);
       })
       .on("mousemove", (event) => {
         tooltip
           .style("left", `${event.offsetX + 12}px`)
           .style("top", `${event.offsetY - 28}px`);
       })
-      .on("mouseout", () => tooltip.style("display", "none"))
+      .on("mouseout", function (event, d) {
+        tooltip.style("display", "none");
+        d3.select(this)
+          .transition()
+          .duration(150)
+          .attr("fill", d.color);
+      })
+      /* -------- Initial Animation -------- */
       .transition()
       .duration(DURATION)
       .attr("y", (d) => (d.value != null ? y(Math.max(0, d.value)) : y(0)))
-      .attr("height", (d) =>
-        d.value != null ? Math.abs(y(d.value) - y(0)) : 0
-      );
+      .attr("height", (d) => (d.value != null ? Math.abs(y(d.value) - y(0)) : 0));
 
     /* -------- Zoom Controls -------- */
     let currentScale = 1;
