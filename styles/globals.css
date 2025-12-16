@@ -333,3 +333,7 @@ button {
 .ai-insights-sidebar-open footer.footer {
   display: none;
 }
+
+.ai-insights-sidebar-open header.navbar {
+  padding-right: 480px;
+}
