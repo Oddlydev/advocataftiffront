@@ -10,13 +10,6 @@ import {
 } from "./MacroBarChart";
 import { extractYear, pickNumeric } from "./utils";
 
-const ORA_HEADERS = [
-  "Official Reserve Assets (USD mn)",
-  "Official Reserve Assets",
-  "Foreign Reserves",
-  "ORA",
-];
-
 const seriesConfig: MacroSeriesConfig[] = [
   {
     key: "ORA",
@@ -40,9 +33,13 @@ export function ForeignReservesChart({
         return null;
       }
 
+      const columnKeys = Object.keys(row).filter(Boolean);
+      const valueKey = columnKeys.length > 1 ? columnKeys[1] : undefined;
+      const value = valueKey ? pickNumeric(row, [valueKey]) : null;
+
       return {
         year,
-        ORA: pickNumeric(row, ORA_HEADERS),
+        ORA: value,
       };
     },
     []
@@ -56,7 +53,7 @@ export function ForeignReservesChart({
       series={series}
       yAxisLabel="Official Reserve Assets (USD Mn.)"
       yMaxPadding={2}
-      axisLabelsFromCsv
+      yAxisLabelColumnIndex={1}
     />
   );
 }

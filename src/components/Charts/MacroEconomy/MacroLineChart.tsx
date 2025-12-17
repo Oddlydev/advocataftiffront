@@ -44,6 +44,12 @@ export type MacroLineChartProps = {
   };
   yMaxPadding?: number;
   minY?: number;
+  initialScale?: number;
+  balanceScaleDown?: boolean;
+  axisTickFormatOverrides?: {
+    left?: (value: number) => string;
+    right?: (value: number) => string;
+  };
 };
 
 const MARGIN = { top: 40, right: 40, bottom: 60, left: 70 };
@@ -52,6 +58,9 @@ const MIN_SCALE = 1;
 const MAX_SCALE = 5;
 const DURATION = 2000;
 const HTTP_URL_REGEX = /^https?:\/\//i;
+
+const formatWithTwoDecimals = (num: number) =>
+  Number.isInteger(num) ? num.toString() : num.toFixed(2);
 
 async function fetchCsvWithFallback(url: string): Promise<string> {
   const attempt = async (target: string) => {
@@ -95,6 +104,9 @@ export function MacroLineChart({
   controlIds,
   yMaxPadding = 2,
   minY,
+  initialScale = 1,
+  balanceScaleDown = false,
+  axisTickFormatOverrides,
 }: MacroLineChartProps) {
   const chartRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -129,7 +141,7 @@ export function MacroLineChart({
         const leftIndex =
           axisLabelsFromCsv && columns.length > 1
             ? 1
-            : yAxisLabelColumnIndexes?.left ?? undefined;
+            : (yAxisLabelColumnIndexes?.left ?? undefined);
         const rightIndex = yAxisLabelColumnIndexes?.right ?? undefined;
 
         const yLeftHeader =
@@ -184,7 +196,13 @@ export function MacroLineChart({
     return () => {
       isMounted = false;
     };
-  }, [datasetUrl, parseRow, series, axisLabelsFromCsv, yAxisLabelColumnIndexes]);
+  }, [
+    datasetUrl,
+    parseRow,
+    series,
+    axisLabelsFromCsv,
+    yAxisLabelColumnIndexes,
+  ]);
 
   useEffect(() => {
     const container = chartRef.current;
@@ -211,11 +229,15 @@ export function MacroLineChart({
     const height = viewBoxHeight - MARGIN.top - MARGIN.bottom;
 
     // --- root svg ---
-    const root = d3.select(container).attr("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
+    const root = d3
+      .select(container)
+      .attr("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
     root.selectAll("*").remove();
 
     // --- zoom group (everything zooms inside this group) ---
-    const zoomGroup = root.append("g").attr("transform", `translate(${MARGIN.left},${MARGIN.top})`);
+    const zoomGroup = root
+      .append("g")
+      .attr("transform", `translate(${MARGIN.left},${MARGIN.top})`);
     const svg = zoomGroup; // keep your naming
 
     // const svg = d3
@@ -287,7 +309,10 @@ export function MacroLineChart({
     const [yLeftMin, yLeftMax] = computeDomain(
       leftSeries.length ? leftSeries : series
     );
-    const yLeft = d3.scaleLinear().domain([yLeftMin, yLeftMax]).range([height, 0]);
+    const yLeft = d3
+      .scaleLinear()
+      .domain([yLeftMin, yLeftMax])
+      .range([height, 0]);
 
     let yRight: d3.ScaleLinear<number, number> | null = null;
     if (useDualAxis) {
@@ -295,11 +320,10 @@ export function MacroLineChart({
       yRight = d3.scaleLinear().domain([mn, mx]).range([height, 0]);
     }
 
-    // FORMATTER
     const formatCompact = (num: number) => {
       const abs = Math.abs(num);
-      if (abs < 1000) return num.toString();
-      if (abs < 1_000_000) return (num / 1000).toFixed(num >= 10000 ? 0 : 1);
+      if (abs < 1000) return formatWithTwoDecimals(num);
+      if (abs < 1_000_000) return (num / 1000).toFixed(num >= 10_000 ? 0 : 1);
       if (abs < 1_000_000_000)
         return (num / 1_000_000).toFixed(num >= 10_000_000 ? 0 : 1);
       return (num / 1_000_000_000).toFixed(num >= 10_000_000_000 ? 0 : 1);
@@ -322,9 +346,16 @@ export function MacroLineChart({
     const resolvedYAxisRightLabel = axisLabels.yRight || yAxisRightLabel;
 
     // AXES
+    const leftTickFormatter = axisTickFormatOverrides?.left ?? formatCompact;
+
     svg
       .append("g")
-      .call(d3.axisLeft(yLeft).ticks(5).tickFormat(formatCompact as any))
+      .call(
+        d3
+          .axisLeft(yLeft)
+          .ticks(5)
+          .tickFormat((value) => leftTickFormatter(value as number) as any)
+      )
       .selectAll("text")
       .attr(
         "class",
@@ -332,10 +363,17 @@ export function MacroLineChart({
       );
 
     if (useDualAxis && yRight) {
+      const rightTickFormatter =
+        axisTickFormatOverrides?.right ?? formatCompact;
       svg
         .append("g")
         .attr("transform", `translate(${width},0)`)
-        .call(d3.axisRight(yRight).ticks(5).tickFormat(formatCompact as any))
+        .call(
+          d3
+            .axisRight(yRight)
+            .ticks(5)
+            .tickFormat((value) => rightTickFormatter(value as number) as any)
+        )
         .selectAll("text")
         .attr(
           "class",
@@ -346,7 +384,12 @@ export function MacroLineChart({
     svg
       .append("g")
       .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(x).ticks(Math.min(data.length, 10)).tickFormat(d3.format("d")))
+      .call(
+        d3
+          .axisBottom(x)
+          .ticks(Math.min(data.length, 10))
+          .tickFormat(d3.format("d"))
+      )
       .selectAll("text")
       .attr(
         "class",
@@ -359,7 +402,8 @@ export function MacroLineChart({
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${-50},${height / 2}) rotate(-90)`)
       .attr(
-        "class", "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
+        "class",
+        "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
       )
       .text(resolvedYAxisLabel);
 
@@ -369,7 +413,8 @@ export function MacroLineChart({
         .attr("text-anchor", "middle")
         .attr("transform", `translate(${width + 50},${height / 2}) rotate(90)`)
         .attr(
-          "class", "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
+          "class",
+          "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
         )
         .text(resolvedYAxisRightLabel ?? "");
     }
@@ -380,13 +425,16 @@ export function MacroLineChart({
     // dashed grid lines (except zero line)
     gridLayer
       .append("g")
-      .call(d3.axisLeft(yLeft).tickSize(-width).tickFormat(() => ""))
+      .call(
+        d3
+          .axisLeft(yLeft)
+          .tickSize(-width)
+          .tickFormat(() => "")
+      )
       .call((g) =>
         g
           .selectAll("line")
-          .attr("stroke", (d) =>
-            d === 0 ? "transparent" : "#CBD5E1"
-          )
+          .attr("stroke", (d) => (d === 0 ? "transparent" : "#CBD5E1"))
           .attr("stroke-width", 1)
           .attr("stroke-dasharray", (d) => (d === 0 ? "0" : "4,4"))
       )
@@ -428,9 +476,7 @@ export function MacroLineChart({
       .attr("width", width)
       .attr("height", height);
 
-    const plotLayer = svg
-      .append("g")
-      .attr("clip-path", "url(#chart-clip)");
+    const plotLayer = svg.append("g").attr("clip-path", "url(#chart-clip)");
 
     // HOVER ELEMENTS
     const hoverLine = svg
@@ -450,8 +496,7 @@ export function MacroLineChart({
 
     // LINES + DOTS
     series.forEach(({ key, color, axis }) => {
-      const yScale =
-        axis === "right" && useDualAxis && yRight ? yRight : yLeft;
+      const yScale = axis === "right" && useDualAxis && yRight ? yRight : yLeft;
 
       const line = d3
         .line<MacroLineDatum>()
@@ -539,7 +584,7 @@ export function MacroLineChart({
                       ${
                         typeof valueForTooltip === "number"
                           ? (cfg.valueFormatter?.(valueForTooltip) ??
-                            valueForTooltip.toFixed(3))
+                            formatWithTwoDecimals(valueForTooltip))
                           : "N/A"
                       }
                     </span>
@@ -548,9 +593,7 @@ export function MacroLineChart({
               })
               .join("");
 
-            tooltip
-              .style("display", "block")
-              .html(`
+            tooltip.style("display", "block").html(`
                 <div class="flex flex-col gap-1">
                   <div class="font-semibold text-slate-600 text-[10px] md:text-xs pb-1 uppercase">
                     Year: ${d.year}
@@ -592,13 +635,15 @@ export function MacroLineChart({
       });
     });
 
-
     // =========================
     // ZOOM (buttons + d3.zoom)
     // =========================
+    const minScale = Math.min(initialScale, MIN_SCALE);
+    const initialTransform = d3.zoomIdentity.scale(initialScale);
+
     const zoom = d3
       .zoom<SVGSVGElement, unknown>()
-      .scaleExtent([1, 8])
+      .scaleExtent([minScale, MAX_SCALE])
       .translateExtent([
         [0, 0],
         [viewBoxWidth, viewBoxHeight],
@@ -608,10 +653,13 @@ export function MacroLineChart({
         [viewBoxWidth, viewBoxHeight],
       ])
       .on("zoom", (event) => {
-        // keep margins fixed, zoom inside
+        const scale = event.transform.k;
+        const horizontalBalance = scale < 1 ? (width - width * scale) / 2 : 0;
+        const verticalBalance = scale < 1 ? (height - height * scale) / 2 : 0;
+
         zoomGroup.attr(
           "transform",
-          `translate(${MARGIN.left},${MARGIN.top}) ${event.transform.toString()}`
+          `translate(${MARGIN.left + horizontalBalance},${MARGIN.top + verticalBalance}) scale(${scale})`
         );
       });
 
@@ -631,9 +679,17 @@ export function MacroLineChart({
       .on("touchmove.zoom", null)
       .on("touchend.zoom", null);
 
-    const zoomInSel = d3.select(`#${controlIds.zoomInId}`) as unknown as d3.Selection<HTMLButtonElement, unknown, null, undefined>;
-    const zoomOutSel = d3.select(`#${controlIds.zoomOutId}`) as unknown as d3.Selection<HTMLButtonElement, unknown, null, undefined>;
-    const resetSel = d3.select(`#${controlIds.resetId}`) as unknown as d3.Selection<HTMLButtonElement, unknown, null, undefined>;
+    root.call(zoom.transform as any, initialTransform);
+
+    const zoomInSel = d3.select(
+      `#${controlIds.zoomInId}`
+    ) as unknown as d3.Selection<HTMLButtonElement, unknown, null, undefined>;
+    const zoomOutSel = d3.select(
+      `#${controlIds.zoomOutId}`
+    ) as unknown as d3.Selection<HTMLButtonElement, unknown, null, undefined>;
+    const resetSel = d3.select(
+      `#${controlIds.resetId}`
+    ) as unknown as d3.Selection<HTMLButtonElement, unknown, null, undefined>;
 
     const setDisabled = (
       sel: d3.Selection<HTMLButtonElement, unknown, null, undefined>,
@@ -650,7 +706,10 @@ export function MacroLineChart({
       zoomInCount++;
       zoomOutCount = Math.max(0, zoomOutCount - 1);
 
-      root.transition().duration(200).call(zoom.scaleBy as any, SCALE_STEP);
+      root
+        .transition()
+        .duration(200)
+        .call(zoom.scaleBy as any, SCALE_STEP);
 
       setDisabled(zoomInSel, zoomInCount >= MAX_ZOOM_CLICKS);
       setDisabled(zoomOutSel, false); // re-enable opposite
@@ -663,7 +722,10 @@ export function MacroLineChart({
       zoomOutCount++;
       zoomInCount = Math.max(0, zoomInCount - 1);
 
-      root.transition().duration(200).call(zoom.scaleBy as any, 1 / SCALE_STEP);
+      root
+        .transition()
+        .duration(200)
+        .call(zoom.scaleBy as any, 1 / SCALE_STEP);
 
       setDisabled(zoomOutSel, zoomOutCount >= MAX_ZOOM_CLICKS);
       setDisabled(zoomInSel, false); // re-enable opposite
@@ -674,7 +736,10 @@ export function MacroLineChart({
       zoomInCount = 0;
       zoomOutCount = 0;
 
-      root.transition().duration(250).call(zoom.transform as any, d3.zoomIdentity);
+      root
+        .transition()
+        .duration(250)
+        .call(zoom.transform as any, initialTransform);
 
       setDisabled(zoomInSel, false);
       setDisabled(zoomOutSel, false);
@@ -696,6 +761,9 @@ export function MacroLineChart({
     yMaxPadding,
     minY,
     axisLabels,
+    initialScale,
+    balanceScaleDown,
+    axisTickFormatOverrides,
   ]);
 
   return (

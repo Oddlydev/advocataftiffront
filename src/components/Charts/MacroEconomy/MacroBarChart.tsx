@@ -49,8 +49,12 @@ const MARGIN = { top: 40, right: 40, bottom: 60, left: 90 };
 const SCALE_STEP = 1.2;
 const DURATION = 2000;
 const HTTP_URL_REGEX = /^https?:\/\//i;
+const NEXT_PROXY_ROUTE = "/api/proxy-dataset?url=";
+const formatWithTwoDecimals = (value: number) =>
+  Number.isInteger(value) ? value.toString() : value.toFixed(2);
 
 async function fetchCsvWithFallback(url: string): Promise<string> {
+  console.log("[MacroBarChart] fetch start:", url);
   const attempt = async (target: string) => {
     const response = await fetch(target, { cache: "no-cache" });
     if (!response.ok) {
@@ -62,13 +66,31 @@ async function fetchCsvWithFallback(url: string): Promise<string> {
   try {
     return await attempt(url);
   } catch (primaryError) {
-    if (HTTP_URL_REGEX.test(url)) {
-      const proxied = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-      return attempt(proxied).catch((proxyError) => {
-        throw proxyError ?? primaryError;
+    if (!HTTP_URL_REGEX.test(url)) {
+      console.warn("[MacroBarChart] CORS fallback not used (non-http)", {
+        url,
+        error: primaryError,
+      });
+      throw primaryError;
+    }
+    const nextProxyUrl = `${NEXT_PROXY_ROUTE}${encodeURIComponent(url)}`;
+    try {
+      return await attempt(nextProxyUrl);
+    } catch (proxyError) {
+      console.warn("[MacroBarChart] Next proxy failed, trying corsproxy.io", {
+        proxyError,
+        nextProxyUrl,
+        url,
+      });
+      const corsProxy = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+      return attempt(corsProxy).catch((fallbackError) => {
+        console.error("[MacroBarChart] corsproxy fallback failed", {
+          fallbackError,
+          url,
+        });
+        throw fallbackError ?? proxyError ?? primaryError;
       });
     }
-    throw primaryError;
   }
 }
 
@@ -97,13 +119,13 @@ export function MacroBarChart({
     let isMounted = true;
 
     async function loadDataset() {
-      if (!datasetUrl) {
-        if (isMounted) {
-          setData([]);
-          setDynamicYAxisLabel(yAxisLabel);
+        if (!datasetUrl) {
+          if (isMounted) {
+            setData([]);
+            setDynamicYAxisLabel(yAxisLabel);
+          }
+          return;
         }
-        return;
-      }
 
       try {
         const text = await fetchCsvWithFallback(datasetUrl);
@@ -125,6 +147,7 @@ export function MacroBarChart({
           setDynamicYAxisLabel(leftLabel ?? yAxisLabel);
         }
 
+        console.log("[MacroBarChart] CSV parsed rows:", raw.length, columns);
         const parsed = raw
           .map((row) => parseRow(row as d3.DSVRowString<string>))
           .filter((item): item is MacroBarDatum => item !== null);
@@ -134,6 +157,12 @@ export function MacroBarChart({
         }
 
         if (isMounted) {
+          console.log(
+            "[MacroBarChart] Parsed data length:",
+            parsed.length,
+            "using label:",
+            dynamicYAxisLabel
+          );
           setData(parsed);
         }
       } catch (error) {
@@ -229,7 +258,12 @@ export function MacroBarChart({
     /* -------- Left Y-Axis -------- */
     svg
       .append("g")
-      .call(d3.axisLeft(y).ticks(5))
+      .call(
+        d3
+          .axisLeft(y)
+          .ticks(5)
+          .tickFormat((value) => formatWithTwoDecimals(value as number) as any)
+      )
       .selectAll("text")
       .attr(
         "class",

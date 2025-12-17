@@ -10,13 +10,6 @@ import {
 } from "./MacroLineChart";
 import { extractYear, pickNumeric, percentFormatter } from "./utils";
 
-const UNEMPLOYMENT_HEADERS = [
-  "Unemployment Rate (%)",
-  "Unemployment Rate",
-  "UnemploymentRate",
-  "Unemployment",
-];
-
 const seriesConfig: MacroSeriesConfig[] = [
   {
     key: "UnemploymentRate",
@@ -36,9 +29,13 @@ export function UnemploymentChart({ datasetUrl, controlIds }: MacroChartWrapperP
         return null;
       }
 
+      const columnKeys = Object.keys(row).filter((key) => key);
+      const valueKey = columnKeys.length > 1 ? columnKeys[1] : undefined;
+      const value = valueKey ? pickNumeric(row, [valueKey]) : null;
+
       return {
         year,
-        UnemploymentRate: pickNumeric(row, UNEMPLOYMENT_HEADERS),
+        UnemploymentRate: value,
       };
     },
     []
@@ -51,7 +48,7 @@ export function UnemploymentChart({ datasetUrl, controlIds }: MacroChartWrapperP
       parseRow={parseRow}
       series={series}
       yAxisLabel="Unemployment Rate (%)"
-      axisLabelsFromCsv
+      yAxisLabelColumnIndexes={{ left: 1 }}
       yMaxPadding={2}
     />
   );
