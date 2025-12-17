@@ -19,7 +19,7 @@ export default function TitleCard() {
         type="button"
         onClick={() => setExpanded((prev) => !prev)}
         aria-expanded={expanded}
-        className="flex w-full flex-col gap-[6px] text-left"
+        className="flex w-full flex-col gap-1 text-left"
       >
         <div className="flex items-center gap-2">
           <p
