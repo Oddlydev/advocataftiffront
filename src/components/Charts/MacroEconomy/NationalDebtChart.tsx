@@ -76,6 +76,7 @@ export function NationalDebtChart({
       yAxisRightLabel="Debt Per Person (Rs. Mn.)" // dual axis enabled here only
       yAxisLabelColumnIndexes={{ left: 1, right: 4 }}
       yMaxPadding={2}
+      initialScale={0.95}
     />
   );
 }

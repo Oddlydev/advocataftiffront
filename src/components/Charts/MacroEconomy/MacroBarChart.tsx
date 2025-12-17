@@ -50,6 +50,8 @@ const SCALE_STEP = 1.2;
 const DURATION = 2000;
 const HTTP_URL_REGEX = /^https?:\/\//i;
 const NEXT_PROXY_ROUTE = "/api/proxy-dataset?url=";
+const formatWithTwoDecimals = (value: number) =>
+  Number.isInteger(value) ? value.toString() : value.toFixed(2);
 
 async function fetchCsvWithFallback(url: string): Promise<string> {
   console.log("[MacroBarChart] fetch start:", url);
@@ -256,7 +258,12 @@ export function MacroBarChart({
     /* -------- Left Y-Axis -------- */
     svg
       .append("g")
-      .call(d3.axisLeft(y).ticks(5))
+      .call(
+        d3
+          .axisLeft(y)
+          .ticks(5)
+          .tickFormat((value) => formatWithTwoDecimals(value as number) as any)
+      )
       .selectAll("text")
       .attr(
         "class",
