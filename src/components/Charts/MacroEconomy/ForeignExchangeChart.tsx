@@ -29,7 +29,12 @@ const seriesConfig: MacroSeriesConfig[] = [
     label: "Balance of Payments",
     color: "#CF1244",
     valueFormatter: (value) =>
-      value === null ? "N/A" : Number(value).toLocaleString("en-US"),
+      value === null
+        ? "N/A"
+        : Number(value).toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }),
   },
 ];
 
