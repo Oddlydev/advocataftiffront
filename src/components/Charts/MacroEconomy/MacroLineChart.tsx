@@ -45,6 +45,11 @@ export type MacroLineChartProps = {
   yMaxPadding?: number;
   minY?: number;
   initialScale?: number;
+  balanceScaleDown?: boolean;
+  axisTickFormatOverrides?: {
+    left?: (value: number) => string;
+    right?: (value: number) => string;
+  };
 };
 
 const MARGIN = { top: 40, right: 40, bottom: 60, left: 70 };
@@ -53,6 +58,9 @@ const MIN_SCALE = 1;
 const MAX_SCALE = 5;
 const DURATION = 2000;
 const HTTP_URL_REGEX = /^https?:\/\//i;
+
+const formatWithTwoDecimals = (num: number) =>
+  Number.isInteger(num) ? num.toString() : num.toFixed(2);
 
 async function fetchCsvWithFallback(url: string): Promise<string> {
   const attempt = async (target: string) => {
@@ -97,6 +105,8 @@ export function MacroLineChart({
   yMaxPadding = 2,
   minY,
   initialScale = 1,
+  balanceScaleDown = false,
+  axisTickFormatOverrides,
 }: MacroLineChartProps) {
   const chartRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -310,10 +320,6 @@ export function MacroLineChart({
       yRight = d3.scaleLinear().domain([mn, mx]).range([height, 0]);
     }
 
-    // FORMATTER
-    const formatWithTwoDecimals = (num: number) =>
-      Number.isInteger(num) ? num.toString() : num.toFixed(2);
-
     const formatCompact = (num: number) => {
       const abs = Math.abs(num);
       if (abs < 1000) return formatWithTwoDecimals(num);
@@ -340,13 +346,15 @@ export function MacroLineChart({
     const resolvedYAxisRightLabel = axisLabels.yRight || yAxisRightLabel;
 
     // AXES
+    const leftTickFormatter = axisTickFormatOverrides?.left ?? formatCompact;
+
     svg
       .append("g")
       .call(
         d3
           .axisLeft(yLeft)
           .ticks(5)
-          .tickFormat(formatCompact as any)
+          .tickFormat((value) => leftTickFormatter(value as number) as any)
       )
       .selectAll("text")
       .attr(
@@ -355,6 +363,8 @@ export function MacroLineChart({
       );
 
     if (useDualAxis && yRight) {
+      const rightTickFormatter =
+        axisTickFormatOverrides?.right ?? formatCompact;
       svg
         .append("g")
         .attr("transform", `translate(${width},0)`)
@@ -362,7 +372,7 @@ export function MacroLineChart({
           d3
             .axisRight(yRight)
             .ticks(5)
-            .tickFormat(formatCompact as any)
+            .tickFormat((value) => rightTickFormatter(value as number) as any)
         )
         .selectAll("text")
         .attr(
@@ -752,6 +762,8 @@ export function MacroLineChart({
     minY,
     axisLabels,
     initialScale,
+    balanceScaleDown,
+    axisTickFormatOverrides,
   ]);
 
   return (

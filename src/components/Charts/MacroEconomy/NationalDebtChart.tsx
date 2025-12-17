@@ -77,6 +77,15 @@ export function NationalDebtChart({
       yAxisLabelColumnIndexes={{ left: 1, right: 4 }}
       yMaxPadding={2}
       initialScale={0.95}
+      balanceScaleDown
+      axisTickFormatOverrides={{
+        right: (value) => {
+          if (!Number.isFinite(value)) return "0";
+          const scaled = Math.round(value / 1000);
+          if (scaled === 0) return "0";
+          return scaled.toLocaleString("en-US");
+        },
+      }}
     />
   );
 }
