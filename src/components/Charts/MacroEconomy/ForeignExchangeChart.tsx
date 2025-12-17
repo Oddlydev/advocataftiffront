@@ -16,6 +16,11 @@ const BOP_HEADERS = [
   "Balance of Payments",
   "Balance of Payment",
   "BOP",
+  "Balance of Payment (BOP) (USD million)",
+  "Balance of Payment (BOP) (USD mn)",
+  "Balance of Payment (BOP) (US$ mn)",
+  "Balance of Payment (BOP) (US dollars)",
+  "Balance of Payment (BOP) USD million",
 ];
 
 const seriesConfig: MacroSeriesConfig[] = [
@@ -41,9 +46,13 @@ export function ForeignExchangeChart({
         return null;
       }
 
+      const columnKeys = Object.keys(row).filter(Boolean);
+      const valueKey = columnKeys.length > 1 ? columnKeys[1] : undefined;
+      const value = valueKey ? pickNumeric(row, [valueKey]) : null;
+
       return {
         year,
-        BOP: pickNumeric(row, BOP_HEADERS),
+        BOP: value,
       };
     },
     []
@@ -57,7 +66,7 @@ export function ForeignExchangeChart({
       series={series}
       yAxisLabel="Balance of Payments (USD Mn.)"
       yMaxPadding={2}
-      axisLabelsFromCsv
+      yAxisLabelColumnIndex={1}
     />
   );
 }
