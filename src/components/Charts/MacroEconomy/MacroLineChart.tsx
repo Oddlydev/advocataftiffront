@@ -416,7 +416,7 @@ export function MacroLineChart({
       svg
         .append("text")
         .attr("text-anchor", "middle")
-        .attr("transform", `translate(${width + 50},${height / 2}) rotate(90)`)
+        .attr("transform", `translate(${width + 65},${height / 2}) rotate(90)`)
         .attr(
           "class",
           "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"

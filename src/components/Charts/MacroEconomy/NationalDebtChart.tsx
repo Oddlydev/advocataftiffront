@@ -67,7 +67,8 @@ export function NationalDebtChart({
   );
 
   return (
-    <MacroLineChart
+    <div className="pr-10">
+      <MacroLineChart
       datasetUrl={datasetUrl}
       controlIds={controlIds}
       parseRow={parseRow}
@@ -76,7 +77,7 @@ export function NationalDebtChart({
       yAxisRightLabel="Debt Per Person (Rs. Mn.)" // dual axis enabled here only
       yAxisLabelColumnIndexes={{ left: 1, right: 4 }}
       yMaxPadding={2}
-      initialScale={0.95}
+      initialScale={0.93}
       balanceScaleDown
       axisTickFormatOverrides={{
         right: (value) => {
@@ -87,5 +88,6 @@ export function NationalDebtChart({
         },
       }}
     />
+    </div>
   );
 }
