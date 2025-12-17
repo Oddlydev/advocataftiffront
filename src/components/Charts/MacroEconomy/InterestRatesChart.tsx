@@ -47,6 +47,7 @@ const seriesConfig: MacroSeriesConfig[] = [
     label: "AWPLR",
     color: "#EA1A52",
     valueFormatter: percentFormatter,
+    hideInTooltip: true,
   },
 ];
 

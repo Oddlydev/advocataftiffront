@@ -20,6 +20,11 @@ export type MacroSeriesConfig = {
    * (divided) value used for axis ticks.
    */
   tooltipUseRawValue?: boolean;
+  /**
+   * When true, this series is excluded
+   * from the hover tooltip rows.
+   */
+  hideInTooltip?: boolean;
 };
 
 export type MacroLineChartProps = {
@@ -566,6 +571,7 @@ export function MacroLineChart({
             dot.transition().duration(150).attr("r", 5);
 
             const tooltipRows = series
+              .filter((cfg) => !cfg.hideInTooltip)
               .map((cfg) => {
                 const rawValue = d[cfg.key];
                 const valueForTooltip =
