@@ -1,13 +1,35 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { VertexAI } from '@google-cloud/vertexai';
+import { VertexAI, type VertexInit } from '@google-cloud/vertexai';
 
 // Initialize Vertex AI
 // Ensure you have GCP_PROJECT_ID and GCP_LOCATION in your .env.local
 const project = process.env.GCP_PROJECT_ID;
 const location = process.env.GCP_LOCATION || 'us-central1';
 
-const vertex_ai = new VertexAI({ project: project || 'advocata-frontend', location: location });
+const serviceAccountBase64 = process.env.GCP_SERVICE_ACCOUNT_BASE64?.trim();
+let googleAuthOptions: VertexInit['googleAuthOptions'];
+
+if (serviceAccountBase64) {
+    try {
+        const parsedCredentials = JSON.parse(Buffer.from(serviceAccountBase64, 'base64').toString('utf-8'));
+        googleAuthOptions = { credentials: parsedCredentials };
+        console.log('Vertex AI will use service account credentials decoded from GCP_SERVICE_ACCOUNT_BASE64.');
+    } catch (error) {
+        console.warn('Failed to parse GCP_SERVICE_ACCOUNT_BASE64, falling back to default ADC flow.', error);
+    }
+}
+
+const vertexInit: VertexInit = {
+    project: project || 'advocata-frontend',
+    location,
+};
+
+if (googleAuthOptions) {
+    vertexInit.googleAuthOptions = googleAuthOptions;
+}
+
+const vertex_ai = new VertexAI(vertexInit);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
