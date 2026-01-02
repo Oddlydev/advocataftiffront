@@ -159,20 +159,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         let text = result;
 
         // Clean up markdown code blocks if present (common with gemini-pro)
-        // Also find the first '{' and last '}' to extract just the JSON object
-        const firstBrace = text.indexOf('{');
-        const lastBrace = text.lastIndexOf('}');
+        // Extract the first balanced JSON object so trailing logs do not block parsing.
+        const extractJsonObject = (payload: string) => {
+            const start = payload.indexOf("{");
+            if (start === -1) {
+                return null;
+            }
 
-        if (firstBrace !== -1 && lastBrace !== -1) {
-            text = text.substring(firstBrace, lastBrace + 1);
-        }
+            let depth = 0;
+            for (let i = start; i < payload.length; i++) {
+                const chr = payload[i];
+                if (chr === "{") {
+                    depth += 1;
+                } else if (chr === "}") {
+                    depth -= 1;
+                    if (depth === 0) {
+                        return payload.substring(start, i + 1);
+                    }
+                }
+            }
+
+            return null;
+        };
+
+        const jsonPayload = extractJsonObject(text);
+        const normalizedText = jsonPayload ?? text;
 
         try {
-            const jsonResponse = JSON.parse(text);
+            const jsonResponse = JSON.parse(normalizedText);
             res.status(200).json(jsonResponse);
         } catch (e) {
-            console.error("Failed to parse JSON response", text);
-            res.status(500).json({ message: 'Failed to parse AI response', raw: text });
+            console.error("Failed to parse JSON response", normalizedText);
+            res.status(500).json({ message: 'Failed to parse AI response', raw: normalizedText });
         }
 
     } catch (error: any) {

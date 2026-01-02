@@ -12,6 +12,152 @@ export type AIInsightsPanelProps = {
   datasetUrl?: string;
 };
 
+export const detailContentByVariant: {
+  [K in Exclude<DetailVariant, "keyInsights">]: DetailContentMap[K];
+} = {
+  composition: {
+    introParagraphs: [
+      "The dataset reveals consistent category momentum with a notable lean toward essential services.",
+      "Food spending accounts for the largest share and is still growing faster than the broader average.",
+    ],
+    growthSummary:
+      "Aggregate annual growth averages 5.3%, with Food, Alcohol & Tobacco, and Personal Care leading the surge.",
+    firstMetrics: [
+      "Food: +5.8% CAGR, 38% of total spend",
+      "Housing: +4.2% CAGR with low volatility",
+      "Alcohol & Tobacco: +12.3% YoY but higher variance",
+    ],
+    secondMetrics: [
+      "Transport: -0.4% YoY, reflects higher fuel efficiency",
+      "Health: +3.1% YoY, stable despite policy changes",
+      "Education: +2.7% YoY, driven by online services",
+    ],
+    recommendations: [
+      "Double down on resilience programs for Food and Housing.",
+      "Monitor Alcohol & Tobacco for emerging volatility risks.",
+      "Consider automation investments in Transportation to arrest decline.",
+    ],
+  },
+  trend: {
+    intro:
+      "The 26-year trend analysis highlights cyclical recoveries, with 2018 and 2021 standing out as growth pivots.",
+    disruptionParagraph:
+      "Pandemic-era stimulus created steep spikes that are now normalizing but still influence recent averages.",
+    longTermTrends: [
+      "Housing demand has eased since 2019 but remains above pre-2008 averages.",
+      "Technology spending accelerated after 2020, yet stabilization is visible in the past 3 years.",
+      "Agriculture & utilities hold steady due to regulation-backed contracts.",
+    ],
+    emergingPattern:
+      "Health & Education are converging patterns, suggesting bundling opportunities for policy planning.",
+    recommendations: [
+      "Update scenarios to isolate post-pandemic normalization signals.",
+      "Prioritize trend monitoring on sectors where volatility exceeds 8%.",
+      "Share insights with portfolio teams to align on emerging service bundling.",
+    ],
+  },
+  ranking: {
+    intro:
+      "Category ranking surfaces stability leaders alongside growth champions across spending buckets.",
+    stabilityRanking: [
+      "Housing: 92% stability index, minimal monthly drift",
+      "Food: 89% stability, dependable but moderately sensitive to seasonality",
+      "Healthcare: 84% stability, steady but capital-intensive",
+      "Entertainment: 61% stability, highest volatility paired with high growth",
+    ],
+    linkTexts: [
+      "Export ranking report",
+      "Send ranking snapshot to CEO",
+      "View ranking change log",
+    ],
+    recommendations: [
+      "Lean into Housing and Food for baseline budgeting.",
+      "Guard Entertainment exposure because of the volatility premium.",
+      "Encourage stakeholders to review the ranking report monthly.",
+    ],
+  },
+  dataQuality: {
+    intro:
+      "Data integrity checks flagged a few gaps that are common in long-tailed public datasets.",
+    missingDataSummary:
+      "2% of category-month entries were missing post-2005, focused in cross-border transfers.",
+    breakdown: [
+      "Housing Q1-Q2 2012 lacks state-level breakdown; estimates imputed.",
+      "Entertainment 1999 had 18% missing due to filing delay; forward-fill applied.",
+      "Alcohol & Tobacco 2004 uses aggregate totals for 3 states only.",
+    ],
+    timeline: [
+      "Anomaly window: 2008-2009 shows manual overrides tied to recession adjustments.",
+      "2016 has duplicate entries in Transportation resolved by deduplication.",
+      "2023 exhibits latency gaps, likely from a reporting API migration.",
+    ],
+    outliers: [
+      "July 2014 Food spike is +48% above average; flagged for manual review.",
+      "Oct 2020 Entertainment dip exceeds 3 standard deviations; related to platform outage.",
+    ],
+    checks: [
+      "Passed schema validation for 99.7% of rows.",
+      "Nulls limited to supplementary notes fields.",
+      "All forecasts cross-validated with rolling 6-month bias checks.",
+    ],
+    recommendations: [
+      "Automate alerts for >4% drop in completion rate per month.",
+      "Revisit the imputation strategy for long-tail categories before forecasting.",
+      "Audit the July 2014 Food spike with the finance team.",
+    ],
+  },
+  forecast: {
+    intro:
+      "Short-term forecasts pair seasonal smoothing with the latest volatility estimates.",
+    forecastSummary:
+      "2025-2027 projections assume gradual recovery in Transport and steady growth in Food & Healthcare.",
+    categoryProjections: [
+      "Food: +5.4% CAGR (2025-2027), inflation-adjusted",
+      "Housing: +3.9% CAGR, supported by rent control stability",
+      "Entertainment: +8.7% CAGR, fueled by digital subscriptions",
+    ],
+    validationNotes: [
+      "Backtest 2021-2023 horizon shows 1.8% MAPE after bias correction.",
+      "Ensembled ARIMA + Prophet models reduced variance by 12%.",
+    ],
+    riskFactors: [
+      "Energy price shocks could reverse Transport gains.",
+      "Policy shifts impacting Healthcare reimbursements.",
+      "Supply chain disruptions mainly hit Education services.",
+    ],
+    recommendations: [
+      "Update assumptions after quarterly CPI release.",
+      "Embed scenario toggles for energy costs in dashboards.",
+      "Share risk factors with procurement before contracting.",
+    ],
+  },
+  dataset: {
+    intro:
+      "The cleaned dataset pairs calculated metrics with audit-ready provenance tags for easy reuse.",
+    enhancements: [
+      "Normalized currency to 2024 USD using CPI base 2024.",
+      "Imputed missing category-months via k-nearest neighbors.",
+      "Flagged anomalies with a severity score for each row.",
+    ],
+    fileFormats: ["CSV", "Parquet", "Excel"],
+    newColumns: [
+      "Rolling 12-month growth",
+      "Volatility index (12M stdev)",
+      "Data quality score",
+    ],
+    qaChecks: [
+      "Checksum validation for every nightly ingest.",
+      "Cross-reference with ERP exports on a sample of 5% rows.",
+      "Automated schema drift alerts via CI/CD pipelines.",
+    ],
+    recommendations: [
+      "Use the Parquet export for analytics jobs; CSV for quick downloads.",
+      "Share the anomaly flags with data governance before publishing.",
+      "Refresh the dataset after each quarterly close to keep forecasts relevant.",
+    ],
+  },
+};
+
 export default function AIInsightsPanel({
   onClose,
   datasetUrl,
