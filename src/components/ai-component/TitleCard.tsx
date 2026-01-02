@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 
-export default function TitleCard() {
+type TitleCardProps = {
+  headline?: string;
+};
+
+export default function TitleCard({ headline }: TitleCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const titleText =
+    headline ?? "Composition of Private Consumption Expenditure at Current Market Prices";
 
   return (
     <article
@@ -95,13 +101,12 @@ export default function TitleCard() {
         </div>
 
         {/* Title */}
-        <p
-          className="text-sm font-medium leading-5 text-slate-900a"
-          style={{ fontFamily: "Montserrat" }}
-        >
-          Composition of Private Consumption Expenditure at Current Market
-          Prices
-        </p>
+          <p
+            className="text-sm font-medium leading-5 text-slate-900a"
+            style={{ fontFamily: "Montserrat" }}
+          >
+            {titleText}
+          </p>
       </button>
 
       {/* Expanded Content */}

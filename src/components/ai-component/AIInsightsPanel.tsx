@@ -10,6 +10,7 @@ import TitleCard from "./TitleCard";
 export type AIInsightsPanelProps = {
   onClose?: () => void;
   datasetUrl?: string;
+  titleCardHeadline?: string;
 };
 
 export const detailContentByVariant: {
@@ -173,6 +174,7 @@ export type AIInsightsResponse = DetailContentMap & {
 export default function AIInsightsPanel({
   onClose,
   datasetUrl,
+  titleCardHeadline,
 }: AIInsightsPanelProps) {
   const [insights, setInsights] = useState<AIInsightsResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -345,7 +347,7 @@ export default function AIInsightsPanel({
           </div>
         ) : (
           <div className="mt-3 flex flex-col gap-y-6">
-            <TitleCard />
+            <TitleCard headline={titleCardHeadline} />
 
             <section className="space-y-3">
               <div className="flex items-center justify-between">

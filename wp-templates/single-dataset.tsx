@@ -520,6 +520,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
           <AIInsightsPanel
             onClose={closeInsightsPanel}
             datasetUrl={downloadUrl}
+            titleCardHeadline={dataset.title ?? undefined}
           />
         </div>
       )}
