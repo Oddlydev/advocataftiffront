@@ -158,11 +158,23 @@ export const detailContentByVariant: {
   },
 };
 
+export type MoreInsightDetail = {
+  title: string;
+  description: string;
+  detailVariant: DetailVariant;
+  detailContent: DetailContentMap[DetailVariant];
+};
+
+export type AIInsightsResponse = DetailContentMap & {
+  moreInsights?: MoreInsightDetail[];
+};
+
+
 export default function AIInsightsPanel({
   onClose,
   datasetUrl,
 }: AIInsightsPanelProps) {
-  const [insights, setInsights] = useState<DetailContentMap | null>(null);
+  const [insights, setInsights] = useState<AIInsightsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -198,52 +210,52 @@ export default function AIInsightsPanel({
     fetchInsights();
   }, [datasetUrl]);
 
-  const moreInsightsDetails: {
-    title: string;
-    description: string;
-    detailVariant: DetailVariant;
-    detailContent: DetailContentMap[DetailVariant] | undefined;
-  }[] = [
+  const defaultMoreInsights: MoreInsightDetail[] = [
     {
       title: "Generate Summary Statistics Report",
       description:
         "Get mean, median, growth rates & volatility for all 12 categories",
       detailVariant: "composition",
-      detailContent: insights?.composition,
+      detailContent: detailContentByVariant.composition,
     },
     {
       title: "Visualize 26-Year Trend Lines",
       description: "See spending patterns across all categories from 1998-2024",
       detailVariant: "trend",
-      detailContent: insights?.trend,
+      detailContent: detailContentByVariant.trend,
     },
     {
       title: "Compare Category Performance Ranking",
       description:
         "Rank all 12 categories by total spending, growth & stability",
       detailVariant: "ranking",
-      detailContent: insights?.ranking,
+      detailContent: detailContentByVariant.ranking,
     },
     {
       title: "Identify & Flag Data Quality Issues",
       description: "Detect missing values, outliers & anomalies in the dataset",
       detailVariant: "dataQuality",
-      detailContent: insights?.dataQuality,
+      detailContent: detailContentByVariant.dataQuality,
     },
     {
       title: "Project 2025-2027 Spending Patterns",
       description:
         "AI forecasts using time-series analysis on 26 years of data",
       detailVariant: "forecast",
-      detailContent: insights?.forecast,
+      detailContent: detailContentByVariant.forecast,
     },
     {
       title: "Export Analysis-Ready Dataset",
       description: "Download cleaned CSV with calculated fields & corrections",
       detailVariant: "dataset",
-      detailContent: insights?.dataset,
+      detailContent: detailContentByVariant.dataset,
     },
   ];
+
+  const moreInsightsDetails =
+    insights?.moreInsights && insights.moreInsights.length > 0
+      ? insights.moreInsights
+      : defaultMoreInsights;
 
   return (
     <div className="flex w-full flex-col gap-3">
