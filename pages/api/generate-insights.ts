@@ -197,8 +197,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const chunkSummarySection =
             chunkSummaries.length > 0
                 ? chunkSummaries
-                      .map((summary, index) => `Summary ${index + 1}: ${summary}`)
-                      .join("\n")
+                    .map((summary, index) => `Summary ${index + 1}: ${summary}`)
+                    .join("\n")
                 : "No data rows were available to summarize.";
 
         const systemPrompt = `
@@ -269,16 +269,18 @@ Now produce a valid JSON object with the structure below that reflects those sum
   }
 }
 
- Please also include a top-level "moreInsights" array with 4-6 entries. Each entry must have:
+Please also include a top-level "moreInsights" array with 4-6 entries. Each entry must have:
   - title: short card title
   - description: text explaining what the card should say
   - detailVariant: one of the detail variants (composition, trend, etc.)
   - detailContent: the detail payload that matches that variant
 
- Ensure this array reflects the generated insights so the UI can render cards with matching detail content.
+Ensure this array reflects the generated insights so the UI can render cards with matching detail content.
 
 Ensure the JSON reflects the sequential summaries, even if some rows were indirectly covered. Always include the full schema shown above.
-        `;
+
+Always emit at least two objects inside \`"keyInsights"\` if there is evidence of multiple patterns or more than 10 data rows. If the dataset is richer, feel free to extend beyond two insights while keeping them concise (1-2 sentences each) and do not repeat identical observations.
+`;
 
         console.log(`Using GCP Project: ${project || 'Missing (using default)'}, Location: ${location}`);
         const finalResult = await generateFromVertex(systemPrompt, {
