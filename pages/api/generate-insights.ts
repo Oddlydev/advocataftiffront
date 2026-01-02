@@ -114,7 +114,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       If the dataset is small or lacks certain information, make reasonable inferences or state limitations, but always return the full JSON structure.
       
       CSV Data:
-      ${csvText.substring(0, 30000)} // Limit to avoid token limits if necessary, though 1.5 flash has a large context window.
+      ${csvText}
     `;
 
         // Initialize Gemini model
