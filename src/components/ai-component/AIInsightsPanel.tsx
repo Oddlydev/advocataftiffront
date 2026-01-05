@@ -7,12 +7,6 @@ import LoadingIcon from "./LoadingIcon";
 import SuggestedActionCard from "./SuggestedActionCard";
 import TitleCard from "./TitleCard";
 
-export type AIInsightsPanelProps = {
-  onClose?: () => void;
-  datasetUrl?: string;
-  titleCardHeadline?: string;
-};
-
 export const detailContentByVariant: {
   [K in Exclude<DetailVariant, "keyInsights">]: DetailContentMap[K];
 } = {
@@ -170,18 +164,25 @@ export type AIInsightsResponse = DetailContentMap & {
   moreInsights?: MoreInsightDetail[];
 };
 
+export type AIInsightsPanelProps = {
+  onClose?: () => void;
+  datasetUrl?: string;
+  titleCardHeadline?: string;
+  manualInsights?: AIInsightsResponse | null;
+};
 
 export default function AIInsightsPanel({
   onClose,
   datasetUrl,
   titleCardHeadline,
+  manualInsights,
 }: AIInsightsPanelProps) {
   const [insights, setInsights] = useState<AIInsightsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!datasetUrl) return;
+    if (!datasetUrl || manualInsights) return;
 
     const fetchInsights = async () => {
       setLoading(true);
@@ -210,7 +211,15 @@ export default function AIInsightsPanel({
     };
 
     fetchInsights();
-  }, [datasetUrl]);
+  }, [datasetUrl, manualInsights]);
+
+  useEffect(() => {
+    if (manualInsights) {
+      setInsights(manualInsights);
+      setError(null);
+      setLoading(false);
+    }
+  }, [manualInsights]);
 
   const defaultMoreInsights: MoreInsightDetail[] = [
     {

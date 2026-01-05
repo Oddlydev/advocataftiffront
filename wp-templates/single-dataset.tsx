@@ -8,6 +8,7 @@ import {
 
 import AIButton from "@/src/components/ai-component/AIButton";
 import AIInsightsPanel from "@/src/components/ai-component/AIInsightsPanel";
+import type { AIInsightsResponse } from "@/src/components/ai-component/AIInsightsPanel";
 import CardType6 from "@/src/components/Cards/CardType6";
 import CsvTable from "@/src/components/CsvTable";
 import type { GetStaticPropsContext } from "next";
@@ -159,6 +160,12 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const closeTimeoutRef = useRef<number | null>(null);
   const [isVerticalTransitionSuppressed, setIsVerticalTransitionSuppressed] =
     useState(false);
+  const [isPlaygroundFormOpen, setIsPlaygroundFormOpen] = useState(false);
+  const [playgroundPrompt, setPlaygroundPrompt] = useState("");
+  const [playgroundInsights, setPlaygroundInsights] =
+    useState<AIInsightsResponse | null>(null);
+  const [isPlaygroundLoading, setIsPlaygroundLoading] = useState(false);
+  const [playgroundError, setPlaygroundError] = useState<string | null>(null);
 
   // Sidebar width must be 480px
   const SIDEBAR_WIDTH = 480;
@@ -245,6 +252,58 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     }, 620); // duration-600 + buffer
   };
 
+  const closePlaygroundPanel = () => {
+    setIsPlaygroundFormOpen(false);
+    setPlaygroundInsights(null);
+    setPlaygroundError(null);
+    setPlaygroundPrompt("");
+  };
+
+  const handlePlaygroundSubmit = async () => {
+    if (!downloadUrl) {
+      setPlaygroundError("Dataset content is not available for custom prompts.");
+      return;
+    }
+    if (!playgroundPrompt.trim()) {
+      setPlaygroundError("Please enter a prompt to continue.");
+      return;
+    }
+
+    setIsPlaygroundLoading(true);
+    setPlaygroundError(null);
+    setPlaygroundInsights(null);
+
+    try {
+      const response = await fetch("/api/ai-playground", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          datasetUrl: downloadUrl,
+          prompt: playgroundPrompt.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response
+          .json()
+          .catch(() => ({ message: "AI prompt failed" }));
+        throw new Error(errorBody?.message ?? "AI prompt failed");
+      }
+
+      const data = await response.json();
+      setPlaygroundInsights(data);
+    } catch (error: any) {
+      console.error("Custom prompt failed", error);
+      setPlaygroundError(
+        error?.message ?? "Custom prompt failed. Please try again."
+      );
+    } finally {
+      setIsPlaygroundLoading(false);
+    }
+  };
+
   // ESC close
   useEffect(() => {
     if (!isPanelVisible) return;
@@ -328,9 +387,73 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                     <div className="flex items-center">
                       <AIButton onClick={openInsightsPanel} />
                     </div>
+                    <div className="flex items-center">
+                      <SecondaryButton
+                        onClick={() =>
+                          setIsPlaygroundFormOpen((prev) => !prev)
+                        }
+                      >
+                        {isPlaygroundFormOpen
+                          ? "Hide prompt playground"
+                          : "Run custom prompt"}
+                      </SecondaryButton>
+                    </div>
                   </div>
                 )}
 
+                {isPlaygroundFormOpen && (
+                  <div className="mb-5 rounded-[24px] border border-slate-200 bg-white/70 p-5 shadow-[0_10px_30px_-20px_rgba(15,23,42,0.45)]">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="text-base font-semibold text-slate-900">
+                          AI prompt playground
+                        </p>
+                        <p className="text-sm text-slate-500">
+                          Submit a custom prompt and we’ll analyze the current
+                          dataset content directly with Vertex AI.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        className="text-sm font-medium text-slate-500 transition hover:text-slate-700"
+                        onClick={closePlaygroundPanel}
+                      >
+                        Close
+                      </button>
+                    </div>
+                    <textarea
+                      value={playgroundPrompt}
+                      onChange={(event) => setPlaygroundPrompt(event.target.value)}
+                      className="mt-4 h-32 w-full rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-slate-400 focus:outline-none"
+                      placeholder="Capture what you want the model to focus on — trends, segments, or anomalies."
+                    />
+                    <div className="mt-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                      <p className="text-xs text-slate-500">
+                        {isPlaygroundLoading
+                          ? "Generating insights..."
+                          : "Dataset content (CSV) is sent alongside your prompt."}
+                      </p>
+                      <SecondaryButton
+                        onClick={handlePlaygroundSubmit}
+                        disabled={isPlaygroundLoading}
+                      >
+                        {isPlaygroundLoading ? "Running prompt…" : "Run prompt"}
+                      </SecondaryButton>
+                    </div>
+                    {playgroundError && (
+                      <p className="mt-3 text-sm text-red-500">{playgroundError}</p>
+                    )}
+                    {playgroundInsights && (
+                      <div className="mt-5">
+                        <AIInsightsPanel
+                          manualInsights={playgroundInsights}
+                          titleCardHeadline={dataset.title ?? "Custom insights"}
+                          onClose={() => setPlaygroundInsights(null)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
                 {/* CRITICAL: horizontal scroll so wide tables never crop */}
                 <div className="relative overflow-x-auto">
                   <CsvTable csvUrl={downloadUrl} stickySecondColumn />
