@@ -261,7 +261,9 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
 
   const handlePlaygroundSubmit = async () => {
     if (!downloadUrl) {
-      setPlaygroundError("Dataset content is not available for custom prompts.");
+      setPlaygroundError(
+        "Dataset content is not available for custom prompts."
+      );
       return;
     }
     if (!playgroundPrompt.trim()) {
@@ -389,9 +391,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                     </div>
                     <div className="flex items-center">
                       <SecondaryButton
-                        onClick={() =>
-                          setIsPlaygroundFormOpen((prev) => !prev)
-                        }
+                        onClick={() => setIsPlaygroundFormOpen((prev) => !prev)}
                       >
                         {isPlaygroundFormOpen
                           ? "Hide prompt playground"
@@ -408,10 +408,6 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                         <p className="text-base font-semibold text-slate-900">
                           AI prompt playground
                         </p>
-                        <p className="text-sm text-slate-500">
-                          Submit a custom prompt and we’ll analyze the current
-                          dataset content directly with Vertex AI.
-                        </p>
                       </div>
                       <button
                         type="button"
@@ -423,9 +419,11 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                     </div>
                     <textarea
                       value={playgroundPrompt}
-                      onChange={(event) => setPlaygroundPrompt(event.target.value)}
+                      onChange={(event) =>
+                        setPlaygroundPrompt(event.target.value)
+                      }
                       className="mt-4 h-32 w-full rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-slate-400 focus:outline-none"
-                      placeholder="Capture what you want the model to focus on — trends, segments, or anomalies."
+                      placeholder="Enter your custom prompt here..."
                     />
                     <div className="mt-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                       <p className="text-xs text-slate-500">
@@ -441,7 +439,9 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                       </SecondaryButton>
                     </div>
                     {playgroundError && (
-                      <p className="mt-3 text-sm text-red-500">{playgroundError}</p>
+                      <p className="mt-3 text-sm text-red-500">
+                        {playgroundError}
+                      </p>
                     )}
                     {playgroundInsights && (
                       <div className="mt-5">
