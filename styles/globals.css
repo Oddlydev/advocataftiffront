@@ -152,6 +152,15 @@ button {
   .tns-horizontal.tns-subpixel > .tns-item {
     vertical-align: middle !important;
   }
+
+  .title-card-summary {
+    list-style: none;
+  }
+
+  .title-card-summary::-webkit-details-marker,
+  .title-card-summary::marker {
+    display: none;
+  }
 }
 
 @layer utilities {
