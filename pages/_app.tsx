@@ -6,14 +6,8 @@ import { AppProps } from "next/app";
 import { FaustProvider } from "@faustwp/core";
 import "../styles/globals.css";
 
-import dynamic from "next/dynamic";
-
-const HeaderNav = dynamic(() => import("@/src/components/header"), {
-  ssr: true,
-});
-const Footer = dynamic(() => import("@/src/components/footer"), {
-  ssr: true,
-});
+import HeaderNav from "@/src/components/header";
+import Footer from "@/src/components/footer";
 
 import BrandLogo from "@/public/assets/images/logos/brand-logo.svg";
 import navbarImg from "@/public/assets/images/nav-bg-img.png";
