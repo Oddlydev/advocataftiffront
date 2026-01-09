@@ -342,11 +342,11 @@ export default function CsvTable({
                         return (
                           <th
                             key={i}
-                            className={`px-3 py-3.5 text-left text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700 sticky top-0 ${
+                            className={`px-3 py-3.5 text-right text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700 top-0 ${
                               isFirstCol
-                                ? "left-0 z-30 rounded-tl-lg !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                                ? "left-0 z-30 sticky !text-left rounded-tl-lg !w-[160px] md:!w-[225px] xl:!w-[300px]"
                                 : isSecondCol
-                                  ? "left-[160px] md:left-[225px] xl:left-[300px] z-20 !w-[160px] md:!w-[155px] xl:!w-[210px]"
+                                  ? "md:sticky left-[160px] !text-left md:left-[225px] xl:left-[300px] z-20 !w-[160px] md:!w-[155px] xl:!w-[210px]"
                                   : "z-10 w-[160px] md:w-[155px] xl:w-[210px]"
                             } ${i === displayHeaders.length - 1 ? "rounded-tr-lg" : ""}`}
                           >
@@ -386,7 +386,7 @@ export default function CsvTable({
                         return (
                           <tr key={`sector-${idx}`}>
                             <td
-                              className="sector sticky left-0 z-30 bg-brand-white border-b border-gray-100 text-brand-1-700 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                              className="sector sticky left-0 z-30 bg-brand-white border-b border-gray-100 text-brand-1-700 px-3 py-3.5 text-right text-base/6 font-sourcecodepro font-semibold !w-[160px] md:!w-[225px] xl:!w-[300px]"
                               style={{ top: headerOffset }}
                             >
                               {item.sector}
@@ -426,11 +426,11 @@ export default function CsvTable({
                             return (
                               <td
                                 key={cellIndex}
-                                className={`bg-white border-b border-gray-100 px-3 py-3.5 text-left text-base/6 font-medium font-sourcecodepro ${
+                                className={`bg-white border-b border-gray-100 px-3 py-3.5 text-right text-base/6 font-medium font-sourcecodepro ${
                                   isFirstCol
-                                    ? "sticky left-0 z-30 text-brand-black !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                                    ? "sticky left-0 z-30 !text-left text-brand-black !w-[160px] md:!w-[225px] xl:!w-[300px]"
                                     : isSecondCol
-                                      ? "sticky left-[160px] md:left-[225px] xl:left-[300px] z-20 text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
+                                      ? "md:sticky !text-left left-[160px] md:left-[225px] xl:left-[300px] z-20 text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
                                       : "text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
                                 }`}
                               >
@@ -471,7 +471,7 @@ export default function CsvTable({
 
             <button
               onClick={handleScrollRight}
-              className="absolute z-20 top-14 right-6 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
+              className="absolute z-20 top-12 right-6 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
             >
               <svg
                 className="size-4"
