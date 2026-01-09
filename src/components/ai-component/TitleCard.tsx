@@ -1,6 +1,12 @@
 import React from "react";
 
-export default function TitleCard() {
+export type TitleCardProps = {
+  headline?: string;
+};
+
+export default function TitleCard({ headline }: TitleCardProps) {
+  const headlineText =
+    headline ?? "Composition of Private Consumption Expenditure at Current Market Prices";
   return (
     <article
       className="
@@ -95,8 +101,7 @@ export default function TitleCard() {
             className="text-sm font-medium leading-5 text-slate-900a"
             style={{ fontFamily: "Montserrat" }}
           >
-            Composition of Private Consumption Expenditure at Current Market
-            Prices
+            {headlineText}
           </p>
         </summary>
 
