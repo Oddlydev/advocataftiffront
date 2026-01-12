@@ -39,10 +39,10 @@ function formatDate(dateStr?: string | number | null): string {
     day % 10 === 1 && day !== 11
       ? "st"
       : day % 10 === 2 && day !== 12
-      ? "nd"
-      : day % 10 === 3 && day !== 13
-      ? "rd"
-      : "th";
+        ? "nd"
+        : day % 10 === 3 && day !== 13
+          ? "rd"
+          : "th";
 
   return `${day}${suffix} ${month} ${year}`;
 }
@@ -51,7 +51,9 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
   useEffect(() => {
     if (!datasetId) return;
 
-    const recommendObjectID = datasetId.endsWith("-0") ? datasetId : `${datasetId}-0`;
+    const recommendObjectID = datasetId.endsWith("-0")
+      ? datasetId
+      : `${datasetId}-0`;
 
     const searchClient = algoliasearch(
       process.env.NEXT_PUBLIC_ALGOLIA_APP_ID as string,
@@ -131,7 +133,7 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
   return (
     <section className="bg-pink-100 py-12 md:py-16 xl:py-20">
       <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-        <PageSubTitle>Advocata AI Suggestions</PageSubTitle>
+        {/* <PageSubTitle>Advocata AI Suggestions</PageSubTitle> */}
         <InnerPageTitle className="mb-8">Related Datasets</InnerPageTitle>
         <div id="related-datasets-container" />
       </div>
