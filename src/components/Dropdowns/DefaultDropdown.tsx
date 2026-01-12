@@ -155,7 +155,7 @@ export default function DefaultDropdown({
         {/* Scrollable list of items */}
         <div
           className={[
-            "py-1",
+            "py-1 px-2",
             listScrollable ? "overflow-y-auto max-h-[280px] custom-scroll" : "",
           ].join(" ")}
           role="none"
@@ -163,7 +163,7 @@ export default function DefaultDropdown({
           {items.map((it, idx) => {
             const common = {
               className:
-                "default-dropdown-item block text-left px-6 py-2.5 text-base/6 text-slate-600 hover:text-brand-1-700 font-sourcecodepro font-normal",
+                "default-dropdown-item block text-left py-2.5 text-base/6 text-slate-600 hover:text-brand-1-700 font-sourcecodepro font-normal",
               role: "menuitem" as const,
               key: idx,
             };
@@ -198,30 +198,42 @@ export default function DefaultDropdown({
                 }}
               >
                 {it.kind === "checkbox" ? (
-                  <div className="group flex gap-3 items-center cursor-pointer">
-                    <div>
-                      <span
-                        aria-hidden
-                        className="grid size-4 place-items-center border-2 border-slate-600 rounded-sm group-hover:border-brand-1-700"
+                  <div className="group flex cursor-pointer items-center gap-2.5">
+                    <span
+                      aria-hidden
+                      className="relative flex h-6 w-6 items-center justify-center text-[#475569] group-hover:text-brand-1-700"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="17"
+                        height="17"
+                        viewBox="0 0 17 17"
+                        fill="none"
+                        className="absolute inset-0 h-full w-full"
                       >
-                        {it.checked ? (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 8 6"
-                            fill="none"
-                            className="size-3 stroke-slate-600 group-hover:stroke-brand-1-700"
-                          >
-                            <path
-                              d="M1.5 3L3 4.5L6.5 1.5"
-                              stroke="currentColor"
-                              strokeWidth="1.8"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        ) : null}
-                      </span>
-                    </div>
+                        <path
+                          d="M0.833344 8.33333C0.833344 2.15708 2.15709 0.833328 8.33334 0.833328C14.5096 0.833328 15.8333 2.15708 15.8333 8.33333C15.8333 14.5096 14.5096 15.8333 8.33334 15.8333C2.15709 15.8333 0.833344 14.5096 0.833344 8.33333Z"
+                          stroke="currentColor"
+                          strokeWidth="1.66667"
+                        />
+                      </svg>
+                      {it.checked ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 7 5"
+                          fill="none"
+                          className="absolute h-[10px] w-[12px]"
+                        >
+                          <path
+                            d="M0.833344 2.49999L2.23568 3.90233C2.38168 4.04833 2.61834 4.04833 2.76434 3.90233L5.83334 0.833328"
+                            stroke="currentColor"
+                            strokeWidth="1.66667"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      ) : null}
+                    </span>
                     <span className="font-normal text-slate-600 group-hover:text-brand-1-700">
                       {it.label}
                     </span>
