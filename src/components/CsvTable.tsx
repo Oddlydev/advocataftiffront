@@ -386,7 +386,7 @@ export default function CsvTable({
                         return (
                           <tr key={`sector-${idx}`}>
                             <td
-                              className="sector sticky left-0 z-30 bg-brand-white border-b border-gray-100 text-brand-1-700 px-3 py-3.5 text-right text-base/6 font-sourcecodepro font-semibold !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                              className="sector sticky left-0 z-30 bg-brand-white border-b border-gray-100 text-brand-1-700 px-3 py-3.5 !text-left text-base/6 font-sourcecodepro font-semibold !w-[160px] md:!w-[225px] xl:!w-[300px]"
                               style={{ top: headerOffset }}
                             >
                               {item.sector}
