@@ -341,15 +341,15 @@ export default function AIInsightsPanel({
         {loading || !insights ? (
           <div className="flex h-64 items-center justify-center">
             {loading ? (
-              <div className="flex flex-col items-center gap-2">
-                <LoadingIcon className="h-8 w-8 animate-spin text-[#EA1952]" />
+              <div className="flex items-center gap-2">
+                <LoadingIcon className="h-4 w-4 animate-[spin_1.4s_linear_infinite] text-[#EA1952]" />
                 <p className="text-sm text-slate-500">Analyzing dataset...</p>
               </div>
             ) : error ? (
               <p className="text-sm text-red-500">{error}</p>
             ) : (
-              <div className="flex flex-col items-center gap-2">
-                <LoadingIcon className="h-8 w-8 animate-spin text-[#EA1952]" />
+              <div className="flex items-center gap-2">
+                <LoadingIcon className="h-4 w-4 animate-[spin_1.4s_linear_infinite] text-[#EA1952]" />
                 <p className="text-sm text-slate-500">Initializing...</p>
               </div>
             )}
