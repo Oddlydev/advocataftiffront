@@ -5,7 +5,7 @@ type LoadingIconProps = {
 };
 
 const PETALS = 12;
-const RADIUS = 7.5;
+const RADIUS = 6.5;
 
 export default function LoadingIcon({ className = "" }: LoadingIconProps) {
   const baseClassName = "h-4 w-4 flex-shrink-0 overflow-hidden rounded-sm";
@@ -13,7 +13,7 @@ export default function LoadingIcon({ className = "" }: LoadingIconProps) {
 
   return (
     <svg
-      width="17"
+      width="16"
       height="16"
       viewBox="-8 -8 16 16"
       fill="none"

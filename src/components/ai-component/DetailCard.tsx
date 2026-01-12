@@ -107,10 +107,23 @@ const RankingLinkIcon = () => (
 );
 
 function CompositionDetail({ content }: { content: CompositionDetailContent }) {
+  const introParagraphs = Array.isArray(content.introParagraphs)
+    ? content.introParagraphs
+    : [];
+  const firstMetrics = Array.isArray(content.firstMetrics)
+    ? content.firstMetrics
+    : [];
+  const secondMetrics = Array.isArray(content.secondMetrics)
+    ? content.secondMetrics
+    : [];
+  const recommendations = Array.isArray(content.recommendations)
+    ? content.recommendations
+    : [];
+
   return (
     <article className="flex flex-col rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3.5">
-        {content.introParagraphs.map((paragraph) => (
+        {introParagraphs.map((paragraph) => (
           <p
             key={paragraph}
             className="text-sm leading-5 text-slate-700 font-[Montserrat]"
@@ -132,7 +145,7 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
         </p>
 
         <div className="mb-0">
-          {content.firstMetrics.map((line, idx) => (
+          {firstMetrics.map((line, idx) => (
             <ListBulletItem key={`${line}-${idx}`} text={line} />
           ))}
         </div>
@@ -142,7 +155,7 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
         </p>
 
         <div className="mb-0">
-          {content.secondMetrics.map((line, idx) => (
+          {secondMetrics.map((line, idx) => (
             <ListBulletItem key={`${line}-${idx}`} text={line} />
           ))}
         </div>
@@ -157,7 +170,7 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
           </p>
 
           <div className="mt-2 space-y-3.5">
-            {content.recommendations.map((line, idx) => (
+            {recommendations.map((line, idx) => (
               <ListNumberedItem
                 key={`${line}-${idx}`}
                 number={idx + 1}

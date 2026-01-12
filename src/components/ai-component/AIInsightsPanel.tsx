@@ -180,6 +180,9 @@ export default function AIInsightsPanel({
   const [insights, setInsights] = useState<AIInsightsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoaderVisible, setIsLoaderVisible] = useState(true);
+  const [isFadingLoader, setIsFadingLoader] = useState(false);
+  const LOADER_FADE_DURATION = 1000;
 
   useEffect(() => {
     if (!datasetUrl || manualInsights) return;
@@ -220,6 +223,26 @@ export default function AIInsightsPanel({
       setLoading(false);
     }
   }, [manualInsights]);
+
+  const shouldShowLoaderContent = loading || !insights;
+
+  useEffect(() => {
+    let fadeTimer: number | null = null;
+    if (shouldShowLoaderContent) {
+      setIsLoaderVisible(true);
+      setIsFadingLoader(false);
+    } else {
+      setIsFadingLoader(true);
+      fadeTimer = window.setTimeout(() => {
+        setIsLoaderVisible(false);
+        setIsFadingLoader(false);
+      }, LOADER_FADE_DURATION);
+    }
+
+    return () => {
+      if (fadeTimer) window.clearTimeout(fadeTimer);
+    };
+  }, [shouldShowLoaderContent]);
 
   const defaultMoreInsights: MoreInsightDetail[] = [
     {
@@ -338,110 +361,125 @@ export default function AIInsightsPanel({
           </button>
         </header>
 
-        {loading || !insights ? (
-          <div className="flex h-64 items-center justify-center">
-            {loading ? (
-              <div className="flex items-center gap-2 rounded-[12px] px-5 py-1">
-                <LoadingIcon className="h-4 w-4 animate-[spin_1.4s_linear_infinite] text-[#EA1952]" />
-                <p
-                  className="text-sm"
-                  style={{
-                    fontWeight: 500,
-                    background:
-                      "linear-gradient(90deg, var(--slate-500, #64748B) 0%, var(--slate-300, #CBD5E1) 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    color: "transparent",
-                  }}
+        <div className="relative min-h-[16rem]">
+          {isLoaderVisible && (
+            <div
+              className={`absolute inset-0 flex items-center justify-center transition-opacity duration-[1000ms] ease-out ${
+                isFadingLoader ? "opacity-0" : "opacity-100"
+              }`}
+              style={{ pointerEvents: "none" }}
+            >
+              {loading ? (
+                <div
+                  className={`flex items-center gap-2 transition-all duration-[1000ms] ease-out ${
+                    isFadingLoader
+                      ? "opacity-0 -translate-y-2"
+                      : "opacity-100 translate-y-0"
+                  }`}
                 >
-                  Thinking...
-                </p>
-              </div>
-            ) : error ? (
-              <p className="text-sm text-red-500">{error}</p>
-            ) : (
-              <div className="flex items-center gap-2">
-                <LoadingIcon className="h-4 w-4 animate-[spin_1.4s_linear_infinite] text-[#EA1952]" />
-                <p className="text-sm text-slate-500">Initializing...</p>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="mt-3 flex flex-col gap-y-6">
-            <TitleCard headline={titleCardHeadline} />
-
-            <section className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                  <LoadingIcon className="h-4 w-4 animate-[spin_1.4s_linear_infinite] text-[#EA1952]" />
                   <p
-                    className="text-base leading-6 font-semibold text-slate-900"
-                    style={{ fontFamily: "Montserrat" }}
+                    className="text-sm"
+                    style={{
+                      fontWeight: 500,
+                      background:
+                        "linear-gradient(90deg, var(--slate-500, #64748B) 0%, var(--slate-300, #CBD5E1) 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      color: "transparent",
+                    }}
                   >
-                    Key Insights
+                    Thinking...
                   </p>
+                </div>
+              ) : error ? (
+                <p className="text-sm text-red-500">{error}</p>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <LoadingIcon className="h-4 w-4 animate-[spin_1.4s_linear_infinite] text-[#EA1952]" />
+                  <p className="text-sm text-slate-500">Initializing...</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {!isLoaderVisible && insights && (
+            <div className="mt-3 flex flex-col gap-y-6">
+              <TitleCard headline={titleCardHeadline} />
+
+              <section className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <p
+                      className="text-base leading-6 font-semibold text-slate-900"
+                      style={{ fontFamily: "Montserrat" }}
+                    >
+                      Key Insights
+                    </p>
+                    <span
+                      className="flex h-5 items-center justify-center rounded-full bg-slate-200 px-2 text-slate-700 text-[10px] font-semibold leading-3"
+                      style={{ fontFamily: "Arial" }}
+                    >
+                      {insights.keyInsights?.length || 0}
+                    </span>
+                  </div>
                   <span
-                    className="flex h-5 items-center justify-center rounded-full bg-slate-200 px-2 text-slate-700 text-[10px] font-semibold leading-3"
-                    style={{ fontFamily: "Arial" }}
+                    className="text-xs font-normal leading-5 text-slate-500"
+                    style={{ fontFamily: '"Source Code Pro"' }}
                   >
-                    {insights.keyInsights?.length || 0}
+                    AI-identified patterns
                   </span>
                 </div>
-                <span
-                  className="text-xs font-normal leading-5 text-slate-500"
-                  style={{ fontFamily: '"Source Code Pro"' }}
-                >
-                  AI-identified patterns
-                </span>
-              </div>
-              {insights.keyInsights?.map((insight, index) => (
-                <KeyInsightsCard
-                  key={index}
-                  title={insight.title}
-                  content={insight.content}
-                  confidence={insight.confidence}
-                />
-              ))}
-            </section>
-
-            <section className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <p
-                    className="text-base leading-6 font-semibold text-slate-900"
-                    style={{ fontFamily: "Montserrat" }}
-                  >
-                    More Insights
-                  </p>
-                  <span
-                    className="flex h-5 items-center justify-center rounded-full bg-slate-200 px-2 text-slate-700 text-[10px] font-semibold leading-3"
-                    style={{ fontFamily: "Arial" }}
-                  >
-                    {moreInsightsDetails.length}
-                  </span>
-                </div>
-                <span
-                  className="text-[11px] text-slate-500"
-                  style={{ fontFamily: '"Source Code Pro"' }}
-                >
-                  Actionable recommendations
-                </span>
-              </div>
-              <div className="space-y-2">
-                {moreInsightsDetails.map((insight) => (
-                  <SuggestedActionCard
-                    key={insight.title}
-                    showDetailOnClick
+                {insights.keyInsights?.map((insight, index) => (
+                  <KeyInsightsCard
+                    key={index}
                     title={insight.title}
-                    description={insight.description}
-                    detailVariant={insight.detailVariant}
-                    detailContent={insight.detailContent!}
+                    content={insight.content}
+                    confidence={insight.confidence}
                   />
                 ))}
-              </div>
-            </section>
-          </div>
-        )}
+              </section>
+
+              <section className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <p
+                      className="text-base leading-6 font-semibold text-slate-900"
+                      style={{ fontFamily: "Montserrat" }}
+                    >
+                      More Insights
+                    </p>
+                    <span
+                      className="flex h-5 items-center justify-center rounded-full bg-slate-200 px-2 text-slate-700 text-[10px] font-semibold leading-3"
+                      style={{ fontFamily: "Arial" }}
+                    >
+                      {moreInsightsDetails.length}
+                    </span>
+                  </div>
+                  <span
+                    className="text-[11px] text-slate-500"
+                    style={{ fontFamily: '"Source Code Pro"' }}
+                  >
+                    Actionable recommendations
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  {moreInsightsDetails.map((insight) => (
+                    <SuggestedActionCard
+                      key={insight.title}
+                      showDetailOnClick
+                      title={insight.title}
+                      description={insight.description}
+                      detailVariant={insight.detailVariant}
+                      detailContent={insight.detailContent!}
+                    />
+                  ))}
+                </div>
+              </section>
+            </div>
+          )}
+        </div>
 
         <div className="mt-6">
           <InsightsDisclaimerCard />
