@@ -150,6 +150,29 @@ interface SingleDatasetProps {
 /** Dataset details page */
 const FOOTER_HIDE_CLASS = "ai-insights-sidebar-open";
 
+function decodeHtmlEntities(text: string): string {
+  if (!text) return "";
+  const namedEntities: Record<string, string> = {
+    "&amp;": "&",
+    "&lt;": "<",
+    "&gt;": ">",
+    "&quot;": '"',
+    "&#39;": "'",
+    "&apos;": "'",
+    "&nbsp;": " ",
+  };
+  return text
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) =>
+      String.fromCharCode(parseInt(hex, 16))
+    )
+    .replace(/&#(\d+);/g, (_, num) =>
+      String.fromCharCode(parseInt(num, 10))
+    )
+    .replace(/&(amp|lt|gt|quot|apos|nbsp);/g, (match) =>
+      namedEntities[match] ? namedEntities[match] : match
+    );
+}
+
 const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const dataset = data?.dataSet;
   const allRelated = data?.dataSets?.nodes ?? [];
@@ -166,6 +189,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     useState<AIInsightsResponse | null>(null);
   const [isPlaygroundLoading, setIsPlaygroundLoading] = useState(false);
   const [playgroundError, setPlaygroundError] = useState<string | null>(null);
+  const [isTestMode, setIsTestMode] = useState(false);
 
   // Sidebar width must be 480px
   const SIDEBAR_WIDTH = 480;
@@ -177,10 +201,12 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
 
   // Short hero paragraph from WYSIWYG/excerpt
   const rawExcerpt = dataset.excerpt || dataset.content || "";
-  const plainExcerpt = rawExcerpt.replace(/<[^>]+>/g, "").trim();
+  const plainExcerpt = decodeHtmlEntities(
+    rawExcerpt.replace(/<[^>]+>/g, "").trim()
+  );
   const heroParagraph =
     plainExcerpt.length > 260
-      ? `${plainExcerpt.slice(0, 260).trimEnd()}…`
+      ? `${plainExcerpt.slice(0, 260).trimEnd()}...`
       : plainExcerpt;
 
   const downloadUrl =
@@ -200,6 +226,11 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     return () => {
       if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
     };
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setIsTestMode(params.get("mode") === "test");
   }, []);
 
   useEffect(() => {
@@ -389,19 +420,23 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                     <div className="flex items-center">
                       <AIButton onClick={openInsightsPanel} />
                     </div>
-                    <div className="flex items-center">
-                      <SecondaryButton
-                        onClick={() => setIsPlaygroundFormOpen((prev) => !prev)}
-                      >
-                        {isPlaygroundFormOpen
-                          ? "Hide prompt playground"
-                          : "Run custom prompt"}
-                      </SecondaryButton>
-                    </div>
+                    {isTestMode && (
+                      <div className="flex items-center">
+                        <SecondaryButton
+                          onClick={() =>
+                            setIsPlaygroundFormOpen((prev) => !prev)
+                          }
+                        >
+                          {isPlaygroundFormOpen
+                            ? "Hide prompt playground"
+                            : "Run custom prompt"}
+                        </SecondaryButton>
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {isPlaygroundFormOpen && (
+                {isTestMode && isPlaygroundFormOpen && (
                   <div className="mb-5 rounded-[24px] border border-slate-200 bg-white/70 p-5 shadow-[0_10px_30px_-20px_rgba(15,23,42,0.45)]">
                     <div className="flex items-center justify-between gap-4">
                       <div>
@@ -435,7 +470,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                         onClick={handlePlaygroundSubmit}
                         disabled={isPlaygroundLoading}
                       >
-                        {isPlaygroundLoading ? "Running prompt…" : "Run prompt"}
+                        {isPlaygroundLoading ? "Running prompt..." : "Run prompt"}
                       </SecondaryButton>
                     </div>
                     {playgroundError && (
