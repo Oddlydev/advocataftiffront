@@ -368,13 +368,13 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
           <section
             className={`bg-white ${isInsightsPanelOpen ? "hidden" : ""}`}
           >
-            <div className={`mx-auto ${maxWidthClass} ${contentPaddingClass}`}>
+            {/* <div className={`mx-auto ${maxWidthClass} ${contentPaddingClass}`}>
               <WysiwygInner>
                 <div
                   dangerouslySetInnerHTML={{ __html: dataset.content ?? "" }}
                 />
               </WysiwygInner>
-            </div>
+            </div> */}
           </section>
 
           {/* Preview table if CSV source is available */}
