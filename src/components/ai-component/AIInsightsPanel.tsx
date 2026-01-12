@@ -341,9 +341,22 @@ export default function AIInsightsPanel({
         {loading || !insights ? (
           <div className="flex h-64 items-center justify-center">
             {loading ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 rounded-[12px] px-5 py-1">
                 <LoadingIcon className="h-4 w-4 animate-[spin_1.4s_linear_infinite] text-[#EA1952]" />
-                <p className="text-sm text-slate-500">Analyzing dataset...</p>
+                <p
+                  className="text-sm"
+                  style={{
+                    fontWeight: 500,
+                    background:
+                      "linear-gradient(90deg, var(--slate-500, #64748B) 0%, var(--slate-300, #CBD5E1) 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    color: "transparent",
+                  }}
+                >
+                  Thinking...
+                </p>
               </div>
             ) : error ? (
               <p className="text-sm text-red-500">{error}</p>
