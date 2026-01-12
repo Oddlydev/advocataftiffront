@@ -483,6 +483,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                         <AIInsightsPanel
                           manualInsights={playgroundInsights}
                           titleCardHeadline={dataset.title ?? "Custom insights"}
+                          datasetDescription={heroParagraph}
                           onClose={() => setPlaygroundInsights(null)}
                         />
                       </div>
@@ -679,6 +680,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
             onClose={closeInsightsPanel}
             datasetUrl={downloadUrl}
             titleCardHeadline={dataset.title ?? undefined}
+            datasetDescription={heroParagraph}
           />
         </div>
       )}

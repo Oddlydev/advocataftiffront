@@ -168,6 +168,7 @@ export type AIInsightsPanelProps = {
   onClose?: () => void;
   datasetUrl?: string;
   titleCardHeadline?: string;
+  datasetDescription?: string;
   manualInsights?: AIInsightsResponse | null;
 };
 
@@ -175,6 +176,7 @@ export default function AIInsightsPanel({
   onClose,
   datasetUrl,
   titleCardHeadline,
+  datasetDescription,
   manualInsights,
 }: AIInsightsPanelProps) {
   const [insights, setInsights] = useState<AIInsightsResponse | null>(null);
@@ -196,7 +198,7 @@ export default function AIInsightsPanel({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ datasetUrl }),
+          body: JSON.stringify({ datasetUrl, datasetDescription }),
         });
 
         if (!response.ok) {
@@ -214,7 +216,7 @@ export default function AIInsightsPanel({
     };
 
     fetchInsights();
-  }, [datasetUrl, manualInsights]);
+  }, [datasetUrl, manualInsights, datasetDescription]);
 
   useEffect(() => {
     if (manualInsights) {
