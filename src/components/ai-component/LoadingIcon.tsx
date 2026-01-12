@@ -5,11 +5,10 @@ type LoadingIconProps = {
 };
 
 const PETALS = 12;
-const RADIUS = 5.5;
+const RADIUS = 7.5;
 
 export default function LoadingIcon({ className = "" }: LoadingIconProps) {
-  const baseClassName =
-    "h-4 w-4 flex-shrink-0 overflow-hidden rounded-sm";
+  const baseClassName = "h-4 w-4 flex-shrink-0 overflow-hidden rounded-sm";
   const classes = [baseClassName, className].filter(Boolean).join(" ");
 
   return (
