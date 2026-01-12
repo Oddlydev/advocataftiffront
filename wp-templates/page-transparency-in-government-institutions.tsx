@@ -246,7 +246,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
   const [filteredPosts, setFilteredPosts] = useState<TransparencyPost[]>([]);
   const [currentCsvUrl, setCurrentCsvUrl] = useState<string | null>(null);
   const [ministryOptions, setMinistryOptions] = useState<string[]>([]);
-  const [selectedMinistry, setSelectedMinistry] = useState<string | null>(null);
+  const [selectedMinistries, setSelectedMinistries] = useState<string[]>([]);
 
   const [isLoading, setIsLoading] = useState(true); //   loader
 
@@ -399,7 +399,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
   // Reset ministry filter/options when dataset changes
   useEffect(() => {
     setMinistryOptions([]);
-    setSelectedMinistry(null);
+    setSelectedMinistries([]);
   }, [currentCsvUrl]);
 
   const paginatedPosts = filteredPosts.slice(
@@ -490,20 +490,54 @@ export default function PageTransparencyDashboard(): JSX.Element {
 
               <DefaultDropdown
                 idKey="ministry-top"
-                label={selectedMinistry ?? "Ministry"}
-                items={[
-                  {
-                    label: "All Ministries",
-                    onClick: () => setSelectedMinistry(null),
+                label={
+                  selectedMinistries.length > 0
+                    ? `Ministry (${selectedMinistries.length})`
+                    : "Ministry"
+                }
+                items={ministryOptions.map((ministry) => ({
+                  kind: "checkbox" as const,
+                  label: ministry,
+                  checked: selectedMinistries.includes(ministry),
+                  onClick: () => {
+                    setSelectedMinistries((prev) =>
+                      prev.includes(ministry)
+                        ? prev.filter((m) => m !== ministry)
+                        : [...prev, ministry]
+                    );
                   },
-                  ...ministryOptions.map((m) => ({
-                    label: m,
-                    onClick: () => setSelectedMinistry(m),
-                  })),
-                ]}
+                }))}
                 align="right"
                 open={openId === "ministry"}
                 onOpenChange={(v) => setOpenId(v ? "ministry" : null)}
+                closeOnItemClick={false}
+                footer={
+                  <div className="flex items-center justify-end gap-2 px-3 py-2 !bg-transparent">
+                    <button
+                      type="button"
+                      className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide rounded-sm bg-white text-gray-600 border border-slate-200 shadow-sm hover:text-gray-50 hover:bg-brand-1-900"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedMinistries([]);
+                        setOpenId(null);
+                      }}
+                    >
+                      CLEAR
+                    </button>
+                    <button
+                      type="button"
+                      className="px-3 py-2.5 text-xs text-brand-white font-semibold uppercase tracking-wide rounded-sm bg-brand-1-900 text-brand-4 border border-slate-200 shadow-sm hover:bg-gray-50 hover:text-brand-1-900"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setOpenId(null);
+                      }}
+                    >
+                      OK
+                    </button>
+                  </div>
+                }
               />
 
               <DefaultDropdown
@@ -556,7 +590,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
             <CsvTableTransparency
               csvUrl={currentCsvUrl}
               filterQuery={queryInput}
-              ministryFilters={selectedMinistry ? [selectedMinistry] : []}
+              ministryFilters={selectedMinistries}
               onMinistriesLoaded={setMinistryOptions}
             />
           ) : (
