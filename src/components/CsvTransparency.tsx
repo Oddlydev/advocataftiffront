@@ -559,18 +559,21 @@ export default function CsvTransparency({
                   if (item.type === "ministry") {
                     return (
                       <tr key={`min-${item.label}-${idx}`}>
-                        <td
+                        {remainingColumns > 0 && (
+                          <td
+                            colSpan={remainingColumns}
                           className="sticky left-0 z-20 !w-[160px] border-b border-gray-100 bg-gray-50 px-3 py-3.5 text-left text-base/6 font-sourcecodepro font-semibold text-brand-1-700 md:!w-[225px] xl:!w-[300px]"
                           style={{ top: headerOffset }}
                         >
                           {item.label}
                         </td>
-                        {remainingColumns > 0 && (
+                        )}
+                        {/* {remainingColumns > 0 && (
                           <td
                             colSpan={remainingColumns}
                             className="border-b border-gray-100 bg-gray-50"
                           />
-                        )}
+                        )} */}
                       </tr>
                     );
                   }
