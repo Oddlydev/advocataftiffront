@@ -177,7 +177,17 @@ export default function SuggestedActionCard({
           {flow === "thinking" ? (
             <div className="flex items-center gap-1 px-5 py-5">
               <LoadingIcon />
-              <span className="text-xs font-semibold font-[Montserrat] text-slate-500">
+              <span
+                className="text-xs font-semibold font-[Montserrat]"
+                style={{
+                  background:
+                    "linear-gradient(90deg, var(--slate-500, #64748B) 0%, var(--slate-300, #CBD5E1) 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
                 Thinking...
               </span>
             </div>

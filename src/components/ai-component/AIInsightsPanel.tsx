@@ -350,7 +350,10 @@ export default function AIInsightsPanel({
   const [error, setError] = useState<string | null>(null);
   const [isLoaderVisible, setIsLoaderVisible] = useState(true);
   const [isFadingLoader, setIsFadingLoader] = useState(false);
-  const LOADER_FADE_DURATION = 1000;
+  const [loaderOpacity, setLoaderOpacity] = useState(1);
+  const [contentVisible, setContentVisible] = useState(false);
+  const LOADER_FADE_DURATION = 1400;
+  const CONTENT_REVEAL_DELAY = 450;
 
   useEffect(() => {
     if (!datasetUrl || manualInsights) return;
@@ -396,19 +399,28 @@ export default function AIInsightsPanel({
 
   useEffect(() => {
     let fadeTimer: number | null = null;
+    let contentTimer: number | null = null;
     if (shouldShowLoaderContent) {
       setIsLoaderVisible(true);
       setIsFadingLoader(false);
+      setLoaderOpacity(1);
+      setContentVisible(false);
     } else {
       setIsFadingLoader(true);
+      requestAnimationFrame(() => setLoaderOpacity(0));
+      contentTimer = window.setTimeout(() => {
+        setContentVisible(true);
+      }, CONTENT_REVEAL_DELAY);
       fadeTimer = window.setTimeout(() => {
         setIsLoaderVisible(false);
         setIsFadingLoader(false);
+        setLoaderOpacity(1);
       }, LOADER_FADE_DURATION);
     }
 
     return () => {
       if (fadeTimer) window.clearTimeout(fadeTimer);
+      if (contentTimer) window.clearTimeout(contentTimer);
     };
   }, [shouldShowLoaderContent]);
 
@@ -533,21 +545,28 @@ export default function AIInsightsPanel({
           </button>
         </header>
 
-        <div className="relative min-h-[16rem]">
+        <div className="relative min-h-[6rem]">
           {isLoaderVisible && (
             <div
-              className={`absolute inset-0 flex items-center justify-center transition-opacity duration-[1000ms] ease-out ${
-                isFadingLoader ? "opacity-0" : "opacity-100"
-              }`}
-              style={{ pointerEvents: "none" }}
+              className="absolute inset-0 flex items-center justify-center"
+              style={{
+                pointerEvents: "none",
+                opacity: loaderOpacity,
+                transition: `opacity ${LOADER_FADE_DURATION}ms ease-out`,
+              }}
             >
-              {loading ? (
+              {error ? (
+                <p className="text-sm text-red-500">{error}</p>
+              ) : (
                 <div
-                  className={`flex items-center gap-2 transition-all duration-[1000ms] ease-out ${
-                    isFadingLoader
-                      ? "opacity-0 -translate-y-2"
-                      : "opacity-100 translate-y-0"
-                  }`}
+                  className="flex items-center gap-2"
+                  style={{
+                    opacity: loaderOpacity,
+                    transform: isFadingLoader
+                      ? "translateY(-4px)"
+                      : "translateY(0)",
+                    transition: `opacity ${LOADER_FADE_DURATION}ms ease-out, transform ${LOADER_FADE_DURATION}ms ease-out`,
+                  }}
                 >
                   <LoadingIcon className="h-4 w-4 animate-[spin_1.4s_linear_infinite] text-[#EA1952]" />
                   <p
@@ -565,19 +584,20 @@ export default function AIInsightsPanel({
                     Thinking...
                   </p>
                 </div>
-              ) : error ? (
-                <p className="text-sm text-red-500">{error}</p>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <LoadingIcon className="h-4 w-4 animate-[spin_1.4s_linear_infinite] text-[#EA1952]" />
-                  <p className="text-sm text-slate-500">Initializing...</p>
-                </div>
               )}
             </div>
           )}
 
           {!isLoaderVisible && insights && (
-            <div className="mt-3 flex flex-col gap-y-6">
+            <div
+              className="mt-3 flex flex-col gap-y-6 transition-all duration-[1200ms] ease-out"
+              style={{
+                opacity: contentVisible ? 1 : 0,
+                transform: contentVisible
+                  ? "translateY(0)"
+                  : "translateY(12px)",
+              }}
+            >
               <TitleCard headline={titleCardHeadline} />
 
               <section className="space-y-3">
@@ -657,7 +677,7 @@ export default function AIInsightsPanel({
           )}
         </div>
 
-        <div className="mt-6">
+        <div>
           <InsightsDisclaimerCard />
         </div>
       </article>
