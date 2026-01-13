@@ -229,7 +229,9 @@ function buildInsightsReport(
   lines.push("Intro:");
   lines.push(formatParagraphs(composition?.introParagraphs));
   lines.push("");
-  lines.push(`Growth Summary: ${composition?.growthSummary || "None provided."}`);
+  lines.push(
+    `Growth Summary: ${composition?.growthSummary || "None provided."}`
+  );
   lines.push("");
   lines.push("Category Performance Metrics:");
   lines.push(formatList(composition?.firstMetrics));
@@ -244,11 +246,15 @@ function buildInsightsReport(
   const trend = insights.trend;
   lines.push("Trend");
   lines.push(`Intro: ${trend?.intro || "None provided."}`);
-  lines.push(`Disruption Periods: ${trend?.disruptionParagraph || "None provided."}`);
+  lines.push(
+    `Disruption Periods: ${trend?.disruptionParagraph || "None provided."}`
+  );
   lines.push("Long-term Structural Trends:");
   lines.push(formatList(trend?.longTermTrends));
   lines.push("");
-  lines.push(`Emerging Patterns: ${trend?.emergingPattern || "None provided."}`);
+  lines.push(
+    `Emerging Patterns: ${trend?.emergingPattern || "None provided."}`
+  );
   lines.push("");
   lines.push("Recommendations:");
   lines.push(formatNumberedList(trend?.recommendations));
@@ -271,7 +277,9 @@ function buildInsightsReport(
   lines.push("Data Quality");
   lines.push(`Intro: ${dataQuality?.intro || "None provided."}`);
   lines.push("");
-  lines.push(`Missing Data Summary: ${dataQuality?.missingDataSummary || "None provided."}`);
+  lines.push(
+    `Missing Data Summary: ${dataQuality?.missingDataSummary || "None provided."}`
+  );
   lines.push("");
   lines.push("Missing Data Breakdown:");
   lines.push(formatList(dataQuality?.breakdown));
@@ -293,7 +301,9 @@ function buildInsightsReport(
   lines.push("Forecast");
   lines.push(`Intro: ${forecast?.intro || "None provided."}`);
   lines.push("");
-  lines.push(`Forecast Summary: ${forecast?.forecastSummary || "None provided."}`);
+  lines.push(
+    `Forecast Summary: ${forecast?.forecastSummary || "None provided."}`
+  );
   lines.push("");
   lines.push("Category Projections:");
   lines.push(formatList(forecast?.categoryProjections));
