@@ -186,8 +186,8 @@ export default function AIInsightsPanel({
   const [isFadingLoader, setIsFadingLoader] = useState(false);
   const [loaderOpacity, setLoaderOpacity] = useState(1);
   const [contentVisible, setContentVisible] = useState(false);
-  const LOADER_FADE_DURATION = 1000;
-  const CONTENT_REVEAL_DELAY = 250;
+  const LOADER_FADE_DURATION = 1400;
+  const CONTENT_REVEAL_DELAY = 450;
 
   useEffect(() => {
     if (!datasetUrl || manualInsights) return;
@@ -242,13 +242,13 @@ export default function AIInsightsPanel({
     } else {
       setIsFadingLoader(true);
       requestAnimationFrame(() => setLoaderOpacity(0));
+      contentTimer = window.setTimeout(() => {
+        setContentVisible(true);
+      }, CONTENT_REVEAL_DELAY);
       fadeTimer = window.setTimeout(() => {
         setIsLoaderVisible(false);
         setIsFadingLoader(false);
         setLoaderOpacity(1);
-        contentTimer = window.setTimeout(() => {
-          setContentVisible(true);
-        }, CONTENT_REVEAL_DELAY);
       }, LOADER_FADE_DURATION);
     }
 
@@ -391,7 +391,7 @@ export default function AIInsightsPanel({
                 <div
                   className="flex items-center gap-2"
                   style={{
-                    opacity: isFadingLoader ? 0 : 1,
+                    opacity: loaderOpacity,
                     transform: isFadingLoader
                       ? "translateY(-4px)"
                       : "translateY(0)",
