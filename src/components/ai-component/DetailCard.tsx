@@ -82,7 +82,7 @@ function formatNumberedList(items?: string[]) {
 function buildReportFilename(title?: string, variant?: DetailVariant) {
   const base = title?.trim()
     ? `${title}-${variant ?? "analysis-report"}`
-    : variant ?? "analysis-report";
+    : (variant ?? "analysis-report");
   const normalized = base
     .toLowerCase()
     .replace(/[^a-z0-9]+/gi, "-")
@@ -140,11 +140,15 @@ function buildDetailReportContent(
     const content = detailContent as TrendDetailContent;
     lines.push("Trend Summary");
     lines.push(`Intro: ${content.intro || "None provided."}`);
-    lines.push(`Disruption Periods: ${content.disruptionParagraph || "None provided."}`);
+    lines.push(
+      `Disruption Periods: ${content.disruptionParagraph || "None provided."}`
+    );
     lines.push("Long-term Structural Trends:");
     lines.push(formatList(content.longTermTrends));
     lines.push("");
-    lines.push(`Emerging Patterns: ${content.emergingPattern || "None provided."}`);
+    lines.push(
+      `Emerging Patterns: ${content.emergingPattern || "None provided."}`
+    );
     lines.push("");
     lines.push("Recommendations:");
     lines.push(formatNumberedList(content.recommendations));
@@ -171,7 +175,9 @@ function buildDetailReportContent(
     lines.push("Data Quality Summary");
     lines.push(`Intro: ${content.intro || "None provided."}`);
     lines.push("");
-    lines.push(`Missing Data Summary: ${content.missingDataSummary || "None provided."}`);
+    lines.push(
+      `Missing Data Summary: ${content.missingDataSummary || "None provided."}`
+    );
     lines.push("");
     lines.push("Missing Data Breakdown:");
     lines.push(formatList(content.breakdown));
@@ -195,7 +201,9 @@ function buildDetailReportContent(
     lines.push("Forecast Summary");
     lines.push(`Intro: ${content.intro || "None provided."}`);
     lines.push("");
-    lines.push(`Forecast Summary: ${content.forecastSummary || "None provided."}`);
+    lines.push(
+      `Forecast Summary: ${content.forecastSummary || "None provided."}`
+    );
     lines.push("");
     lines.push("Category Projections:");
     lines.push(formatList(content.categoryProjections));
@@ -381,7 +389,7 @@ function CompositionDetail({
           </div>
         </div>
 
-        {CTA_SECTION}
+        {CTA_SECTION(onDownload)}
       </div>
     </article>
   );
