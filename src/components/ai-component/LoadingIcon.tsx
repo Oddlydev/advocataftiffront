@@ -4,7 +4,7 @@ type LoadingIconProps = {
   className?: string;
 };
 
-const PETALS = 12;
+const PETALS = 10;
 const RADIUS = 6.5;
 
 export default function LoadingIcon({ className = "" }: LoadingIconProps) {
