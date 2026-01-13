@@ -677,9 +677,11 @@ export default function AIInsightsPanel({
           )}
         </div>
 
-        <div>
-          <InsightsDisclaimerCard />
-        </div>
+        {insights && contentVisible && (
+          <div>
+            <InsightsDisclaimerCard />
+          </div>
+        )}
       </article>
     </div>
   );
