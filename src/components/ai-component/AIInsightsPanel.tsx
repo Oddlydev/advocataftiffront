@@ -184,6 +184,7 @@ export default function AIInsightsPanel({
   const [error, setError] = useState<string | null>(null);
   const [isLoaderVisible, setIsLoaderVisible] = useState(true);
   const [isFadingLoader, setIsFadingLoader] = useState(false);
+  const [loaderOpacity, setLoaderOpacity] = useState(1);
   const LOADER_FADE_DURATION = 1000;
 
   useEffect(() => {
@@ -233,11 +234,14 @@ export default function AIInsightsPanel({
     if (shouldShowLoaderContent) {
       setIsLoaderVisible(true);
       setIsFadingLoader(false);
+      setLoaderOpacity(1);
     } else {
       setIsFadingLoader(true);
+      requestAnimationFrame(() => setLoaderOpacity(0));
       fadeTimer = window.setTimeout(() => {
         setIsLoaderVisible(false);
         setIsFadingLoader(false);
+        setLoaderOpacity(1);
       }, LOADER_FADE_DURATION);
     }
 
@@ -366,10 +370,8 @@ export default function AIInsightsPanel({
         <div className="relative min-h-[16rem]">
           {isLoaderVisible && (
             <div
-              className={`absolute inset-0 flex items-center justify-center transition-opacity duration-[1000ms] ease-out ${
-                isFadingLoader ? "opacity-0" : "opacity-100"
-              }`}
-              style={{ pointerEvents: "none" }}
+              className="absolute inset-0 flex items-center justify-center transition-opacity duration-[1000ms] ease-out"
+              style={{ pointerEvents: "none", opacity: loaderOpacity }}
             >
               {loading ? (
                 <div
