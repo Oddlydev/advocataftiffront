@@ -162,7 +162,173 @@ export type MoreInsightDetail = {
 
 export type AIInsightsResponse = DetailContentMap & {
   moreInsights?: MoreInsightDetail[];
+  takeaways?: string[];
+  methodology?: string;
 };
+
+function formatList(items?: string[], prefix = "- ") {
+  if (!items || items.length === 0) {
+    return "None provided.";
+  }
+  return items.map((item) => `${prefix}${item}`).join("\n");
+}
+
+function formatNumberedList(items?: string[]) {
+  if (!items || items.length === 0) {
+    return "None provided.";
+  }
+  return items.map((item, index) => `${index + 1}. ${item}`).join("\n");
+}
+
+function formatParagraphs(items?: string[]) {
+  if (!items || items.length === 0) {
+    return "None provided.";
+  }
+  return items.join("\n");
+}
+
+function formatKeyInsights(insights?: AIInsightsResponse["keyInsights"]) {
+  if (!insights || insights.length === 0) {
+    return "None provided.";
+  }
+  return insights
+    .map(
+      (insight, index) =>
+        `${index + 1}. ${insight.title}: ${insight.content} (Confidence: ${insight.confidence})`
+    )
+    .join("\n");
+}
+
+function buildInsightsReport(
+  insights: AIInsightsResponse,
+  title?: string
+): string {
+  const reportTitle = title?.trim()
+    ? `${title} - Full Analysis Report`
+    : "Full Analysis Report";
+  const lines: string[] = [];
+
+  lines.push(reportTitle);
+  lines.push("=".repeat(reportTitle.length));
+  lines.push("");
+
+  lines.push("Key Insights");
+  lines.push(formatKeyInsights(insights.keyInsights));
+  lines.push("");
+
+  lines.push("Key Takeaways");
+  lines.push(formatList(insights.takeaways));
+  lines.push("");
+
+  lines.push("Methodology");
+  lines.push(insights.methodology?.trim() || "None provided.");
+  lines.push("");
+
+  const composition = insights.composition;
+  lines.push("Composition");
+  lines.push("Intro:");
+  lines.push(formatParagraphs(composition?.introParagraphs));
+  lines.push("");
+  lines.push(`Growth Summary: ${composition?.growthSummary || "None provided."}`);
+  lines.push("");
+  lines.push("Category Performance Metrics:");
+  lines.push(formatList(composition?.firstMetrics));
+  lines.push("");
+  lines.push("Data Quality and Trend Insights:");
+  lines.push(formatList(composition?.secondMetrics));
+  lines.push("");
+  lines.push("Recommendations:");
+  lines.push(formatNumberedList(composition?.recommendations));
+  lines.push("");
+
+  const trend = insights.trend;
+  lines.push("Trend");
+  lines.push(`Intro: ${trend?.intro || "None provided."}`);
+  lines.push(`Disruption Periods: ${trend?.disruptionParagraph || "None provided."}`);
+  lines.push("Long-term Structural Trends:");
+  lines.push(formatList(trend?.longTermTrends));
+  lines.push("");
+  lines.push(`Emerging Patterns: ${trend?.emergingPattern || "None provided."}`);
+  lines.push("");
+  lines.push("Recommendations:");
+  lines.push(formatNumberedList(trend?.recommendations));
+  lines.push("");
+
+  const ranking = insights.ranking;
+  lines.push("Ranking");
+  lines.push(`Intro: ${ranking?.intro || "None provided."}`);
+  lines.push("Stability Ranking:");
+  lines.push(formatList(ranking?.stabilityRanking));
+  lines.push("");
+  lines.push("Reference Links:");
+  lines.push(formatList(ranking?.linkTexts));
+  lines.push("");
+  lines.push("Recommendations:");
+  lines.push(formatNumberedList(ranking?.recommendations));
+  lines.push("");
+
+  const dataQuality = insights.dataQuality;
+  lines.push("Data Quality");
+  lines.push(`Intro: ${dataQuality?.intro || "None provided."}`);
+  lines.push("");
+  lines.push(`Missing Data Summary: ${dataQuality?.missingDataSummary || "None provided."}`);
+  lines.push("");
+  lines.push("Missing Data Breakdown:");
+  lines.push(formatList(dataQuality?.breakdown));
+  lines.push("");
+  lines.push("Missing Data Timeline:");
+  lines.push(formatList(dataQuality?.timeline));
+  lines.push("");
+  lines.push("Outliers and Anomalies:");
+  lines.push(formatList(dataQuality?.outliers));
+  lines.push("");
+  lines.push("Data Consistency Checks:");
+  lines.push(formatList(dataQuality?.checks));
+  lines.push("");
+  lines.push("Recommendations:");
+  lines.push(formatNumberedList(dataQuality?.recommendations));
+  lines.push("");
+
+  const forecast = insights.forecast;
+  lines.push("Forecast");
+  lines.push(`Intro: ${forecast?.intro || "None provided."}`);
+  lines.push("");
+  lines.push(`Forecast Summary: ${forecast?.forecastSummary || "None provided."}`);
+  lines.push("");
+  lines.push("Category Projections:");
+  lines.push(formatList(forecast?.categoryProjections));
+  lines.push("");
+  lines.push("Validation Notes:");
+  lines.push(formatList(forecast?.validationNotes));
+  lines.push("");
+  lines.push("Risk Factors:");
+  lines.push(formatList(forecast?.riskFactors));
+  lines.push("");
+  lines.push("Recommendations:");
+  lines.push(formatNumberedList(forecast?.recommendations));
+  lines.push("");
+
+  const dataset = insights.dataset;
+  lines.push("Dataset Enhancements");
+  lines.push(`Intro: ${dataset?.intro || "None provided."}`);
+  lines.push("");
+  lines.push("Enhancements:");
+  lines.push(formatList(dataset?.enhancements));
+  lines.push("");
+  lines.push("File Formats:");
+  lines.push(formatList(dataset?.fileFormats));
+  lines.push("");
+  lines.push("New Columns:");
+  lines.push(formatList(dataset?.newColumns));
+  lines.push("");
+  lines.push("Quality Assurance Checks:");
+  lines.push(formatList(dataset?.qaChecks));
+  lines.push("");
+  lines.push("Recommendations:");
+  lines.push(formatNumberedList(dataset?.recommendations));
+
+  return lines.join("\n");
+}
 
 export type AIInsightsPanelProps = {
   onClose?: () => void;
@@ -292,6 +458,10 @@ export default function AIInsightsPanel({
     insights?.moreInsights && insights.moreInsights.length > 0
       ? insights.moreInsights
       : defaultMoreInsights;
+
+  const reportContent = insights
+    ? buildInsightsReport(insights, titleCardHeadline)
+    : null;
 
   return (
     <div className="flex w-full flex-col gap-3">
@@ -475,6 +645,10 @@ export default function AIInsightsPanel({
                       description={insight.description}
                       detailVariant={insight.detailVariant}
                       detailContent={insight.detailContent!}
+                      takeaways={insights?.takeaways}
+                      methodology={insights?.methodology}
+                      reportContent={reportContent}
+                      reportTitle={titleCardHeadline}
                     />
                   ))}
                 </div>

@@ -228,6 +228,8 @@ Now produce a valid JSON object with the structure below that reflects those sum
       "confidence": "High/Medium/Low (Percentage)"
     }
   ],
+  "takeaways": ["Takeaway 1", "Takeaway 2", "Takeaway 3"],
+  "methodology": "1-2 sentence summary of the analytical approach used.",
   "composition": {
     "introParagraphs": ["Paragraph 1", "Paragraph 2"],
     "growthSummary": "Summary of growth",
@@ -282,6 +284,7 @@ Please also include a top-level "moreInsights" array with 4-6 entries. Each entr
   - detailContent: the detail payload that matches that variant
 
 Ensure this array reflects the generated insights so the UI can render cards with matching detail content.
+Use "takeaways" to provide 3-5 concise bullets summarizing the most important insights, and "methodology" to describe the analysis approach in a short paragraph.
 
 Ensure the JSON reflects the sequential summaries, even if some rows were indirectly covered. Always include the full schema shown above.
 

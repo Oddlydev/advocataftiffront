@@ -3,13 +3,18 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import LoadingIcon from "./LoadingIcon";
 
+const defaultMethodology = "Analysis performed using descriptive statistics, variance analysis, and correlation matrices. All figures are inflation-adjusted to 2024 prices using the Consumer Price Index (CPI) provided by the Reserve Bank of India.";
+
 type MethodologyCardProps = {
   autoOpen?: boolean;
+  methodology?: string;
 };
 
 export default function MethodologyCard({
   autoOpen = false,
+  methodology,
 }: MethodologyCardProps) {
+  const methodologyText = methodology?.trim() ? methodology : defaultMethodology;
   const [state, setState] = useState<"idle" | "analyzing" | "revealed">("idle");
   const delayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [contentVisible, setContentVisible] = useState(false);
@@ -109,10 +114,7 @@ export default function MethodologyCard({
                     ...animationStyle(0.22),
                   }}
                 >
-                  Analysis performed using descriptive statistics, variance
-                  analysis, and correlation matrices. All figures are
-                  inflation-adjusted to 2024 prices using the Consumer Price
-                  Index (CPI) provided by the Reserve Bank of India.
+                  {methodologyText}
                 </p>
               </div>
             </div>
@@ -122,3 +124,5 @@ export default function MethodologyCard({
     </article>
   );
 }
+
+

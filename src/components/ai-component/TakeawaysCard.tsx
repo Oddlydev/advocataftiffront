@@ -1,22 +1,26 @@
-﻿"use client";
+"use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import LoadingIcon from "./LoadingIcon";
 import ListBulletItem from "./ListBulletItem";
 
-const takeawayPoints = [
+const defaultTakeawayPoints = [
   "Average annual growth: Food (5.8%), Housing (4.2%), Alcohol & Tobacco (12.3%).",
-  "Volatility index: Highest in Recreation & Culture (σ=18.2%), lowest in Education (σ=4.1%).",
+  "Volatility index: Highest in Recreation & Culture (s=18.2%), lowest in Education (s=4.1%).",
   "Missing data: 15% of cells across years 2002-2006 require attention.",
 ];
 
 type TakeawaysCardProps = {
   autoOpen?: boolean;
+  takeaways?: string[];
 };
 
 export default function TakeawaysCard({
   autoOpen = false,
+  takeaways,
 }: TakeawaysCardProps) {
+  const takeawayPoints =
+    takeaways && takeaways.length > 0 ? takeaways : defaultTakeawayPoints;
   const [state, setState] = useState<"idle" | "analyzing" | "revealed">("idle");
   const delayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [contentVisible, setContentVisible] = useState(false);
@@ -131,3 +135,5 @@ export default function TakeawaysCard({
     </article>
   );
 }
+
+

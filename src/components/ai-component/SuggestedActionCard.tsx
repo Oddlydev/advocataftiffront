@@ -11,6 +11,10 @@ type SuggestedActionCardProps = {
   description?: string;
   detailVariant?: DetailVariant;
   detailContent?: DetailContentMap[DetailVariant];
+  takeaways?: string[];
+  methodology?: string;
+  reportContent?: string | null;
+  reportTitle?: string;
 };
 
 type FlowState = "idle" | "thinking" | "revealing" | "detail";
@@ -21,6 +25,10 @@ export default function SuggestedActionCard({
   description = "Get mean, median, growth rates & volatility for all 12 categories",
   detailVariant,
   detailContent,
+  takeaways,
+  methodology,
+  reportContent,
+  reportTitle,
 }: SuggestedActionCardProps) {
   const [active, setActive] = useState(false);
 
@@ -192,6 +200,10 @@ export default function SuggestedActionCard({
                     <DetailCard
                       variant={resolvedVariant}
                       detailContent={detailContent}
+                      takeaways={takeaways}
+                      methodology={methodology}
+                      reportContent={reportContent ?? undefined}
+                      reportTitle={reportTitle}
                     />
                   ) : null}
                 </div>

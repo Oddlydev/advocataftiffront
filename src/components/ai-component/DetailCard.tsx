@@ -18,11 +18,12 @@ import type {
 
 export type { DetailVariant } from "./detailContent.types";
 
-const CTA_SECTION = (
+const CTA_SECTION = (onDownload: () => void) => (
   <div className="mt-5 border-t border-slate-200 pt-3.5">
     <button
       type="button"
       className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#EA1952] to-[#AA1E58] p-2.5 text-xs font-semibold text-white shadow"
+      onClick={onDownload}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -64,14 +65,209 @@ const CTA_SECTION = (
   </div>
 );
 
-function DetailRevealLinks() {
+function formatList(items?: string[], prefix = "- ") {
+  if (!items || items.length === 0) {
+    return "None provided.";
+  }
+  return items.map((item) => `${prefix}${item}`).join("\n");
+}
+
+function formatNumberedList(items?: string[]) {
+  if (!items || items.length === 0) {
+    return "None provided.";
+  }
+  return items.map((item, index) => `${index + 1}. ${item}`).join("\n");
+}
+
+function buildReportFilename(title?: string, variant?: DetailVariant) {
+  const base = title?.trim()
+    ? `${title}-${variant ?? "analysis-report"}`
+    : variant ?? "analysis-report";
+  const normalized = base
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/gi, "-")
+    .replace(/^-+|-+$/g, "");
+  return `${normalized || "analysis-report"}.txt`;
+}
+
+function buildDetailReportContent(
+  variant: DetailVariant,
+  detailContent: DetailContentMap[DetailVariant],
+  takeaways?: string[],
+  methodology?: string,
+  reportTitle?: string
+) {
+  const header = reportTitle?.trim()
+    ? `${reportTitle} - ${variant} analysis`
+    : `${variant} analysis`;
+  const lines: string[] = [];
+
+  lines.push(header);
+  lines.push("=".repeat(header.length));
+  lines.push("");
+
+  if (takeaways && takeaways.length > 0) {
+    lines.push("Key Takeaways");
+    lines.push(formatList(takeaways));
+    lines.push("");
+  }
+
+  if (methodology?.trim()) {
+    lines.push("Methodology");
+    lines.push(methodology.trim());
+    lines.push("");
+  }
+
+  if (variant === "composition") {
+    const content = detailContent as CompositionDetailContent;
+    lines.push("Composition Summary");
+    lines.push(formatList(content.introParagraphs, ""));
+    lines.push("");
+    lines.push(`Growth Summary: ${content.growthSummary || "None provided."}`);
+    lines.push("");
+    lines.push("Category Performance Metrics:");
+    lines.push(formatList(content.firstMetrics));
+    lines.push("");
+    lines.push("Data Quality and Trend Insights:");
+    lines.push(formatList(content.secondMetrics));
+    lines.push("");
+    lines.push("Recommendations:");
+    lines.push(formatNumberedList(content.recommendations));
+    return lines.join("\n");
+  }
+
+  if (variant === "trend") {
+    const content = detailContent as TrendDetailContent;
+    lines.push("Trend Summary");
+    lines.push(`Intro: ${content.intro || "None provided."}`);
+    lines.push(`Disruption Periods: ${content.disruptionParagraph || "None provided."}`);
+    lines.push("Long-term Structural Trends:");
+    lines.push(formatList(content.longTermTrends));
+    lines.push("");
+    lines.push(`Emerging Patterns: ${content.emergingPattern || "None provided."}`);
+    lines.push("");
+    lines.push("Recommendations:");
+    lines.push(formatNumberedList(content.recommendations));
+    return lines.join("\n");
+  }
+
+  if (variant === "ranking") {
+    const content = detailContent as RankingDetailContent;
+    lines.push("Ranking Summary");
+    lines.push(`Intro: ${content.intro || "None provided."}`);
+    lines.push("Stability Ranking:");
+    lines.push(formatList(content.stabilityRanking));
+    lines.push("");
+    lines.push("Reference Links:");
+    lines.push(formatList(content.linkTexts));
+    lines.push("");
+    lines.push("Recommendations:");
+    lines.push(formatNumberedList(content.recommendations));
+    return lines.join("\n");
+  }
+
+  if (variant === "dataQuality") {
+    const content = detailContent as DataQualityDetailContent;
+    lines.push("Data Quality Summary");
+    lines.push(`Intro: ${content.intro || "None provided."}`);
+    lines.push("");
+    lines.push(`Missing Data Summary: ${content.missingDataSummary || "None provided."}`);
+    lines.push("");
+    lines.push("Missing Data Breakdown:");
+    lines.push(formatList(content.breakdown));
+    lines.push("");
+    lines.push("Missing Data Timeline:");
+    lines.push(formatList(content.timeline));
+    lines.push("");
+    lines.push("Outliers and Anomalies:");
+    lines.push(formatList(content.outliers));
+    lines.push("");
+    lines.push("Data Consistency Checks:");
+    lines.push(formatList(content.checks));
+    lines.push("");
+    lines.push("Recommendations:");
+    lines.push(formatNumberedList(content.recommendations));
+    return lines.join("\n");
+  }
+
+  if (variant === "forecast") {
+    const content = detailContent as ForecastDetailContent;
+    lines.push("Forecast Summary");
+    lines.push(`Intro: ${content.intro || "None provided."}`);
+    lines.push("");
+    lines.push(`Forecast Summary: ${content.forecastSummary || "None provided."}`);
+    lines.push("");
+    lines.push("Category Projections:");
+    lines.push(formatList(content.categoryProjections));
+    lines.push("");
+    lines.push("Validation Notes:");
+    lines.push(formatList(content.validationNotes));
+    lines.push("");
+    lines.push("Risk Factors:");
+    lines.push(formatList(content.riskFactors));
+    lines.push("");
+    lines.push("Recommendations:");
+    lines.push(formatNumberedList(content.recommendations));
+    return lines.join("\n");
+  }
+
+  if (variant === "dataset") {
+    const content = detailContent as DatasetDetailContent;
+    lines.push("Dataset Summary");
+    lines.push(`Intro: ${content.intro || "None provided."}`);
+    lines.push("");
+    lines.push("Enhancements:");
+    lines.push(formatList(content.enhancements));
+    lines.push("");
+    lines.push("File Formats:");
+    lines.push(formatList(content.fileFormats));
+    lines.push("");
+    lines.push("New Columns:");
+    lines.push(formatList(content.newColumns));
+    lines.push("");
+    lines.push("Quality Assurance Checks:");
+    lines.push(formatList(content.qaChecks));
+    lines.push("");
+    lines.push("Recommendations:");
+    lines.push(formatNumberedList(content.recommendations));
+    return lines.join("\n");
+  }
+
+  return lines.join("\n");
+}
+
+function downloadTextFile(content: string, filename: string) {
+  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function DetailRevealLinks({
+  takeaways,
+  methodology,
+}: {
+  takeaways?: string[];
+  methodology?: string;
+}) {
   return (
     <div className="space-y-3.5">
-      <TakeawaysCard />
-      <MethodologyCard />
+      <TakeawaysCard takeaways={takeaways} />
+      <MethodologyCard methodology={methodology} />
     </div>
   );
 }
+
+type DetailSupportProps = {
+  takeaways?: string[];
+  methodology?: string;
+  onDownload: () => void;
+};
 
 const RankingLinkIcon = () => (
   <svg
@@ -106,7 +302,12 @@ const RankingLinkIcon = () => (
   </svg>
 );
 
-function CompositionDetail({ content }: { content: CompositionDetailContent }) {
+function CompositionDetail({
+  content,
+  takeaways,
+  methodology,
+  onDownload,
+}: { content: CompositionDetailContent } & DetailSupportProps) {
   const introParagraphs = Array.isArray(content.introParagraphs)
     ? content.introParagraphs
     : [];
@@ -186,7 +387,12 @@ function CompositionDetail({ content }: { content: CompositionDetailContent }) {
   );
 }
 
-function TrendDetail({ content }: { content: TrendDetailContent }) {
+function TrendDetail({
+  content,
+  takeaways,
+  methodology,
+  onDownload,
+}: { content: TrendDetailContent } & DetailSupportProps) {
   return (
     <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
@@ -224,7 +430,7 @@ function TrendDetail({ content }: { content: TrendDetailContent }) {
           </p>
         </div>
 
-        <DetailRevealLinks />
+        <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -242,13 +448,18 @@ function TrendDetail({ content }: { content: TrendDetailContent }) {
           </div>
         </div>
 
-        {CTA_SECTION}
+        {CTA_SECTION(onDownload)}
       </div>
     </article>
   );
 }
 
-function RankingDetail({ content }: { content: RankingDetailContent }) {
+function RankingDetail({
+  content,
+  takeaways,
+  methodology,
+  onDownload,
+}: { content: RankingDetailContent } & DetailSupportProps) {
   return (
     <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
@@ -276,7 +487,7 @@ function RankingDetail({ content }: { content: RankingDetailContent }) {
           ))}
         </div>
 
-        <TakeawaysCard />
+        <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -293,13 +504,18 @@ function RankingDetail({ content }: { content: RankingDetailContent }) {
           </div>
         </div>
 
-        {CTA_SECTION}
+        {CTA_SECTION(onDownload)}
       </div>
     </article>
   );
 }
 
-function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
+function DataQualityDetail({
+  content,
+  takeaways,
+  methodology,
+  onDownload,
+}: { content: DataQualityDetailContent } & DetailSupportProps) {
   return (
     <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
@@ -360,7 +576,7 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
           </div>
         </div>
 
-        <DetailRevealLinks />
+        <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -377,13 +593,18 @@ function DataQualityDetail({ content }: { content: DataQualityDetailContent }) {
           </div>
         </div>
 
-        {CTA_SECTION}
+        {CTA_SECTION(onDownload)}
       </div>
     </article>
   );
 }
 
-function ForecastDetail({ content }: { content: ForecastDetailContent }) {
+function ForecastDetail({
+  content,
+  takeaways,
+  methodology,
+  onDownload,
+}: { content: ForecastDetailContent } & DetailSupportProps) {
   return (
     <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
@@ -433,7 +654,7 @@ function ForecastDetail({ content }: { content: ForecastDetailContent }) {
           </div>
         </div>
 
-        <DetailRevealLinks />
+        <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -450,13 +671,18 @@ function ForecastDetail({ content }: { content: ForecastDetailContent }) {
           </div>
         </div>
 
-        {CTA_SECTION}
+        {CTA_SECTION(onDownload)}
       </div>
     </article>
   );
 }
 
-function DatasetDetail({ content }: { content: DatasetDetailContent }) {
+function DatasetDetail({
+  content,
+  takeaways,
+  methodology,
+  onDownload,
+}: { content: DatasetDetailContent } & DetailSupportProps) {
   return (
     <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
@@ -508,7 +734,7 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
           </div>
         </div>
 
-        <DetailRevealLinks />
+        <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -525,7 +751,7 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
           </div>
         </div>
 
-        {CTA_SECTION}
+        {CTA_SECTION(onDownload)}
       </div>
     </article>
   );
@@ -534,35 +760,97 @@ function DatasetDetail({ content }: { content: DatasetDetailContent }) {
 type DetailCardProps = {
   variant?: DetailVariant;
   detailContent: DetailContentMap[DetailVariant];
+  takeaways?: string[];
+  methodology?: string;
+  reportContent?: string;
+  reportTitle?: string;
 };
 
 export default function DetailCard({
   variant = "composition",
   detailContent,
+  takeaways,
+  methodology,
+  reportContent,
+  reportTitle,
 }: DetailCardProps) {
+  const handleDownload = () => {
+    const resolvedContent =
+      reportContent ??
+      buildDetailReportContent(
+        variant,
+        detailContent,
+        takeaways,
+        methodology,
+        reportTitle
+      );
+    if (!resolvedContent.trim()) return;
+
+    const filename = buildReportFilename(reportTitle, variant);
+    downloadTextFile(resolvedContent, filename);
+  };
+
   if (variant === "trend") {
-    return <TrendDetail content={detailContent as TrendDetailContent} />;
+    return (
+      <TrendDetail
+        content={detailContent as TrendDetailContent}
+        takeaways={takeaways}
+        methodology={methodology}
+        onDownload={handleDownload}
+      />
+    );
   }
 
   if (variant === "ranking") {
-    return <RankingDetail content={detailContent as RankingDetailContent} />;
+    return (
+      <RankingDetail
+        content={detailContent as RankingDetailContent}
+        takeaways={takeaways}
+        methodology={methodology}
+        onDownload={handleDownload}
+      />
+    );
   }
 
   if (variant === "dataQuality") {
     return (
-      <DataQualityDetail content={detailContent as DataQualityDetailContent} />
+      <DataQualityDetail
+        content={detailContent as DataQualityDetailContent}
+        takeaways={takeaways}
+        methodology={methodology}
+        onDownload={handleDownload}
+      />
     );
   }
 
   if (variant === "forecast") {
-    return <ForecastDetail content={detailContent as ForecastDetailContent} />;
+    return (
+      <ForecastDetail
+        content={detailContent as ForecastDetailContent}
+        takeaways={takeaways}
+        methodology={methodology}
+        onDownload={handleDownload}
+      />
+    );
   }
 
   if (variant === "dataset") {
-    return <DatasetDetail content={detailContent as DatasetDetailContent} />;
+    return (
+      <DatasetDetail
+        content={detailContent as DatasetDetailContent}
+        takeaways={takeaways}
+        methodology={methodology}
+        onDownload={handleDownload}
+      />
+    );
   }
 
   return (
-    <CompositionDetail content={detailContent as CompositionDetailContent} />
+    <CompositionDetail
+      content={detailContent as CompositionDetailContent}
+      takeaways={takeaways}
+      methodology={methodology}
+      onDownload={handleDownload}
+    />
   );
 }
