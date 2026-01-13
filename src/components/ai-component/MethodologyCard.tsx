@@ -76,7 +76,18 @@ export default function MethodologyCard({
         ) : state === "analyzing" ? (
           <div className="inline-flex items-center gap-1 text-xs font-semibold leading-4 font-[Montserrat]">
             <LoadingIcon />
-            <span className="text-slate-600">Analyzing...</span>
+            <span
+              style={{
+                background:
+                  "linear-gradient(90deg, var(--slate-500, #64748B) 0%, var(--slate-300, #CBD5E1) 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              Analyzing...
+            </span>
           </div>
         ) : null}
       </div>
