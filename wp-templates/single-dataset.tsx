@@ -204,10 +204,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const plainExcerpt = decodeHtmlEntities(
     rawExcerpt.replace(/<[^>]+>/g, "").trim()
   );
-  const heroParagraph =
-    plainExcerpt.length > 260
-      ? `${plainExcerpt.slice(0, 260).trimEnd()}...`
-      : plainExcerpt;
+  const heroParagraph = plainExcerpt;
 
   const downloadUrl =
     dataset.dataSetFields?.dataSetFile?.node?.mediaItemUrl ?? "";
