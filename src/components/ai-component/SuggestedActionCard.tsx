@@ -21,8 +21,8 @@ type FlowState = "idle" | "thinking" | "revealing" | "detail";
 
 export default function SuggestedActionCard({
   showDetailOnClick = false,
-  title = "Generate Summary Statistics Report",
-  description = "Get mean, median, growth rates & volatility for all 12 categories",
+  title,
+  description,
   detailVariant,
   detailContent,
   takeaways,
@@ -159,14 +159,14 @@ export default function SuggestedActionCard({
             }`}
             style={{ fontFamily: "Montserrat" }}
           >
-            {title}
+            {title ?? ""}
           </h3>
 
           <p
             className="text-xs leading-4 text-slate-600 tracking-normal"
             style={{ fontFamily: '"Source Code Pro"' }}
           >
-            {description}
+            {description ?? ""}
           </p>
         </div>
       </article>

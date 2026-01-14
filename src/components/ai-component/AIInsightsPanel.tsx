@@ -1,4 +1,13 @@
-import type { DetailContentMap, DetailVariant } from "./detailContent.types";
+import type {
+  CompositionDetailContent,
+  DataQualityDetailContent,
+  DatasetDetailContent,
+  DetailContentMap,
+  DetailVariant,
+  ForecastDetailContent,
+  RankingDetailContent,
+  TrendDetailContent,
+} from "./detailContent.types";
 import React, { useEffect, useState } from "react";
 
 import InsightsDisclaimerCard from "./InsightsDisclaimerCard";
@@ -168,28 +177,28 @@ export type AIInsightsResponse = DetailContentMap & {
 
 function formatList(items?: string[], prefix = "- ") {
   if (!items || items.length === 0) {
-    return "None provided.";
+    return "";
   }
   return items.map((item) => `${prefix}${item}`).join("\n");
 }
 
 function formatNumberedList(items?: string[]) {
   if (!items || items.length === 0) {
-    return "None provided.";
+    return "";
   }
   return items.map((item, index) => `${index + 1}. ${item}`).join("\n");
 }
 
 function formatParagraphs(items?: string[]) {
   if (!items || items.length === 0) {
-    return "None provided.";
+    return "";
   }
   return items.join("\n");
 }
 
 function formatKeyInsights(insights?: AIInsightsResponse["keyInsights"]) {
   if (!insights || insights.length === 0) {
-    return "None provided.";
+    return "";
   }
   return insights
     .map(
@@ -199,143 +208,337 @@ function formatKeyInsights(insights?: AIInsightsResponse["keyInsights"]) {
     .join("\n");
 }
 
-function buildInsightsReport(
+function appendDetailContent(
+  lines: string[],
+  variant: DetailVariant,
+  detailContent: DetailContentMap[DetailVariant]
+) {
+  if (variant === "composition") {
+    const content = detailContent as CompositionDetailContent;
+    const introParagraphs = formatParagraphs(content.introParagraphs);
+    if (introParagraphs) {
+      lines.push("Composition Summary");
+      lines.push(introParagraphs);
+      lines.push("");
+    }
+    if (content.growthSummary) {
+      lines.push("Growth Summary");
+      lines.push(content.growthSummary);
+      lines.push("");
+    }
+    const firstMetrics = formatList(content.firstMetrics);
+    if (firstMetrics) {
+      lines.push("Category Performance Metrics:");
+      lines.push(firstMetrics);
+      lines.push("");
+    }
+    const secondMetrics = formatList(content.secondMetrics);
+    if (secondMetrics) {
+      lines.push("Data Quality and Trend Insights:");
+      lines.push(secondMetrics);
+      lines.push("");
+    }
+    const recommendations = formatNumberedList(content.recommendations);
+    if (recommendations) {
+      lines.push("Recommendations:");
+      lines.push(recommendations);
+    }
+    return;
+  }
+
+  if (variant === "trend") {
+    const content = detailContent as TrendDetailContent;
+    let hasSection = false;
+    if (content.intro) {
+      lines.push("Trend Summary");
+      lines.push("Intro");
+      lines.push(content.intro);
+      lines.push("");
+      hasSection = true;
+    }
+    if (content.disruptionParagraph) {
+      if (!hasSection) {
+        lines.push("Trend Summary");
+        hasSection = true;
+      }
+      lines.push("Disruption Periods");
+      lines.push(content.disruptionParagraph);
+      lines.push("");
+    }
+    const longTermTrends = formatList(content.longTermTrends);
+    if (longTermTrends) {
+      if (!hasSection) {
+        lines.push("Trend Summary");
+        hasSection = true;
+      }
+      lines.push("Long-term Structural Trends:");
+      lines.push(longTermTrends);
+      lines.push("");
+    }
+    if (content.emergingPattern) {
+      if (!hasSection) {
+        lines.push("Trend Summary");
+        hasSection = true;
+      }
+      lines.push("Emerging Patterns");
+      lines.push(content.emergingPattern);
+      lines.push("");
+    }
+    const recommendations = formatNumberedList(content.recommendations);
+    if (recommendations) {
+      if (!hasSection) {
+        lines.push("Trend Summary");
+      }
+      lines.push("Recommendations:");
+      lines.push(recommendations);
+    }
+    return;
+  }
+
+  if (variant === "ranking") {
+    const content = detailContent as RankingDetailContent;
+    let hasSection = false;
+    if (content.intro) {
+      lines.push("Ranking Summary");
+      lines.push("Intro");
+      lines.push(content.intro);
+      lines.push("");
+      hasSection = true;
+    }
+    const stabilityRanking = formatList(content.stabilityRanking);
+    if (stabilityRanking) {
+      if (!hasSection) {
+        lines.push("Ranking Summary");
+        hasSection = true;
+      }
+      lines.push("Stability Ranking:");
+      lines.push(stabilityRanking);
+      lines.push("");
+    }
+    const linkTexts = formatList(content.linkTexts);
+    if (linkTexts) {
+      if (!hasSection) {
+        lines.push("Ranking Summary");
+        hasSection = true;
+      }
+      lines.push("Reference Links:");
+      lines.push(linkTexts);
+      lines.push("");
+    }
+    const recommendations = formatNumberedList(content.recommendations);
+    if (recommendations) {
+      if (!hasSection) {
+        lines.push("Ranking Summary");
+      }
+      lines.push("Recommendations:");
+      lines.push(recommendations);
+    }
+    return;
+  }
+
+  if (variant === "dataQuality") {
+    const content = detailContent as DataQualityDetailContent;
+    let hasSection = false;
+    if (content.intro) {
+      lines.push("Data Quality Summary");
+      lines.push("Intro");
+      lines.push(content.intro);
+      lines.push("");
+      hasSection = true;
+    }
+    if (content.missingDataSummary) {
+      if (!hasSection) {
+        lines.push("Data Quality Summary");
+        hasSection = true;
+      }
+      lines.push("Missing Data Summary");
+      lines.push(content.missingDataSummary);
+      lines.push("");
+    }
+    const breakdown = formatList(content.breakdown);
+    if (breakdown) {
+      if (!hasSection) {
+        lines.push("Data Quality Summary");
+        hasSection = true;
+      }
+      lines.push("Missing Data Breakdown:");
+      lines.push(breakdown);
+      lines.push("");
+    }
+    const timeline = formatList(content.timeline);
+    if (timeline) {
+      if (!hasSection) {
+        lines.push("Data Quality Summary");
+        hasSection = true;
+      }
+      lines.push("Missing Data Timeline:");
+      lines.push(timeline);
+      lines.push("");
+    }
+    const outliers = formatList(content.outliers);
+    if (outliers) {
+      if (!hasSection) {
+        lines.push("Data Quality Summary");
+        hasSection = true;
+      }
+      lines.push("Outliers and Anomalies:");
+      lines.push(outliers);
+      lines.push("");
+    }
+    const checks = formatList(content.checks);
+    if (checks) {
+      if (!hasSection) {
+        lines.push("Data Quality Summary");
+        hasSection = true;
+      }
+      lines.push("Data Consistency Checks:");
+      lines.push(checks);
+      lines.push("");
+    }
+    const recommendations = formatNumberedList(content.recommendations);
+    if (recommendations) {
+      if (!hasSection) {
+        lines.push("Data Quality Summary");
+      }
+      lines.push("Recommendations:");
+      lines.push(recommendations);
+    }
+    return;
+  }
+
+  if (variant === "forecast") {
+    const content = detailContent as ForecastDetailContent;
+    let hasSection = false;
+    if (content.intro) {
+      lines.push("Forecast Summary");
+      lines.push("Intro");
+      lines.push(content.intro);
+      lines.push("");
+      hasSection = true;
+    }
+    if (content.forecastSummary) {
+      if (!hasSection) {
+        lines.push("Forecast Summary");
+        hasSection = true;
+      }
+      lines.push("Forecast Summary");
+      lines.push(content.forecastSummary);
+      lines.push("");
+    }
+    const categoryProjections = formatList(content.categoryProjections);
+    if (categoryProjections) {
+      if (!hasSection) {
+        lines.push("Forecast Summary");
+        hasSection = true;
+      }
+      lines.push("Category Projections:");
+      lines.push(categoryProjections);
+      lines.push("");
+    }
+    const validationNotes = formatList(content.validationNotes);
+    if (validationNotes) {
+      if (!hasSection) {
+        lines.push("Forecast Summary");
+        hasSection = true;
+      }
+      lines.push("Validation Notes:");
+      lines.push(validationNotes);
+      lines.push("");
+    }
+    const riskFactors = formatList(content.riskFactors);
+    if (riskFactors) {
+      if (!hasSection) {
+        lines.push("Forecast Summary");
+        hasSection = true;
+      }
+      lines.push("Risk Factors:");
+      lines.push(riskFactors);
+      lines.push("");
+    }
+    const recommendations = formatNumberedList(content.recommendations);
+    if (recommendations) {
+      if (!hasSection) {
+        lines.push("Forecast Summary");
+      }
+      lines.push("Recommendations:");
+      lines.push(recommendations);
+    }
+    return;
+  }
+
+  if (variant === "dataset") {
+    const content = detailContent as DatasetDetailContent;
+    if (content.intro) {
+      lines.push(content.intro);
+      lines.push("");
+    }
+    const enhancements = formatList(content.enhancements);
+    if (enhancements) {
+      lines.push("Enhancements:");
+      lines.push(enhancements);
+      lines.push("");
+    }
+    const fileFormats = formatList(content.fileFormats);
+    if (fileFormats) {
+      lines.push("File Formats:");
+      lines.push(fileFormats);
+      lines.push("");
+    }
+    const newColumns = formatList(content.newColumns);
+    if (newColumns) {
+      lines.push("New Columns:");
+      lines.push(newColumns);
+      lines.push("");
+    }
+    const qaChecks = formatList(content.qaChecks);
+    if (qaChecks) {
+      lines.push("Quality Assurance Checks:");
+      lines.push(qaChecks);
+      lines.push("");
+    }
+    const recommendations = formatNumberedList(content.recommendations);
+    if (recommendations) {
+      lines.push("Recommendations:");
+      lines.push(recommendations);
+    }
+  }
+}
+
+function buildMoreInsightsDownloadReport(
   insights: AIInsightsResponse,
+  moreInsightsDetails: MoreInsightDetail[],
   title?: string
 ): string {
-  const reportTitle = title?.trim()
-    ? `${title} - Full Analysis Report`
-    : "Full Analysis Report";
   const lines: string[] = [];
 
-  lines.push(reportTitle);
-  lines.push("=".repeat(reportTitle.length));
-  lines.push("");
+  const reportTitle = title?.trim();
+  if (reportTitle) {
+    lines.push(reportTitle);
+    lines.push("=".repeat(reportTitle.length));
+    lines.push("");
+  }
 
-  lines.push("Key Insights");
-  lines.push(formatKeyInsights(insights.keyInsights));
-  lines.push("");
+  const keyInsights = formatKeyInsights(insights.keyInsights);
+  if (keyInsights) {
+    lines.push("Key Insights");
+    lines.push(keyInsights);
+    lines.push("");
+  }
 
-  lines.push("Key Takeaways");
-  lines.push(formatList(insights.takeaways));
-  lines.push("");
+  if (moreInsightsDetails.length > 0) {
+    lines.push("More Insights");
+    lines.push("");
+  }
 
-  lines.push("Methodology");
-  lines.push(insights.methodology?.trim() || "None provided.");
-  lines.push("");
-
-  const composition = insights.composition;
-  lines.push("Composition");
-  lines.push("Intro:");
-  lines.push(formatParagraphs(composition?.introParagraphs));
-  lines.push("");
-  lines.push(
-    `Growth Summary: ${composition?.growthSummary || "None provided."}`
-  );
-  lines.push("");
-  lines.push("Category Performance Metrics:");
-  lines.push(formatList(composition?.firstMetrics));
-  lines.push("");
-  lines.push("Data Quality and Trend Insights:");
-  lines.push(formatList(composition?.secondMetrics));
-  lines.push("");
-  lines.push("Recommendations:");
-  lines.push(formatNumberedList(composition?.recommendations));
-  lines.push("");
-
-  const trend = insights.trend;
-  lines.push("Trend");
-  lines.push(`Intro: ${trend?.intro || "None provided."}`);
-  lines.push(
-    `Disruption Periods: ${trend?.disruptionParagraph || "None provided."}`
-  );
-  lines.push("Long-term Structural Trends:");
-  lines.push(formatList(trend?.longTermTrends));
-  lines.push("");
-  lines.push(
-    `Emerging Patterns: ${trend?.emergingPattern || "None provided."}`
-  );
-  lines.push("");
-  lines.push("Recommendations:");
-  lines.push(formatNumberedList(trend?.recommendations));
-  lines.push("");
-
-  const ranking = insights.ranking;
-  lines.push("Ranking");
-  lines.push(`Intro: ${ranking?.intro || "None provided."}`);
-  lines.push("Stability Ranking:");
-  lines.push(formatList(ranking?.stabilityRanking));
-  lines.push("");
-  lines.push("Reference Links:");
-  lines.push(formatList(ranking?.linkTexts));
-  lines.push("");
-  lines.push("Recommendations:");
-  lines.push(formatNumberedList(ranking?.recommendations));
-  lines.push("");
-
-  const dataQuality = insights.dataQuality;
-  lines.push("Data Quality");
-  lines.push(`Intro: ${dataQuality?.intro || "None provided."}`);
-  lines.push("");
-  lines.push(
-    `Missing Data Summary: ${dataQuality?.missingDataSummary || "None provided."}`
-  );
-  lines.push("");
-  lines.push("Missing Data Breakdown:");
-  lines.push(formatList(dataQuality?.breakdown));
-  lines.push("");
-  lines.push("Missing Data Timeline:");
-  lines.push(formatList(dataQuality?.timeline));
-  lines.push("");
-  lines.push("Outliers and Anomalies:");
-  lines.push(formatList(dataQuality?.outliers));
-  lines.push("");
-  lines.push("Data Consistency Checks:");
-  lines.push(formatList(dataQuality?.checks));
-  lines.push("");
-  lines.push("Recommendations:");
-  lines.push(formatNumberedList(dataQuality?.recommendations));
-  lines.push("");
-
-  const forecast = insights.forecast;
-  lines.push("Forecast");
-  lines.push(`Intro: ${forecast?.intro || "None provided."}`);
-  lines.push("");
-  lines.push(
-    `Forecast Summary: ${forecast?.forecastSummary || "None provided."}`
-  );
-  lines.push("");
-  lines.push("Category Projections:");
-  lines.push(formatList(forecast?.categoryProjections));
-  lines.push("");
-  lines.push("Validation Notes:");
-  lines.push(formatList(forecast?.validationNotes));
-  lines.push("");
-  lines.push("Risk Factors:");
-  lines.push(formatList(forecast?.riskFactors));
-  lines.push("");
-  lines.push("Recommendations:");
-  lines.push(formatNumberedList(forecast?.recommendations));
-  lines.push("");
-
-  const dataset = insights.dataset;
-  lines.push("Dataset Enhancements");
-  lines.push(`Intro: ${dataset?.intro || "None provided."}`);
-  lines.push("");
-  lines.push("Enhancements:");
-  lines.push(formatList(dataset?.enhancements));
-  lines.push("");
-  lines.push("File Formats:");
-  lines.push(formatList(dataset?.fileFormats));
-  lines.push("");
-  lines.push("New Columns:");
-  lines.push(formatList(dataset?.newColumns));
-  lines.push("");
-  lines.push("Quality Assurance Checks:");
-  lines.push(formatList(dataset?.qaChecks));
-  lines.push("");
-  lines.push("Recommendations:");
-  lines.push(formatNumberedList(dataset?.recommendations));
+  moreInsightsDetails.forEach((insight, index) => {
+    const sectionTitle = `${index + 1}. ${insight.title}`;
+    lines.push(sectionTitle);
+    lines.push("-".repeat(sectionTitle.length));
+    if (insight.detailContent) {
+      appendDetailContent(lines, insight.detailVariant, insight.detailContent);
+    }
+    lines.push("");
+  });
 
   return lines.join("\n");
 }
@@ -434,55 +637,14 @@ export default function AIInsightsPanel({
     };
   }, [shouldShowLoaderContent]);
 
-  const defaultMoreInsights: MoreInsightDetail[] = [
-    {
-      title: "Generate Summary Statistics Report",
-      description:
-        "Get mean, median, growth rates & volatility for all 12 categories",
-      detailVariant: "composition",
-      detailContent: detailContentByVariant.composition,
-    },
-    {
-      title: "Visualize 26-Year Trend Lines",
-      description: "See spending patterns across all categories from 1998-2024",
-      detailVariant: "trend",
-      detailContent: detailContentByVariant.trend,
-    },
-    {
-      title: "Compare Category Performance Ranking",
-      description:
-        "Rank all 12 categories by total spending, growth & stability",
-      detailVariant: "ranking",
-      detailContent: detailContentByVariant.ranking,
-    },
-    {
-      title: "Identify & Flag Data Quality Issues",
-      description: "Detect missing values, outliers & anomalies in the dataset",
-      detailVariant: "dataQuality",
-      detailContent: detailContentByVariant.dataQuality,
-    },
-    {
-      title: "Project 2025-2027 Spending Patterns",
-      description:
-        "AI forecasts using time-series analysis on 26 years of data",
-      detailVariant: "forecast",
-      detailContent: detailContentByVariant.forecast,
-    },
-    {
-      title: "Export Analysis-Ready Dataset",
-      description: "Download cleaned CSV with calculated fields & corrections",
-      detailVariant: "dataset",
-      detailContent: detailContentByVariant.dataset,
-    },
-  ];
-
-  const moreInsightsDetails =
-    insights?.moreInsights && insights.moreInsights.length > 0
-      ? insights.moreInsights
-      : defaultMoreInsights;
+  const moreInsightsDetails = insights?.moreInsights ?? [];
 
   const reportContent = insights
-    ? buildInsightsReport(insights, titleCardHeadline)
+    ? buildMoreInsightsDownloadReport(
+        insights,
+        moreInsightsDetails,
+        titleCardHeadline
+      )
     : null;
 
   return (
@@ -667,9 +829,9 @@ export default function AIInsightsPanel({
                   </span>
                 </div>
                 <div className="space-y-2">
-                  {moreInsightsDetails.map((insight) => (
+                  {moreInsightsDetails.map((insight, index) => (
                     <SuggestedActionCard
-                      key={insight.title}
+                      key={`${insight.title ?? "insight"}-${index}`}
                       showDetailOnClick
                       title={insight.title}
                       description={insight.description}
@@ -688,7 +850,7 @@ export default function AIInsightsPanel({
         </div>
 
         {insights && contentVisible && (
-          <div>
+          <div className="mt-3">
             <InsightsDisclaimerCard />
           </div>
         )}
