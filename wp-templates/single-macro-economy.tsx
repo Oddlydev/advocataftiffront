@@ -1,3 +1,4 @@
+import { useRef, useState, useEffect } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import type { GetStaticPropsContext } from "next";
@@ -209,6 +210,35 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
     routeSlug !== (clientSwap?.macroEconomy?.slug ?? initialSlug) &&
     swapLoading;
 
+  // --------------------------------------------------------------------------------------
+  // FULLSCREEN LOGIC — FIXED
+  // --------------------------------------------------------------------------------------
+  const fullscreenRef = useRef<HTMLDivElement>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const enterFullscreen = () => {
+    const el = fullscreenRef.current;
+    if (el?.requestFullscreen) {
+      el.requestFullscreen();
+      setIsFullscreen(true);
+    }
+  };
+
+  const exitFullscreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+    setIsFullscreen(false);
+  };
+
+  useEffect(() => {
+    const handler = () => {
+      if (!document.fullscreenElement) setIsFullscreen(false);
+    };
+    document.addEventListener("fullscreenchange", handler);
+    return () => document.removeEventListener("fullscreenchange", handler);
+  }, []);
+
   return (
     <main>
       <SEO yoast={(macroEconomy as any)?.seo} title={displayTitle} />
@@ -231,248 +261,299 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
         ]}
       />
 
-      <div className="bg-white">
-        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-3.5 md:pb-7">
-          <MacroEconomySliderNav />
+      
+        <div className="bg-white">
+          <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-3.5 md:pb-7">
+            <MacroEconomySliderNav />
+          </div>
         </div>
-      </div>
-
-      <div className="bg-white pt-3.5 md:pt-5 xl:pt-6">
-        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-10 md:pb-20">
-          <div
-            key={remountKey}
-            className="border border-gray-200 rounded-xl py-6 px-5"
-          >
-            <div className="mb-10">
-              <h2 className="text-xl/snug md:text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
-                {chartDetails?.chartTitle}
-              </h2>
-              <p className="text-sm/5 md:text-base/6 font-baskervville font-normal text-slate-950">
-                {chartDetails?.chartSubtitle}
-              </p>
-            </div>
-
-            <div className="relative">
-              <div
-                className={`absolute z-20 -top-3 md:-top-6 lg:-top-3 right-4 md:right-10 flex gap-2 ${
-                  isSwapping ? "block" : "block"
-                }`}
-              >
-                <button
-                  id={controlIds.zoomInId}
-                  className="px-1.5 py-1 md:px-2.5 md:py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
-                >
-                  <svg
-                    className="size-2 md:size-auto"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="17"
-                    viewBox="0 0 16 17"
-                    fill="none"
-                  >
-                    <path
-                      d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
-                      stroke="#374151"
-                      strokeWidth="1.33333"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M13.9996 14.3335L11.0996 11.4335"
-                      stroke="#374151"
-                      strokeWidth="1.33333"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M7.33398 5.66681V9.66681"
-                      stroke="#374151"
-                      strokeWidth="1.33333"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M5.33398 7.66681H9.33398"
-                      stroke="#374151"
-                      strokeWidth="1.33333"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-                <button
-                  id={controlIds.zoomOutId}
-                  className="px-1.5 py-1 md:px-2.5 md:py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
-                >
-                  <svg
-                    className="size-2 md:size-auto"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="17"
-                    viewBox="0 0 16 17"
-                    fill="none"
-                  >
-                    <path
-                      d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
-                      stroke="#374151"
-                      strokeWidth="1.33333"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M13.9996 14.3335L11.0996 11.4335"
-                      stroke="#374151"
-                      strokeWidth="1.33333"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M5.33398 7.66681H9.33398"
-                      stroke="#374151"
-                      strokeWidth="1.33333"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-                <button
-                  id={controlIds.resetId}
-                  className="px-1.5 py-1 md:px-2.5 md:py-2 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-brand-white text-slate-700 font-semibold"
-                >
-                  <svg
-                    className="size-2 md:size-auto"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="17"
-                    viewBox="0 0 16 17"
-                    fill="none"
-                  >
-                    <path
-                      d="M2 8.3335C2 9.52018 2.35189 10.6802 3.01118 11.6669C3.67047 12.6536 4.60754 13.4226 5.7039 13.8768C6.80026 14.3309 8.00666 14.4497 9.17054 14.2182C10.3344 13.9867 11.4035 13.4153 12.2426 12.5761C13.0818 11.737 13.6532 10.6679 13.8847 9.50404C14.1162 8.34015 13.9974 7.13375 13.5433 6.0374C13.0892 4.94104 12.3201 4.00397 11.3334 3.34468C10.3467 2.68539 9.18669 2.3335 8 2.3335C6.32263 2.33981 4.71265 2.99431 3.50667 4.16016L2 5.66683"
-                      stroke="#374151"
-                      strokeWidth="1.33333"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M2 2.3335V5.66683H5.33333"
-                      stroke="#374151"
-                      strokeWidth="1.33333"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-              {isSwapping ? (
-                <div className="relative w-full h-[300px] md:h-[300px] xl:h-[500px]">
-                  <div className="animate-pulse w-full h-full bg-gray-100 rounded-lg" />
-                </div>
-              ) : datasetUrl ? (
-                <ChartComponent
-                  key={`${slug}:${datasetUrl}`}
-                  datasetUrl={datasetUrl}
-                  controlIds={controlIds}
-                />
-              ) : (
-                <div className="relative w-full h-[300px] md:h-[300px] xl:h-[500px] flex items-center justify-center text-sm font-sourcecodepro text-brand-1-700">
-                  {`Dataset for ${displayTitle} is unavailable.`}
+        
+        <div
+        ref={fullscreenRef}
+        className={`relative w-full  ${
+          isFullscreen ? "fixed inset-0 z-50 p-8 bg-black/70 rounded-lg" : ""
+        }`}>
+        <div className="bg-white pt-3.5 md:pt-5 xl:pt-6  rounded-lg">
+          <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-10 md:pb-20">
+            <div
+              key={remountKey}
+              className="border border-gray-200 rounded-xl py-6 px-5"
+            >
+              {/* Chart Title & Subtitle — show ONLY when NOT fullscreen */}
+              {!isFullscreen && (
+                <div className="mb-10">
+                  <h2 className="text-xl/snug md:text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
+                    {chartDetails?.chartTitle}
+                  </h2>
+                  <p className="text-sm/5 md:text-base/6 font-baskervville font-normal text-slate-950">
+                    {chartDetails?.chartSubtitle}
+                  </p>
                 </div>
               )}
-            </div>
+              
+              {/* Zoom Function */}
+              <div className="relative">
 
-            {config.legendItems && config.legendItems.length > 0 ? (
-              <div className="mb-2 mt-0">
-                <div className="grid md:flex items-center md:justify-center gap-2 md:gap-6">
-                  {config.legendItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`w-1.5 h-1.5 rounded-full inline-block ${
-                            item.indicatorClassName ?? ""
-                          }`}
-                          style={item.indicatorStyle}
-                        ></span>
+                {/* Zoom Buttons — visible ONLY in fullscreen */}
+                {isFullscreen && (
+                  <div
+                    className={`absolute z-20 -top-3 md:-top-6 lg:-top-3 right-4 md:right-10 flex gap-2 rounded-lg border border-gray-300 p-2.5 ${
+                      isSwapping ? "block" : "block"
+                    }`}
+                  >
+                    <button
+                      id={controlIds.zoomInId}
+                      className=""
+                    >
+                      <svg
+                        className="size-2 md:size-auto"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="17"
+                        viewBox="0 0 16 17"
+                        fill="none"
+                      >
+                        <path
+                          d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
+                          stroke="#4B5563"
+                          strokeWidth="1.33333"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M13.9996 14.3335L11.0996 11.4335"
+                          stroke="#4B5563"
+                          strokeWidth="1.33333"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M7.33398 5.66681V9.66681"
+                          stroke="#4B5563"
+                          strokeWidth="1.33333"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M5.33398 7.66681H9.33398"
+                          stroke="#4B5563"
+                          strokeWidth="1.33333"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                    <span className="text-xs font-medium font-sourcecodepro text-gray-600">
+                      100%
+                    </span>
+                    <button
+                      id={controlIds.zoomOutId}
+                      className=""
+                    >
+                      <svg
+                        className="size-2 md:size-auto"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="17"
+                        viewBox="0 0 16 17"
+                        fill="none"
+                      >
+                        <path
+                          d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
+                          stroke="#4B5563"
+                          strokeWidth="1.33333"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M13.9996 14.3335L11.0996 11.4335"
+                          stroke="#4B5563"
+                          strokeWidth="1.33333"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M5.33398 7.66681H9.33398"
+                          stroke="#4B5563"
+                          strokeWidth="1.33333"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      id={controlIds.resetId}
+                      className="border-l border-gray-400 pl-3.5"
+                    >
+                      <svg
+                        className="size-2 md:size-auto"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="17"
+                        viewBox="0 0 16 17"
+                        fill="none"
+                      >
+                        <path
+                          d="M2 8.3335C2 9.52018 2.35189 10.6802 3.01118 11.6669C3.67047 12.6536 4.60754 13.4226 5.7039 13.8768C6.80026 14.3309 8.00666 14.4497 9.17054 14.2182C10.3344 13.9867 11.4035 13.4153 12.2426 12.5761C13.0818 11.737 13.6532 10.6679 13.8847 9.50404C14.1162 8.34015 13.9974 7.13375 13.5433 6.0374C13.0892 4.94104 12.3201 4.00397 11.3334 3.34468C10.3467 2.68539 9.18669 2.3335 8 2.3335C6.32263 2.33981 4.71265 2.99431 3.50667 4.16016L2 5.66683"
+                          stroke="#4B5563"
+                          strokeWidth="1.33333"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M2 2.3335V5.66683H5.33333"
+                          stroke="#4B5563"
+                          strokeWidth="1.33333"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+
+                <div>
+                  <div className="absolute z-20 -top-3 md:-top-6 lg:-top-20 right-4 md:right-10 flex gap-2">
+                    {/* Fullscreen button */} 
+                    <button
+                      onClick={isFullscreen ? exitFullscreen : enterFullscreen}
+                      className="flex items-center px-1.5 py-1 md:px-4 md:py-3 bg-brand-1-900 rounded-md uppercase shadow-sm text-brand-white font-normal text-sm font-sourcecodepro"
+                      title={isFullscreen ? "Exit Full Screen" : "Full Screen"}
+                    >
+                      <div className="mr-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          
+                        >
+                          <path d="M15 5L5 15" stroke="#F1F2F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M15 8.33333V5H11.6666" stroke="#F1F2F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M5 11.6667V15H8.33333" stroke="#F1F2F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M5 5L15 15" stroke="#F1F2F2" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M5 8.33333V5H8.33333" stroke="#F1F2F2" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M15 11.6667V15H11.6666" stroke="#F1F2F2" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
                       </div>
-                      <span className="text-sm/tight md:text-base/6 font-normal font-baskervville text-slate-600">
-                        {item.label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : null}
 
-            <div
-              className={`mt-2 md:mt-6 xl:mt-10 ${isSwapping ? "opacity-50" : ""}`}
-            >
-              <div className="bg-gray-50 rounded-lg px-6 py-3.5">
-                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 xl:gap-26 text-xs/4 text-slate-600 font-sourcecodepro">
-                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
-                    <p>Data Source: {chartDetails?.dataSource}</p>
+                      {isFullscreen ? "Exit" : "Full Screen"}
+                    </button>
                   </div>
-                  {chartDetails?.chartLabel ? (
+                </div>
+
+                {isSwapping ? (
+                  <div className="relative w-full h-[300px] md:h-[300px] xl:h-[500px]">
+                    <div className="animate-pulse w-full h-full bg-gray-100 rounded-lg" />
+                  </div>
+                ) : datasetUrl ? (
+                  <ChartComponent
+                    key={`${slug}:${datasetUrl}`}
+                    datasetUrl={datasetUrl}
+                    controlIds={controlIds}
+                  />
+                ) : (
+                  <div className="relative w-full h-[300px] md:h-[300px] xl:h-[500px] flex items-center justify-center text-sm font-sourcecodepro text-brand-1-700">
+                    {`Dataset for ${displayTitle} is unavailable.`}
+                  </div>
+                )}
+              </div>
+
+              {config.legendItems && config.legendItems.length > 0 ? (
+                <div className="mb-2 mt-0">
+                  <div className="grid md:flex items-center md:justify-center gap-2 md:gap-6">
+                    {config.legendItems.map((item) => (
+                      <div key={item.label} className="flex items-center gap-2">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full inline-block ${
+                              item.indicatorClassName ?? ""
+                            }`}
+                            style={item.indicatorStyle}
+                          ></span>
+                        </div>
+                        <span className="text-sm/tight md:text-base/6 font-normal font-baskervville text-slate-600">
+                          {item.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              <div
+                className={`mt-2 md:mt-6 xl:mt-10 ${isSwapping ? "opacity-50" : ""}`}
+              >
+                <div className="bg-gray-50 rounded-lg px-6 py-3.5">
+                  <div className="grid grid-cols-1 md:flex md:justify-between gap-4 xl:gap-26 text-xs/4 text-slate-600 font-sourcecodepro">
                     <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
-                      <p>{chartDetails?.chartLabel}</p>
+                      <p>Data Source: {chartDetails?.dataSource}</p>
                     </div>
-                  ) : null}
+                    {chartDetails?.chartLabel ? (
+                      <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                        <p>{chartDetails?.chartLabel}</p>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+              {!isSwapping ? null : null}
+            </div>
+          </div>
+        </div>
+      </div>
+            
+      <div className="bg-white pb-20">
+          <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
+            <div className="border border-gray-200 bg-gray-50 rounded-xl">
+              <div className="px-6 py-7">
+                <div className="mb-5">
+                  <h5 className="text-2xl font-montserrat font-bold text-slate-950 mb-1.5">
+                    {/* {`Understanding ${displayTitle} Metrics`} */}
+                    Notes:
+                  </h5>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="border-b border-brand-1-100 pb-4 md:border-b-0 md:border-r md:pr-4">
+                    <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
+                      Definition and Statistical Concept
+                    </h3>
+                    <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
+                      {definitionHtml ? (
+                        <div
+                          className="text-slate-800 text-base/6 font-baskervville font-normal"
+                          dangerouslySetInnerHTML={{ __html: definitionHtml }}
+                        />
+                      ) : (
+                        <p className="text-slate-800 text-base/6 font-baskervville font-normal">
+                          Definition content will be added soon.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-6 md:mt-0">
+                    <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
+                      {/* Statistical Concept and Methodology */}
+                      Special Notes (if any)
+                    </h3>
+                    <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal break-words">
+                      {methodologyHtml ? (
+                        <div
+                          className="text-slate-800 text-base/6 font-baskervville font-normal break-words"
+                          dangerouslySetInnerHTML={{ __html: methodologyHtml }}
+                        />
+                      ) : (
+                        <p className="text-slate-800 text-base/6 font-baskervville font-normal break-words"></p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            {!isSwapping ? null : null}
           </div>
-        </div>
       </div>
 
-      <div className="bg-white pb-20">
-        <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
-          <div className="border border-gray-200 bg-gray-50 rounded-xl">
-            <div className="px-6 py-7">
-              <div className="mb-5">
-                <h5 className="text-2xl font-montserrat font-bold text-slate-950 mb-1.5">
-                  {/* {`Understanding ${displayTitle} Metrics`} */}
-                  Notes:
-                </h5>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="border-b border-brand-1-100 pb-4 md:border-b-0 md:border-r md:pr-4">
-                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
-                    Definition and Statistical Concept
-                  </h3>
-                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
-                    {definitionHtml ? (
-                      <div
-                        className="text-slate-800 text-base/6 font-baskervville font-normal"
-                        dangerouslySetInnerHTML={{ __html: definitionHtml }}
-                      />
-                    ) : (
-                      <p className="text-slate-800 text-base/6 font-baskervville font-normal">
-                        Definition content will be added soon.
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="mt-6 md:mt-0">
-                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3">
-                    {/* Statistical Concept and Methodology */}
-                    Special Notes (if any)
-                  </h3>
-                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal break-words">
-                    {methodologyHtml ? (
-                      <div
-                        className="text-slate-800 text-base/6 font-baskervville font-normal break-words"
-                        dangerouslySetInnerHTML={{ __html: methodologyHtml }}
-                      />
-                    ) : (
-                      <p className="text-slate-800 text-base/6 font-baskervville font-normal break-words"></p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </main>
   );
 };
