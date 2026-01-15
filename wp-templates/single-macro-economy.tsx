@@ -300,7 +300,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                         <button
                             onClick={isFullscreen ? exitFullscreen : enterFullscreen}
                             className="flex items-center px-2.5 py-2 md:px-4 md:py-3 bg-brand-1-900 rounded-md uppercase shadow-sm text-brand-white font-normal text-xs md:text-sm font-sourcecodepro"
-                            title={isFullscreen ? "Exit Full Screen" : "Full Screen"}
+                            // title={isFullscreen ? "Exit Full Screen" : "Full Screen"}
                           >
                             <div className="mr-2">
                               <svg
