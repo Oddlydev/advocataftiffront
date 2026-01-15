@@ -214,6 +214,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
   // FULLSCREEN LOGIC — FIXED
   // --------------------------------------------------------------------------------------
   const fullscreenRef = useRef<HTMLDivElement>(null);
+  const zoomLabelRef = useRef<HTMLSpanElement>(null); // ✅ ADD THIS
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const enterFullscreen = () => {
@@ -273,181 +274,201 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
         className={`relative w-full  ${
           isFullscreen ? "fixed inset-0 z-50 p-8 bg-black/70 rounded-lg" : ""
         }`}>
-        <div className="bg-white pt-3.5 md:pt-5 xl:pt-6  rounded-lg">
-          <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16 pb-10 md:pb-20">
+        <div className={`bg-white rounded-lg ${isFullscreen ? "pt-0" : "pt-3.5 md:pt-5 xl:pt-6"}`}>
+          <div className={`mx-auto ${isFullscreen ? "max-w-full p-0" : "mx-auto max-w-7xl px-5 md:px-10 pb-10 md:pb-20 xl:px-16"}`}>
             <div
               key={remountKey}
-              className="border border-gray-200 rounded-xl py-6 px-5"
+              className={`border border-gray-200 rounded-xl ${isFullscreen ? "py-6 px-0 pt-0 border-transparent" : "py-6 px-5"}`}
             >
               {/* Chart Title & Subtitle — show ONLY when NOT fullscreen */}
-              {!isFullscreen && (
-                <div className="mb-10">
-                  <h2 className="text-xl/snug md:text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
-                    {chartDetails?.chartTitle}
-                  </h2>
-                  <p className="text-sm/5 md:text-base/6 font-baskervville font-normal text-slate-950">
-                    {chartDetails?.chartSubtitle}
-                  </p>
+              <div className="md:flex justify-between items-center">
+               {!isFullscreen && (
+                  <div className="mb-4 md:mb-10 md:w-1/2 lg:w-3/4">
+                    <h2 className="text-xl/snug md:text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
+                      {chartDetails?.chartTitle}
+                    </h2>
+                    <p className="text-sm/5 md:text-base/6 font-baskervville font-normal text-slate-950">
+                      {chartDetails?.chartSubtitle}
+                    </p>
+                  </div>
+                )}
+                
+                <div>
+                    <div className="flex gap-2">
+                      {/* Fullscreen button */} 
+                      {!isFullscreen && (
+                        <button
+                            onClick={isFullscreen ? exitFullscreen : enterFullscreen}
+                            className="flex items-center px-2.5 py-2 md:px-4 md:py-3 bg-brand-1-900 rounded-md uppercase shadow-sm text-brand-white font-normal text-xs md:text-sm font-sourcecodepro"
+                            title={isFullscreen ? "Exit Full Screen" : "Full Screen"}
+                          >
+                            <div className="mr-2">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 20 20"
+                                fill="none"
+                                
+                              >
+                                <path d="M15 5L5 15" stroke="#F1F2F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M15 8.33333V5H11.6666" stroke="#F1F2F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M5 11.6667V15H8.33333" stroke="#F1F2F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M5 5L15 15" stroke="#F1F2F2" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M5 8.33333V5H8.33333" stroke="#F1F2F2" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M15 11.6667V15H11.6666" stroke="#F1F2F2" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </div>
+
+                            {isFullscreen ? "Exit" : "Full Screen"}
+                        </button>
+                      )}
+                    </div>
                 </div>
-              )}
+              </div>
               
               {/* Zoom Function */}
               <div className="relative">
 
                 {/* Zoom Buttons — visible ONLY in fullscreen */}
                 {isFullscreen && (
-                  <div
-                    className={`absolute z-20 -top-3 md:-top-6 lg:-top-3 right-4 md:right-10 flex gap-2 rounded-lg border border-gray-300 p-2.5 ${
-                      isSwapping ? "block" : "block"
-                    }`}
-                  >
-                    <button
-                      id={controlIds.zoomInId}
-                      className=""
-                    >
-                      <svg
-                        className="size-2 md:size-auto"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="17"
-                        viewBox="0 0 16 17"
-                        fill="none"
+                  <div className="bg-gray-100 rounded-t-lg py-4 px-8">
+                    <div className="md:flex justify-between items-center">
+                      <div className="flex items-center gap-4">
+                        {/* Exit full sreen button */}
+                        <span onClick={exitFullscreen} className="cursor-pointer">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15 5L5.00068 14.9993M14.9993 15L5 5.00071" stroke="#4B5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </span>
+                        <span className="pl-4 border-l border-gray-400 text-base
+                        text-gray-600 font-medium font-montserrat">National Debt - Full Screen Mode</span>
+                      </div>
+                      <div
+                        className={`inline-flex gap-2 rounded-lg border border-gray-300 p-2.5 ${
+                          isSwapping ? "block" : "block"
+                        }`}
                       >
-                        <path
-                          d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
-                          stroke="#4B5563"
-                          strokeWidth="1.33333"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M13.9996 14.3335L11.0996 11.4335"
-                          stroke="#4B5563"
-                          strokeWidth="1.33333"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M7.33398 5.66681V9.66681"
-                          stroke="#4B5563"
-                          strokeWidth="1.33333"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M5.33398 7.66681H9.33398"
-                          stroke="#4B5563"
-                          strokeWidth="1.33333"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                    <span className="text-xs font-medium font-sourcecodepro text-gray-600">
-                      100%
-                    </span>
-                    <button
-                      id={controlIds.zoomOutId}
-                      className=""
-                    >
-                      <svg
-                        className="size-2 md:size-auto"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="17"
-                        viewBox="0 0 16 17"
-                        fill="none"
-                      >
-                        <path
-                          d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
-                          stroke="#4B5563"
-                          strokeWidth="1.33333"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M13.9996 14.3335L11.0996 11.4335"
-                          stroke="#4B5563"
-                          strokeWidth="1.33333"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M5.33398 7.66681H9.33398"
-                          stroke="#4B5563"
-                          strokeWidth="1.33333"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      id={controlIds.resetId}
-                      className="border-l border-gray-400 pl-3.5"
-                    >
-                      <svg
-                        className="size-2 md:size-auto"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="17"
-                        viewBox="0 0 16 17"
-                        fill="none"
-                      >
-                        <path
-                          d="M2 8.3335C2 9.52018 2.35189 10.6802 3.01118 11.6669C3.67047 12.6536 4.60754 13.4226 5.7039 13.8768C6.80026 14.3309 8.00666 14.4497 9.17054 14.2182C10.3344 13.9867 11.4035 13.4153 12.2426 12.5761C13.0818 11.737 13.6532 10.6679 13.8847 9.50404C14.1162 8.34015 13.9974 7.13375 13.5433 6.0374C13.0892 4.94104 12.3201 4.00397 11.3334 3.34468C10.3467 2.68539 9.18669 2.3335 8 2.3335C6.32263 2.33981 4.71265 2.99431 3.50667 4.16016L2 5.66683"
-                          stroke="#4B5563"
-                          strokeWidth="1.33333"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M2 2.3335V5.66683H5.33333"
-                          stroke="#4B5563"
-                          strokeWidth="1.33333"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
+                        <button
+                          id={controlIds.zoomInId}
+                          className=""
+                        >
+                          <svg
+                            className="size-2 md:size-auto"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="17"
+                            viewBox="0 0 16 17"
+                            fill="none"
+                          >
+                            <path
+                              d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
+                              stroke="#4B5563"
+                              strokeWidth="1.33333"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M13.9996 14.3335L11.0996 11.4335"
+                              stroke="#4B5563"
+                              strokeWidth="1.33333"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M7.33398 5.66681V9.66681"
+                              stroke="#4B5563"
+                              strokeWidth="1.33333"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M5.33398 7.66681H9.33398"
+                              stroke="#4B5563"
+                              strokeWidth="1.33333"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                        <span className="text-xs font-medium font-sourcecodepro text-gray-600">
+                          {/* Dynamic Zoom Label */}
+                          <span ref={zoomLabelRef}>100%</span>
+                        </span>
+                        <button
+                          id={controlIds.zoomOutId}
+                          className=""
+                        >
+                          <svg
+                            className="size-2 md:size-auto"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="17"
+                            viewBox="0 0 16 17"
+                            fill="none"
+                          >
+                            <path
+                              d="M7.33333 13.0002C10.2789 13.0002 12.6667 10.6123 12.6667 7.66683C12.6667 4.72131 10.2789 2.3335 7.33333 2.3335C4.38781 2.3335 2 4.72131 2 7.66683C2 10.6123 4.38781 13.0002 7.33333 13.0002Z"
+                              stroke="#4B5563"
+                              strokeWidth="1.33333"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M13.9996 14.3335L11.0996 11.4335"
+                              stroke="#4B5563"
+                              strokeWidth="1.33333"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M5.33398 7.66681H9.33398"
+                              stroke="#4B5563"
+                              strokeWidth="1.33333"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          id={controlIds.resetId}
+                          className="border-l border-gray-400 pl-3.5"
+                        >
+                          <svg
+                            className="size-2 md:size-auto"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="17"
+                            viewBox="0 0 16 17"
+                            fill="none"
+                          >
+                            <path
+                              d="M2 8.3335C2 9.52018 2.35189 10.6802 3.01118 11.6669C3.67047 12.6536 4.60754 13.4226 5.7039 13.8768C6.80026 14.3309 8.00666 14.4497 9.17054 14.2182C10.3344 13.9867 11.4035 13.4153 12.2426 12.5761C13.0818 11.737 13.6532 10.6679 13.8847 9.50404C14.1162 8.34015 13.9974 7.13375 13.5433 6.0374C13.0892 4.94104 12.3201 4.00397 11.3334 3.34468C10.3467 2.68539 9.18669 2.3335 8 2.3335C6.32263 2.33981 4.71265 2.99431 3.50667 4.16016L2 5.66683"
+                              stroke="#4B5563"
+                              strokeWidth="1.33333"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M2 2.3335V5.66683H5.33333"
+                              stroke="#4B5563"
+                              strokeWidth="1.33333"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
-
-                <div>
-                  <div className="absolute z-20 -top-3 md:-top-6 lg:-top-20 right-4 md:right-10 flex gap-2">
-                    {/* Fullscreen button */} 
-                    <button
-                      onClick={isFullscreen ? exitFullscreen : enterFullscreen}
-                      className="flex items-center px-1.5 py-1 md:px-4 md:py-3 bg-brand-1-900 rounded-md uppercase shadow-sm text-brand-white font-normal text-sm font-sourcecodepro"
-                      title={isFullscreen ? "Exit Full Screen" : "Full Screen"}
-                    >
-                      <div className="mr-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          
-                        >
-                          <path d="M15 5L5 15" stroke="#F1F2F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                          <path d="M15 8.33333V5H11.6666" stroke="#F1F2F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                          <path d="M5 11.6667V15H8.33333" stroke="#F1F2F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                          <path d="M5 5L15 15" stroke="#F1F2F2" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
-                          <path d="M5 8.33333V5H8.33333" stroke="#F1F2F2" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
-                          <path d="M15 11.6667V15H11.6666" stroke="#F1F2F2" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </div>
-
-                      {isFullscreen ? "Exit" : "Full Screen"}
-                    </button>
-                  </div>
-                </div>
 
                 {isSwapping ? (
                   <div className="relative w-full h-[300px] md:h-[300px] xl:h-[500px]">
                     <div className="animate-pulse w-full h-full bg-gray-100 rounded-lg" />
                   </div>
                 ) : datasetUrl ? (
+                  
                   <ChartComponent
                     key={`${slug}:${datasetUrl}`}
                     datasetUrl={datasetUrl}
@@ -502,7 +523,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
             </div>
           </div>
         </div>
-      </div>
+        </div>
             
       <div className="bg-white pb-20">
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">

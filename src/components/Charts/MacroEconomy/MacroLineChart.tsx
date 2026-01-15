@@ -46,6 +46,8 @@ export type MacroLineChartProps = {
     zoomInId: string;
     zoomOutId: string;
     resetId: string;
+    
+    zoomLabelRef?: React.RefObject<HTMLSpanElement>; // add this
   };
   yMaxPadding?: number;
   minY?: number;
@@ -115,6 +117,7 @@ export function MacroLineChart({
 }: MacroLineChartProps) {
   const chartRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const zoomLabelRef = useRef<HTMLSpanElement>(null); // ✅ Define ref here
   const [data, setData] = useState<MacroLineDatum[]>([]);
   const [axisLabels, setAxisLabels] = useState<{
     x?: string;
@@ -667,6 +670,13 @@ export function MacroLineChart({
           "transform",
           `translate(${MARGIN.left + horizontalBalance},${MARGIN.top + verticalBalance}) scale(${scale})`
         );
+        
+        // const zoomLabelRef = useRef<HTMLSpanElement>(null);
+
+        // Update zoom label dynamically
+        if (zoomLabelRef.current) {
+          zoomLabelRef.current.textContent = `${Math.round(scale * 100)}%`;
+        }
       });
 
     let zoomInCount = 0;
