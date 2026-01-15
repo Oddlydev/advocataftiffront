@@ -309,7 +309,6 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                                 height="20"
                                 viewBox="0 0 20 20"
                                 fill="none"
-                                
                               >
                                 <path d="M15 5L5 15" stroke="#F1F2F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                 <path d="M15 8.33333V5H11.6666" stroke="#F1F2F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
