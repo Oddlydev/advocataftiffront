@@ -342,7 +342,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                           </svg>
                         </span>
                         <span className="pl-4 border-l border-gray-400 text-base
-                        text-gray-600 font-medium font-montserrat">National Debt - Full Screen Mode</span>
+                        text-gray-600 font-medium font-montserrat">{chartDetails?.chartTitle} - Full Screen Mode</span>
                       </div>
                       <div
                         className={`inline-flex gap-2 rounded-lg border border-gray-300 p-2.5 ${
