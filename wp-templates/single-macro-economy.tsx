@@ -181,7 +181,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
   const chartDetails = macroEconomy?.macroChartDetailsSection;
 
   const ChartComponent = config.component;
-  const zoomLabelRef = useRef<HTMLSpanElement>(null);
+  const zoomLabelRef = useRef<HTMLSpanElement>(null!);
   const controlIds = {
     zoomInId: `macro-chart-${slug}-zoom-in`,
     zoomOutId: `macro-chart-${slug}-zoom-out`,
