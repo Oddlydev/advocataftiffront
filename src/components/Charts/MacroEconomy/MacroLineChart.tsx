@@ -117,7 +117,7 @@ export function MacroLineChart({
 }: MacroLineChartProps) {
   const chartRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
-  const zoomLabelRef = useRef<HTMLSpanElement>(null); // ✅ Define ref here
+  const internalZoomLabelRef = useRef<HTMLSpanElement>(null);
   const [data, setData] = useState<MacroLineDatum[]>([]);
   const [axisLabels, setAxisLabels] = useState<{
     x?: string;
@@ -650,6 +650,14 @@ export function MacroLineChart({
     const minScale = Math.min(initialScale, MIN_SCALE);
     const initialTransform = d3.zoomIdentity.scale(initialScale);
 
+    const zoomLabelTarget = controlIds.zoomLabelRef ?? internalZoomLabelRef;
+
+    const updateZoomLabel = (scale: number) => {
+      if (zoomLabelTarget.current) {
+        zoomLabelTarget.current.textContent = `${Math.round(scale * 100)}%`;
+      }
+    };
+
     const zoom = d3
       .zoom<SVGSVGElement, unknown>()
       .scaleExtent([minScale, MAX_SCALE])
@@ -671,12 +679,7 @@ export function MacroLineChart({
           `translate(${MARGIN.left + horizontalBalance},${MARGIN.top + verticalBalance}) scale(${scale})`
         );
         
-        // const zoomLabelRef = useRef<HTMLSpanElement>(null);
-
-        // Update zoom label dynamically
-        if (zoomLabelRef.current) {
-          zoomLabelRef.current.textContent = `${Math.round(scale * 100)}%`;
-        }
+        updateZoomLabel(scale);
       });
 
     let zoomInCount = 0;
@@ -696,6 +699,7 @@ export function MacroLineChart({
       .on("touchend.zoom", null);
 
     root.call(zoom.transform as any, initialTransform);
+    updateZoomLabel(initialScale);
 
     const zoomInSel = d3.select(
       `#${controlIds.zoomInId}`

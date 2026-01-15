@@ -39,6 +39,7 @@ export type MacroBarChartProps = {
     zoomInId: string;
     zoomOutId: string;
     resetId: string;
+    zoomLabelRef?: React.RefObject<HTMLSpanElement>;
   };
   yMaxPadding?: number;
   axisLabelsFromCsv?: boolean;
@@ -106,6 +107,7 @@ export function MacroBarChart({
 }: MacroBarChartProps) {
   const chartRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const internalZoomLabelRef = useRef<HTMLSpanElement>(null);
   const [data, setData] = useState<MacroBarDatum[]>([]);
   const [dynamicYAxisLabel, setDynamicYAxisLabel] =
     useState<string>(yAxisLabel);
@@ -421,11 +423,21 @@ export function MacroBarChart({
       .attr("height", (d) => (d.value != null ? Math.abs(y(d.value) - y(0)) : 0));
 
     /* -------- Zoom Controls -------- */
+    const zoomLabelTarget = controlIds.zoomLabelRef ?? internalZoomLabelRef;
     let currentScale = 1;
 
-    const zoomInBtn = document.getElementById(controlIds.zoomInId)!;
-    const zoomOutBtn = document.getElementById(controlIds.zoomOutId)!;
-    const resetBtn = document.getElementById(controlIds.resetId)!;
+    const zoomInBtn = document.getElementById(controlIds.zoomInId);
+    const zoomOutBtn = document.getElementById(controlIds.zoomOutId);
+    const resetBtn = document.getElementById(controlIds.resetId);
+    if (!zoomInBtn || !zoomOutBtn || !resetBtn) {
+      return;
+    }
+
+    const updateZoomLabel = () => {
+      if (zoomLabelTarget.current) {
+        zoomLabelTarget.current.textContent = `${Math.round(currentScale * 100)}%`;
+      }
+    };
 
     const applyZoom = () => {
       const midX = width / 2;
@@ -438,6 +450,7 @@ export function MacroBarChart({
           "transform",
           `translate(${MARGIN.left + tx},${MARGIN.top}) scale(${currentScale},1)`
         );
+      updateZoomLabel();
     };
 
     zoomInBtn.onclick = () => {
@@ -454,6 +467,8 @@ export function MacroBarChart({
       currentScale = 1;
       applyZoom();
     };
+
+    updateZoomLabel();
   }, [data, series, controlIds, dynamicYAxisLabel, yMaxPadding]);
 
   return (

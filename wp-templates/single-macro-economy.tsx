@@ -181,10 +181,12 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
   const chartDetails = macroEconomy?.macroChartDetailsSection;
 
   const ChartComponent = config.component;
+  const zoomLabelRef = useRef<HTMLSpanElement>(null);
   const controlIds = {
     zoomInId: `macro-chart-${slug}-zoom-in`,
     zoomOutId: `macro-chart-${slug}-zoom-out`,
     resetId: `macro-chart-${slug}-reset`,
+    zoomLabelRef,
   };
 
   const secondaryNavItems = [
@@ -214,7 +216,6 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
   // FULLSCREEN LOGIC — FIXED
   // --------------------------------------------------------------------------------------
   const fullscreenRef = useRef<HTMLDivElement>(null);
-  const zoomLabelRef = useRef<HTMLSpanElement>(null); // ✅ ADD THIS
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const enterFullscreen = () => {
@@ -361,7 +362,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                           </svg>
                         </button>
 
-                        <span className="text-xs font-medium font-sourcecodepro text-gray-600">
+                        <span className="text-sm md:text-base font-medium font-sourcecodepro text-gray-600">
                           {/* Dynamic Zoom Label */}
                           <span ref={zoomLabelRef}>100%</span>
                         </span>
