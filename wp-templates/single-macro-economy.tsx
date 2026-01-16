@@ -6,6 +6,7 @@ import SEO from "@/src/components/SEO";
 import SecondaryNav from "@/src/components/SecondaryNav";
 import HeroWhite from "@/src/components/HeroBlocks/HeroWhite";
 import MacroEconomySliderNav from "@/src/components/MacroEconomyNav";
+import PrimaryButton from "@/src/components/Buttons/PrimaryBtn";
 import type { ComponentType } from "react";
 import {
   MACRO_CHART_METADATA,
@@ -273,13 +274,13 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
         <div
         ref={fullscreenRef}
         className={`relative w-full  ${
-          isFullscreen ? "fixed inset-0 z-50 p-8 bg-black/70 rounded-lg" : ""
+          isFullscreen ? "inset-0 z-50 px-8 pt-12 bg-black/70 rounded-lg" : ""
         }`}>
         <div className={`bg-white rounded-lg ${isFullscreen ? "pt-0" : "pt-3.5 md:pt-5 xl:pt-6"}`}>
           <div className={`mx-auto ${isFullscreen ? "max-w-full p-0" : "mx-auto max-w-7xl px-5 md:px-10 pb-10 md:pb-20 xl:px-16"}`}>
             <div
               key={remountKey}
-              className={`border border-gray-200 rounded-xl ${isFullscreen ? "py-6 px-0 pt-0 border-transparent" : "py-6 px-5"}`}
+              className={`border border-gray-200 rounded-xl ${isFullscreen ? "py-6 px-0 pt-0 pb-0 border-transparent" : "py-6 px-5"}`}
             >
               {/* Chart Title & Subtitle — show ONLY when NOT fullscreen */}
               <div className="md:flex justify-between items-center">
@@ -298,12 +299,12 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                     <div className="flex gap-2">
                       {/* Fullscreen button */} 
                       {!isFullscreen && (
-                        <button
+                        <PrimaryButton
                             onClick={isFullscreen ? exitFullscreen : enterFullscreen}
-                            className="flex items-center px-2.5 py-2 md:px-4 md:py-3 bg-brand-1-900 rounded-md uppercase shadow-sm text-brand-white font-normal text-xs md:text-sm font-sourcecodepro"
+                            // className="flex items-center px-2.5 py-2 md:px-4 md:py-3 bg-brand-1-900 rounded-md uppercase shadow-sm text-brand-white font-normal text-xs md:text-sm font-sourcecodepro"
                             // title={isFullscreen ? "Exit Full Screen" : "Full Screen"}
                           >
-                            <div className="mr-2">
+                            <div>
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="20"
@@ -321,7 +322,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                             </div>
 
                             {isFullscreen ? "Exit" : "Full Screen"}
-                        </button>
+                        </PrimaryButton>
                       )}
                     </div>
                 </div>

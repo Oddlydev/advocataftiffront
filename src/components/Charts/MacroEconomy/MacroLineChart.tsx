@@ -33,6 +33,7 @@ export type MacroLineChartProps = {
   series: MacroSeriesConfig[];
   yAxisLabel: string;
   yAxisRightLabel?: string;
+  isFullscreen?: boolean; // ← ADD THIS
   /**
    * When true, use the CSV's first column header for the X‑axis label
    * and the second column header for the (left) Y‑axis label.
@@ -114,6 +115,7 @@ export function MacroLineChart({
   initialScale = 1,
   balanceScaleDown = false,
   axisTickFormatOverrides,
+  isFullscreen = false, // default false
 }: MacroLineChartProps) {
   const chartRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -788,12 +790,12 @@ export function MacroLineChart({
 
   return (
     <div className="relative w-full">
-      <svg ref={chartRef} className="w-full h-full" />
-      <div
-        ref={tooltipRef}
-        className="absolute hidden bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1 md:py-2 md:px-3 rounded shadow-lg pointer-events-none"
-        style={{ border: "1px solid #E2E8F0" }}
+      <svg
+        ref={chartRef}
+        className={`w-full h-full ${isFullscreen ? "" : "px-4"}`}
       />
+      <div ref={tooltipRef} 
+        className="absolute hidden bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1 md:py-2 md:px-3 rounded shadow-lg pointer-events-none" style={{ border: "1px solid #E2E8F0" }} />
     </div>
   );
 }
