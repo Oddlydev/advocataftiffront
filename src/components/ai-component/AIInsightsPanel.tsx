@@ -631,12 +631,14 @@ export default function AIInsightsPanel({
       return;
     }
 
-    const interval = window.setInterval(() => {
+    const duration =
+      loadingStepIndex === 0 ? 5000 : 3000;
+    const timeout = window.setTimeout(() => {
       setLoadingStepIndex((prev) => prev + 1);
-    }, 1600);
+    }, duration);
 
-    return () => window.clearInterval(interval);
-  }, [loading]);
+    return () => window.clearTimeout(timeout);
+  }, [loading, loadingStepIndex]);
 
   const shouldShowLoaderContent = loading || !insights;
 
@@ -669,14 +671,14 @@ export default function AIInsightsPanel({
 
   const moreInsightsDetails = insights?.moreInsights ?? [];
   const loadingSteps = [
-    "Thinking…",
-    "Mapping the dataset…",
-    "Extracting key insights…",
-    "Generating more insights…",
-    "Connecting patterns…",
+    "Thinking...",
+    "Scanning the dataset for key signals...",
+    "Identifying meaningful patterns...",
+    "Evaluating trends and outliers...",
+    "Ranking insights by impact...",
+    "Finalizing insights and recommendations...",
   ];
-  const loadingText =
-    loadingSteps[loadingStepIndex % loadingSteps.length];
+  const loadingText = loadingSteps[loadingStepIndex % loadingSteps.length];
 
   const reportContent = insights
     ? buildMoreInsightsDownloadReport(
