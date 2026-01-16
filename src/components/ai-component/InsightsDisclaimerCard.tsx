@@ -65,10 +65,11 @@ export default function InsightsDisclaimerCard() {
             className="text-[#1E40AF] text-xs leading-5"
             style={{ fontFamily: '"Source Code Pro"' }}
           >
-            Privacy: Analysis runs on your dataset only. Your data is not used
-            for AI training, not shared with third parties, and not stored
-            beyond this session. Not intended for collecting PII or sensitive
-            data.
+            Privacy: All analyses are performed exclusively on public datasets
+            available on this website. No personal, confidential, or sensitive
+            data is processed. The data is not used to train AI models, is not
+            shared with third parties, and is not retained beyond the duration
+            of the analysis session.
           </p>
         </div>
       </div>
