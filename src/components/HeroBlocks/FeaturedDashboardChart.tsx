@@ -96,7 +96,7 @@ export default function FeaturedDashboardChart(
           </p>
         </div>
         <div className="relative mt-6">
-          <div className="absolute -top-4 right-0 flex gap-2 z-10">
+          <div className="absolute -top-4 right-0 flex gap-2 z-10 hidden">
             <button
               id={controlIds.zoomInId}
               aria-label="Zoom in"
