@@ -361,6 +361,9 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const verticalTransitionDuration = isVerticalTransitionSuppressed
     ? "0ms"
     : "600ms";
+  const contentTransitionDuration = isPanelVisible
+    ? verticalTransitionDuration
+    : "0ms";
 
   return (
     <div className="relative">
@@ -368,11 +371,11 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       <div
         className="transition-[margin,transform] duration-600 ease-[cubic-bezier(0.7,0,0.3,1)] will-change-transform"
         style={{
-          marginRight: isPanelVisible ? `${SIDEBAR_WIDTH}px` : "0px",
+          marginRight: isInsightsPanelOpen ? `${SIDEBAR_WIDTH}px` : "0px",
           transform: `translateY(${
             isPanelVisible ? (isInsightsPanelOpen ? "0px" : "120px") : "0px"
           })`,
-          transitionDuration: verticalTransitionDuration,
+          transitionDuration: contentTransitionDuration,
         }}
       >
         <main>
