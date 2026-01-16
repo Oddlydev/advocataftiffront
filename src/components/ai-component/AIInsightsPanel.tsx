@@ -561,6 +561,7 @@ export default function AIInsightsPanel({
   const [insights, setInsights] = useState<AIInsightsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadingStepIndex, setLoadingStepIndex] = useState(0);
   const [isLoaderVisible, setIsLoaderVisible] = useState(true);
   const [isFadingLoader, setIsFadingLoader] = useState(false);
   const [loaderOpacity, setLoaderOpacity] = useState(1);
@@ -571,6 +572,9 @@ export default function AIInsightsPanel({
   useEffect(() => {
     if (!datasetUrl || manualInsights) return;
 
+    let cancelled = false;
+    const controller = new AbortController();
+
     const fetchInsights = async () => {
       setLoading(true);
       setError(null);
@@ -580,6 +584,7 @@ export default function AIInsightsPanel({
           headers: {
             "Content-Type": "application/json",
           },
+          signal: controller.signal,
           body: JSON.stringify({ datasetUrl, datasetDescription }),
         });
 
@@ -588,16 +593,28 @@ export default function AIInsightsPanel({
         }
 
         const data = await response.json();
-        setInsights(data);
+        if (!cancelled) {
+          setInsights(data);
+        }
       } catch (err) {
+        if ((err as Error)?.name === "AbortError") return;
         console.error(err);
-        setError("Failed to generate insights. Please try again.");
+        if (!cancelled) {
+          setError("Failed to generate insights. Please try again.");
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
     fetchInsights();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
   }, [datasetUrl, manualInsights, datasetDescription]);
 
   useEffect(() => {
@@ -607,6 +624,19 @@ export default function AIInsightsPanel({
       setLoading(false);
     }
   }, [manualInsights]);
+
+  useEffect(() => {
+    if (!loading) {
+      setLoadingStepIndex(0);
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setLoadingStepIndex((prev) => prev + 1);
+    }, 1600);
+
+    return () => window.clearInterval(interval);
+  }, [loading]);
 
   const shouldShowLoaderContent = loading || !insights;
 
@@ -638,6 +668,15 @@ export default function AIInsightsPanel({
   }, [shouldShowLoaderContent]);
 
   const moreInsightsDetails = insights?.moreInsights ?? [];
+  const loadingSteps = [
+    "Thinking…",
+    "Mapping the dataset…",
+    "Extracting key insights…",
+    "Generating more insights…",
+    "Connecting patterns…",
+  ];
+  const loadingText =
+    loadingSteps[loadingStepIndex % loadingSteps.length];
 
   const reportContent = insights
     ? buildMoreInsightsDownloadReport(
@@ -753,7 +792,7 @@ export default function AIInsightsPanel({
                       color: "transparent",
                     }}
                   >
-                    Thinking...
+                    {loadingText}
                   </p>
                 </div>
               )}

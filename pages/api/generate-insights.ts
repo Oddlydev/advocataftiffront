@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { VertexAI, type VertexInit } from '@google-cloud/vertexai';
+import pLimit from "p-limit";
 
 // Initialize Vertex AI
 // Ensure you have GCP_PROJECT_ID and GCP_LOCATION in your .env.local
@@ -134,7 +135,8 @@ function extractJsonObject(payload: string) {
 }
 
 async function summarizeCsvChunks(rows: string[], header: string) {
-    const summaries: string[] = [];
+    const limit = pLimit(4);
+    const tasks: Promise<string>[] = [];
 
     for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
         const chunkRows = rows.slice(i, i + CHUNK_SIZE);
@@ -150,23 +152,26 @@ Header: ${header}
 ${chunkRows.join("\n")}
 `;
 
-        try {
-            const chunkSummary = await generateFromVertex(chunkPrompt, {
-                description: `chunk ${Math.floor(i / CHUNK_SIZE) + 1} summary`,
-                maxOutputTokens: MAX_CHUNK_SUMMARY_TOKENS,
-                responseMimeType: "text/plain",
-            });
+        tasks.push(
+            limit(async () => {
+                try {
+                    const chunkSummary = await generateFromVertex(chunkPrompt, {
+                        description: `chunk ${Math.floor(i / CHUNK_SIZE) + 1} summary`,
+                        maxOutputTokens: MAX_CHUNK_SUMMARY_TOKENS,
+                        responseMimeType: "text/plain",
+                    });
 
-            const normalized = chunkSummary.replace(/\s+/g, " ").trim();
-            summaries.push(normalized);
-        } catch (error) {
-            console.warn(`Chunk summarization failed for rows ${i + 1}-${i + chunkRows.length}:`, error);
-            const fallback = chunkRows.slice(0, 2).join(" | ");
-            summaries.push(`Rows ${i + 1}-${i + chunkRows.length}: ${fallback}${chunkRows.length > 2 ? " ..." : ""}`);
-        }
+                    return chunkSummary.replace(/\s+/g, " ").trim();
+                } catch (error) {
+                    console.warn(`Chunk summarization failed for rows ${i + 1}-${i + chunkRows.length}:`, error);
+                    const fallback = chunkRows.slice(0, 2).join(" | ");
+                    return `Rows ${i + 1}-${i + chunkRows.length}: ${fallback}${chunkRows.length > 2 ? " ..." : ""}`;
+                }
+            })
+        );
     }
 
-    return summaries;
+    return Promise.all(tasks);
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
