@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import MethodologyCard from "./MethodologyCard";
 import TakeawaysCard from "./TakeawaysCard";
 import ListBulletItem from "./ListBulletItem";
 import ListNumberedItem from "./ListNumberedItem";
@@ -94,7 +93,6 @@ function buildDetailReportContent(
   variant: DetailVariant,
   detailContent: DetailContentMap[DetailVariant],
   takeaways?: string[],
-  methodology?: string,
   reportTitle?: string
 ) {
   const header = reportTitle?.trim()
@@ -109,12 +107,6 @@ function buildDetailReportContent(
   if (takeaways && takeaways.length > 0) {
     lines.push("Key Takeaways");
     lines.push(formatList(takeaways));
-    lines.push("");
-  }
-
-  if (methodology?.trim()) {
-    lines.push("Methodology");
-    lines.push(methodology.trim());
     lines.push("");
   }
 
@@ -258,22 +250,18 @@ function downloadTextFile(content: string, filename: string) {
 
 function DetailRevealLinks({
   takeaways,
-  methodology,
 }: {
   takeaways?: string[];
-  methodology?: string;
 }) {
   return (
     <div className="space-y-3.5">
       <TakeawaysCard takeaways={takeaways} />
-      <MethodologyCard methodology={methodology} />
     </div>
   );
 }
 
 type DetailSupportProps = {
   takeaways?: string[];
-  methodology?: string;
   onDownload: () => void;
 };
 
@@ -313,7 +301,6 @@ const RankingLinkIcon = () => (
 function CompositionDetail({
   content,
   takeaways,
-  methodology,
   onDownload,
 }: { content: CompositionDetailContent } & DetailSupportProps) {
   const introParagraphs = Array.isArray(content.introParagraphs)
@@ -398,7 +385,6 @@ function CompositionDetail({
 function TrendDetail({
   content,
   takeaways,
-  methodology,
   onDownload,
 }: { content: TrendDetailContent } & DetailSupportProps) {
   return (
@@ -438,7 +424,7 @@ function TrendDetail({
           </p>
         </div>
 
-        <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
+        <DetailRevealLinks takeaways={takeaways} />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -465,7 +451,6 @@ function TrendDetail({
 function RankingDetail({
   content,
   takeaways,
-  methodology,
   onDownload,
 }: { content: RankingDetailContent } & DetailSupportProps) {
   return (
@@ -495,7 +480,7 @@ function RankingDetail({
           ))}
         </div>
 
-        <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
+        <DetailRevealLinks takeaways={takeaways} />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -521,7 +506,6 @@ function RankingDetail({
 function DataQualityDetail({
   content,
   takeaways,
-  methodology,
   onDownload,
 }: { content: DataQualityDetailContent } & DetailSupportProps) {
   return (
@@ -584,7 +568,7 @@ function DataQualityDetail({
           </div>
         </div>
 
-        <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
+        <DetailRevealLinks takeaways={takeaways} />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -610,7 +594,6 @@ function DataQualityDetail({
 function ForecastDetail({
   content,
   takeaways,
-  methodology,
   onDownload,
 }: { content: ForecastDetailContent } & DetailSupportProps) {
   return (
@@ -662,7 +645,7 @@ function ForecastDetail({
           </div>
         </div>
 
-        <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
+        <DetailRevealLinks takeaways={takeaways} />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -688,7 +671,6 @@ function ForecastDetail({
 function DatasetDetail({
   content,
   takeaways,
-  methodology,
   onDownload,
 }: { content: DatasetDetailContent } & DetailSupportProps) {
   return (
@@ -742,7 +724,7 @@ function DatasetDetail({
           </div>
         </div>
 
-        <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
+        <DetailRevealLinks takeaways={takeaways} />
 
         <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
           <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
@@ -769,7 +751,6 @@ type DetailCardProps = {
   variant?: DetailVariant;
   detailContent: DetailContentMap[DetailVariant];
   takeaways?: string[];
-  methodology?: string;
   reportContent?: string;
   reportTitle?: string;
 };
@@ -778,7 +759,6 @@ export default function DetailCard({
   variant = "composition",
   detailContent,
   takeaways,
-  methodology,
   reportContent,
   reportTitle,
 }: DetailCardProps) {
@@ -789,7 +769,6 @@ export default function DetailCard({
         variant,
         detailContent,
         takeaways,
-        methodology,
         reportTitle
       );
     if (!resolvedContent.trim()) return;
@@ -803,7 +782,6 @@ export default function DetailCard({
       <TrendDetail
         content={detailContent as TrendDetailContent}
         takeaways={takeaways}
-        methodology={methodology}
         onDownload={handleDownload}
       />
     );
@@ -814,7 +792,6 @@ export default function DetailCard({
       <RankingDetail
         content={detailContent as RankingDetailContent}
         takeaways={takeaways}
-        methodology={methodology}
         onDownload={handleDownload}
       />
     );
@@ -825,7 +802,6 @@ export default function DetailCard({
       <DataQualityDetail
         content={detailContent as DataQualityDetailContent}
         takeaways={takeaways}
-        methodology={methodology}
         onDownload={handleDownload}
       />
     );
@@ -836,7 +812,6 @@ export default function DetailCard({
       <ForecastDetail
         content={detailContent as ForecastDetailContent}
         takeaways={takeaways}
-        methodology={methodology}
         onDownload={handleDownload}
       />
     );
@@ -847,7 +822,6 @@ export default function DetailCard({
       <DatasetDetail
         content={detailContent as DatasetDetailContent}
         takeaways={takeaways}
-        methodology={methodology}
         onDownload={handleDownload}
       />
     );
@@ -857,7 +831,6 @@ export default function DetailCard({
     <CompositionDetail
       content={detailContent as CompositionDetailContent}
       takeaways={takeaways}
-      methodology={methodology}
       onDownload={handleDownload}
     />
   );
