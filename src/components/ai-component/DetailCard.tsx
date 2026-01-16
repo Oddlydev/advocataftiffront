@@ -265,8 +265,8 @@ function DetailRevealLinks({
 }) {
   return (
     <div className="space-y-3.5">
-      <TakeawaysCard takeaways={takeaways} />
-      <MethodologyCard methodology={methodology} />
+      {/* <TakeawaysCard takeaways={takeaways} /> */}
+      {/* <MethodologyCard methodology={methodology} /> */}
     </div>
   );
 }

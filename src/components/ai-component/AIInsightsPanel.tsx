@@ -175,25 +175,42 @@ export type AIInsightsResponse = DetailContentMap & {
   methodology?: string;
 };
 
-function formatList(items?: string[], prefix = "- ") {
-  if (!items || items.length === 0) {
-    return "";
+function normalizeStringArray(items?: string[] | string | null): string[] {
+  if (!items) {
+    return [];
   }
-  return items.map((item) => `${prefix}${item}`).join("\n");
+  if (Array.isArray(items)) {
+    return items;
+  }
+  if (typeof items === "string") {
+    const trimmed = items.trim();
+    return trimmed ? [trimmed] : [];
+  }
+  return [];
 }
 
-function formatNumberedList(items?: string[]) {
-  if (!items || items.length === 0) {
+function formatList(items?: string[] | string | null, prefix = "- ") {
+  const normalized = normalizeStringArray(items);
+  if (normalized.length === 0) {
     return "";
   }
-  return items.map((item, index) => `${index + 1}. ${item}`).join("\n");
+  return normalized.map((item) => `${prefix}${item}`).join("\n");
 }
 
-function formatParagraphs(items?: string[]) {
-  if (!items || items.length === 0) {
+function formatNumberedList(items?: string[] | string | null) {
+  const normalized = normalizeStringArray(items);
+  if (normalized.length === 0) {
     return "";
   }
-  return items.join("\n");
+  return normalized.map((item, index) => `${index + 1}. ${item}`).join("\n");
+}
+
+function formatParagraphs(items?: string[] | string | null) {
+  const normalized = normalizeStringArray(items);
+  if (normalized.length === 0) {
+    return "";
+  }
+  return normalized.join("\n");
 }
 
 function formatKeyInsights(insights?: AIInsightsResponse["keyInsights"]) {
