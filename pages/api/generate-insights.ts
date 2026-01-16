@@ -179,7 +179,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const { datasetUrl, prompt, datasetDescription, datasetTitle } = req.body;
+    const { datasetUrl, prompt, datasetDescription } = req.body;
 
     if (!datasetUrl) {
         return res.status(400).json({ message: 'Dataset URL is required' });
@@ -211,65 +211,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 ? `Dataset description:\n${datasetDescription}\n`
                 : "";
 
-        const titleSection =
-            datasetTitle && typeof datasetTitle === "string"
-                ? `Dataset title:\n${datasetTitle}\n`
-                : "";
-
         const systemPrompt = `
-You are an expert data analyst and product analyst.
+You are an expert data analyst. You receive the sequential summaries generated from every row of the dataset below
+and must use those summaries, plus the header, as the canonical view of the data. You may describe patterns referencing "earlier rows" or "later sections" if it helps,
+but do not mention "chunks" or numeric chunk labels in the insights text, and do not invent values beyond what the summaries imply.
 
-You receive:
-1) A dataset title + dataset description (business context)
-2) The dataset header
-3) Sequential summaries of dataset fragments (these are the ONLY evidence you may use)
-
-Your job is to produce HIGH-VALUE insights that help a user decide something.
-Do NOT produce “insights” that merely restate metadata or obvious structure.
-
-## What counts as a KEY INSIGHT (must pass the “So-What” test)
-A key insight must include at least ONE of these:
-- A meaningful change over time (growth/decline/inflection) AND why it matters
-- A concentration effect (top items dominate / Pareto) AND implication
-- A standout leader/laggard comparison AND implication
-- A volatility/instability finding AND implication
-- An anomaly/outlier or break in pattern AND implication
-- A segmentation pattern (groups behave differently) AND implication
-- A risk/opportunity signal (forecastable or actionable)
-
-Each key insight should read like:
-“What happened + where/for whom + why it matters + what to do next (optional).”
-
-## BANNED “keyInsights” (never use these as key insights)
-- Unit of measurement observations (e.g., “values are in USD million”)
-- Column/header restatements (e.g., “dataset includes an ‘Others’ category”)
-- Generic statements like “there is an upward trend” without specifying where it is strongest/weakest OR what it implies
-- Pure data-quality notes (missing values, nulls) — put those under dataQuality instead
-- Anything that would be obvious to a user just by looking at the header
-
-## Evidence rules
-- Use ONLY the provided header + chunk summaries as the canonical view.
-- Do not invent numbers. If magnitude is unclear, use qualitative terms (e.g., “sharp increase”, “modest decline”) and set confidence accordingly.
-- You may reference years, items, and relative movements only if supported by the summaries.
-- Never mention “chunks” or “Summary 1/2/3” in the final text.
-
-## Output requirements
-- Output a valid JSON object using the EXACT schema provided below (include every section).
-- Use 3–6 keyInsights for datasets with > 10 rows.
-- At least 60% of keyInsights must be “high-value” insights (leaders/laggards, inflections, concentration, anomalies, segment differences, or risks/opportunities).
-- Put “unit of measure” or “dataset structure” notes under dataset.intro or dataset.enhancements, NOT keyInsights.
-
-## Self-critique step (must do before final JSON)
-1) Draft candidate key insights.
-2) Remove any insight that matches the BANNED list or is too generic.
-3) Replace removed insights with more specific, decision-useful ones grounded in the summaries.
-
-Now analyze:
-
-${titleSection}
-Dataset description:
 ${descriptionSection}
-
 Dataset header:
 ${headerLine}
 Total data rows processed: ${dataRows.length}

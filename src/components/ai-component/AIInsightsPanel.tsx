@@ -584,11 +584,7 @@ export default function AIInsightsPanel({
             "Content-Type": "application/json",
           },
           signal: controller.signal,
-          body: JSON.stringify({
-            datasetUrl,
-            datasetDescription,
-            datasetTitle: titleCardHeadline,
-          }),
+          body: JSON.stringify({ datasetUrl, datasetDescription }),
         });
 
         if (!response.ok) {
