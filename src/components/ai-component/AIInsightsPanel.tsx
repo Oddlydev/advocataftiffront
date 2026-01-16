@@ -172,6 +172,7 @@ export type MoreInsightDetail = {
 export type AIInsightsResponse = DetailContentMap & {
   moreInsights?: MoreInsightDetail[];
   takeaways?: string[];
+  methodology?: string;
 };
 
 function formatList(items?: string[], prefix = "- ") {
@@ -933,6 +934,7 @@ export default function AIInsightsPanel({
                       detailVariant={insight.detailVariant}
                       detailContent={insight.detailContent!}
                       takeaways={insights?.takeaways}
+                      methodology={insights?.methodology}
                       reportContent={reportContent}
                       reportTitle={titleCardHeadline}
                     />

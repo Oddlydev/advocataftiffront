@@ -12,6 +12,7 @@ type SuggestedActionCardProps = {
   detailVariant?: DetailVariant;
   detailContent?: DetailContentMap[DetailVariant];
   takeaways?: string[];
+  methodology?: string;
   reportContent?: string | null;
   reportTitle?: string;
 };
@@ -25,6 +26,7 @@ export default function SuggestedActionCard({
   detailVariant,
   detailContent,
   takeaways,
+  methodology,
   reportContent,
   reportTitle,
 }: SuggestedActionCardProps) {
@@ -209,6 +211,7 @@ export default function SuggestedActionCard({
                       variant={resolvedVariant}
                       detailContent={detailContent}
                       takeaways={takeaways}
+                      methodology={methodology}
                       reportContent={reportContent ?? undefined}
                       reportTitle={reportTitle}
                     />
