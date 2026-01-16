@@ -268,10 +268,45 @@ export default function CsvTable({
                     <thead ref={theadRef} className="rounded-t-lg">
                       <tr>
                         {displayHeaders.map((header, i) => {
-                        const isROA = i === roaDisplayIndex;
-                        const sortIcon = () => {
-                          if (!isROA) return null;
-                          if (roaSortDir === "asc") {
+                          const isROA = i === roaDisplayIndex;
+                          const sortIcon = () => {
+                            if (!isROA) return null;
+                            if (roaSortDir === "asc") {
+                              return (
+                                <svg
+                                  className="ml-1 inline-block align-middle"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="18"
+                                  height="18"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path d="M6 15l6-6 6 6" />
+                                </svg>
+                              );
+                            }
+                            if (roaSortDir === "desc") {
+                              return (
+                                <svg
+                                  className="ml-1 inline-block align-middle"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="18"
+                                  height="18"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path d="M18 9l-6 6-6-6" />
+                                </svg>
+                              );
+                            }
                             return (
                               <svg
                                 className="ml-1 inline-block align-middle"
@@ -285,186 +320,154 @@ export default function CsvTable({
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                               >
-                                <path d="M6 15l6-6 6 6" />
+                                <path d="M7 15l5 5 5-5M7 9l5-5 5 5" />
                               </svg>
                             );
-                          }
-                          if (roaSortDir === "desc") {
-                            return (
-                              <svg
-                                className="ml-1 inline-block align-middle"
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <path d="M18 9l-6 6-6-6" />
-                              </svg>
+                          };
+
+                          const onClickHeader = () => {
+                            if (!isROA) return;
+                            setCurrentPage(1);
+                            setRoaSortDir((prev) =>
+                              prev === "desc"
+                                ? "asc"
+                                : prev === "asc"
+                                  ? null
+                                  : "desc"
                             );
-                          }
+                          };
+
+                          const isFirstCol = i === 0;
+                          const isSecondCol = i === stickySecondIndex;
+
                           return (
-                            <svg
-                              className="ml-1 inline-block align-middle"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="18"
-                              height="18"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
+                            <th
+                              key={i}
+                              className={`px-3 py-3.5 text-right text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700 top-0 ${
+                                isFirstCol
+                                  ? "left-0 z-30 sticky !text-left rounded-tl-lg !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                                  : isSecondCol
+                                    ? "md:sticky left-[160px] !text-left md:left-[225px] xl:left-[300px] z-20 !w-[160px] md:!w-[155px] xl:!w-[210px]"
+                                    : "z-10 w-[160px] md:w-[155px] xl:w-[210px]"
+                              } ${i === displayHeaders.length - 1 ? "rounded-tr-lg" : ""}`}
                             >
-                              <path d="M7 15l5 5 5-5M7 9l5-5 5 5" />
-                            </svg>
+                              {isROA ? (
+                                <button
+                                  type="button"
+                                  onClick={onClickHeader}
+                                  className="group inline-flex items-center text-left rounded"
+                                  title="Sort by ROA"
+                                >
+                                  <span>{header}</span>
+                                  {sortIcon()}
+                                </button>
+                              ) : (
+                                header
+                              )}
+                            </th>
                           );
-                        };
-
-                        const onClickHeader = () => {
-                          if (!isROA) return;
-                          setCurrentPage(1);
-                          setRoaSortDir((prev) =>
-                            prev === "desc"
-                              ? "asc"
-                              : prev === "asc"
-                                ? null
-                                : "desc"
-                          );
-                        };
-
-                        const isFirstCol = i === 0;
-                        const isSecondCol = i === stickySecondIndex;
-
-                        return (
-                          <th
-                            key={i}
-                            className={`px-3 py-3.5 text-right text-lg/7 font-semibold font-sourcecodepro uppercase text-brand-white bg-brand-1-700 top-0 ${
-                              isFirstCol
-                                ? "left-0 z-30 sticky !text-left rounded-tl-lg !w-[160px] md:!w-[225px] xl:!w-[300px]"
-                                : isSecondCol
-                                  ? "md:sticky left-[160px] !text-left md:left-[225px] xl:left-[300px] z-20 !w-[160px] md:!w-[155px] xl:!w-[210px]"
-                                  : "z-10 w-[160px] md:w-[155px] xl:w-[210px]"
-                            } ${i === displayHeaders.length - 1 ? "rounded-tr-lg" : ""}`}
-                          >
-                            {isROA ? (
-                              <button
-                                type="button"
-                                onClick={onClickHeader}
-                                className="group inline-flex items-center text-left rounded"
-                                title="Sort by ROA"
-                              >
-                                <span>{header}</span>
-                                {sortIcon()}
-                              </button>
-                            ) : (
-                              header
-                            )}
-                          </th>
-                        );
                         })}
                       </tr>
                     </thead>
 
-                  <tbody className="divide-y divide-gray-300">
-                    {visibleRows.length === 0 && (
-                      <tr>
-                        <td
-                          colSpan={displayHeaders.length}
-                          className="bg-white border-b border-gray-100 px-3 py-6 text-left text-base/6 font-medium font-sourcecodepro text-gray-500"
-                        >
-                          No data to display
-                        </td>
-                      </tr>
-                    )}
+                    <tbody className="divide-y divide-gray-300">
+                      {visibleRows.length === 0 && (
+                        <tr>
+                          <td
+                            colSpan={displayHeaders.length}
+                            className="bg-white border-b border-gray-100 px-3 py-6 text-left text-base/6 font-medium font-sourcecodepro text-gray-500"
+                          >
+                            No data to display
+                          </td>
+                        </tr>
+                      )}
 
-                    {renderItems.map((item, idx) => {
-                      if (item.type === "sector") {
+                      {renderItems.map((item, idx) => {
+                        if (item.type === "sector") {
+                          return (
+                            <tr key={`sector-${idx}`}>
+                              <td
+                                className="sector sticky left-0 z-30 bg-brand-white border-b border-gray-100 text-brand-1-700 px-3 py-3.5 !text-left text-base/6 font-sourcecodepro font-semibold !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                                style={{ top: headerOffset }}
+                              >
+                                {item.sector}
+                              </td>
+                              {displayHeaders.slice(1).map((_, i) => {
+                                const headerIndex = i + 1;
+                                const isSecondCol =
+                                  headerIndex === stickySecondIndex;
+                                return (
+                                  <td
+                                    key={`spacer-${i}`}
+                                    className={`sticky bg-brand-white border-b border-gray-100 px-3 py-3.5 w-[160px] md:w-[155px] xl:w-[210px] ${
+                                      isSecondCol
+                                        ? "left-[160px] md:left-[225px] xl:left-[300px] z-20"
+                                        : "z-10"
+                                    }`}
+                                    style={{ top: headerOffset }}
+                                  />
+                                );
+                              })}
+                            </tr>
+                          );
+                        }
+                        const row = item.row;
+                        const displayRow =
+                          useSectorGrouping && sectorIndex >= 0
+                            ? row.filter((_, i) => i !== sectorIndex)
+                            : row;
                         return (
-                          <tr key={`sector-${idx}`}>
-                            <td
-                              className="sector sticky left-0 z-30 bg-brand-white border-b border-gray-100 text-brand-1-700 px-3 py-3.5 !text-left text-base/6 font-sourcecodepro font-semibold !w-[160px] md:!w-[225px] xl:!w-[300px]"
-                              style={{ top: headerOffset }}
-                            >
-                              {item.sector}
-                            </td>
-                            {displayHeaders.slice(1).map((_, i) => {
-                              const headerIndex = i + 1;
+                          <tr key={`row-${idx}`}>
+                            {displayRow.map((cell, cellIndex) => {
+                              const isROA = cellIndex === roaDisplayIndex;
+                              const num = isROA
+                                ? parseNumeric(cell ?? "")
+                                : NaN;
+                              const color = isROA ? getRoaColor(num) : null;
+                              const isFirstCol = cellIndex === 0;
                               const isSecondCol =
-                                headerIndex === stickySecondIndex;
+                                cellIndex === stickySecondIndex;
                               return (
                                 <td
-                                  key={`spacer-${i}`}
-                                  className={`sticky bg-brand-white border-b border-gray-100 px-3 py-3.5 w-[160px] md:w-[155px] xl:w-[210px] ${
-                                    isSecondCol
-                                      ? "left-[160px] md:left-[225px] xl:left-[300px] z-20"
-                                      : "z-10"
+                                  key={cellIndex}
+                                  className={`bg-white border-b border-gray-100 px-3 py-3.5 text-right text-base/6 font-medium font-sourcecodepro ${
+                                    isFirstCol
+                                      ? "sticky left-0 z-30 !text-left text-brand-black !w-[160px] md:!w-[225px] xl:!w-[300px]"
+                                      : isSecondCol
+                                        ? "md:sticky !text-left left-[160px] md:left-[225px] xl:left-[300px] z-20 text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
+                                        : "text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
                                   }`}
-                                  style={{ top: headerOffset }}
-                                />
+                                >
+                                  {isROA ? (
+                                    <span className="inline-flex items-center gap-2">
+                                      {color && (
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="12"
+                                          height="12"
+                                          viewBox="0 0 12 12"
+                                          fill="none"
+                                          aria-label="ROA indicator"
+                                        >
+                                          <circle
+                                            cx="6"
+                                            cy="6"
+                                            r="6"
+                                            fill={color}
+                                          />
+                                        </svg>
+                                      )}
+                                      <span>{formatCell(cell)}</span>
+                                    </span>
+                                  ) : (
+                                    formatCell(cell)
+                                  )}
+                                </td>
                               );
                             })}
                           </tr>
                         );
-                      }
-                      const row = item.row;
-                      const displayRow =
-                        useSectorGrouping && sectorIndex >= 0
-                          ? row.filter((_, i) => i !== sectorIndex)
-                          : row;
-                      return (
-                        <tr key={`row-${idx}`}>
-                          {displayRow.map((cell, cellIndex) => {
-                            const isROA = cellIndex === roaDisplayIndex;
-                            const num = isROA ? parseNumeric(cell ?? "") : NaN;
-                            const color = isROA ? getRoaColor(num) : null;
-                            const isFirstCol = cellIndex === 0;
-                            const isSecondCol = cellIndex === stickySecondIndex;
-                            return (
-                              <td
-                                key={cellIndex}
-                                className={`bg-white border-b border-gray-100 px-3 py-3.5 text-right text-base/6 font-medium font-sourcecodepro ${
-                                  isFirstCol
-                                    ? "sticky left-0 z-30 !text-left text-brand-black !w-[160px] md:!w-[225px] xl:!w-[300px]"
-                                    : isSecondCol
-                                      ? "md:sticky !text-left left-[160px] md:left-[225px] xl:left-[300px] z-20 text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
-                                      : "text-gray-500 w-[160px] md:w-[155px] xl:w-[210px]"
-                                }`}
-                              >
-                                {isROA ? (
-                                  <span className="inline-flex items-center gap-2">
-                                    {color && (
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="12"
-                                        height="12"
-                                        viewBox="0 0 12 12"
-                                        fill="none"
-                                        aria-label="ROA indicator"
-                                      >
-                                        <circle
-                                          cx="6"
-                                          cy="6"
-                                          r="6"
-                                          fill={color}
-                                        />
-                                      </svg>
-                                    )}
-                                    <span>{formatCell(cell)}</span>
-                                  </span>
-                                ) : (
-                                  formatCell(cell)
-                                )}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      );
-                    })}
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -472,7 +475,7 @@ export default function CsvTable({
 
               <button
                 onClick={handleScrollRight}
-                className="absolute z-20 top-12 right-6 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
+                className="absolute z-20 top-2 right-1.5 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
               >
                 <svg
                   className="size-4"

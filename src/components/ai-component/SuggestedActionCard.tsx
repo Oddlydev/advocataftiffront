@@ -31,11 +31,14 @@ export default function SuggestedActionCard({
   reportTitle,
 }: SuggestedActionCardProps) {
   const [active, setActive] = useState(false);
+  const cardRef = useRef<HTMLDivElement | null>(null);
 
   const resolvedVariant = detailVariant ?? "composition";
 
   const [flow, setFlow] = useState<FlowState>("idle");
   const [detailVisible, setDetailVisible] = useState(false);
+  const scrollParentRef = useRef<HTMLElement | null>(null);
+  const scrollTopRef = useRef<number>(0);
 
   const thinkingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -66,6 +69,45 @@ export default function SuggestedActionCard({
     }
   }, [flow]);
 
+  const findScrollParent = (node: HTMLElement | null): HTMLElement | null => {
+    if (!node) return null;
+    let current: HTMLElement | null = node.parentElement;
+    while (current) {
+      const style = window.getComputedStyle(current);
+      const overflowY = style.overflowY;
+      if (
+        (overflowY === "auto" || overflowY === "scroll") &&
+        current.scrollHeight > current.clientHeight
+      ) {
+        return current;
+      }
+      current = current.parentElement;
+    }
+    return document.documentElement;
+  };
+
+  const restoreScroll = () => {
+    const parent = scrollParentRef.current;
+    if (!parent) return;
+    const top = scrollTopRef.current;
+    if (parent === document.documentElement || parent === document.body) {
+      window.scrollTo({ top, behavior: "smooth" });
+      return;
+    }
+    parent.scrollTo({ top, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    if (!showDetailOnClick || !detailVisible) return;
+    const node = cardRef.current;
+    if (!node) return;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        node.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  }, [detailVisible, showDetailOnClick]);
+
   const handleClick = () => {
     // Toggle active UI state always
     setActive((prev) => !prev);
@@ -77,11 +119,19 @@ export default function SuggestedActionCard({
     // If open (thinking/revealing/detail), clicking again closes it
     if (isOpen) {
       clearTimers();
+      restoreScroll();
       setFlow("idle");
       return;
     }
 
     // Start open sequence
+    const node = cardRef.current;
+    const parent = findScrollParent(node);
+    scrollParentRef.current = parent;
+    scrollTopRef.current =
+      parent === document.documentElement || parent === document.body
+        ? window.scrollY
+        : parent?.scrollTop ?? 0;
     setFlow("thinking");
 
     clearTimers();
@@ -97,7 +147,7 @@ export default function SuggestedActionCard({
   const EASING = "cubic-bezier(0.4, 0, 0.2, 1)";
 
   return (
-    <div className="w-full">
+    <div className="w-full" ref={cardRef}>
       <article
         onClick={handleClick}
         className={`group flex w-full items-start gap-[16px] rounded-2xl border px-5 py-4 transition-all duration-200 ${
