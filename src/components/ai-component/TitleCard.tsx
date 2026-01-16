@@ -6,7 +6,8 @@ export type TitleCardProps = {
 
 export default function TitleCard({ headline }: TitleCardProps) {
   const headlineText =
-    headline ?? "Composition of Private Consumption Expenditure at Current Market Prices";
+    headline ??
+    "Composition of Private Consumption Expenditure at Current Market Prices";
   return (
     <article
       className="
@@ -20,9 +21,7 @@ export default function TitleCard({ headline }: TitleCardProps) {
     >
       {/* Native details element removes the need for client-only state */}
       <details className="space-y-4">
-        <summary
-          className="title-card-summary flex w-full flex-col gap-1 text-left cursor-pointer"
-        >
+        <summary className="title-card-summary flex w-full flex-col gap-1 text-left cursor-pointer">
           <div className="flex items-center gap-2">
             <p
               className="text-xs uppercase tracking-[0.3px] text-slate-500 leading-4"
@@ -34,7 +33,7 @@ export default function TitleCard({ headline }: TitleCardProps) {
             {/* Info icon + tooltip */}
             <span className="relative inline-flex items-center justify-center group">
               {/* Icon */}
-              <span
+              {/* <span
                 className="
                   inline-flex items-center justify-center
                   text-[#64748B]
@@ -79,10 +78,10 @@ export default function TitleCard({ headline }: TitleCardProps) {
                     </clipPath>
                   </defs>
                 </svg>
-              </span>
+              </span> */}
 
               {/* Tooltip */}
-              <span
+              {/* <span
                 className="
                   pointer-events-none absolute left-1/2 top-full hidden
                   min-w-[200px] bg-[#1A1A1A] px-1.5 py-1 leading-4
@@ -92,7 +91,7 @@ export default function TitleCard({ headline }: TitleCardProps) {
                 "
               >
                 Show methodology, Source &amp; Limitations
-              </span>
+              </span> */}
             </span>
           </div>
 
@@ -105,7 +104,7 @@ export default function TitleCard({ headline }: TitleCardProps) {
           </p>
         </summary>
 
-        <section className="mt-4 border-t border-slate-300 pt-3">
+        {/* <section className="mt-4 border-t border-slate-300 pt-3">
           <p
             className="text-xs font-semibold tracking-[0.4px] text-slate-700 mb-1"
             style={{ fontFamily: '"Source Code Pro"' }}
@@ -136,11 +135,11 @@ export default function TitleCard({ headline }: TitleCardProps) {
             className="text-xs leading-5 text-slate-600 mb-2 font-normal"
             style={{ fontFamily: '"Source Code Pro"' }}
           >
-            Private Consumption Expenditure across 12 categories: Food,
-            Alcohol &amp; Tobacco, Clothing, Housing, Furnishings, Health,
-            Transport, Communication, Recreation, Education, Restaurants &amp;
-            Hotels, and Miscellaneous Goods &amp; Services. All values are at
-            current market prices in Sri Lankan Rupees (Rs).
+            Private Consumption Expenditure across 12 categories: Food, Alcohol
+            &amp; Tobacco, Clothing, Housing, Furnishings, Health, Transport,
+            Communication, Recreation, Education, Restaurants &amp; Hotels, and
+            Miscellaneous Goods &amp; Services. All values are at current market
+            prices in Sri Lankan Rupees (Rs).
           </p>
 
           <p
@@ -173,16 +172,16 @@ export default function TitleCard({ headline }: TitleCardProps) {
               Cannot identify causation, only correlations
             </li>
           </ul>
-        </section>
+        </section> */}
 
-        <div
+        {/* <div
           className="mt-4 pt-1.5 text-xs leading-5 text-slate-500 border-t border-slate-300"
           style={{
             fontFamily: '"Source Code Pro"',
           }}
         >
           Analysis generated: Dec 8, 2024 Aú Data version: CBSL Q4 2024 Release
-        </div>
+        </div> */}
       </details>
     </article>
   );

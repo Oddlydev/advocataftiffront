@@ -106,18 +106,6 @@ function buildDetailReportContent(
   lines.push("=".repeat(header.length));
   lines.push("");
 
-  if (takeaways && takeaways.length > 0) {
-    lines.push("Key Takeaways");
-    lines.push(formatList(takeaways));
-    lines.push("");
-  }
-
-  if (methodology?.trim()) {
-    lines.push("Methodology");
-    lines.push(methodology.trim());
-    lines.push("");
-  }
-
   if (variant === "composition") {
     const content = detailContent as CompositionDetailContent;
     lines.push("Composition Summary");
@@ -328,6 +316,7 @@ function CompositionDetail({
   const recommendations = Array.isArray(content.recommendations)
     ? content.recommendations
     : [];
+  const hasGrowthSummary = Boolean(content.growthSummary?.trim());
 
   return (
     <article className="flex flex-col rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
@@ -341,53 +330,67 @@ function CompositionDetail({
           </p>
         ))}
 
-        <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-          Overall Growth Patterns
-        </p>
+        {hasGrowthSummary && (
+          <>
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Overall Growth Patterns
+            </p>
 
-        <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-          {content.growthSummary}
-        </p>
+            <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
+              {content.growthSummary}
+            </p>
+          </>
+        )}
 
-        <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-          Category Performance Metrics
-        </p>
+        {firstMetrics.length > 0 && (
+          <>
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Category Performance Metrics
+            </p>
 
-        <div className="mb-0">
-          {firstMetrics.map((line, idx) => (
-            <ListBulletItem key={`${line}-${idx}`} text={line} />
-          ))}
-        </div>
+            <div className="mb-0">
+              {firstMetrics.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
+          </>
+        )}
 
-        <p className="pt-2.5 text-sm font-semibold text-slate-700 font-[Montserrat]">
-          Data Quality &amp; Trend Insights
-        </p>
+        {secondMetrics.length > 0 && (
+          <>
+            <p className="pt-2.5 text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Data Quality &amp; Trend Insights
+            </p>
 
-        <div className="mb-0">
-          {secondMetrics.map((line, idx) => (
-            <ListBulletItem key={`${line}-${idx}`} text={line} />
-          ))}
-        </div>
+            <div className="mb-0">
+              {secondMetrics.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
+          </>
+        )}
 
         <div className="pt-3.5">
           <DetailRevealLinks />
         </div>
 
-        <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Recommendations
-          </p>
+        {recommendations.length > 0 && (
+          <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Recommendations
+            </p>
 
-          <div className="mt-2 space-y-3.5">
-            {recommendations.map((line, idx) => (
-              <ListNumberedItem
-                key={`${line}-${idx}`}
-                number={idx + 1}
-                text={line}
-              />
-            ))}
+            <div className="mt-2 space-y-3.5">
+              {recommendations.map((line, idx) => (
+                <ListNumberedItem
+                  key={`${line}-${idx}`}
+                  number={idx + 1}
+                  text={line}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {CTA_SECTION(onDownload)}
       </div>
@@ -401,60 +404,80 @@ function TrendDetail({
   methodology,
   onDownload,
 }: { content: TrendDetailContent } & DetailSupportProps) {
+  const intro = content.intro?.trim();
+  const disruptionParagraph = content.disruptionParagraph?.trim();
+  const longTermTrends = Array.isArray(content.longTermTrends)
+    ? content.longTermTrends
+    : [];
+  const emergingPattern = content.emergingPattern?.trim();
+  const recommendations = Array.isArray(content.recommendations)
+    ? content.recommendations
+    : [];
+
   return (
     <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
-        <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
-          {content.intro}
-        </p>
-
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            The Three Major Disruption Periods
+        {intro && (
+          <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
+            {intro}
           </p>
-          <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-            {content.disruptionParagraph}
-          </p>
-        </div>
+        )}
 
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Long-term Structural Trends
-          </p>
-
-          <div className="space-y-1 pl-1.5">
-            {content.longTermTrends.map((trend, idx) => (
-              <ListBulletItem key={`${trend}-${idx}`} text={trend} />
-            ))}
+        {disruptionParagraph && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              The Three Major Disruption Periods
+            </p>
+            <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
+              {disruptionParagraph}
+            </p>
           </div>
-        </div>
+        )}
 
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Emerging Patterns (2020-2024)
-          </p>
-          <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-            {content.emergingPattern}
-          </p>
-        </div>
+        {longTermTrends.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Long-term Structural Trends
+            </p>
+
+            <div className="space-y-1 pl-1.5">
+              {longTermTrends.map((trend, idx) => (
+                <ListBulletItem key={`${trend}-${idx}`} text={trend} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {emergingPattern && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Emerging Patterns (2020-2024)
+            </p>
+            <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
+              {emergingPattern}
+            </p>
+          </div>
+        )}
 
         <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
 
-        <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Recommendations
-          </p>
+        {recommendations.length > 0 && (
+          <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Recommendations
+            </p>
 
-          <div className="mt-2 space-y-3.5">
-            {content.recommendations.map((line, idx) => (
-              <ListNumberedItem
-                key={`${line}-${idx}`}
-                number={idx + 1}
-                text={line}
-              />
-            ))}
+            <div className="mt-2 space-y-3.5">
+              {recommendations.map((line, idx) => (
+                <ListNumberedItem
+                  key={`${line}-${idx}`}
+                  number={idx + 1}
+                  text={line}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {CTA_SECTION(onDownload)}
       </div>
@@ -468,49 +491,66 @@ function RankingDetail({
   methodology,
   onDownload,
 }: { content: RankingDetailContent } & DetailSupportProps) {
+  const intro = content.intro?.trim();
+  const stabilityRanking = Array.isArray(content.stabilityRanking)
+    ? content.stabilityRanking
+    : [];
+  const linkTexts = Array.isArray(content.linkTexts) ? content.linkTexts : [];
+  const recommendations = Array.isArray(content.recommendations)
+    ? content.recommendations
+    : [];
+
   return (
     <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
-        <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
-          {content.intro}
-        </p>
-
-        <div className="space-y-2">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Ranking by Stability (Lowest Volatility)
+        {intro && (
+          <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
+            {intro}
           </p>
-          <div className="space-y-1 pl-1.5">
-            {content.stabilityRanking.map((line, idx) => (
-              <ListBulletItem key={`${line}-${idx}`} text={line} />
+        )}
+
+        {stabilityRanking.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Ranking by Stability (Lowest Volatility)
+            </p>
+            <div className="space-y-1 pl-1.5">
+              {stabilityRanking.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {linkTexts.length > 0 && (
+          <div className="space-y-1 text-xs text-[var(--brand-1-500)] font-normal font-['Source_Code_Pro'] mt-2.5 mb-8">
+            {linkTexts.map((text) => (
+              <div key={text} className="flex items-start gap-3">
+                <RankingLinkIcon />
+                <span className="cursor-pointer">{text}</span>
+              </div>
             ))}
           </div>
-        </div>
-
-        <div className="space-y-1 text-xs text-[var(--brand-1-500)] font-normal font-['Source_Code_Pro'] mt-2.5 mb-8">
-          {content.linkTexts.map((text) => (
-            <div key={text} className="flex items-start gap-3">
-              <RankingLinkIcon />
-              <span className="cursor-pointer">{text}</span>
-            </div>
-          ))}
-        </div>
+        )}
 
         <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
 
-        <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Recommendations
-          </p>
-          <div className="mt-2 space-y-3.5">
-            {content.recommendations.map((line, idx) => (
-              <ListNumberedItem
-                key={`${line}-${idx}`}
-                number={idx + 1}
-                text={line}
-              />
-            ))}
+        {recommendations.length > 0 && (
+          <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Recommendations
+            </p>
+            <div className="mt-2 space-y-3.5">
+              {recommendations.map((line, idx) => (
+                <ListNumberedItem
+                  key={`${line}-${idx}`}
+                  number={idx + 1}
+                  text={line}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {CTA_SECTION(onDownload)}
       </div>
@@ -524,82 +564,106 @@ function DataQualityDetail({
   methodology,
   onDownload,
 }: { content: DataQualityDetailContent } & DetailSupportProps) {
+  const intro = content.intro?.trim();
+  const missingDataSummary = content.missingDataSummary?.trim();
+  const breakdown = Array.isArray(content.breakdown) ? content.breakdown : [];
+  const timeline = Array.isArray(content.timeline) ? content.timeline : [];
+  const outliers = Array.isArray(content.outliers) ? content.outliers : [];
+  const checks = Array.isArray(content.checks) ? content.checks : [];
+  const recommendations = Array.isArray(content.recommendations)
+    ? content.recommendations
+    : [];
+
   return (
     <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
-        <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
-          {content.intro}
-        </p>
+        {intro && (
+          <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
+            {intro}
+          </p>
+        )}
 
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Missing Data Analysis
-          </p>
-          <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-            {content.missingDataSummary}
-          </p>
-        </div>
-
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Missing Data Breakdown by Category
-          </p>
-          <div className="space-y-1 pl-1.5">
-            {content.breakdown.map((line, idx) => (
-              <ListBulletItem key={`${line}-${idx}`} text={line} />
-            ))}
+        {missingDataSummary && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Missing Data Analysis
+            </p>
+            <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
+              {missingDataSummary}
+            </p>
           </div>
-        </div>
+        )}
 
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Missing Data by Time Period
-          </p>
-          <div className="space-y-1 pl-1.5">
-            {content.timeline.map((line, idx) => (
-              <ListBulletItem key={`${line}-${idx}`} text={line} />
-            ))}
+        {breakdown.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Missing Data Breakdown by Category
+            </p>
+            <div className="space-y-1 pl-1.5">
+              {breakdown.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Outliers &amp; Anomalies Detected
-          </p>
-          <div className="space-y-1 pl-1.5">
-            {content.outliers.map((line, idx) => (
-              <ListBulletItem key={`${line}-${idx}`} text={line} />
-            ))}
+        {timeline.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Missing Data by Time Period
+            </p>
+            <div className="space-y-1 pl-1.5">
+              {timeline.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Data Consistency Checks
-          </p>
-          <div className="space-y-1 pl-1.5">
-            {content.checks.map((line, idx) => (
-              <ListBulletItem key={`${line}-${idx}`} text={line} />
-            ))}
+        {outliers.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Outliers &amp; Anomalies Detected
+            </p>
+            <div className="space-y-1 pl-1.5">
+              {outliers.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
+        {checks.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Data Consistency Checks
+            </p>
+            <div className="space-y-1 pl-1.5">
+              {checks.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
+          </div>
+        )}
 
         <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
 
-        <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Recommendations
-          </p>
-          <div className="mt-2 space-y-3.5">
-            {content.recommendations.map((line, idx) => (
-              <ListNumberedItem
-                key={`${line}-${idx}`}
-                number={idx + 1}
-                text={line}
-              />
-            ))}
+        {recommendations.length > 0 && (
+          <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Recommendations
+            </p>
+            <div className="mt-2 space-y-3.5">
+              {recommendations.map((line, idx) => (
+                <ListNumberedItem
+                  key={`${line}-${idx}`}
+                  number={idx + 1}
+                  text={line}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {CTA_SECTION(onDownload)}
       </div>
@@ -613,71 +677,98 @@ function ForecastDetail({
   methodology,
   onDownload,
 }: { content: ForecastDetailContent } & DetailSupportProps) {
+  const intro = content.intro?.trim();
+  const forecastSummary = content.forecastSummary?.trim();
+  const categoryProjections = Array.isArray(content.categoryProjections)
+    ? content.categoryProjections
+    : [];
+  const validationNotes = Array.isArray(content.validationNotes)
+    ? content.validationNotes
+    : [];
+  const riskFactors = Array.isArray(content.riskFactors)
+    ? content.riskFactors
+    : [];
+  const recommendations = Array.isArray(content.recommendations)
+    ? content.recommendations
+    : [];
+
   return (
     <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
-        <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
-          {content.intro}
-        </p>
+        {intro && (
+          <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
+            {intro}
+          </p>
+        )}
 
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Overall Consumption Forecast
-          </p>
-          <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
-            {content.forecastSummary}
-          </p>
-        </div>
-
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Category-Specific Projections (2025-2027)
-          </p>
-          <div className="space-y-1 pl-1.5">
-            {content.categoryProjections.map((line, idx) => (
-              <ListBulletItem key={`${line}-${idx}`} text={line} />
-            ))}
+        {forecastSummary && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Overall Consumption Forecast
+            </p>
+            <p className="text-xs leading-5 text-slate-600 font-['Source_Code_Pro']">
+              {forecastSummary}
+            </p>
           </div>
-        </div>
+        )}
 
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Model Performance &amp; Validation
-          </p>
-          <div className="space-y-1 pl-1.5">
-            {content.validationNotes.map((line, idx) => (
-              <ListBulletItem key={`${line}-${idx}`} text={line} />
-            ))}
+        {categoryProjections.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Category-Specific Projections (2025-2027)
+            </p>
+            <div className="space-y-1 pl-1.5">
+              {categoryProjections.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Risk Factors &amp; Uncertainty
-          </p>
-          <div className="space-y-1 pl-1.5">
-            {content.riskFactors.map((line, idx) => (
-              <ListBulletItem key={`${line}-${idx}`} text={line} />
-            ))}
+        {validationNotes.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Model Performance &amp; Validation
+            </p>
+            <div className="space-y-1 pl-1.5">
+              {validationNotes.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
+        {riskFactors.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Risk Factors &amp; Uncertainty
+            </p>
+            <div className="space-y-1 pl-1.5">
+              {riskFactors.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
+          </div>
+        )}
 
         <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
 
-        <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Recommendations
-          </p>
-          <div className="mt-2 space-y-3.5">
-            {content.recommendations.map((line, idx) => (
-              <ListNumberedItem
-                key={`${line}-${idx}`}
-                number={idx + 1}
-                text={line}
-              />
-            ))}
+        {recommendations.length > 0 && (
+          <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Recommendations
+            </p>
+            <div className="mt-2 space-y-3.5">
+              {recommendations.map((line, idx) => (
+                <ListNumberedItem
+                  key={`${line}-${idx}`}
+                  number={idx + 1}
+                  text={line}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {CTA_SECTION(onDownload)}
       </div>
@@ -691,73 +782,98 @@ function DatasetDetail({
   methodology,
   onDownload,
 }: { content: DatasetDetailContent } & DetailSupportProps) {
+  const intro = content.intro?.trim();
+  const enhancements = Array.isArray(content.enhancements)
+    ? content.enhancements
+    : [];
+  const fileFormats = Array.isArray(content.fileFormats)
+    ? content.fileFormats
+    : [];
+  const newColumns = Array.isArray(content.newColumns) ? content.newColumns : [];
+  const qaChecks = Array.isArray(content.qaChecks) ? content.qaChecks : [];
+  const recommendations = Array.isArray(content.recommendations)
+    ? content.recommendations
+    : [];
+
   return (
     <article className="flex flex-col gap-4 rounded-[14px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="space-y-3">
-        <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
-          {content.intro}
-        </p>
-
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Enhancements &amp; Transformations Applied
+        {intro && (
+          <p className="text-sm leading-6 text-slate-700 font-[Montserrat]">
+            {intro}
           </p>
-          <div className="space-y-1 pl-1.5">
-            {content.enhancements.map((line, idx) => (
-              <ListBulletItem key={`${line}-${idx}`} text={line} />
-            ))}
-          </div>
-        </div>
+        )}
 
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            File Formats Available
-          </p>
-          <div className="space-y-1 pl-1.5">
-            {content.fileFormats.map((line, idx) => (
-              <ListBulletItem key={`${line}-${idx}`} text={line} />
-            ))}
+        {enhancements.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Enhancements &amp; Transformations Applied
+            </p>
+            <div className="space-y-1 pl-1.5">
+              {enhancements.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            New Columns Added
-          </p>
-          <div className="space-y-1 pl-1.5">
-            {content.newColumns.map((line, idx) => (
-              <ListBulletItem key={`${line}-${idx}`} text={line} />
-            ))}
+        {fileFormats.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              File Formats Available
+            </p>
+            <div className="space-y-1 pl-1.5">
+              {fileFormats.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Quality Assurance
-          </p>
-          <div className="space-y-1 pl-1.5">
-            {content.qaChecks.map((line, idx) => (
-              <ListBulletItem key={`${line}-${idx}`} text={line} />
-            ))}
+        {newColumns.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              New Columns Added
+            </p>
+            <div className="space-y-1 pl-1.5">
+              {newColumns.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
+        {qaChecks.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Quality Assurance
+            </p>
+            <div className="space-y-1 pl-1.5">
+              {qaChecks.map((line, idx) => (
+                <ListBulletItem key={`${line}-${idx}`} text={line} />
+              ))}
+            </div>
+          </div>
+        )}
 
         <DetailRevealLinks takeaways={takeaways} methodology={methodology} />
 
-        <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Recommendations
-          </p>
-          <div className="mt-2 space-y-3.5">
-            {content.recommendations.map((line, idx) => (
-              <ListNumberedItem
-                key={`${line}-${idx}`}
-                number={idx + 1}
-                text={line}
-              />
-            ))}
+        {recommendations.length > 0 && (
+          <div className="pt-5 mt-3.5 border-t border-slate-200 mb-0">
+            <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
+              Recommendations
+            </p>
+            <div className="mt-2 space-y-3.5">
+              {recommendations.map((line, idx) => (
+                <ListNumberedItem
+                  key={`${line}-${idx}`}
+                  number={idx + 1}
+                  text={line}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {CTA_SECTION(onDownload)}
       </div>
