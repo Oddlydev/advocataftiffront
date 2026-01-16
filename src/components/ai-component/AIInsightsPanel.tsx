@@ -602,7 +602,11 @@ export default function AIInsightsPanel({
             "Content-Type": "application/json",
           },
           signal: controller.signal,
-          body: JSON.stringify({ datasetUrl, datasetDescription }),
+          body: JSON.stringify({
+            datasetUrl,
+            datasetDescription,
+            datasetTitle: titleCardHeadline,
+          }),
         });
 
         if (!response.ok) {
@@ -632,7 +636,7 @@ export default function AIInsightsPanel({
       cancelled = true;
       controller.abort();
     };
-  }, [datasetUrl, manualInsights, datasetDescription]);
+  }, [datasetUrl, manualInsights, datasetDescription, titleCardHeadline]);
 
   useEffect(() => {
     if (manualInsights) {

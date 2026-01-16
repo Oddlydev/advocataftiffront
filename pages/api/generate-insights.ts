@@ -179,7 +179,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const { datasetUrl, prompt, datasetDescription } = req.body;
+    const { datasetUrl, prompt, datasetDescription, datasetTitle } = req.body;
 
     if (!datasetUrl) {
         return res.status(400).json({ message: 'Dataset URL is required' });
@@ -206,6 +206,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     .join("\n")
                 : "No data rows were available to summarize.";
 
+        const titleSection =
+            datasetTitle && typeof datasetTitle === "string"
+                ? `Dataset title:\n${datasetTitle}\n`
+                : "";
         const descriptionSection =
             datasetDescription && typeof datasetDescription === "string"
                 ? `Dataset description:\n${datasetDescription}\n`
@@ -216,7 +220,7 @@ You are an expert data analyst. You receive the sequential summaries generated f
 and must use those summaries, plus the header, as the canonical view of the data. You may describe patterns referencing "earlier rows" or "later sections" if it helps,
 but do not mention "chunks" or numeric chunk labels in the insights text, and do not invent values beyond what the summaries imply.
 
-${descriptionSection}
+${titleSection}${descriptionSection}
 Dataset header:
 ${headerLine}
 Total data rows processed: ${dataRows.length}
