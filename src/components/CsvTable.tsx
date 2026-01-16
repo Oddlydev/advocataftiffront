@@ -256,17 +256,18 @@ export default function CsvTable({
       <div className="py-3.5 md:py-5 xl:py-6">
         <div className="mx-auto max-w-7xl">
           <div className="shadow-md border p-4 border-gray-200 rounded-lg">
-            <div
-              id="table-wrapper"
-              className={`overflow-x-auto overflow-y-auto max-w-full box-content ${
-                visibleRows.length >= 10 ? "" : "" // max-h-[650px]
-              }`}
-            >
-              <div className="w-[1200px] table-inner">
-                <table className="border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg">
-                  <thead ref={theadRef} className="rounded-t-lg">
-                    <tr>
-                      {displayHeaders.map((header, i) => {
+            <div className="relative mx-auto w-fit max-w-full">
+              <div
+                id="table-wrapper"
+                className={`overflow-x-auto overflow-y-auto max-w-full box-content ${
+                  visibleRows.length >= 10 ? "" : "" // max-h-[650px]
+                }`}
+              >
+                <div className="w-[1200px] table-inner">
+                  <table className="border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg">
+                    <thead ref={theadRef} className="rounded-t-lg">
+                      <tr>
+                        {displayHeaders.map((header, i) => {
                         const isROA = i === roaDisplayIndex;
                         const sortIcon = () => {
                           if (!isROA) return null;
@@ -365,9 +366,9 @@ export default function CsvTable({
                             )}
                           </th>
                         );
-                      })}
-                    </tr>
-                  </thead>
+                        })}
+                      </tr>
+                    </thead>
 
                   <tbody className="divide-y divide-gray-300">
                     {visibleRows.length === 0 && (
@@ -464,33 +465,34 @@ export default function CsvTable({
                         </tr>
                       );
                     })}
-                  </tbody>
-                </table>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
 
-            <button
-              onClick={handleScrollRight}
-              className="absolute z-20 top-12 right-6 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
-            >
-              <svg
-                className="size-4"
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
+              <button
+                onClick={handleScrollRight}
+                className="absolute z-20 top-12 right-6 bg-brand-white border border-brand-white hover:bg-slate-100 text-brand-black p-1 rounded-full shadow-md transition-all duration-200"
               >
-                <path
-                  d="M7.4248 16.6L12.8581 11.1667C13.4998 10.525 13.4998 9.47503 12.8581 8.83336L7.4248 3.40002"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeMiterlimit="10"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
+                <svg
+                  className="size-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <path
+                    d="M7.4248 16.6L12.8581 11.1667C13.4998 10.525 13.4998 9.47503 12.8581 8.83336L7.4248 3.40002"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeMiterlimit="10"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
