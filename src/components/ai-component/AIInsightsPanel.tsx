@@ -583,6 +583,7 @@ export default function AIInsightsPanel({
   const [isFadingLoader, setIsFadingLoader] = useState(false);
   const [loaderOpacity, setLoaderOpacity] = useState(1);
   const [contentVisible, setContentVisible] = useState(false);
+  const [openInsightIndex, setOpenInsightIndex] = useState<number | null>(null);
   const LOADER_FADE_DURATION = 1400;
   const CONTENT_REVEAL_DELAY = 450;
 
@@ -646,8 +647,10 @@ export default function AIInsightsPanel({
     }
   }, [manualInsights]);
 
+  const shouldShowLoaderContent = (loading && !insights) || !!error;
+
   useEffect(() => {
-    if (!loading) {
+    if (!shouldShowLoaderContent || !loading) {
       setLoadingStepIndex(0);
       return;
     }
@@ -658,9 +661,7 @@ export default function AIInsightsPanel({
     }, duration);
 
     return () => window.clearTimeout(timeout);
-  }, [loading, loadingStepIndex]);
-
-  const shouldShowLoaderContent = loading || !insights;
+  }, [loading, loadingStepIndex, shouldShowLoaderContent]);
 
   useEffect(() => {
     let fadeTimer: number | null = null;
@@ -699,7 +700,8 @@ export default function AIInsightsPanel({
     "Finalizing insights and recommendations...",
   ];
   const loadingText = loadingSteps[loadingStepIndex % loadingSteps.length];
-  const showSkeleton = loading && loadingStepIndex >= loadingSteps.length;
+  const showSkeleton =
+    shouldShowLoaderContent && loadingStepIndex >= loadingSteps.length;
 
   const reportContent = insights
     ? buildMoreInsightsDownloadReport(
@@ -950,6 +952,12 @@ export default function AIInsightsPanel({
                     <SuggestedActionCard
                       key={`${insight.title ?? "insight"}-${index}`}
                       showDetailOnClick
+                      isOpen={openInsightIndex === index}
+                      onToggle={() => {
+                        setOpenInsightIndex((prev) =>
+                          prev === index ? null : index
+                        );
+                      }}
                       title={insight.title}
                       description={insight.description}
                       detailVariant={insight.detailVariant}

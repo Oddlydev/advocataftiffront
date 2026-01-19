@@ -7,6 +7,8 @@ import type { DetailContentMap } from "./detailContent.types";
 
 type SuggestedActionCardProps = {
   showDetailOnClick?: boolean;
+  isOpen?: boolean;
+  onToggle?: () => void;
   title?: string;
   description?: string;
   detailVariant?: DetailVariant;
@@ -21,6 +23,8 @@ type FlowState = "idle" | "thinking" | "revealing" | "detail";
 
 export default function SuggestedActionCard({
   showDetailOnClick = false,
+  isOpen,
+  onToggle,
   title,
   description,
   detailVariant,
@@ -39,6 +43,10 @@ export default function SuggestedActionCard({
   const [detailVisible, setDetailVisible] = useState(false);
   const scrollParentRef = useRef<HTMLElement | null>(null);
   const scrollTopRef = useRef<number>(0);
+  const shouldRestoreOnCloseRef = useRef(false);
+  const isControlled =
+    typeof isOpen === "boolean" && typeof onToggle === "function";
+  const currentOpen = isControlled ? isOpen : active;
 
   const thinkingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -97,73 +105,79 @@ export default function SuggestedActionCard({
     parent.scrollTo({ top, behavior: "smooth" });
   };
 
-  useEffect(() => {
-    if (!showDetailOnClick || !detailVisible) return;
-    const node = cardRef.current;
-    if (!node) return;
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        node.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    });
-  }, [detailVisible, showDetailOnClick]);
 
   const handleClick = () => {
-    // Toggle active UI state always
-    setActive((prev) => !prev);
-
     if (!showDetailOnClick) return;
-
-    const isOpen = flow !== "idle";
-
-    // If open (thinking/revealing/detail), clicking again closes it
-    if (isOpen) {
-      clearTimers();
-      restoreScroll();
-      setFlow("idle");
+    shouldRestoreOnCloseRef.current = currentOpen;
+    if (isControlled) {
+      onToggle?.();
       return;
     }
-
-    // Start open sequence
-    const node = cardRef.current;
-    const parent = findScrollParent(node);
-    scrollParentRef.current = parent;
-    scrollTopRef.current =
-      parent === document.documentElement || parent === document.body
-        ? window.scrollY
-        : parent?.scrollTop ?? 0;
-    setFlow("thinking");
-
-    clearTimers();
-    thinkingTimerRef.current = setTimeout(() => {
-      setFlow("revealing");
-
-      revealTimerRef.current = setTimeout(() => {
-        setFlow("detail");
-      }, 1200);
-    }, 900);
+    setActive((prev) => !prev);
   };
 
   const EASING = "cubic-bezier(0.4, 0, 0.2, 1)";
+
+  useEffect(() => {
+    if (!showDetailOnClick) return;
+    if (currentOpen) {
+      const node = cardRef.current;
+      const parent = findScrollParent(node);
+      scrollParentRef.current = parent;
+      scrollTopRef.current =
+        parent === document.documentElement || parent === document.body
+          ? window.scrollY
+          : parent?.scrollTop ?? 0;
+      setFlow("thinking");
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          node?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+      clearTimers();
+      thinkingTimerRef.current = setTimeout(() => {
+        setFlow("revealing");
+
+        revealTimerRef.current = setTimeout(() => {
+          setFlow("detail");
+        }, 1200);
+      }, 900);
+      return;
+    }
+
+    clearTimers();
+    if (shouldRestoreOnCloseRef.current) {
+      restoreScroll();
+    }
+    shouldRestoreOnCloseRef.current = false;
+    setFlow("idle");
+    setDetailVisible(false);
+  }, [currentOpen, showDetailOnClick]);
+
+  useEffect(() => {
+    if (isControlled) {
+      setActive(!!isOpen);
+    }
+  }, [isControlled, isOpen]);
 
   return (
     <div className="w-full" ref={cardRef}>
       <article
         onClick={handleClick}
         className={`group flex w-full items-start gap-[16px] rounded-2xl border px-5 py-4 transition-all duration-200 ${
-          active
+          currentOpen
             ? "border-[rgba(234,25,82,0.3)] bg-[linear-gradient(135deg,rgba(234,25,82,0.05)_0%,rgba(227,63,255,0.05)_100%)] shadow-[0_10px_15px_-3px_rgba(0,0,0,0.10),0_4px_6px_-4px_rgba(0,0,0,0.10)]"
             : "border-slate-200 bg-white hover:border-[rgba(234,25,82,0.2)] hover:bg-[#F8FAFC] hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]"
         } ${showDetailOnClick ? "cursor-pointer" : ""}`}
       >
         <span
           className={`flex h-[44px] w-[44px] min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-[10px] p-4 transition duration-200 ${
-            active
+            currentOpen
               ? "bg-[linear-gradient(270deg,#EA1952_0%,#AA1E58_100%)] shadow-[0_10px_15px_-3px_rgba(0,0,0,0.10),0_4px_6px_-4px_rgba(0,0,0,0.10)] text-white"
               : "bg-slate-100 text-[#64748B] group-hover:text-[var(--brand-1-500)] group-hover:bg-[linear-gradient(135deg,rgba(234,25,82,0.1)_0%,rgba(227,63,255,0.1)_100%)]"
           }`}
         >
-          {active ? (
+          {currentOpen ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="12"
@@ -203,7 +217,7 @@ export default function SuggestedActionCard({
         <div className="space-y-1">
           <h3
             className={`text-sm font-semibold leading-5 transition-colors duration-200 ${
-              active
+              currentOpen
                 ? "text-[var(--brand-1-500)]"
                 : "text-slate-900 group-hover:text-[var(--brand-1-500)]"
             }`}
