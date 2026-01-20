@@ -681,6 +681,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
             datasetUrl={downloadUrl}
             titleCardHeadline={dataset.title ?? undefined}
             datasetDescription={heroParagraphText}
+            datasetMetaDataUrl={metaUrl}
           />
         </div>
       )}

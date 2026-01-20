@@ -179,13 +179,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const { datasetUrl, prompt, datasetDescription, datasetTitle } = req.body;
+    const {
+        datasetUrl,
+        prompt,
+        datasetDescription,
+        datasetTitle,
+        datasetMetaDataUrl,
+        datasetMetaDataContent,
+    } = req.body;
 
     if (!datasetUrl) {
         return res.status(400).json({ message: 'Dataset URL is required' });
     }
 
     try {
+        let metadataContent: string | null = null;
+        if (typeof datasetMetaDataContent === "string" && datasetMetaDataContent.trim()) {
+            metadataContent = datasetMetaDataContent.trim();
+        } else if (typeof datasetMetaDataUrl === "string" && datasetMetaDataUrl.trim()) {
+            try {
+                const metaResponse = await fetch(datasetMetaDataUrl);
+                if (metaResponse.ok) {
+                    metadataContent = (await metaResponse.text()).trim();
+                } else {
+                    console.warn(`Failed to fetch dataset metadata: ${metaResponse.status} ${metaResponse.statusText}`);
+                }
+            } catch (error) {
+                console.warn("Failed to fetch dataset metadata content", error);
+            }
+        }
+
         // Fetch the CSV content
         const csvResponse = await fetch(datasetUrl);
         if (!csvResponse.ok) {
@@ -214,13 +237,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             datasetDescription && typeof datasetDescription === "string"
                 ? `Dataset description:\n${datasetDescription}\n`
                 : "";
+        const metadataSection =
+            metadataContent && typeof metadataContent === "string"
+                ? `Dataset metadata content:\n${metadataContent}\n`
+                : "";
 
-        const systemPrompt = `
-You are an expert data analyst.
+        const systemPrompt = `You are an expert data analyst.
 
 You receive:
 - the full dataset as a JSON file, and
 - sequential summaries generated from every row of that dataset.
+${metadataSection ? "- dataset metadata content for additional context.\n" : ""}
 
 You must treat the JSON data and the summaries together as the complete and authoritative representation of the dataset.
 Insights must be grounded in patterns observable in one or both of these inputs.
@@ -228,7 +255,7 @@ Insights must be grounded in patterns observable in one or both of these inputs.
 You may describe patterns referencing earlier or later periods if helpful,
 but do not mention internal processing concepts (e.g. chunks) and do not invent values beyond what the data or summaries imply.
 
-${titleSection}${descriptionSection}
+${titleSection}${descriptionSection}${metadataSection}
 
 Dataset header:
 ${headerLine}
@@ -245,6 +272,7 @@ ANALYTICAL QUALITY RULES:
 - Do not include any insight that could reasonably be written without inspecting the dataset or summaries.
 - Avoid generic statements such as “there is an upward trend” unless the trend has distinguishing characteristics (e.g. consistency, volatility, reversals, relative strength).
 - Prefer relative, comparative, or structural descriptions over single-row observations.
+- **DISTINCT TITLES:** Every title in "moreInsights" must be unique. Do not repeat titles or use slight variations of the same title. Each card must focus on a completely different aspect of the data (e.g., one on growth, one on risk, one on anomalies, one on geography).
 
 CONFIDENCE GUIDANCE:
 - High confidence: pattern appears consistently across the dataset with minimal contradiction.
@@ -260,6 +288,7 @@ OUTPUT REQUIREMENTS:
 - Always emit the full JSON schema shown below.
 - Always emit at least two objects in "keyInsights" if more than 10 data rows or multiple patterns are evident.
 - Do not repeat the same observation across multiple sections using different wording.
+- **MANDATORY DETAIL:** You MUST fully populate the "detailContent" for every entry in the "moreInsights" array. Do not leave arrays empty or strings blank. If you select a variant (e.g., "trend"), you must fill the corresponding trend object fields.
 
 If an insight cannot be clearly justified by the data provided, it must be omitted.
 {
@@ -318,10 +347,10 @@ If an insight cannot be clearly justified by the data provided, it must be omitt
 }
 
 Please also include a top-level "moreInsights" array with 4-6 entries. Each entry must have:
-  - title: short card title
-  - description: text explaining what the card should say
-  - detailVariant: one of the detail variants (composition, trend, etc.)
-  - detailContent: the detail payload that matches that variant
+  - title: A UNIQUE, descriptive card title specific to that insight.
+  - description: text explaining what the card should say.
+  - detailVariant: one of the detail variants (composition, trend, etc.).
+  - detailContent: the detail payload that matches that variant. Ensure this is fully populated and not empty.
 
 Ensure this array reflects the generated insights so the UI can render cards with matching detail content.
 Use "takeaways" to provide 3-5 concise bullets summarizing the most important insights, and "methodology" to describe the analysis approach in a short paragraph.
