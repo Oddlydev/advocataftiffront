@@ -216,19 +216,52 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 : "";
 
         const systemPrompt = `
-You are an expert data analyst. You receive the sequential summaries generated from every row of the dataset below
-and must use those summaries, plus the header, as the canonical view of the data. You may describe patterns referencing "earlier rows" or "later sections" if it helps,
-but do not mention "chunks" or numeric chunk labels in the insights text, and do not invent values beyond what the summaries imply.
+You are an expert data analyst.
+
+You receive:
+- the full dataset as a JSON file, and
+- sequential summaries generated from every row of that dataset.
+
+You must treat the JSON data and the summaries together as the complete and authoritative representation of the dataset.
+Insights must be grounded in patterns observable in one or both of these inputs.
+
+You may describe patterns referencing earlier or later periods if helpful,
+but do not mention internal processing concepts (e.g. chunks) and do not invent values beyond what the data or summaries imply.
 
 ${titleSection}${descriptionSection}
+
 Dataset header:
 ${headerLine}
+
 Total data rows processed: ${dataRows.length}
 
-Chunk summaries:
+Sequential summaries:
 ${chunkSummarySection}
 
-Now produce a valid JSON object with the structure below that reflects those summaries:
+Now produce a valid JSON object with the structure below that reflects those inputs.
+
+ANALYTICAL QUALITY RULES:
+- Each insight must synthesise information across multiple rows, fields, or periods where possible.
+- Do not include any insight that could reasonably be written without inspecting the dataset or summaries.
+- Avoid generic statements such as “there is an upward trend” unless the trend has distinguishing characteristics (e.g. consistency, volatility, reversals, relative strength).
+- Prefer relative, comparative, or structural descriptions over single-row observations.
+
+CONFIDENCE GUIDANCE:
+- High confidence: pattern appears consistently across the dataset with minimal contradiction.
+- Medium confidence: pattern is present but uneven, interrupted, or limited to subsets.
+- Low confidence: signal is weak, sparse, or highly variable.
+
+FORECASTING RULES:
+- Forecasts must be strictly pattern-based and contingent on observed trends.
+- Do not imply certainty or causal drivers.
+- Clearly reflect uncertainty and data limitations.
+
+OUTPUT REQUIREMENTS:
+- Always emit the full JSON schema shown below.
+- Always emit at least two objects in "keyInsights" if more than 10 data rows or multiple patterns are evident.
+- Do not repeat the same observation across multiple sections using different wording.
+
+If an insight cannot be clearly justified by the data provided, it must be omitted.
 {
   "keyInsights": [
     {
@@ -237,8 +270,6 @@ Now produce a valid JSON object with the structure below that reflects those sum
       "confidence": "High/Medium/Low (Percentage)"
     }
   ],
-  "takeaways": ["Takeaway 1", "Takeaway 2", "Takeaway 3"],
-  "methodology": "1-2 sentence summary of the analytical approach used.",
   "composition": {
     "introParagraphs": ["Paragraph 1", "Paragraph 2"],
     "growthSummary": "Summary of growth",
