@@ -213,7 +213,7 @@ export default function PageNewsletterConfirmation() {
 
                 {/* Checkbox */}
                 <div className="pt-7">
-                  <label className="flex items-center gap-3 cursor-pointer">
+                  <div className="flex items-center gap-3">
                     <div className="relative flex justify-center items-center">
                       <input
                         id="agree"
@@ -238,17 +238,18 @@ export default function PageNewsletterConfirmation() {
                       </svg>
                     </div>
                     <span className="text-base font-normal text-slate-600 font-sourcecodepro">
-                      I agree to Advocata&apos;s{" "}
-                      <Link
+                      <label htmlFor="agree" className="cursor-pointer">
+                        I agree to Advocata&apos;s{" "}
+                      </label>
+                      <a
                         href="/terms-and-conditions/"
-                        rel="noopener noreferrer"
                         className="underline hover:text-slate-900"
                       >
                         Terms and Conditions
-                      </Link>
+                      </a>
                       .
                     </span>
-                  </label>
+                  </div>
                 </div>
 
                 {/* Global error message below form */}
