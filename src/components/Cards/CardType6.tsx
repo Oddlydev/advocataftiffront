@@ -57,7 +57,9 @@ const CardType6: React.FC<CardType6Props> = ({
     try {
       const u = new URL(
         input,
-        typeof window !== "undefined" ? window.location.origin : "http://localhost"
+        typeof window !== "undefined"
+          ? window.location.origin
+          : "http://localhost",
       );
       return u.pathname || "/";
     } catch {
@@ -89,7 +91,7 @@ const CardType6: React.FC<CardType6Props> = ({
               {title}
             </h2>
 
-            <div className="mt-2 text-base/6 font-normal font-sourcecodepro text-slate-600 line-clamp-3 transition-colors duration-500 ease-in-out">
+            <div className="mt-2 text-base/6 font-normal font-sourcecodepro text-slate-600 line-clamp-3  transition-colors duration-500 ease-in-out">
               {stripParagraphTags(excerpt)}
             </div>
           </div>

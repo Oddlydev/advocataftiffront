@@ -56,7 +56,7 @@ function resolveMacroSlug(rawSlug?: string | null): string {
 }
 
 export default function FeaturedDashboardChart(
-  props: FeaturedDashboardChartProps
+  props: FeaturedDashboardChartProps,
 ) {
   if (props.kind === "macro") {
     const slug = resolveMacroSlug(props.slug);
@@ -79,7 +79,7 @@ export default function FeaturedDashboardChart(
         zoomOutId: `featured-macro-zoom-out-${idSuffix}`,
         resetId: `featured-macro-reset-${idSuffix}`,
       }),
-      [idSuffix]
+      [idSuffix],
     );
 
     const datasetUrl = props.datasetUrl ?? undefined;
@@ -235,22 +235,20 @@ export default function FeaturedDashboardChart(
             </div>
           </div>
         ) : null}{" "}
-        
         <div className="mt-2 md:mt-6 xl:mt-10">
-              <div className="bg-gray-50 rounded-lg px-6 py-3.5">
-                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
-                  <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
-                    <p>{metadata.dataSource}</p>
-                  </div>
-                  {metadata.dataSourceNote ? (
-                    <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
-                      <p>{metadata.dataSourceNote}</p>
-                    </div>
-                  ) : null}
-                </div>
+          <div className="bg-gray-50 rounded-lg px-6 py-3.5">
+            <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-normal leading-4 font-sourcecodepro">
+              <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                <p>{metadata.dataSource}</p>
               </div>
+              {metadata.dataSourceNote ? (
+                <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
+                  <p>{metadata.dataSourceNote}</p>
+                </div>
+              ) : null}
+            </div>
+          </div>
         </div>
-
       </div>
     );
   }

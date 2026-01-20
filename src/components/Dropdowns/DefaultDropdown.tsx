@@ -31,13 +31,13 @@ type DefaultDropdownProps = {
 
 function useClickOutside(
   elements: Array<React.RefObject<HTMLElement | null>>,
-  onOutside: () => void
+  onOutside: () => void,
 ) {
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as Node;
       const inside = elements.some(
-        (r) => r.current && r.current.contains(target)
+        (r) => r.current && r.current.contains(target),
       );
       if (!inside) onOutside();
     };
@@ -201,7 +201,7 @@ export default function DefaultDropdown({
                   <div className="group flex cursor-pointer items-center gap-2.5">
                     <span
                       aria-hidden
-                      className="relative flex h-6 w-6 items-center justify-center text-[#475569] group-hover:text-brand-1-700"
+                      className="relative flex h-6 w-6 items-center justify-center text-slate-600 group-hover:text-brand-1-700"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

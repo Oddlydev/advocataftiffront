@@ -126,12 +126,12 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
                     <h2 class="mt-2 cursor-pointer text-2xl leading-snug font-semibold font-montserrat text-slate-800">
                       ${title}
                     </h2>
-                    <div class="mt-2 text-base/6 font-normal font-sourcecodepro text-slate-600 line-clamp-3">
+                    <div class="mt-2 text-base/6 font-normal font-sourcecodepro text-slate-600 line-clamp-3 ">
                       ${excerptText}
                     </div>
                   </div>
                   <div class="card-footer mt-6 flex items-center justify-between">
-                    <time class="text-xs/tight uppercase font-medium font-sourcecodepro text-slate-600">
+                    <time class="text-xs/tight uppercase font-medium font-sourcecodepro text-slate-600 leading-4">
                       ${formatDate(postDate)}
                     </time>
                   </div>

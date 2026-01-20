@@ -123,7 +123,7 @@ async function fetchPageSEOByUri(uri: string): Promise<any | null> {
           }
         }
       }
-    }`
+    }`,
   );
   return data?.nodeByUri && (data.nodeByUri as any).seo
     ? (data.nodeByUri as any).seo
@@ -131,7 +131,7 @@ async function fetchPageSEOByUri(uri: string): Promise<any | null> {
 }
 
 async function fetchPageMetaByUri(
-  uri: string
+  uri: string,
 ): Promise<{ title?: string | null; content?: string | null } | null> {
   const wpUri = uri.endsWith("/") ? uri : `${uri}/`;
   const encoded = wpUri.replace(/"/g, '"');
@@ -147,7 +147,7 @@ async function fetchPageMetaByUri(
         __typename
         ... on Page { title content }
       }
-    }`
+    }`,
   );
   if (!data?.nodeByUri) return null;
   const node: any = data.nodeByUri as any;
@@ -287,7 +287,7 @@ export default function PageTheFinancesofStateOwnedEnterprises(): JSX.Element {
     let initial = cached.posts;
     if (effectiveYear) {
       initial = initial.filter((p) =>
-        p.years.some((y) => y.slug === effectiveYear)
+        p.years.some((y) => y.slug === effectiveYear),
       );
     }
     // Do not filter posts by industry; industry selection filters CSV rows.
@@ -316,13 +316,13 @@ export default function PageTheFinancesofStateOwnedEnterprises(): JSX.Element {
         const [seoRes, meta, yearsRaw, industriesRaw, posts] =
           await Promise.all([
             fetchPageSEOByUri(
-              pathname || "/the-finances-of-state-owned-enterprises/"
+              pathname || "/the-finances-of-state-owned-enterprises/",
             ).catch((e) => {
               console.warn("SEO fetch failed", e);
               return null as any;
             }),
             fetchPageMetaByUri(
-              pathname || "/the-finances-of-state-owned-enterprises/"
+              pathname || "/the-finances-of-state-owned-enterprises/",
             ).catch((e) => {
               console.warn("Meta fetch failed", e);
               return null as any;
@@ -354,7 +354,7 @@ export default function PageTheFinancesofStateOwnedEnterprises(): JSX.Element {
         let initial = posts;
         if (effectiveYear) {
           initial = initial.filter((p) =>
-            p.years.some((y) => y.slug === effectiveYear)
+            p.years.some((y) => y.slug === effectiveYear),
           );
         }
         // Do not filter by industry here; applies at CSV row-level
@@ -410,7 +410,7 @@ export default function PageTheFinancesofStateOwnedEnterprises(): JSX.Element {
 
   const paginatedPosts = filteredPosts.slice(
     (currentPage - 1) * pageSize,
-    currentPage * pageSize
+    currentPage * pageSize,
   );
   return (
     <main>
@@ -507,7 +507,7 @@ export default function PageTheFinancesofStateOwnedEnterprises(): JSX.Element {
                     setSelectedIndustries((prev) =>
                       prev.includes(ind.name)
                         ? prev.filter((n) => n !== ind.name)
-                        : [...prev, ind.name]
+                        : [...prev, ind.name],
                     );
                   },
                 }))}
@@ -567,7 +567,7 @@ export default function PageTheFinancesofStateOwnedEnterprises(): JSX.Element {
 
           {filteredPosts[0]?.methodologyFileUrl && (
             <div className="bg-gray-50 rounded-lg px-6 py-3.5 mb-3">
-              <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+              <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-normal leading-4 font-sourcecodepro">
                 <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro grid items-center gap-2">
                   <p>
                     To access the methodology for the dashboard on the Finances

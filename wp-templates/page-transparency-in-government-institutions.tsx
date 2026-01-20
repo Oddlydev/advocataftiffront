@@ -123,7 +123,7 @@ async function fetchPageSEOByUri(uri: string): Promise<any | null> {
           }
         }
       }
-    }`
+    }`,
   );
   return data?.nodeByUri && (data.nodeByUri as any).seo
     ? (data.nodeByUri as any).seo
@@ -131,7 +131,7 @@ async function fetchPageSEOByUri(uri: string): Promise<any | null> {
 }
 
 async function fetchPageMetaByUri(
-  uri: string
+  uri: string,
 ): Promise<{ title?: string | null; content?: string | null } | null> {
   const wpUri = uri.endsWith("/") ? uri : `${uri}/`;
   const encoded = wpUri.replace(/"/g, '\\"');
@@ -147,7 +147,7 @@ async function fetchPageMetaByUri(
         __typename
         ... on Page { title content }
       }
-    }`
+    }`,
   );
   if (!data?.nodeByUri) return null;
   const node: any = data.nodeByUri as any;
@@ -272,12 +272,12 @@ export default function PageTransparencyDashboard(): JSX.Element {
     let initial = cached.posts;
     if (effectiveIndustry) {
       initial = initial.filter((p) =>
-        p.industries.some((ind) => ind.slug === effectiveIndustry)
+        p.industries.some((ind) => ind.slug === effectiveIndustry),
       );
     }
     if (effectiveYear) {
       initial = initial.filter((p) =>
-        p.years.some((y) => y.slug === effectiveYear)
+        p.years.some((y) => y.slug === effectiveYear),
       );
     }
     setFilteredPosts(initial);
@@ -303,14 +303,14 @@ export default function PageTransparencyDashboard(): JSX.Element {
       try {
         const [seoRes, data, meta] = await Promise.all([
           fetchPageSEOByUri(
-            pathname || "/transparency-in-government-institutions/"
+            pathname || "/transparency-in-government-institutions/",
           ).catch((e) => {
             console.warn("SEO fetch failed", e);
             return null as any;
           }),
           fetchTransparencyDashboardData(),
           fetchPageMetaByUri(
-            pathname || "/transparency-in-government-institutions/"
+            pathname || "/transparency-in-government-institutions/",
           ).catch((e) => {
             console.warn("Meta fetch failed", e);
             return null as any;
@@ -342,12 +342,12 @@ export default function PageTransparencyDashboard(): JSX.Element {
         let initialResults = posts;
         if (effectiveIndustry) {
           initialResults = initialResults.filter((p) =>
-            p.industries.some((ind) => ind.slug === effectiveIndustry)
+            p.industries.some((ind) => ind.slug === effectiveIndustry),
           );
         }
         if (effectiveYear) {
           initialResults = initialResults.filter((p) =>
-            p.years.some((y) => y.slug === effectiveYear)
+            p.years.some((y) => y.slug === effectiveYear),
           );
         }
         setFilteredPosts(initialResults);
@@ -377,7 +377,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
     let results = posts;
     if (industry) {
       results = results.filter((p) =>
-        p.industries.some((ind) => ind.slug === industry)
+        p.industries.some((ind) => ind.slug === industry),
       );
     }
     if (year) {
@@ -404,7 +404,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
 
   const paginatedPosts = filteredPosts.slice(
     (currentPage - 1) * pageSize,
-    currentPage * pageSize
+    currentPage * pageSize,
   );
 
   return (
@@ -503,7 +503,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
                     setSelectedMinistries((prev) =>
                       prev.includes(ministry)
                         ? prev.filter((m) => m !== ministry)
-                        : [...prev, ministry]
+                        : [...prev, ministry],
                     );
                   },
                 }))}
@@ -560,7 +560,7 @@ export default function PageTransparencyDashboard(): JSX.Element {
 
           {filteredPosts[0]?.methodologyFileUrl && (
             <div className="bg-gray-50 rounded-lg px-6 py-3.5 mb-8">
-              <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+              <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-normal leading-4 font-sourcecodepro">
                 <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                   <p>
                     To access the methodology for the dashboard on the

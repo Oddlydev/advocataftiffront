@@ -359,7 +359,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
   const [year, setYear] = useState<string>(pathInfo.year);
   const [yearOptions, setYearOptions] = useState<string[]>([]);
   const [selectedDatasetKey, setSelectedDatasetKey] = useState<string>(
-    pathInfo.datasetSlug
+    pathInfo.datasetSlug,
   );
   const [datasetCache, setDatasetCache] = useState<
     Record<string, ParsedDataset>
@@ -386,9 +386,9 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
   const fiscalNodes = useMemo(
     () =>
       (data?.governmentFiscals?.nodes ?? []).filter(
-        (node): node is FiscalDatasetNode => !!node
+        (node): node is FiscalDatasetNode => !!node,
       ),
-    [data]
+    [data],
   );
 
   const datasets = useMemo(() => {
@@ -417,13 +417,13 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
     }
     const slugFromPath = pathInfo.datasetSlug;
     const match = datasets.find(
-      (item) => item.key === slugFromPath || item.rawSlug === slugFromPath
+      (item) => item.key === slugFromPath || item.rawSlug === slugFromPath,
     );
     if (!match) {
       return;
     }
     setSelectedDatasetKey((current) =>
-      current === match.key ? current : match.key
+      current === match.key ? current : match.key,
     );
   }, [datasets, pathInfo.datasetSlug]);
 
@@ -481,7 +481,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
         setYear((current) =>
           current && cached.yearColumns.includes(current)
             ? current
-            : cached.yearColumns[0]
+            : cached.yearColumns[0],
         );
       }
       setLoading(false);
@@ -513,7 +513,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
         const columns = (parsed.columns ?? []).map((col) => col.trim());
         const yearCols = columns.filter((col) => YEAR_COLUMN_REGEX.test(col));
         const sortedYearCols = [...yearCols].sort(
-          (a, b) => Number(b) - Number(a)
+          (a, b) => Number(b) - Number(a),
         );
         const rows = parsed.map((row) => {
           const entry: Record<string, string> = {};
@@ -909,7 +909,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
             {/* Meta: Data Source and Periodicity */}
             <div className="mt-2 md:mt-6 xl:mt-10">
               <div className="bg-gray-50 rounded-lg px-6 py-3.5">
-                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-sourcecodepro">
+                <div className="grid grid-cols-1 md:flex md:justify-between gap-4 text-xs/4 text-slate-600 font-normal leading-4 font-sourcecodepro">
                   <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                     <p>
                       Data Source:{" "}
@@ -936,10 +936,10 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
             <div className="border border-gray-200 bg-gray-50 rounded-xl">
               <div className="px-6 py-7">
                 <div className="mb-2">
-                  <h5 className="text-2xl font-montserrat font-bold text-slate-950 mb-1.5">
+                  <h5 className="text-xs font-sourcecodepro font-semibold text-slate-600 leading-3 mb-1.5">
                     Notes
                   </h5>
-                  <ol className="list-decimal pl-5 space-y-1 text-lg font-baskervville font-normal text-slate-950">
+                  <ol className="list-decimal pl-5 space-y-1 text-xs font-sourcecodepro font-normal leading-4 text-slate-600">
                     {notesLines.map((line, idx) => (
                       <li key={idx}>{line}</li>
                     ))}
@@ -961,12 +961,12 @@ export default PageFiscalOperations;
 (PageFiscalOperations as any).query = PAGE_QUERY;
 (PageFiscalOperations as any).variables = (
   seedNode: { databaseId?: number | string } = {},
-  ctx: GetStaticPropsContext
+  ctx: GetStaticPropsContext,
 ) => {
   const databaseId = seedNode?.databaseId;
   if (!databaseId) {
     throw new Error(
-      "PageFiscalOperations.variables: missing databaseId from seed node."
+      "PageFiscalOperations.variables: missing databaseId from seed node.",
     );
   }
   return {

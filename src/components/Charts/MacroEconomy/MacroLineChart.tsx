@@ -47,7 +47,7 @@ export type MacroLineChartProps = {
     zoomInId: string;
     zoomOutId: string;
     resetId: string;
-    
+
     zoomLabelRef?: React.RefObject<HTMLSpanElement>; // add this
   };
   yMaxPadding?: number;
@@ -91,7 +91,7 @@ async function fetchCsvWithFallback(url: string): Promise<string> {
 }
 
 function coerceNumber(
-  value: string | number | null | undefined
+  value: string | number | null | undefined,
 ): number | null {
   if (typeof value === "number") return Number.isFinite(value) ? value : null;
   if (typeof value === "string") {
@@ -192,7 +192,7 @@ export function MacroLineChart({
       } catch (error) {
         console.error(
           `[MacroLineChart] Failed to load dataset ${datasetUrl} ::`,
-          error
+          error,
         );
         if (isMounted) {
           setData([]);
@@ -227,7 +227,7 @@ export function MacroLineChart({
       .style("background", "#FFF")
       .style(
         "box-shadow",
-        "0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -4px rgba(0,0,0,0.1)"
+        "0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -4px rgba(0,0,0,0.1)",
       )
       .style("pointer-events", "none");
 
@@ -298,10 +298,10 @@ export function MacroLineChart({
     // FORCE 0 INTO DOMAIN (Option A)
     const computeDomain = (target: MacroSeriesConfig[]) => {
       const maxVal = d3.max(data, (d) =>
-        d3.max(target, ({ key }) => d[key] ?? Number.NEGATIVE_INFINITY)
+        d3.max(target, ({ key }) => d[key] ?? Number.NEGATIVE_INFINITY),
       );
       const minVal = d3.min(data, (d) =>
-        d3.min(target, ({ key }) => d[key] ?? Number.POSITIVE_INFINITY)
+        d3.min(target, ({ key }) => d[key] ?? Number.POSITIVE_INFINITY),
       );
       const safeMax = Number.isFinite(maxVal!) ? maxVal! : 0;
       const safeMin = Number.isFinite(minVal!) ? minVal! : 0;
@@ -317,7 +317,7 @@ export function MacroLineChart({
     };
 
     const [yLeftMin, yLeftMax] = computeDomain(
-      leftSeries.length ? leftSeries : series
+      leftSeries.length ? leftSeries : series,
     );
     const yLeft = d3
       .scaleLinear()
@@ -351,7 +351,7 @@ export function MacroLineChart({
     };
 
     const resolvedYAxisLabel = adjustLabelForScale(
-      axisLabels.yLeft || yAxisLabel
+      axisLabels.yLeft || yAxisLabel,
     );
     const resolvedYAxisRightLabel = axisLabels.yRight || yAxisRightLabel;
 
@@ -364,12 +364,12 @@ export function MacroLineChart({
         d3
           .axisLeft(yLeft)
           .ticks(5)
-          .tickFormat((value) => leftTickFormatter(value as number) as any)
+          .tickFormat((value) => leftTickFormatter(value as number) as any),
       )
       .selectAll("text")
       .attr(
         "class",
-        "font-sourcecodepro text-slate-600 text-xs md:text-base font-semibold"
+        "font-sourcecodepro text-slate-600 text-xs md:text-lg leading-7 font-semibold",
       );
 
     if (useDualAxis && yRight) {
@@ -382,12 +382,12 @@ export function MacroLineChart({
           d3
             .axisRight(yRight)
             .ticks(5)
-            .tickFormat((value) => rightTickFormatter(value as number) as any)
+            .tickFormat((value) => rightTickFormatter(value as number) as any),
         )
         .selectAll("text")
         .attr(
           "class",
-          "font-sourcecodepro text-slate-600 text-xs md:text-base font-semibold"
+          "font-sourcecodepro text-slate-600 text-xs md:text-lg leading-7 font-semibold",
         );
     }
 
@@ -398,12 +398,12 @@ export function MacroLineChart({
         d3
           .axisBottom(x)
           .ticks(Math.min(data.length, 10))
-          .tickFormat(d3.format("d"))
+          .tickFormat(d3.format("d")),
       )
       .selectAll("text")
       .attr(
         "class",
-        "font-sourcecodepro text-slate-600 text-xs md:text-base font-semibold"
+        "font-sourcecodepro text-slate-600 text-xs md:text-lg leading-7 font-semibold",
       );
 
     // LABELS
@@ -413,7 +413,7 @@ export function MacroLineChart({
       .attr("transform", `translate(${-50},${height / 2}) rotate(-90)`)
       .attr(
         "class",
-        "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
+        "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal leading-7",
       )
       .text(resolvedYAxisLabel);
 
@@ -424,7 +424,7 @@ export function MacroLineChart({
         .attr("transform", `translate(${width + 65},${height / 2}) rotate(90)`)
         .attr(
           "class",
-          "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal"
+          "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal leading-7",
         )
         .text(resolvedYAxisRightLabel ?? "");
     }
@@ -439,14 +439,14 @@ export function MacroLineChart({
         d3
           .axisLeft(yLeft)
           .tickSize(-width)
-          .tickFormat(() => "")
+          .tickFormat(() => ""),
       )
       .call((g) =>
         g
           .selectAll("line")
           .attr("stroke", (d) => (d === 0 ? "transparent" : "#CBD5E1"))
           .attr("stroke-width", 1)
-          .attr("stroke-dasharray", (d) => (d === 0 ? "0" : "4,4"))
+          .attr("stroke-dasharray", (d) => (d === 0 ? "0" : "4,4")),
       )
       .call((g) => g.select(".domain").remove());
 
@@ -678,9 +678,9 @@ export function MacroLineChart({
 
         zoomGroup.attr(
           "transform",
-          `translate(${MARGIN.left + horizontalBalance},${MARGIN.top + verticalBalance}) scale(${scale})`
+          `translate(${MARGIN.left + horizontalBalance},${MARGIN.top + verticalBalance}) scale(${scale})`,
         );
-        
+
         updateZoomLabel(scale);
       });
 
@@ -704,18 +704,18 @@ export function MacroLineChart({
     updateZoomLabel(initialScale);
 
     const zoomInSel = d3.select(
-      `#${controlIds.zoomInId}`
+      `#${controlIds.zoomInId}`,
     ) as unknown as d3.Selection<HTMLButtonElement, unknown, null, undefined>;
     const zoomOutSel = d3.select(
-      `#${controlIds.zoomOutId}`
+      `#${controlIds.zoomOutId}`,
     ) as unknown as d3.Selection<HTMLButtonElement, unknown, null, undefined>;
     const resetSel = d3.select(
-      `#${controlIds.resetId}`
+      `#${controlIds.resetId}`,
     ) as unknown as d3.Selection<HTMLButtonElement, unknown, null, undefined>;
 
     const setDisabled = (
       sel: d3.Selection<HTMLButtonElement, unknown, null, undefined>,
-      disabled: boolean
+      disabled: boolean,
     ) => {
       if (sel.empty()) return; // safety
       sel.property("disabled", disabled).style("opacity", disabled ? 0.7 : 1);
@@ -794,8 +794,11 @@ export function MacroLineChart({
         ref={chartRef}
         className={`w-full h-full ${isFullscreen ? "" : "px-4"}`}
       />
-      <div ref={tooltipRef} 
-        className="absolute hidden bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1 md:py-2 md:px-3 rounded shadow-lg pointer-events-none" style={{ border: "1px solid #E2E8F0" }} />
+      <div
+        ref={tooltipRef}
+        className="absolute hidden bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1 md:py-2 md:px-3 rounded shadow-lg pointer-events-none"
+        style={{ border: "1px solid #E2E8F0" }}
+      />
     </div>
   );
 }

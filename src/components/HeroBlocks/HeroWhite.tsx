@@ -32,11 +32,11 @@ export default function HeroWhite({
           <div className="space-y-2.5">
             {paragraphHtml ? (
               <div
-                className="hero-paragraph text-slate-800 text-base/6 lg:text-lg/7 font-baskervville font-normal max-w-2xl [&_p]:mb-2.5 [&_p:last-child]:mb-0"
+                className="hero-paragraph text-slate-800 text-base/6 lg:text-lg/7 font-baskervville font-normal max-w-2xl leading-7 [&_p]:mb-2.5 [&_p:last-child]:mb-0"
                 dangerouslySetInnerHTML={{ __html: paragraphHtml }}
               />
             ) : (
-              <p className="hero-paragraph text-slate-800 text-base/6 lg:text-lg/7 font-baskervville font-normal max-w-2xl">
+              <p className="hero-paragraph text-slate-800 text-base/6 lg:text-lg/7 font-baskervville font-normal max-w-2xl leading-7">
                 {paragraph}
               </p>
             )}
