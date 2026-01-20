@@ -199,12 +199,12 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
 
   if (!dataset) return <p>Dataset not found.</p>;
 
-  // Short hero paragraph from WYSIWYG/excerpt
-  const rawExcerpt = dataset.excerpt || dataset.content || "";
-  const plainExcerpt = decodeHtmlEntities(
-    rawExcerpt.replace(/<[^>]+>/g, "").trim()
+  // Full hero description from WYSIWYG content (fallback to excerpt)
+  const rawDescription = dataset.content || dataset.excerpt || "";
+  const heroParagraphHtml = rawDescription;
+  const heroParagraphText = decodeHtmlEntities(
+    rawDescription.replace(/<[^>]+>/g, "").trim()
   );
-  const heroParagraph = plainExcerpt;
 
   const downloadUrl =
     dataset.dataSetFields?.dataSetFile?.node?.mediaItemUrl ?? "";
@@ -389,7 +389,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
             <div className="px-5 md:px-10 xl:px-16 mx-auto w-full">
               <HeroWhite
                 title={dataset.title ?? ""}
-                paragraph={heroParagraph}
+                paragraphHtml={heroParagraphHtml}
                 items={[{ label: "Datasets", href: "/datasets" }]}
               />
             </div>
@@ -483,7 +483,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                         <AIInsightsPanel
                           manualInsights={playgroundInsights}
                           titleCardHeadline={dataset.title ?? "Custom insights"}
-                          datasetDescription={heroParagraph}
+                          datasetDescription={heroParagraphText}
                           onClose={() => setPlaygroundInsights(null)}
                         />
                       </div>
@@ -680,7 +680,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
             onClose={closeInsightsPanel}
             datasetUrl={downloadUrl}
             titleCardHeadline={dataset.title ?? undefined}
-            datasetDescription={heroParagraph}
+            datasetDescription={heroParagraphText}
           />
         </div>
       )}
