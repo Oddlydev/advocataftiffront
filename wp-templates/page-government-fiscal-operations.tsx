@@ -757,7 +757,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
         .append("tspan")
         .attr("x", (d) => (d.x1 ?? 0) + 10)
         .attr("dy", "1.05em")
-        .style("font-weight", "400")
+        .style("font-weight", "500")
         .style("fill", "#475569")
         .text((d) => {
           if (!Number.isFinite(d.rawValue) || d.rawValue <= 0) return "";
