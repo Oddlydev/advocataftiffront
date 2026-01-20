@@ -16,6 +16,21 @@ function stripParagraphTags(text: string = ""): string {
   return text.replace(/<\/?p[^>]*>/g, "").trim();
 }
 
+function normalizeWpEntities(input?: string | null): string {
+  if (!input) return "";
+  return (
+    input
+      // Apostrophes / single quotes
+      .replace(/&#8217;|&rsquo;/gi, "'")
+      .replace(/&#8216;|&lsquo;/gi, "'")
+      // Double quotes
+      .replace(/&#8220;|&ldquo;/gi, '"')
+      .replace(/&#8221;|&rdquo;/gi, '"')
+      // Ampersand
+      .replace(/&#038;|&amp;/gi, "&")
+  );
+}
+
 // Function to format date as "24th August 2025"
 function formatDate(dateStr?: string | number | null): string {
   if (!dateStr) return "";
@@ -57,7 +72,7 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
 
     const searchClient = algoliasearch(
       process.env.NEXT_PUBLIC_ALGOLIA_APP_ID as string,
-      process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY as string
+      process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY as string,
     );
 
     const search = instantsearch({
@@ -84,10 +99,13 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
         templates: {
           header: "",
           item(hit: any) {
-            const title = hit.post_title || "";
-            const excerpt = hit.post_excerpt || "";
+            const title = normalizeWpEntities(hit.post_title || "");
+            const excerpt = normalizeWpEntities(
+              hit.content || hit.post_excerpt || "",
+            );
             const uri = hit.permalink || "#";
             const postDate = hit.post_date || "";
+            const excerptText = stripParagraphTags(excerpt);
 
             return `
               <div class="relative flex flex-col h-full overflow-hidden rounded-lg bg-white border border-slate-300
@@ -109,7 +127,7 @@ export default function RelatedDatasets({ datasetId }: RelatedDatasetsProps) {
                       ${title}
                     </h2>
                     <div class="mt-2 text-base/6 font-normal font-sourcecodepro text-slate-600 line-clamp-3">
-                      ${stripParagraphTags(excerpt)}
+                      ${excerptText}
                     </div>
                   </div>
                   <div class="card-footer mt-6 flex items-center justify-between">
