@@ -13,7 +13,6 @@ export type InsightSection = {
 export type MoreInsightDetailContent = {
   summary?: string;
   sections?: InsightSection[];
-  recommendations?: string[];
 };
 
 export type MoreInsightDetail = {
@@ -25,6 +24,4 @@ export type MoreInsightDetail = {
 export type AIInsightsResponse = {
   keyInsights: KeyInsightContent[];
   moreInsights?: MoreInsightDetail[];
-  takeaways?: string[];
-  methodology?: string;
 };

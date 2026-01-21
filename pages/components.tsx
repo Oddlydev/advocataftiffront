@@ -35,10 +35,6 @@ export default function ComponentsPage() {
         ],
       },
     ],
-    recommendations: [
-      "Focus monitoring on categories with high variance and large share.",
-      "Revisit anomaly thresholds before the next reporting cycle.",
-    ],
   };
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f4f4fb] p-6">

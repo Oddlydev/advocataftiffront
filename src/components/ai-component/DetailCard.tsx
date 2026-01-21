@@ -2,7 +2,6 @@
 
 import React from "react";
 import ListBulletItem from "./ListBulletItem";
-import ListNumberedItem from "./ListNumberedItem";
 import type { MoreInsightDetailContent } from "./detailContent.types";
 
 const CTA_SECTION = (onDownload: () => void) => (
@@ -59,12 +58,6 @@ function formatList(items?: string[], prefix = "- ") {
   return items.map((item) => `${prefix}${item}`).join("\n");
 }
 
-function formatNumberedList(items?: string[]) {
-  if (!items || items.length === 0) {
-    return "None provided.";
-  }
-  return items.map((item, index) => `${index + 1}. ${item}`).join("\n");
-}
 
 function buildReportFilename(title?: string) {
   const base = title?.trim() ? `${title}-analysis-report` : "analysis-report";
@@ -86,9 +79,6 @@ function buildDetailReportContent(
   const summary = detailContent.summary?.trim();
   const sections = Array.isArray(detailContent.sections)
     ? detailContent.sections
-    : [];
-  const recommendations = Array.isArray(detailContent.recommendations)
-    ? detailContent.recommendations
     : [];
 
   lines.push(header);
@@ -117,9 +107,6 @@ function buildDetailReportContent(
       lines.push("");
     });
   }
-
-  lines.push("Recommendations");
-  lines.push(formatNumberedList(recommendations));
 
   return lines.join("\n");
 }
@@ -158,9 +145,6 @@ export default function DetailCard({
 
   const sections = Array.isArray(detailContent.sections)
     ? detailContent.sections
-    : [];
-  const recommendations = Array.isArray(detailContent.recommendations)
-    ? detailContent.recommendations
     : [];
   const summary = detailContent.summary?.trim();
 
@@ -202,23 +186,6 @@ export default function DetailCard({
               </div>
             );
           })}
-        </div>
-      )}
-
-      {recommendations.length > 0 && (
-        <div className="pt-5 mt-1 border-t border-slate-200 mb-0">
-          <p className="text-sm font-semibold text-slate-700 font-[Montserrat]">
-            Recommendations
-          </p>
-          <div className="mt-2 space-y-3.5">
-            {recommendations.map((line, idx) => (
-              <ListNumberedItem
-                key={`${line}-${idx}`}
-                number={idx + 1}
-                text={line}
-              />
-            ))}
-          </div>
         </div>
       )}
 

@@ -35,14 +35,6 @@ function formatList(items?: string[] | string | null, prefix = "- ") {
   return normalized.map((item) => `${prefix}${item}`).join("\n");
 }
 
-function formatNumberedList(items?: string[] | string | null) {
-  const normalized = normalizeStringArray(items);
-  if (normalized.length === 0) {
-    return "";
-  }
-  return normalized.map((item, index) => `${index + 1}. ${item}`).join("\n");
-}
-
 function formatKeyInsights(insights?: AIInsightsResponse["keyInsights"]) {
   if (!insights || insights.length === 0) {
     return "";
@@ -63,7 +55,6 @@ function appendDetailContent(
   const sections = Array.isArray(detailContent.sections)
     ? detailContent.sections
     : [];
-  const recommendations = normalizeStringArray(detailContent.recommendations);
 
   if (summary) {
     lines.push("Summary");
@@ -85,11 +76,7 @@ function appendDetailContent(
     lines.push("");
   });
 
-  const formattedRecommendations = formatNumberedList(recommendations);
-  if (formattedRecommendations) {
-    lines.push("Recommendations:");
-    lines.push(formattedRecommendations);
-  }
+  // Recommendations intentionally omitted from the report output.
 }
 
 function buildMoreInsightsDownloadReport(

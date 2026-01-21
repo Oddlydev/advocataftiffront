@@ -217,8 +217,6 @@ If an insight cannot be clearly justified by the data provided, it must be omitt
       "confidence": "High/Medium/Low (Percentage)"
     }
   ],
-  "takeaways": ["Takeaway 1", "Takeaway 2", "Takeaway 3"],
-  "methodology": "1-2 sentence summary of the analytical approach used.",
   "moreInsights": [
     {
       "title": "Short card title",
@@ -231,15 +229,13 @@ If an insight cannot be clearly justified by the data provided, it must be omitt
             "body": "Short paragraph of supporting context",
             "bullets": ["Bullet 1", "Bullet 2"]
           }
-        ],
-        "recommendations": ["Recommendation 1", "Recommendation 2"]
+        ]
       }
     }
   ]
 }
 
 Ensure "moreInsights" has 4-6 entries, and the detail content is grounded in the dataset.
-Use "takeaways" to provide 3-5 concise bullets summarizing the most important insights, and "methodology" to describe the analysis approach in a short paragraph.
 
 Ensure the JSON reflects the sequential summaries, even if some rows were indirectly covered. Always include the full schema shown above.
 
