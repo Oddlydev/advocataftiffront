@@ -188,60 +188,26 @@ Now produce a valid JSON object with the structure below that reflects those sum
   ],
   "takeaways": ["Takeaway 1", "Takeaway 2", "Takeaway 3"],
   "methodology": "1-2 sentence summary of the analytical approach used.",
-  "composition": {
-    "introParagraphs": ["Paragraph 1", "Paragraph 2"],
-    "growthSummary": "Summary of growth",
-    "firstMetrics": ["Metric 1", "Metric 2"],
-    "secondMetrics": ["Metric 1", "Metric 2"],
-    "recommendations": ["Rec 1", "Rec 2"]
-  },
-  "trend": {
-    "intro": "Intro text",
-    "disruptionParagraph": "Text about disruptions",
-    "longTermTrends": ["Trend 1", "Trend 2"],
-    "emergingPattern": "Text about emerging patterns",
-    "recommendations": ["Rec 1", "Rec 2"]
-  },
-  "ranking": {
-    "intro": "Intro text",
-    "stabilityRanking": ["Rank 1", "Rank 2"],
-    "linkTexts": ["Link text 1", "Link text 2"],
-    "recommendations": ["Rec 1", "Rec 2"]
-  },
-  "dataQuality": {
-    "intro": "Intro text",
-    "missingDataSummary": "Summary of missing data",
-    "breakdown": ["Breakdown 1", "Breakdown 2"],
-    "timeline": ["Timeline 1", "Timeline 2"],
-    "outliers": ["Outlier 1", "Outlier 2"],
-    "checks": ["Check 1", "Check 2"],
-    "recommendations": ["Rec 1", "Rec 2"]
-  },
-  "forecast": {
-    "intro": "Intro text",
-    "forecastSummary": "Summary of forecast",
-    "categoryProjections": ["Proj 1", "Proj 2"],
-    "validationNotes": ["Note 1", "Note 2"],
-    "riskFactors": ["Risk 1", "Risk 2"],
-    "recommendations": ["Rec 1", "Rec 2"]
-  },
-  "dataset": {
-    "intro": "Intro text",
-    "enhancements": ["Enhancement 1", "Enhancement 2"],
-    "fileFormats": ["Format 1", "Format 2"],
-    "newColumns": ["Col 1", "Col 2"],
-    "qaChecks": ["Check 1", "Check 2"],
-    "recommendations": ["Rec 1", "Rec 2"]
-  }
+  "moreInsights": [
+    {
+      "title": "Short card title",
+      "description": "Short summary shown on the card",
+      "detail": {
+        "summary": "1-2 sentence summary of the detail view",
+        "sections": [
+          {
+            "title": "Section title",
+            "body": "Short paragraph of supporting context",
+            "bullets": ["Bullet 1", "Bullet 2"]
+          }
+        ],
+        "recommendations": ["Recommendation 1", "Recommendation 2"]
+      }
+    }
+  ]
 }
 
-Please also include a top-level "moreInsights" array with 4-6 entries. Each entry must have:
-  - title: short card title
-  - description: text explaining what the card should say
-  - detailVariant: one of the detail variants (composition, trend, etc.)
-  - detailContent: the detail payload that matches that variant
-
-Ensure this array reflects the generated insights so the UI can render cards with matching detail content.
+Ensure "moreInsights" has 4-6 entries, and the detail content is grounded in the dataset.
 Use "takeaways" to provide 3-5 concise bullets summarizing the most important insights, and "methodology" to describe the analysis approach in a short paragraph.
 
 Ensure the JSON reflects the sequential summaries, even if some rows were indirectly covered. Always include the full schema shown above.

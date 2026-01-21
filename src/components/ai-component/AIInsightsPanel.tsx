@@ -1,12 +1,7 @@
 import type {
-  CompositionDetailContent,
-  DataQualityDetailContent,
-  DatasetDetailContent,
-  DetailContentMap,
-  DetailVariant,
-  ForecastDetailContent,
-  RankingDetailContent,
-  TrendDetailContent,
+  AIInsightsResponse,
+  MoreInsightDetail,
+  MoreInsightDetailContent,
 } from "./detailContent.types";
 import React, { useEffect, useState } from "react";
 
@@ -16,164 +11,7 @@ import LoadingIcon from "./LoadingIcon";
 import SuggestedActionCard from "./SuggestedActionCard";
 import TitleCard from "./TitleCard";
 
-export const detailContentByVariant: {
-  [K in Exclude<DetailVariant, "keyInsights">]: DetailContentMap[K];
-} = {
-  composition: {
-    introParagraphs: [
-      "The dataset reveals consistent category momentum with a notable lean toward essential services.",
-      "Food spending accounts for the largest share and is still growing faster than the broader average.",
-    ],
-    growthSummary:
-      "Aggregate annual growth averages 5.3%, with Food, Alcohol & Tobacco, and Personal Care leading the surge.",
-    firstMetrics: [
-      "Food: +5.8% CAGR, 38% of total spend",
-      "Housing: +4.2% CAGR with low volatility",
-      "Alcohol & Tobacco: +12.3% YoY but higher variance",
-    ],
-    secondMetrics: [
-      "Transport: -0.4% YoY, reflects higher fuel efficiency",
-      "Health: +3.1% YoY, stable despite policy changes",
-      "Education: +2.7% YoY, driven by online services",
-    ],
-    recommendations: [
-      "Double down on resilience programs for Food and Housing.",
-      "Monitor Alcohol & Tobacco for emerging volatility risks.",
-      "Consider automation investments in Transportation to arrest decline.",
-    ],
-  },
-  trend: {
-    intro:
-      "The 26-year trend analysis highlights cyclical recoveries, with 2018 and 2021 standing out as growth pivots.",
-    disruptionParagraph:
-      "Pandemic-era stimulus created steep spikes that are now normalizing but still influence recent averages.",
-    longTermTrends: [
-      "Housing demand has eased since 2019 but remains above pre-2008 averages.",
-      "Technology spending accelerated after 2020, yet stabilization is visible in the past 3 years.",
-      "Agriculture & utilities hold steady due to regulation-backed contracts.",
-    ],
-    emergingPattern:
-      "Health & Education are converging patterns, suggesting bundling opportunities for policy planning.",
-    recommendations: [
-      "Update scenarios to isolate post-pandemic normalization signals.",
-      "Prioritize trend monitoring on sectors where volatility exceeds 8%.",
-      "Share insights with portfolio teams to align on emerging service bundling.",
-    ],
-  },
-  ranking: {
-    intro:
-      "Category ranking surfaces stability leaders alongside growth champions across spending buckets.",
-    stabilityRanking: [
-      "Housing: 92% stability index, minimal monthly drift",
-      "Food: 89% stability, dependable but moderately sensitive to seasonality",
-      "Healthcare: 84% stability, steady but capital-intensive",
-      "Entertainment: 61% stability, highest volatility paired with high growth",
-    ],
-    linkTexts: [
-      "Export ranking report",
-      "Send ranking snapshot to CEO",
-      "View ranking change log",
-    ],
-    recommendations: [
-      "Lean into Housing and Food for baseline budgeting.",
-      "Guard Entertainment exposure because of the volatility premium.",
-      "Encourage stakeholders to review the ranking report monthly.",
-    ],
-  },
-  dataQuality: {
-    intro:
-      "Data integrity checks flagged a few gaps that are common in long-tailed public datasets.",
-    missingDataSummary:
-      "2% of category-month entries were missing post-2005, focused in cross-border transfers.",
-    breakdown: [
-      "Housing Q1-Q2 2012 lacks state-level breakdown; estimates imputed.",
-      "Entertainment 1999 had 18% missing due to filing delay; forward-fill applied.",
-      "Alcohol & Tobacco 2004 uses aggregate totals for 3 states only.",
-    ],
-    timeline: [
-      "Anomaly window: 2008-2009 shows manual overrides tied to recession adjustments.",
-      "2016 has duplicate entries in Transportation resolved by deduplication.",
-      "2023 exhibits latency gaps, likely from a reporting API migration.",
-    ],
-    outliers: [
-      "July 2014 Food spike is +48% above average; flagged for manual review.",
-      "Oct 2020 Entertainment dip exceeds 3 standard deviations; related to platform outage.",
-    ],
-    checks: [
-      "Passed schema validation for 99.7% of rows.",
-      "Nulls limited to supplementary notes fields.",
-      "All forecasts cross-validated with rolling 6-month bias checks.",
-    ],
-    recommendations: [
-      "Automate alerts for >4% drop in completion rate per month.",
-      "Revisit the imputation strategy for long-tail categories before forecasting.",
-      "Audit the July 2014 Food spike with the finance team.",
-    ],
-  },
-  forecast: {
-    intro:
-      "Short-term forecasts pair seasonal smoothing with the latest volatility estimates.",
-    forecastSummary:
-      "2025-2027 projections assume gradual recovery in Transport and steady growth in Food & Healthcare.",
-    categoryProjections: [
-      "Food: +5.4% CAGR (2025-2027), inflation-adjusted",
-      "Housing: +3.9% CAGR, supported by rent control stability",
-      "Entertainment: +8.7% CAGR, fueled by digital subscriptions",
-    ],
-    validationNotes: [
-      "Backtest 2021-2023 horizon shows 1.8% MAPE after bias correction.",
-      "Ensembled ARIMA + Prophet models reduced variance by 12%.",
-    ],
-    riskFactors: [
-      "Energy price shocks could reverse Transport gains.",
-      "Policy shifts impacting Healthcare reimbursements.",
-      "Supply chain disruptions mainly hit Education services.",
-    ],
-    recommendations: [
-      "Update assumptions after quarterly CPI release.",
-      "Embed scenario toggles for energy costs in dashboards.",
-      "Share risk factors with procurement before contracting.",
-    ],
-  },
-  dataset: {
-    intro:
-      "The cleaned dataset pairs calculated metrics with audit-ready provenance tags for easy reuse.",
-    enhancements: [
-      "Normalized currency to 2024 USD using CPI base 2024.",
-      "Imputed missing category-months via k-nearest neighbors.",
-      "Flagged anomalies with a severity score for each row.",
-    ],
-    fileFormats: ["CSV", "Parquet", "Excel"],
-    newColumns: [
-      "Rolling 12-month growth",
-      "Volatility index (12M stdev)",
-      "Data quality score",
-    ],
-    qaChecks: [
-      "Checksum validation for every nightly ingest.",
-      "Cross-reference with ERP exports on a sample of 5% rows.",
-      "Automated schema drift alerts via CI/CD pipelines.",
-    ],
-    recommendations: [
-      "Use the Parquet export for analytics jobs; CSV for quick downloads.",
-      "Share the anomaly flags with data governance before publishing.",
-      "Refresh the dataset after each quarterly close to keep forecasts relevant.",
-    ],
-  },
-};
-
-export type MoreInsightDetail = {
-  title: string;
-  description: string;
-  detailVariant: DetailVariant;
-  detailContent: DetailContentMap[DetailVariant];
-};
-
-export type AIInsightsResponse = DetailContentMap & {
-  moreInsights?: MoreInsightDetail[];
-  takeaways?: string[];
-  methodology?: string;
-};
+export type { AIInsightsResponse };
 
 function normalizeStringArray(items?: string[] | string | null): string[] {
   if (!items) {
@@ -205,14 +43,6 @@ function formatNumberedList(items?: string[] | string | null) {
   return normalized.map((item, index) => `${index + 1}. ${item}`).join("\n");
 }
 
-function formatParagraphs(items?: string[] | string | null) {
-  const normalized = normalizeStringArray(items);
-  if (normalized.length === 0) {
-    return "";
-  }
-  return normalized.join("\n");
-}
-
 function formatKeyInsights(insights?: AIInsightsResponse["keyInsights"]) {
   if (!insights || insights.length === 0) {
     return "";
@@ -227,297 +57,38 @@ function formatKeyInsights(insights?: AIInsightsResponse["keyInsights"]) {
 
 function appendDetailContent(
   lines: string[],
-  variant: DetailVariant,
-  detailContent: DetailContentMap[DetailVariant]
+  detailContent: MoreInsightDetailContent
 ) {
-  if (variant === "composition") {
-    const content = detailContent as CompositionDetailContent;
-    const introParagraphs = formatParagraphs(content.introParagraphs);
-    if (introParagraphs) {
-      lines.push("Composition Summary");
-      lines.push(introParagraphs);
-      lines.push("");
-    }
-    if (content.growthSummary) {
-      lines.push("Growth Summary");
-      lines.push(content.growthSummary);
-      lines.push("");
-    }
-    const firstMetrics = formatList(content.firstMetrics);
-    if (firstMetrics) {
-      lines.push("Category Performance Metrics:");
-      lines.push(firstMetrics);
-      lines.push("");
-    }
-    const secondMetrics = formatList(content.secondMetrics);
-    if (secondMetrics) {
-      lines.push("Data Quality and Trend Insights:");
-      lines.push(secondMetrics);
-      lines.push("");
-    }
-    const recommendations = formatNumberedList(content.recommendations);
-    if (recommendations) {
-      lines.push("Recommendations:");
-      lines.push(recommendations);
-    }
-    return;
+  const summary = detailContent.summary?.trim();
+  const sections = Array.isArray(detailContent.sections)
+    ? detailContent.sections
+    : [];
+  const recommendations = normalizeStringArray(detailContent.recommendations);
+
+  if (summary) {
+    lines.push("Summary");
+    lines.push(summary);
+    lines.push("");
   }
 
-  if (variant === "trend") {
-    const content = detailContent as TrendDetailContent;
-    let hasSection = false;
-    if (content.intro) {
-      lines.push("Trend Summary");
-      lines.push("Intro");
-      lines.push(content.intro);
-      lines.push("");
-      hasSection = true;
+  sections.forEach((section, index) => {
+    const title = section.title?.trim() || `Section ${index + 1}`;
+    lines.push(title);
+    lines.push("-".repeat(title.length));
+    if (section.body?.trim()) {
+      lines.push(section.body.trim());
     }
-    if (content.disruptionParagraph) {
-      if (!hasSection) {
-        lines.push("Trend Summary");
-        hasSection = true;
-      }
-      lines.push("Disruption Periods");
-      lines.push(content.disruptionParagraph);
-      lines.push("");
+    const bullets = normalizeStringArray(section.bullets);
+    if (bullets.length > 0) {
+      lines.push(formatList(bullets));
     }
-    const longTermTrends = formatList(content.longTermTrends);
-    if (longTermTrends) {
-      if (!hasSection) {
-        lines.push("Trend Summary");
-        hasSection = true;
-      }
-      lines.push("Long-term Structural Trends:");
-      lines.push(longTermTrends);
-      lines.push("");
-    }
-    if (content.emergingPattern) {
-      if (!hasSection) {
-        lines.push("Trend Summary");
-        hasSection = true;
-      }
-      lines.push("Emerging Patterns");
-      lines.push(content.emergingPattern);
-      lines.push("");
-    }
-    const recommendations = formatNumberedList(content.recommendations);
-    if (recommendations) {
-      if (!hasSection) {
-        lines.push("Trend Summary");
-      }
-      lines.push("Recommendations:");
-      lines.push(recommendations);
-    }
-    return;
-  }
+    lines.push("");
+  });
 
-  if (variant === "ranking") {
-    const content = detailContent as RankingDetailContent;
-    let hasSection = false;
-    if (content.intro) {
-      lines.push("Ranking Summary");
-      lines.push("Intro");
-      lines.push(content.intro);
-      lines.push("");
-      hasSection = true;
-    }
-    const stabilityRanking = formatList(content.stabilityRanking);
-    if (stabilityRanking) {
-      if (!hasSection) {
-        lines.push("Ranking Summary");
-        hasSection = true;
-      }
-      lines.push("Stability Ranking:");
-      lines.push(stabilityRanking);
-      lines.push("");
-    }
-    const linkTexts = formatList(content.linkTexts);
-    if (linkTexts) {
-      if (!hasSection) {
-        lines.push("Ranking Summary");
-        hasSection = true;
-      }
-      lines.push("Reference Links:");
-      lines.push(linkTexts);
-      lines.push("");
-    }
-    const recommendations = formatNumberedList(content.recommendations);
-    if (recommendations) {
-      if (!hasSection) {
-        lines.push("Ranking Summary");
-      }
-      lines.push("Recommendations:");
-      lines.push(recommendations);
-    }
-    return;
-  }
-
-  if (variant === "dataQuality") {
-    const content = detailContent as DataQualityDetailContent;
-    let hasSection = false;
-    if (content.intro) {
-      lines.push("Data Quality Summary");
-      lines.push("Intro");
-      lines.push(content.intro);
-      lines.push("");
-      hasSection = true;
-    }
-    if (content.missingDataSummary) {
-      if (!hasSection) {
-        lines.push("Data Quality Summary");
-        hasSection = true;
-      }
-      lines.push("Missing Data Summary");
-      lines.push(content.missingDataSummary);
-      lines.push("");
-    }
-    const breakdown = formatList(content.breakdown);
-    if (breakdown) {
-      if (!hasSection) {
-        lines.push("Data Quality Summary");
-        hasSection = true;
-      }
-      lines.push("Missing Data Breakdown:");
-      lines.push(breakdown);
-      lines.push("");
-    }
-    const timeline = formatList(content.timeline);
-    if (timeline) {
-      if (!hasSection) {
-        lines.push("Data Quality Summary");
-        hasSection = true;
-      }
-      lines.push("Missing Data Timeline:");
-      lines.push(timeline);
-      lines.push("");
-    }
-    const outliers = formatList(content.outliers);
-    if (outliers) {
-      if (!hasSection) {
-        lines.push("Data Quality Summary");
-        hasSection = true;
-      }
-      lines.push("Outliers and Anomalies:");
-      lines.push(outliers);
-      lines.push("");
-    }
-    const checks = formatList(content.checks);
-    if (checks) {
-      if (!hasSection) {
-        lines.push("Data Quality Summary");
-        hasSection = true;
-      }
-      lines.push("Data Consistency Checks:");
-      lines.push(checks);
-      lines.push("");
-    }
-    const recommendations = formatNumberedList(content.recommendations);
-    if (recommendations) {
-      if (!hasSection) {
-        lines.push("Data Quality Summary");
-      }
-      lines.push("Recommendations:");
-      lines.push(recommendations);
-    }
-    return;
-  }
-
-  if (variant === "forecast") {
-    const content = detailContent as ForecastDetailContent;
-    let hasSection = false;
-    if (content.intro) {
-      lines.push("Forecast Summary");
-      lines.push("Intro");
-      lines.push(content.intro);
-      lines.push("");
-      hasSection = true;
-    }
-    if (content.forecastSummary) {
-      if (!hasSection) {
-        lines.push("Forecast Summary");
-        hasSection = true;
-      }
-      lines.push("Forecast Summary");
-      lines.push(content.forecastSummary);
-      lines.push("");
-    }
-    const categoryProjections = formatList(content.categoryProjections);
-    if (categoryProjections) {
-      if (!hasSection) {
-        lines.push("Forecast Summary");
-        hasSection = true;
-      }
-      lines.push("Category Projections:");
-      lines.push(categoryProjections);
-      lines.push("");
-    }
-    const validationNotes = formatList(content.validationNotes);
-    if (validationNotes) {
-      if (!hasSection) {
-        lines.push("Forecast Summary");
-        hasSection = true;
-      }
-      lines.push("Validation Notes:");
-      lines.push(validationNotes);
-      lines.push("");
-    }
-    const riskFactors = formatList(content.riskFactors);
-    if (riskFactors) {
-      if (!hasSection) {
-        lines.push("Forecast Summary");
-        hasSection = true;
-      }
-      lines.push("Risk Factors:");
-      lines.push(riskFactors);
-      lines.push("");
-    }
-    const recommendations = formatNumberedList(content.recommendations);
-    if (recommendations) {
-      if (!hasSection) {
-        lines.push("Forecast Summary");
-      }
-      lines.push("Recommendations:");
-      lines.push(recommendations);
-    }
-    return;
-  }
-
-  if (variant === "dataset") {
-    const content = detailContent as DatasetDetailContent;
-    if (content.intro) {
-      lines.push(content.intro);
-      lines.push("");
-    }
-    const enhancements = formatList(content.enhancements);
-    if (enhancements) {
-      lines.push("Enhancements:");
-      lines.push(enhancements);
-      lines.push("");
-    }
-    const fileFormats = formatList(content.fileFormats);
-    if (fileFormats) {
-      lines.push("File Formats:");
-      lines.push(fileFormats);
-      lines.push("");
-    }
-    const newColumns = formatList(content.newColumns);
-    if (newColumns) {
-      lines.push("New Columns:");
-      lines.push(newColumns);
-      lines.push("");
-    }
-    const qaChecks = formatList(content.qaChecks);
-    if (qaChecks) {
-      lines.push("Quality Assurance Checks:");
-      lines.push(qaChecks);
-      lines.push("");
-    }
-    const recommendations = formatNumberedList(content.recommendations);
-    if (recommendations) {
-      lines.push("Recommendations:");
-      lines.push(recommendations);
-    }
+  const formattedRecommendations = formatNumberedList(recommendations);
+  if (formattedRecommendations) {
+    lines.push("Recommendations:");
+    lines.push(formattedRecommendations);
   }
 }
 
@@ -551,8 +122,8 @@ function buildMoreInsightsDownloadReport(
     const sectionTitle = `${index + 1}. ${insight.title}`;
     lines.push(sectionTitle);
     lines.push("-".repeat(sectionTitle.length));
-    if (insight.detailContent) {
-      appendDetailContent(lines, insight.detailVariant, insight.detailContent);
+    if (insight.detail) {
+      appendDetailContent(lines, insight.detail);
     }
     lines.push("");
   });
@@ -960,10 +531,7 @@ export default function AIInsightsPanel({
                       }}
                       title={insight.title}
                       description={insight.description}
-                      detailVariant={insight.detailVariant}
-                      detailContent={insight.detailContent!}
-                      takeaways={insights?.takeaways}
-                      methodology={insights?.methodology}
+                      detailContent={insight.detail ?? undefined}
                       reportContent={reportContent}
                       reportTitle={titleCardHeadline}
                     />

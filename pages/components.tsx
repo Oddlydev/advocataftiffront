@@ -1,21 +1,45 @@
 import React from "react";
 
 import AIButton from "@/src/components/ai-component/AIButton";
-import AIInsightsPanel, {
-  detailContentByVariant,
-} from "@/src/components/ai-component/AIInsightsPanel";
+import AIInsightsPanel from "@/src/components/ai-component/AIInsightsPanel";
 import DetailCard from "@/src/components/ai-component/DetailCard";
 import KeyInsightsCard from "@/src/components/ai-component/KeyInsightsCard";
 import ListBulletItem from "@/src/components/ai-component/ListBulletItem";
 import ListNumberedItem from "@/src/components/ai-component/ListNumberedItem";
 import MethodologyCard from "@/src/components/ai-component/MethodologyCard";
 import SuggestedActionCard from "@/src/components/ai-component/SuggestedActionCard";
+import type { MoreInsightDetailContent } from "@/src/components/ai-component/detailContent.types";
 import TakeawaysCard from "@/src/components/ai-component/TakeawaysCard";
 import TitleCard from "@/src/components/ai-component/TitleCard";
 import InsightsDisclaimerCard from "@/src/components/ai-component/InsightsDisclaimerCard";
 import KeyInsightsIcon from "@/src/components/ai-component/KeyInsightsIcon";
 
 export default function ComponentsPage() {
+  const sampleDetail: MoreInsightDetailContent = {
+    summary:
+      "Spending concentration shifted toward essential categories while discretionary segments remained volatile.",
+    sections: [
+      {
+        title: "What stands out",
+        body: "Food and housing sustained multi-year growth while entertainment shows sharp reversals.",
+        bullets: [
+          "Food maintains steady gains with only minor dips",
+          "Housing stays resilient despite short-term shocks",
+        ],
+      },
+      {
+        title: "Supporting signals",
+        bullets: [
+          "Largest jumps coincide with policy-driven stimulus periods",
+          "Volatility clusters around seasonal peaks",
+        ],
+      },
+    ],
+    recommendations: [
+      "Focus monitoring on categories with high variance and large share.",
+      "Revisit anomaly thresholds before the next reporting cycle.",
+    ],
+  };
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f4f4fb] p-6">
       <section className="w-full space-y-6 rounded-[32px] bg-white/80 py-12 px-10 shadow-[0_35px_80px_-30px_rgba(0,0,0,0.45)]">
@@ -87,8 +111,7 @@ export default function ComponentsPage() {
             </div>
             <div className="mt-6 flex justify-center">
               <DetailCard
-                variant="composition"
-                detailContent={detailContentByVariant.composition}
+                detailContent={sampleDetail}
               />
             </div>
           </div>
@@ -102,8 +125,7 @@ export default function ComponentsPage() {
             <div className="mt-6 flex justify-center">
               <SuggestedActionCard
                 showDetailOnClick
-                detailVariant="composition"
-                detailContent={detailContentByVariant.composition}
+                detailContent={sampleDetail}
               />
             </div>
           </div>

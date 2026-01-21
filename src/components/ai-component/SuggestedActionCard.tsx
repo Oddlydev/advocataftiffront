@@ -2,8 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import LoadingIcon from "./LoadingIcon";
-import DetailCard, { DetailVariant } from "./DetailCard";
-import type { DetailContentMap } from "./detailContent.types";
+import DetailCard from "./DetailCard";
+import type { MoreInsightDetailContent } from "./detailContent.types";
 
 type SuggestedActionCardProps = {
   showDetailOnClick?: boolean;
@@ -11,10 +11,7 @@ type SuggestedActionCardProps = {
   onToggle?: () => void;
   title?: string;
   description?: string;
-  detailVariant?: DetailVariant;
-  detailContent?: DetailContentMap[DetailVariant];
-  takeaways?: string[];
-  methodology?: string;
+  detailContent?: MoreInsightDetailContent;
   reportContent?: string | null;
   reportTitle?: string;
 };
@@ -27,17 +24,12 @@ export default function SuggestedActionCard({
   onToggle,
   title,
   description,
-  detailVariant,
   detailContent,
-  takeaways,
-  methodology,
   reportContent,
   reportTitle,
 }: SuggestedActionCardProps) {
   const [active, setActive] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
-
-  const resolvedVariant = detailVariant ?? "composition";
 
   const [flow, setFlow] = useState<FlowState>("idle");
   const [detailVisible, setDetailVisible] = useState(false);
@@ -272,10 +264,7 @@ export default function SuggestedActionCard({
                 <div className="min-h-0">
                   {detailContent ? (
                     <DetailCard
-                      variant={resolvedVariant}
                       detailContent={detailContent}
-                      takeaways={takeaways}
-                      methodology={methodology}
                       reportContent={reportContent ?? undefined}
                       reportTitle={reportTitle}
                     />

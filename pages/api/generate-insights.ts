@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { VertexAI, type VertexInit } from '@google-cloud/vertexai';
-import pLimit from "p-limit";
 
 // Initialize Vertex AI
 // Ensure you have GCP_PROJECT_ID and GCP_LOCATION in your .env.local
@@ -38,8 +37,6 @@ const MODELS_TO_TRY = [
     'gemini-1.0-pro-001',
 ];
 
-const CHUNK_SIZE = 25;
-const MAX_CHUNK_SUMMARY_TOKENS = 256;
 
 function aggregateCandidateContent(response: any) {
     const candidate = response?.candidates?.[0];
@@ -134,46 +131,6 @@ function extractJsonObject(payload: string) {
     return null;
 }
 
-async function summarizeCsvChunks(rows: string[], header: string) {
-    const limit = pLimit(4);
-    const tasks: Promise<string>[] = [];
-
-    for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
-        const chunkRows = rows.slice(i, i + CHUNK_SIZE);
-        if (!chunkRows.length) {
-            continue;
-        }
-
-        const chunkPrompt = `
-Summarize the key patterns and numeric changes in the following CSV fragment in 1-2 sentences.
-Highlight the most significant increase/decrease or concentration of values, referencing the column names.
-
-Header: ${header}
-${chunkRows.join("\n")}
-`;
-
-        tasks.push(
-            limit(async () => {
-                try {
-                    const chunkSummary = await generateFromVertex(chunkPrompt, {
-                        description: `chunk ${Math.floor(i / CHUNK_SIZE) + 1} summary`,
-                        maxOutputTokens: MAX_CHUNK_SUMMARY_TOKENS,
-                        responseMimeType: "text/plain",
-                    });
-
-                    return chunkSummary.replace(/\s+/g, " ").trim();
-                } catch (error) {
-                    console.warn(`Chunk summarization failed for rows ${i + 1}-${i + chunkRows.length}:`, error);
-                    const fallback = chunkRows.slice(0, 2).join(" | ");
-                    return `Rows ${i + 1}-${i + chunkRows.length}: ${fallback}${chunkRows.length > 2 ? " ..." : ""}`;
-                }
-            })
-        );
-    }
-
-    return Promise.all(tasks);
-}
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
@@ -198,14 +155,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const headerLine = filteredLines.shift() ?? "";
         const dataRows = filteredLines;
 
-        const chunkSummaries = await summarizeCsvChunks(dataRows, headerLine);
-        const chunkSummarySection =
-            chunkSummaries.length > 0
-                ? chunkSummaries
-                    .map((summary, index) => `Summary ${index + 1}: ${summary}`)
-                    .join("\n")
-                : "No data rows were available to summarize.";
-
         const titleSection =
             datasetTitle && typeof datasetTitle === "string"
                 ? `Dataset title:\n${datasetTitle}\n`
@@ -219,14 +168,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 You are an expert data analyst.
 
 You receive:
-- the full dataset as a JSON file, and
-- sequential summaries generated from every row of that dataset.
+- the full CSV dataset, and
+- metadata about the dataset (title/description/row counts).
 
-You must treat the JSON data and the summaries together as the complete and authoritative representation of the dataset.
-Insights must be grounded in patterns observable in one or both of these inputs.
-
-You may describe patterns referencing earlier or later periods if helpful,
-but do not mention internal processing concepts (e.g. chunks) and do not invent values beyond what the data or summaries imply.
+Treat the CSV as the authoritative source of truth. Use metadata only as supporting context.
+Do not include metadata in insights unless it directly helps interpret the dataset.
+Do not invent values beyond what the dataset implies.
 
 ${titleSection}${descriptionSection}
 
@@ -235,8 +182,8 @@ ${headerLine}
 
 Total data rows processed: ${dataRows.length}
 
-Sequential summaries:
-${chunkSummarySection}
+Full CSV dataset:
+${csvText}
 
 Now produce a valid JSON object with the structure below that reflects those inputs.
 
@@ -270,60 +217,28 @@ If an insight cannot be clearly justified by the data provided, it must be omitt
       "confidence": "High/Medium/Low (Percentage)"
     }
   ],
-  "composition": {
-    "introParagraphs": ["Paragraph 1", "Paragraph 2"],
-    "growthSummary": "Summary of growth",
-    "firstMetrics": ["Metric 1", "Metric 2"],
-    "secondMetrics": ["Metric 1", "Metric 2"],
-    "recommendations": ["Rec 1", "Rec 2"]
-  },
-  "trend": {
-    "intro": "Intro text",
-    "disruptionParagraph": "Text about disruptions",
-    "longTermTrends": ["Trend 1", "Trend 2"],
-    "emergingPattern": "Text about emerging patterns",
-    "recommendations": ["Rec 1", "Rec 2"]
-  },
-  "ranking": {
-    "intro": "Intro text",
-    "stabilityRanking": ["Rank 1", "Rank 2"],
-    "linkTexts": ["Link text 1", "Link text 2"],
-    "recommendations": ["Rec 1", "Rec 2"]
-  },
-  "dataQuality": {
-    "intro": "Intro text",
-    "missingDataSummary": "Summary of missing data",
-    "breakdown": ["Breakdown 1", "Breakdown 2"],
-    "timeline": ["Timeline 1", "Timeline 2"],
-    "outliers": ["Outlier 1", "Outlier 2"],
-    "checks": ["Check 1", "Check 2"],
-    "recommendations": ["Rec 1", "Rec 2"]
-  },
-  "forecast": {
-    "intro": "Intro text",
-    "forecastSummary": "Summary of forecast",
-    "categoryProjections": ["Proj 1", "Proj 2"],
-    "validationNotes": ["Note 1", "Note 2"],
-    "riskFactors": ["Risk 1", "Risk 2"],
-    "recommendations": ["Rec 1", "Rec 2"]
-  },
-  "dataset": {
-    "intro": "Intro text",
-    "enhancements": ["Enhancement 1", "Enhancement 2"],
-    "fileFormats": ["Format 1", "Format 2"],
-    "newColumns": ["Col 1", "Col 2"],
-    "qaChecks": ["Check 1", "Check 2"],
-    "recommendations": ["Rec 1", "Rec 2"]
-  }
+  "takeaways": ["Takeaway 1", "Takeaway 2", "Takeaway 3"],
+  "methodology": "1-2 sentence summary of the analytical approach used.",
+  "moreInsights": [
+    {
+      "title": "Short card title",
+      "description": "Short summary shown on the card",
+      "detail": {
+        "summary": "1-2 sentence summary of the detail view",
+        "sections": [
+          {
+            "title": "Section title",
+            "body": "Short paragraph of supporting context",
+            "bullets": ["Bullet 1", "Bullet 2"]
+          }
+        ],
+        "recommendations": ["Recommendation 1", "Recommendation 2"]
+      }
+    }
+  ]
 }
 
-Please also include a top-level "moreInsights" array with 4-6 entries. Each entry must have:
-  - title: short card title
-  - description: text explaining what the card should say
-  - detailVariant: one of the detail variants (composition, trend, etc.)
-  - detailContent: the detail payload that matches that variant
-
-Ensure this array reflects the generated insights so the UI can render cards with matching detail content.
+Ensure "moreInsights" has 4-6 entries, and the detail content is grounded in the dataset.
 Use "takeaways" to provide 3-5 concise bullets summarizing the most important insights, and "methodology" to describe the analysis approach in a short paragraph.
 
 Ensure the JSON reflects the sequential summaries, even if some rows were indirectly covered. Always include the full schema shown above.
