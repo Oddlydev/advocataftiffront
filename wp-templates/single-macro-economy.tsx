@@ -536,7 +536,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                             style={item.indicatorStyle}
                           ></span>
                         </div>
-                        <span className="text-sm/tight md:text-base/6 font-normal font-sourcecodepro text-slate-600">
+                        <span className="text-sm/tight md:text-sm font-normal font-sourcecodepro text-slate-600">
                           {item.label}
                         </span>
                       </div>
