@@ -565,7 +565,6 @@ export type AIInsightsPanelProps = {
   datasetUrl?: string;
   titleCardHeadline?: string;
   datasetDescription?: string;
-  datasetMetaDataUrl?: string | null;
   manualInsights?: AIInsightsResponse | null;
 };
 
@@ -574,7 +573,6 @@ export default function AIInsightsPanel({
   datasetUrl,
   titleCardHeadline,
   datasetDescription,
-  datasetMetaDataUrl,
   manualInsights,
 }: AIInsightsPanelProps) {
   const [insights, setInsights] = useState<AIInsightsResponse | null>(null);
@@ -609,7 +607,6 @@ export default function AIInsightsPanel({
             datasetUrl,
             datasetDescription,
             datasetTitle: titleCardHeadline,
-            datasetMetaDataUrl,
           }),
         });
 
@@ -640,13 +637,7 @@ export default function AIInsightsPanel({
       cancelled = true;
       controller.abort();
     };
-  }, [
-    datasetUrl,
-    manualInsights,
-    datasetDescription,
-    titleCardHeadline,
-    datasetMetaDataUrl,
-  ]);
+  }, [datasetUrl, manualInsights, datasetDescription, titleCardHeadline]);
 
   useEffect(() => {
     if (manualInsights) {
