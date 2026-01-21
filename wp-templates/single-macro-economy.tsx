@@ -293,7 +293,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                     <h2 className="text-xl/snug md:text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
                       {chartDetails?.chartTitle}
                     </h2>
-                    <p className="text-sm/5 md:text-base/6 font-baskervville font-normal text-slate-950 leading-6">
+                    <p className="text-sm/5 md:text-base/6 font-montserrat font-normal text-slate-950 leading-6">
                       {chartDetails?.chartSubtitle}
                     </p>
                   </div>
@@ -536,7 +536,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                             style={item.indicatorStyle}
                           ></span>
                         </div>
-                        <span className="text-sm/tight md:text-base/6 font-normal font-baskervville text-slate-600">
+                        <span className="text-sm/tight md:text-base/6 font-normal font-sourcecodepro text-slate-600">
                           {item.label}
                         </span>
                       </div>
