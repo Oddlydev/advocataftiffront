@@ -372,9 +372,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
         className="transition-[margin,transform] duration-600 ease-[cubic-bezier(0.7,0,0.3,1)] will-change-transform"
         style={{
           marginRight: isInsightsPanelOpen ? `${SIDEBAR_WIDTH}px` : "0px",
-          transform: `translateY(${
-            isPanelVisible ? (isInsightsPanelOpen ? "0px" : "120px") : "0px"
-          })`,
+          transform: "translateY(0px)",
           transitionDuration: contentTransitionDuration,
         }}
       >
