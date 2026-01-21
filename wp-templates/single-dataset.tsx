@@ -241,19 +241,6 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     return () => body.classList.remove(FOOTER_HIDE_CLASS);
   }, [isPanelVisible]);
 
-  const scrollToTable = () => {
-    const el = tableWrapRef.current;
-    if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - 16;
-    const navHeight =
-      document.querySelector("header")?.getBoundingClientRect().height ?? 0;
-    const offsetTop = Math.max(0, top - navHeight - 12);
-    window.scrollTo({ top: offsetTop, behavior: "smooth" });
-
-    const tableWrapper = document.getElementById("table-wrapper");
-    if (tableWrapper) tableWrapper.scrollTop = 0;
-  };
-
   const openInsightsPanel = () => {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
@@ -267,7 +254,6 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     requestAnimationFrame(() => {
       setIsInsightsPanelOpen(true);
       setIsVerticalTransitionSuppressed(false);
-      requestAnimationFrame(() => scrollToTable());
     });
   };
 
@@ -353,7 +339,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   // Allow content/table to stretch when open so it can reach sidebar edge
   const maxWidthClass = isInsightsPanelOpen ? "max-w-none w-full" : "max-w-7xl";
 
-  const heroSectionClass = `bg-white ${isInsightsPanelOpen ? "hidden" : ""}`;
+  const heroSectionClass = "bg-white";
   const tableSectionMarginClass = isInsightsPanelOpen
     ? "mt-0"
     : "-mt-4 md:-mt-5 xl:-mt-8";
