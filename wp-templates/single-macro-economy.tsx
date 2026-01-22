@@ -290,7 +290,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
               <div className="md:flex justify-between items-center">
                 {!isFullscreen && (
                   <div className="mb-4 md:mb-10 md:w-1/2 lg:w-3/4">
-                    <h2 className="text-xl/snug md:text-2xl/snug font-sourcecodepro font-bold text-slate-950 mb-1.5">
+                    <h2 className="text-xl/snug md:text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
                       {chartDetails?.chartTitle}
                     </h2>
                     <p className="text-sm/5 md:text-base/6 font-sourcecodepro font-normal text-slate-600 leading-6">

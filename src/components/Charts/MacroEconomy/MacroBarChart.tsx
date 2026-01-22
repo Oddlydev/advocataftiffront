@@ -254,7 +254,7 @@ export function MacroBarChart({
       .attr("transform", `translate(${-65},${height / 2}) rotate(-90)`)
       .attr(
         "class",
-        "font-baskervville text-slate-600 text-sm md:text-base xl:text-base font-normal",
+        "font-sourcecodepro text-slate-600 text-sm md:text-base xl:text-base font-normal",
       )
       .text(dynamicYAxisLabel);
 
@@ -485,7 +485,7 @@ export function MacroBarChart({
       <svg ref={chartRef} className="w-full h-full" />
       <div
         ref={tooltipRef}
-      className="absolute bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1 rounded shadow-lg font-sourcecodepro"
+        className="absolute bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1 rounded shadow-lg font-sourcecodepro"
       />
     </div>
   );

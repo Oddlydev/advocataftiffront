@@ -241,7 +241,8 @@ export function MacroLineChart({
     // --- root svg ---
     const root = d3
       .select(container)
-      .attr("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
+      .attr("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`)
+      .style("overflow", "visible");
     root.selectAll("*").remove();
 
     // --- zoom group (everything zooms inside this group) ---
@@ -410,7 +411,7 @@ export function MacroLineChart({
     svg
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("transform", `translate(${-50},${height / 2}) rotate(-90)`)
+      .attr("transform", `translate(${-65},${height / 2}) rotate(-90)`)
       .attr(
         "class",
         "font-sourcecodepro text-slate-600 text-sm md:text-base font-normal leading-7",
@@ -421,7 +422,7 @@ export function MacroLineChart({
       svg
         .append("text")
         .attr("text-anchor", "middle")
-        .attr("transform", `translate(${width + 65},${height / 2}) rotate(90)`)
+        .attr("transform", `translate(${width + 83},${height / 2}) rotate(90)`)
         .attr(
           "class",
           "font-sourcecodepro text-slate-600 text-sm md:text-base font-normal leading-7",
@@ -793,6 +794,7 @@ export function MacroLineChart({
       <svg
         ref={chartRef}
         className={`w-full h-full ${isFullscreen ? "" : "px-4"}`}
+        style={{ overflow: "visible" }}
       />
       <div
         ref={tooltipRef}
