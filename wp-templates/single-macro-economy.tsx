@@ -290,10 +290,10 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
               <div className="md:flex justify-between items-center">
                 {!isFullscreen && (
                   <div className="mb-4 md:mb-10 md:w-1/2 lg:w-3/4">
-                    <h2 className="text-xl/snug md:text-2xl/snug font-montserrat font-bold text-slate-950 mb-1.5">
+                    <h2 className="text-xl/snug md:text-2xl/snug font-sourcecodepro font-bold text-slate-950 mb-1.5">
                       {chartDetails?.chartTitle}
                     </h2>
-                    <p className="text-sm/5 md:text-base/6 font-montserrat font-normal text-slate-950 leading-6">
+                    <p className="text-sm/5 md:text-base/6 font-sourcecodepro font-normal text-slate-600 leading-6">
                       {chartDetails?.chartSubtitle}
                     </p>
                   </div>
@@ -549,7 +549,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                 className={`mt-2 md:mt-6 xl:mt-10 ${isSwapping ? "opacity-50" : ""}`}
               >
                 <div className="bg-gray-50 rounded-lg px-6 py-3.5">
-                  <div className="grid grid-cols-1 md:flex md:justify-between gap-4 xl:gap-26 text-xs/4 text-slate-600 font-sourcecodepro">
+                  <div className="grid grid-cols-1 md:flex md:justify-between gap-4 xl:gap-26 text-xs/4 text-slate-600 font-sourcecodepro leading-4">
                     <div className="text-slate-600 text-xs/4 font-normal font-sourcecodepro flex items-center gap-2">
                       <p>Data Source: {chartDetails?.dataSource}</p>
                     </div>
@@ -577,8 +577,8 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                   Notes:
                 </h5>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="border-b border-brand-1-100 pb-4 md:border-b-0 md:border-r md:pr-4">
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+                <div className="border-b border-brand-1-100 pb-0 md:border-b-0 md:border-r md:pr-4">
                   <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3 leading-7">
                     Definition and Statistical Concept
                   </h3>

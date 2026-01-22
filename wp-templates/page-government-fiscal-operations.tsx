@@ -935,7 +935,7 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
           <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
             <div className="border border-gray-200 bg-gray-50 rounded-xl">
               <div className="px-6 py-7">
-                <div className="mb-2">
+                <div>
                   <h5 className="text-xs font-sourcecodepro font-semibold text-slate-600 leading-3 mb-1.5">
                     Notes
                   </h5>

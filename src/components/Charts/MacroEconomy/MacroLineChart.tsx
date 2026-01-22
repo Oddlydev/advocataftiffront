@@ -413,7 +413,7 @@ export function MacroLineChart({
       .attr("transform", `translate(${-50},${height / 2}) rotate(-90)`)
       .attr(
         "class",
-        "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal leading-7",
+        "font-sourcecodepro text-slate-600 text-sm md:text-base font-normal leading-7",
       )
       .text(resolvedYAxisLabel);
 
@@ -424,7 +424,7 @@ export function MacroLineChart({
         .attr("transform", `translate(${width + 65},${height / 2}) rotate(90)`)
         .attr(
           "class",
-          "font-baskervville text-slate-600 text-sm md:text-base xl:text-lg font-normal leading-7",
+          "font-sourcecodepro text-slate-600 text-sm md:text-base font-normal leading-7",
         )
         .text(resolvedYAxisRightLabel ?? "");
     }
@@ -589,9 +589,9 @@ export function MacroLineChart({
                   <div class="flex items-start justify-between gap-1">
                     <div class="flex items-center gap-1">
                       <span style="width:6px;height:6px;background:${cfg.color};border-radius:50%;display:inline-block;"></span>
-                      <span class="text-slate-600 text-[10px] md:text-xs">${cfg.label}:</span>
+                      <span class="text-slate-600 text-[10px] md:text-xs font-sourcecodepro">${cfg.label}:</span>
                     </div>
-                    <span style="color:${cfg.color}" class="text-[10px] md:text-xs">
+                    <span style="color:${cfg.color}" class="text-[10px] md:text-xs font-sourcecodepro">
                       ${
                         typeof valueForTooltip === "number"
                           ? (cfg.valueFormatter?.(valueForTooltip) ??
@@ -606,7 +606,7 @@ export function MacroLineChart({
 
             tooltip.style("display", "block").html(`
                 <div class="flex flex-col gap-1">
-                  <div class="font-semibold text-slate-600 text-[10px] md:text-xs pb-1 uppercase">
+                  <div class="font-semibold text-slate-600 text-[10px] md:text-xs pb-1 uppercase font-sourcecodepro">
                     Year: ${d.year}
                   </div>
                   ${tooltipRows}

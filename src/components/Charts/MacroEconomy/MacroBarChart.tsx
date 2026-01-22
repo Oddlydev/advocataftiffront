@@ -121,13 +121,13 @@ export function MacroBarChart({
     let isMounted = true;
 
     async function loadDataset() {
-        if (!datasetUrl) {
-          if (isMounted) {
-            setData([]);
-            setDynamicYAxisLabel(yAxisLabel);
-          }
-          return;
+      if (!datasetUrl) {
+        if (isMounted) {
+          setData([]);
+          setDynamicYAxisLabel(yAxisLabel);
         }
+        return;
+      }
 
       try {
         const text = await fetchCsvWithFallback(datasetUrl);
@@ -138,11 +138,9 @@ export function MacroBarChart({
         const leftIndex =
           axisLabelsFromCsv && columns.length > 1
             ? 1
-            : yAxisLabelColumnIndex ?? undefined;
+            : (yAxisLabelColumnIndex ?? undefined);
         const leftLabel =
-          leftIndex != null &&
-          leftIndex >= 0 &&
-          leftIndex < columns.length
+          leftIndex != null && leftIndex >= 0 && leftIndex < columns.length
             ? columns[leftIndex]
             : undefined;
         if (isMounted) {
@@ -163,14 +161,14 @@ export function MacroBarChart({
             "[MacroBarChart] Parsed data length:",
             parsed.length,
             "using label:",
-            dynamicYAxisLabel
+            dynamicYAxisLabel,
           );
           setData(parsed);
         }
       } catch (error) {
         console.error(
           `[MacroBarChart] Failed to load dataset ${datasetUrl} ::`,
-          error
+          error,
         );
         if (isMounted) {
           setData([]);
@@ -235,7 +233,7 @@ export function MacroBarChart({
     data.forEach((d) =>
       series.forEach((s) => {
         if (typeof d[s.key] === "number") allValues.push(d[s.key]!);
-      })
+      }),
     );
 
     const maxVal = d3.max(allValues) ?? 0;
@@ -243,7 +241,10 @@ export function MacroBarChart({
 
     const y = d3
       .scaleLinear()
-      .domain([Math.min(0, minVal - yMaxPadding), Math.max(0, maxVal + yMaxPadding)])
+      .domain([
+        Math.min(0, minVal - yMaxPadding),
+        Math.max(0, maxVal + yMaxPadding),
+      ])
       .range([height, 0]);
 
     /* -------- Left Y-Axis Label -------- */
@@ -253,7 +254,7 @@ export function MacroBarChart({
       .attr("transform", `translate(${-65},${height / 2}) rotate(-90)`)
       .attr(
         "class",
-        "font-baskervville text-slate-600 text-sm md:text-base xl:text-base font-normal"
+        "font-baskervville text-slate-600 text-sm md:text-base xl:text-base font-normal",
       )
       .text(dynamicYAxisLabel);
 
@@ -264,12 +265,12 @@ export function MacroBarChart({
         d3
           .axisLeft(y)
           .ticks(5)
-          .tickFormat((value) => formatWithTwoDecimals(value as number) as any)
+          .tickFormat((value) => formatWithTwoDecimals(value as number) as any),
       )
       .selectAll("text")
       .attr(
         "class",
-        "font-sourcecodepro text-slate-600 text-xs md:text-sm font-semibold"
+        "font-sourcecodepro text-slate-600 text-xs md:text-sm font-semibold",
       );
 
     /* -------- X-Axis -------- */
@@ -282,8 +283,8 @@ export function MacroBarChart({
       .selectAll("text")
       .attr(
         "class",
-        "font-sourcecodepro text-slate-600 text-xs md:text-sm font-semibold"
-    );
+        "font-sourcecodepro text-slate-600 text-xs md:text-sm font-semibold",
+      );
 
     /* Solid X-axis line (bottom) */
     // xAxis.select(".domain")
@@ -294,15 +295,22 @@ export function MacroBarChart({
     // xAxis.selectAll(".tick line").remove();
 
     /* -------- Grid Lines -------- */
-    svg.append("g")
-      .call(d3.axisLeft(y).tickSize(-width).tickFormat(() => ""))
+    svg
+      .append("g")
+      .call(
+        d3
+          .axisLeft(y)
+          .tickSize(-width)
+          .tickFormat(() => ""),
+      )
       .call((g) => g.select(".domain").remove())
       .selectAll("line")
       .attr("stroke", "#CBD5E1")
       .attr("stroke-dasharray", "4,4");
 
-      /* -------- Vertical Grid Lines -------- */
-    svg.append("g")
+    /* -------- Vertical Grid Lines -------- */
+    svg
+      .append("g")
       .attr("class", "v-grid")
       .selectAll("line")
       .data(x0.domain())
@@ -345,7 +353,7 @@ export function MacroBarChart({
           color: s.color,
           label: s.label,
           year: d.year,
-        }))
+        })),
       )
       .enter()
       .append("rect")
@@ -363,19 +371,18 @@ export function MacroBarChart({
         const valueForTooltip = d.value;
         const formatCurrency = d3.format(",.2f"); // format like 14,539.50
 
-        tooltip
-          .style("display", "block")
-          .html(`
+        tooltip.style("display", "block").html(`
             <div class='font-semibold text-slate-600 text-[10px] md:text-xs mb-1'>
               Year: ${d.year}
             </div>
             <div class='flex items-center gap-1'>
               <span style='width:6px;height:6px;background:${cfg.color};border-radius:50%'></span>
-              <span class='text-[10px] md:text-xs'>${cfg.label}:</span>
-              <span class='ml-4' style="color:${cfg.color}" class="text-[10px] md:text-xs">
+              <span class='text-[10px] md:text-xs font-sourcecodepro'>${cfg.label}:</span>
+              <span class='ml-4' style="color:${cfg.color}" class="text-[10px] md:text-xs font-sourcecodepro">
                 ${
                   typeof valueForTooltip === "number"
-                    ? (cfg.valueFormatter?.(valueForTooltip) ?? formatCurrency(valueForTooltip))
+                    ? (cfg.valueFormatter?.(valueForTooltip) ??
+                      formatCurrency(valueForTooltip))
                     : "N/A"
                 }
               </span>
@@ -385,9 +392,12 @@ export function MacroBarChart({
         d3.select(this)
           .transition()
           .duration(150)
-          .attr("fill", d3.color(cfg.color)?.darker(0.3)?.toString() ?? cfg.color);
+          .attr(
+            "fill",
+            d3.color(cfg.color)?.darker(0.3)?.toString() ?? cfg.color,
+          );
       })
-      
+
       .on("mousemove", (event) => {
         const tooltipEl = tooltipRef.current!;
         const container = chartRef.current!.parentElement!; // the div wrapping the svg
@@ -408,19 +418,18 @@ export function MacroBarChart({
 
         tooltip.style("left", `${xPos}px`).style("top", `${yPos}px`);
       })
-      
+
       .on("mouseout", function (event, d) {
         tooltip.style("display", "none");
-        d3.select(this)
-          .transition()
-          .duration(150)
-          .attr("fill", d.color);
+        d3.select(this).transition().duration(150).attr("fill", d.color);
       })
       /* -------- Initial Animation -------- */
       .transition()
       .duration(DURATION)
       .attr("y", (d) => (d.value != null ? y(Math.max(0, d.value)) : y(0)))
-      .attr("height", (d) => (d.value != null ? Math.abs(y(d.value) - y(0)) : 0));
+      .attr("height", (d) =>
+        d.value != null ? Math.abs(y(d.value) - y(0)) : 0,
+      );
 
     /* -------- Zoom Controls -------- */
     const zoomLabelTarget = controlIds.zoomLabelRef ?? internalZoomLabelRef;
@@ -448,7 +457,7 @@ export function MacroBarChart({
         .duration(300)
         .attr(
           "transform",
-          `translate(${MARGIN.left + tx},${MARGIN.top}) scale(${currentScale},1)`
+          `translate(${MARGIN.left + tx},${MARGIN.top}) scale(${currentScale},1)`,
         );
       updateZoomLabel();
     };
