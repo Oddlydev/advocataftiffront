@@ -585,7 +585,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                   <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal">
                     {definitionHtml ? (
                       <div
-                        className="text-slate-800 text-base/6 font-baskervville font-normal"
+                        className="text-slate-800 text-base/6 font-baskervville font-normal space-y-3"
                         dangerouslySetInnerHTML={{ __html: definitionHtml }}
                       />
                     ) : (
