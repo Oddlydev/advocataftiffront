@@ -372,13 +372,13 @@ export function MacroBarChart({
         const formatCurrency = d3.format(",.2f"); // format like 14,539.50
 
         tooltip.style("display", "block").html(`
-            <div class='font-semibold text-slate-600 text-[10px] md:text-xs mb-1'>
+            <div class='font-semibold font-sourcecodepro text-slate-600 text-[10px] md:text-xs mb-1'>
               Year: ${d.year}
             </div>
             <div class='flex items-center gap-1'>
               <span style='width:6px;height:6px;background:${cfg.color};border-radius:50%'></span>
               <span class='text-[10px] md:text-xs font-sourcecodepro'>${cfg.label}:</span>
-              <span class='ml-4' style="color:${cfg.color}" class="text-[10px] md:text-xs font-sourcecodepro">
+              <span class='ml-4 text-[10px] md:text-xs font-sourcecodepro' style="color:${cfg.color}">
                 ${
                   typeof valueForTooltip === "number"
                     ? (cfg.valueFormatter?.(valueForTooltip) ??
@@ -485,7 +485,7 @@ export function MacroBarChart({
       <svg ref={chartRef} className="w-full h-full" />
       <div
         ref={tooltipRef}
-        className="absolute bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1 rounded shadow-lg"
+      className="absolute bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1 rounded shadow-lg font-sourcecodepro"
       />
     </div>
   );

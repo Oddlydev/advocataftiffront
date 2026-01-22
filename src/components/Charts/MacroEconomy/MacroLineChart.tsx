@@ -796,7 +796,7 @@ export function MacroLineChart({
       />
       <div
         ref={tooltipRef}
-        className="absolute hidden bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1 md:py-2 md:px-3 rounded shadow-lg pointer-events-none"
+      className="absolute hidden bg-white text-[10px] md:text-xs text-slate-800 px-2 py-1 md:py-2 md:px-3 rounded shadow-lg pointer-events-none font-sourcecodepro"
         style={{ border: "1px solid #E2E8F0" }}
       />
     </div>
