@@ -177,6 +177,9 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
   const metrics = macroEconomy?.macroDashboardMetricsSection;
   const definitionHtml = metrics?.definition ?? null;
   const methodologyHtml = metrics?.statisticalConceptAndMethodology ?? null;
+  const hasSpecialNotes = Boolean(
+    methodologyHtml?.replace(/<[^>]+>/g, "").trim(),
+  );
   const overviewHtml = macroEconomy?.content ?? macroEconomy?.excerpt ?? null;
   const displayTitle = macroEconomy?.title ?? config.chartTitle;
   const chartDetails = macroEconomy?.macroChartDetailsSection;
@@ -572,13 +575,19 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
           <div className="border border-gray-200 bg-gray-50 rounded-xl">
             <div className="px-6 py-7">
               <div className="mb-5">
-                <h5 className="text-xs font-sourcecodepro font-semibold text-slate-600 leading-3 mb-1.5">
+                <h5 className="text-2xl font-montserrat font-bold text-[#020617] leading-tight mb-1.5">
                   {/* {`Understanding ${displayTitle} Metrics`} */}
                   Notes:
                 </h5>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
-                <div className="border-b border-brand-1-100 pb-0 md:border-b-0 md:border-r md:pr-4">
+              <div className="grid grid-cols-1 md:grid-cols-1">
+                <div
+                  className={`${
+                    hasSpecialNotes
+                      ? "pb-12 border-b border-brand-1-100 md:border-b"
+                      : "pb-0"
+                  }`}
+                >
                   <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3 leading-7">
                     Definition and Statistical Concept
                   </h3>
@@ -595,22 +604,20 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div className="mt-6 md:mt-0">
-                  <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3 leading-7">
-                    {/* Statistical Concept and Methodology */}
-                    Special Notes (if any)
-                  </h3>
-                  <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal break-words">
-                    {methodologyHtml ? (
+                {hasSpecialNotes ? (
+                  <div className="mt-12 md:mt-12">
+                    <h3 className="text-lg font-sourcecodepro font-semibold text-slate-600 uppercase mb-3 leading-7">
+                      {/* Statistical Concept and Methodology */}
+                      Special Notes (if any)
+                    </h3>
+                    <div className="space-y-5 text-slate-800 text-base/6 font-baskervville font-normal break-words">
                       <div
                         className="text-slate-800 text-base/6 font-baskervville font-normal break-words"
-                        dangerouslySetInnerHTML={{ __html: methodologyHtml }}
+                        dangerouslySetInnerHTML={{ __html: methodologyHtml! }}
                       />
-                    ) : (
-                      <p className="text-slate-800 text-base/6 font-baskervville font-normal break-words"></p>
-                    )}
+                    </div>
                   </div>
-                </div>
+                ) : null}
               </div>
             </div>
           </div>
