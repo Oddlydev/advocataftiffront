@@ -574,7 +574,7 @@ const SingleMacroEconomy: React.FC<MacroEconomyPageProps> = ({ data }) => {
         <div className="mx-auto max-w-7xl px-5 md:px-10 xl:px-16">
           <div className="border border-gray-200 bg-gray-50 rounded-xl">
             <div className="px-6 py-7">
-              <div className="mb-5">
+              <div className="mb-10">
                 <h5 className="text-2xl font-montserrat font-bold text-[#020617] leading-tight mb-1.5">
                   {/* {`Understanding ${displayTitle} Metrics`} */}
                   Notes:
