@@ -163,13 +163,11 @@ function decodeHtmlEntities(text: string): string {
   };
   return text
     .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) =>
-      String.fromCharCode(parseInt(hex, 16))
+      String.fromCharCode(parseInt(hex, 16)),
     )
-    .replace(/&#(\d+);/g, (_, num) =>
-      String.fromCharCode(parseInt(num, 10))
-    )
+    .replace(/&#(\d+);/g, (_, num) => String.fromCharCode(parseInt(num, 10)))
     .replace(/&(amp|lt|gt|quot|apos|nbsp);/g, (match) =>
-      namedEntities[match] ? namedEntities[match] : match
+      namedEntities[match] ? namedEntities[match] : match,
     );
 }
 
@@ -203,7 +201,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const rawDescription = dataset.content || dataset.excerpt || "";
   const heroParagraphHtml = rawDescription;
   const heroParagraphText = decodeHtmlEntities(
-    rawDescription.replace(/<[^>]+>/g, "").trim()
+    rawDescription.replace(/<[^>]+>/g, "").trim(),
   );
 
   const downloadUrl =
@@ -215,7 +213,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const related =
     allRelated
       .filter(
-        (d) => d.id !== dataset.id && (d.slug ? d.slug !== dataset.slug : true)
+        (d) => d.id !== dataset.id && (d.slug ? d.slug !== dataset.slug : true),
       )
       .slice(0, 3) ?? [];
 
@@ -276,7 +274,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const handlePlaygroundSubmit = async () => {
     if (!downloadUrl) {
       setPlaygroundError(
-        "Dataset content is not available for custom prompts."
+        "Dataset content is not available for custom prompts.",
       );
       return;
     }
@@ -313,7 +311,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     } catch (error: any) {
       console.error("Custom prompt failed", error);
       setPlaygroundError(
-        error?.message ?? "Custom prompt failed. Please try again."
+        error?.message ?? "Custom prompt failed. Please try again.",
       );
     } finally {
       setIsPlaygroundLoading(false);
@@ -375,6 +373,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                 title={dataset.title ?? ""}
                 paragraphHtml={heroParagraphHtml}
                 items={[{ label: "Datasets", href: "/datasets" }]}
+                reduceTitleOnMdUp
               />
             </div>
           </section>
@@ -454,7 +453,9 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                         onClick={handlePlaygroundSubmit}
                         disabled={isPlaygroundLoading}
                       >
-                        {isPlaygroundLoading ? "Running prompt..." : "Run prompt"}
+                        {isPlaygroundLoading
+                          ? "Running prompt..."
+                          : "Run prompt"}
                       </SecondaryButton>
                     </div>
                     {playgroundError && (
@@ -499,7 +500,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                       try {
                         downloadCsvFile(
                           metaUrl,
-                          `${dataset.slug || "dataset"}-meta`
+                          `${dataset.slug || "dataset"}-meta`,
                         );
                       } catch {}
                     }
@@ -551,13 +552,13 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                       try {
                         downloadExcelFromCsv(
                           metaUrl,
-                          `${dataset.slug || "dataset"}-meta`
+                          `${dataset.slug || "dataset"}-meta`,
                         );
                       } catch {}
                     }
                     downloadExcelFromCsv(
                       downloadUrl,
-                      dataset.slug || "dataset"
+                      dataset.slug || "dataset",
                     );
                   }}
                 >
@@ -678,11 +679,11 @@ export default DatasetInnerPage;
 (DatasetInnerPage as any).query = SINGLE_DATASET_QUERY;
 (DatasetInnerPage as any).variables = (
   seedNode: { slug?: string } = {},
-  ctx: GetStaticPropsContext
+  ctx: GetStaticPropsContext,
 ) => {
   if (!ctx.params?.slug && !seedNode?.slug) {
     throw new Error(
-      "DatasetInnerPage.variables: missing slug from params/seedNode."
+      "DatasetInnerPage.variables: missing slug from params/seedNode.",
     );
   }
   const slug =

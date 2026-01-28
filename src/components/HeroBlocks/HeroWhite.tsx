@@ -8,6 +8,8 @@ type HeroWhiteProps = {
   paragraph?: string;
   paragraphHtml?: string;
   items?: Crumb[];
+  titleClassName?: string;
+  reduceTitleOnMdUp?: boolean;
 };
 
 export default function HeroWhite({
@@ -15,8 +17,16 @@ export default function HeroWhite({
   paragraph,
   paragraphHtml,
   items = [{ label: "Datasets", href: "/datasets" }],
+  titleClassName,
+  reduceTitleOnMdUp = false,
 }: HeroWhiteProps): JSX.Element {
   const hasParagraph = Boolean(paragraphHtml || paragraph);
+  const titleSizeClasses = reduceTitleOnMdUp
+    ? "md:text-5xl xl:text-5xl"
+    : "md:text-5xl xl:text-6xl";
+  const titleLeadingClasses = reduceTitleOnMdUp
+    ? "xl:leading-snug"
+    : "xl:leading-20";
 
   return (
     <section className="hero-block-container hero-white bg-white px-5 md:px-10 xl:px-16 py-12 md:py-16 xl:py-20">
@@ -25,7 +35,11 @@ export default function HeroWhite({
           <Breadcrumb items={items} />
         </div>
 
-        <h1 className="hero-title mb-5 text-slate-950 text-4xl md:text-5xl xl:text-6xl leading-snug font-montserrat font-bold max-w-lg xl:max-w-3xl xl:leading-20">
+        <h1
+          className={`hero-title mb-5 text-slate-950 text-4xl ${titleSizeClasses} leading-snug font-montserrat font-bold max-w-lg xl:max-w-3xl ${titleLeadingClasses}${
+            titleClassName ? ` ${titleClassName}` : ""
+          }`}
+        >
           {title}
         </h1>
         {hasParagraph && (
