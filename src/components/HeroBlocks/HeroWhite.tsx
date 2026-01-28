@@ -25,7 +25,7 @@ export default function HeroWhite({
     ? "md:text-5xl xl:text-5xl"
     : "md:text-5xl xl:text-6xl";
   const titleLeadingClasses = reduceTitleOnMdUp
-    ? "xl:leading-[60px]"
+    ? "xl:leading-tight"
     : "xl:leading-20";
 
   return (
