@@ -99,9 +99,11 @@ export default function CsvTransparency({
       } catch {}
     }
 
-    const proxiedUrl = `https://corsproxy.io/?${csvUrl}`;
+    const targetUrl = csvUrl.startsWith("http")
+      ? `/api/proxy-dataset?url=${encodeURIComponent(csvUrl)}`
+      : csvUrl;
 
-    fetch(proxiedUrl)
+    fetch(targetUrl)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch CSV file.");
         return res.text();

@@ -7,8 +7,10 @@ import autoTable from "jspdf-autotable";
  * Helper to fetch CSV text (via CORS proxy).
  */
 async function fetchCsv(csvUrl: string): Promise<string> {
-  const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(csvUrl)}`;
-  const response = await fetch(proxiedUrl);
+  const targetUrl = csvUrl.startsWith("http")
+    ? `/api/proxy-dataset?url=${encodeURIComponent(csvUrl)}`
+    : csvUrl;
+  const response = await fetch(targetUrl);
   if (!response.ok) throw new Error("Failed to fetch CSV file");
   return await response.text();
 }

@@ -66,6 +66,7 @@ const MIN_SCALE = 1;
 const MAX_SCALE = 5;
 const DURATION = 2000;
 const HTTP_URL_REGEX = /^https?:\/\//i;
+const NEXT_PROXY_ROUTE = "/api/proxy-dataset?url=";
 
 const formatWithTwoDecimals = (num: number) =>
   Number.isInteger(num) ? num.toString() : num.toFixed(2);
@@ -77,17 +78,11 @@ async function fetchCsvWithFallback(url: string): Promise<string> {
       throw new Error(`Request failed with status ${response.status}`);
     return response.text();
   };
-  try {
-    return await attempt(url);
-  } catch (primaryError) {
-    if (HTTP_URL_REGEX.test(url)) {
-      const proxied = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-      return attempt(proxied).catch((proxyError) => {
-        throw proxyError ?? primaryError;
-      });
-    }
-    throw primaryError;
+  if (!HTTP_URL_REGEX.test(url)) {
+    return attempt(url);
   }
+  const nextProxyUrl = `${NEXT_PROXY_ROUTE}${encodeURIComponent(url)}`;
+  return attempt(nextProxyUrl);
 }
 
 function coerceNumber(

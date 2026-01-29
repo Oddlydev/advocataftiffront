@@ -232,10 +232,10 @@ export default function FeaturedFiscalSankeyChart({
       setStatus("loading");
       setMessage(null);
       try {
-        const proxiedUrl = datasetUrl.startsWith("http")
-          ? `https://corsproxy.io/?${encodeURIComponent(datasetUrl)}`
+        const targetUrl = datasetUrl.startsWith("http")
+          ? `/api/proxy-dataset?url=${encodeURIComponent(datasetUrl)}`
           : datasetUrl;
-        const response = await fetch(proxiedUrl, { cache: "no-store" });
+        const response = await fetch(targetUrl, { cache: "no-store" });
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
         }

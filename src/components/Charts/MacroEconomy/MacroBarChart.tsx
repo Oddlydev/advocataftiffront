@@ -64,35 +64,11 @@ async function fetchCsvWithFallback(url: string): Promise<string> {
     return response.text();
   };
 
-  try {
-    return await attempt(url);
-  } catch (primaryError) {
-    if (!HTTP_URL_REGEX.test(url)) {
-      console.warn("[MacroBarChart] CORS fallback not used (non-http)", {
-        url,
-        error: primaryError,
-      });
-      throw primaryError;
-    }
-    const nextProxyUrl = `${NEXT_PROXY_ROUTE}${encodeURIComponent(url)}`;
-    try {
-      return await attempt(nextProxyUrl);
-    } catch (proxyError) {
-      console.warn("[MacroBarChart] Next proxy failed, trying corsproxy.io", {
-        proxyError,
-        nextProxyUrl,
-        url,
-      });
-      const corsProxy = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-      return attempt(corsProxy).catch((fallbackError) => {
-        console.error("[MacroBarChart] corsproxy fallback failed", {
-          fallbackError,
-          url,
-        });
-        throw fallbackError ?? proxyError ?? primaryError;
-      });
-    }
+  if (!HTTP_URL_REGEX.test(url)) {
+    return attempt(url);
   }
+  const nextProxyUrl = `${NEXT_PROXY_ROUTE}${encodeURIComponent(url)}`;
+  return attempt(nextProxyUrl);
 }
 
 export function MacroBarChart({
