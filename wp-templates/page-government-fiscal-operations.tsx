@@ -493,11 +493,11 @@ function PageFiscalOperations({ data }: PageFiscalOperationsProps) {
     setLoading(true);
     setError(null);
 
-    const proxiedUrl = csvUrl.startsWith("http")
-      ? `https://corsproxy.io/?${encodeURIComponent(csvUrl)}`
+    const targetUrl = csvUrl.startsWith("http")
+      ? `/api/proxy-dataset?url=${encodeURIComponent(csvUrl)}`
       : csvUrl;
 
-    fetch(proxiedUrl)
+    fetch(targetUrl)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Request failed with status ${res.status}`);
