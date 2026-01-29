@@ -18,7 +18,7 @@ const ALLOWED_HOSTS = (() => {
 
 function isAllowedHost(hostname: string): boolean {
   if (!ALLOWED_HOSTS.size) return false;
-  for (const allowed of ALLOWED_HOSTS) {
+  for (const allowed of Array.from(ALLOWED_HOSTS)) {
     if (hostname === allowed || hostname.endsWith(`.${allowed}`)) {
       return true;
     }
