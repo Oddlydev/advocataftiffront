@@ -27,9 +27,14 @@ export default function HeroWhite({
   const titleLeadingClasses = reduceTitleOnMdUp
     ? "xl:leading-tight"
     : "xl:leading-20";
+  const sectionPaddingClasses = reduceTitleOnMdUp
+    ? "pt-[60px] pb-3"
+    : "py-12 md:py-16 xl:py-20";
 
   return (
-    <section className="hero-block-container hero-white bg-white px-5 md:px-10 xl:px-16 py-12 md:py-16 xl:py-20">
+    <section
+      className={`hero-block-container hero-white bg-white px-5 md:px-10 xl:px-16 ${sectionPaddingClasses}`}
+    >
       <div className="hero-block text-start mx-auto max-w-6xl">
         <div className="mb-5">
           <Breadcrumb items={items} />

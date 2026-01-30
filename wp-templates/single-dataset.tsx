@@ -399,7 +399,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                 className={`mx-auto ${maxWidthClass} ${contentPaddingClass}`}
               >
                 {!isInsightsPanelOpen && (
-                  <div className="flex flex-wrap items-start justify-end gap-6 mb-3.5">
+                  <div className="flex flex-wrap items-start justify-end gap-6 mb-0">
                     <div className="flex items-center">
                       <AIButton onClick={openInsightsPanel} />
                     </div>
