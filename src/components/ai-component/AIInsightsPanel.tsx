@@ -5,6 +5,7 @@ import type {
 } from "./detailContent.types";
 import React, { useEffect, useState } from "react";
 
+import AIButton from "./AIButton";
 import InsightsDisclaimerCard from "./InsightsDisclaimerCard";
 import KeyInsightsCard from "./KeyInsightsCard";
 import LoadingIcon from "./LoadingIcon";
@@ -42,14 +43,14 @@ function formatKeyInsights(insights?: AIInsightsResponse["keyInsights"]) {
   return insights
     .map(
       (insight, index) =>
-        `${index + 1}. ${insight.title}: ${insight.content} (Confidence: ${insight.confidence})`
+        `${index + 1}. ${insight.title}: ${insight.content} (Confidence: ${insight.confidence})`,
     )
     .join("\n");
 }
 
 function appendDetailContent(
   lines: string[],
-  detailContent: MoreInsightDetailContent
+  detailContent: MoreInsightDetailContent,
 ) {
   const summary = detailContent.summary?.trim();
   const sections = Array.isArray(detailContent.sections)
@@ -82,7 +83,7 @@ function appendDetailContent(
 function buildMoreInsightsDownloadReport(
   insights: AIInsightsResponse,
   moreInsightsDetails: MoreInsightDetail[],
-  title?: string
+  title?: string,
 ): string {
   const lines: string[] = [];
 
@@ -136,6 +137,7 @@ export default function AIInsightsPanel({
   const [insights, setInsights] = useState<AIInsightsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [loadingStepIndex, setLoadingStepIndex] = useState(0);
   const [isLoaderVisible, setIsLoaderVisible] = useState(true);
   const [isFadingLoader, setIsFadingLoader] = useState(false);
@@ -154,6 +156,7 @@ export default function AIInsightsPanel({
     const fetchInsights = async () => {
       setLoading(true);
       setError(null);
+      setInsights(null);
       try {
         const response = await fetch("/api/generate-insights", {
           method: "POST",
@@ -169,7 +172,19 @@ export default function AIInsightsPanel({
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch insights");
+          let errorMessage = "Failed to generate insights";
+          try {
+            const payload = await response.json();
+            if (
+              typeof payload?.message === "string" &&
+              payload.message.trim()
+            ) {
+              errorMessage = payload.message.trim();
+            }
+          } catch {
+            // Keep the fallback message when no JSON body is available.
+          }
+          throw new Error(errorMessage);
         }
 
         const data = await response.json();
@@ -180,7 +195,10 @@ export default function AIInsightsPanel({
         if ((err as Error)?.name === "AbortError") return;
         console.error(err);
         if (!cancelled) {
-          setError("Failed to generate insights. Please try again.");
+          setError(
+            (err as Error)?.message ||
+              "Failed to generate insights. Please try again.",
+          );
         }
       } finally {
         if (!cancelled) {
@@ -195,7 +213,13 @@ export default function AIInsightsPanel({
       cancelled = true;
       controller.abort();
     };
-  }, [datasetUrl, manualInsights, datasetDescription, titleCardHeadline]);
+  }, [
+    datasetUrl,
+    manualInsights,
+    datasetDescription,
+    titleCardHeadline,
+    retryCount,
+  ]);
 
   useEffect(() => {
     if (manualInsights) {
@@ -265,9 +289,25 @@ export default function AIInsightsPanel({
     ? buildMoreInsightsDownloadReport(
         insights,
         moreInsightsDetails,
-        titleCardHeadline
+        titleCardHeadline,
       )
     : null;
+
+  const handleRetry = () => {
+    if (loading || !datasetUrl || manualInsights) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setInsights(null);
+    setLoadingStepIndex(0);
+    setIsLoaderVisible(true);
+    setIsFadingLoader(false);
+    setLoaderOpacity(1);
+    setContentVisible(false);
+    setRetryCount((prev) => prev + 1);
+  };
 
   return (
     <div className="flex w-full flex-col gap-3">
@@ -342,15 +382,85 @@ export default function AIInsightsPanel({
         <div className="relative min-h-[6rem]">
           {isLoaderVisible && !showSkeleton && (
             <div
-              className="absolute inset-0 flex items-center justify-center"
+              className={
+                error
+                  ? "relative flex items-center justify-center"
+                  : "absolute inset-0 flex items-center justify-center"
+              }
               style={{
-                pointerEvents: "none",
+                pointerEvents: error ? "auto" : "none",
                 opacity: loaderOpacity,
                 transition: `opacity ${LOADER_FADE_DURATION}ms ease-out`,
               }}
             >
               {error ? (
-                <p className="text-sm text-red-500">{error}</p>
+                <div className="flex w-full flex-col items-center justify-center gap-6 px-1 py-8 text-center">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-[33554400px] border-2 border-[#FECACA] bg-[#FEF2F2]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="23"
+                      height="23"
+                      viewBox="0 0 23 23"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M21.25 1.25L1.25 21.25"
+                        stroke="#EB1A52"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M1.25 1.25L21.25 21.25"
+                        stroke="#EB1A52"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+
+                  <div className="space-y-3">
+                    <p
+                      className="text-xl leading-[25px] font-bold text-[#0F172B]"
+                      style={{ fontFamily: "Montserrat" }}
+                    >
+                      Unable to Generate Insights
+                    </p>
+                    <p
+                      className="text-sm leading-[17.5px] text-slate-600"
+                      style={{ fontFamily: '"Source Code Pro"' }}
+                    >
+                      Simulated error for demonstration
+                    </p>
+                    <p
+                      className="text-sm leading-6 text-slate-600"
+                      style={{ fontFamily: '"Source Code Pro"' }}
+                    >
+                      Don&apos;t worry &ndash; your data is safe. Let&apos;s try
+                      again.
+                    </p>
+                  </div>
+
+                  <AIButton
+                    label="Try Again"
+                    icon="refresh"
+                    onClick={handleRetry}
+                    disabled={loading}
+                  />
+
+                  <InsightsDisclaimerCard
+                    className="text-left mt-6"
+                    title="Troubleshooting tips:"
+                    items={[
+                      "Check your internet connection",
+                      "Verify the dataset is properly formatted",
+                      "Try refreshing the page",
+                      "Contact support if the issue persists",
+                    ]}
+                  />
+                </div>
               ) : (
                 <div
                   className="flex items-center gap-2"
@@ -513,7 +623,7 @@ export default function AIInsightsPanel({
                       isOpen={openInsightIndex === index}
                       onToggle={() => {
                         setOpenInsightIndex((prev) =>
-                          prev === index ? null : index
+                          prev === index ? null : index,
                         );
                       }}
                       title={insight.title}

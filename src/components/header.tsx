@@ -619,7 +619,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
   siteUrl,
 }) => {
   const { data } = useQuery(HEADER_MENU_QUERY);
-  const pathname = usePathname();
+  const pathname = usePathname() || "";
 
   const baseUrl =
     siteUrl || (typeof window !== "undefined" ? window.location.origin : "/");
