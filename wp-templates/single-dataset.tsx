@@ -188,6 +188,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const [isPlaygroundLoading, setIsPlaygroundLoading] = useState(false);
   const [playgroundError, setPlaygroundError] = useState<string | null>(null);
   const [isTestMode, setIsTestMode] = useState(false);
+  const [hasGeneratedInsights, setHasGeneratedInsights] = useState(false);
 
   // Sidebar width must be 480px
   const SIDEBAR_WIDTH = 480;
@@ -477,7 +478,11 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                 )}
                 {/* CRITICAL: horizontal scroll so wide tables never crop */}
                 <div className="relative overflow-x-auto">
-                  <CsvTable csvUrl={downloadUrl} stickySecondColumn />
+                  <CsvTable
+                    csvUrl={downloadUrl}
+                    stickySecondColumn
+                    panelOpen={isInsightsPanelOpen}
+                  />
                 </div>
               </div>
             </section>
@@ -646,8 +651,13 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       {/* Sidebar (slides in) */}
       {isPanelVisible && (
         <div
-          className="fixed inset-y-0 right-0 z-50 pointer-events-auto overflow-y-auto bg-white
-                     transition-transform duration-600 ease-[cubic-bezier(0.7,0,0.3,1)]"
+          className={`fixed inset-y-0 right-0 z-50 pointer-events-auto overflow-y-auto bg-white
+                     transition-transform duration-600 ease-[cubic-bezier(0.7,0,0.3,1)]
+                     ${
+                       isInsightsPanelOpen && hasGeneratedInsights
+                         ? "border-l border-slate-200"
+                         : ""
+                     }`}
           style={{
             width: `${SIDEBAR_WIDTH}px`,
             transform: `${
@@ -666,6 +676,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
             datasetUrl={downloadUrl}
             titleCardHeadline={dataset.title ?? undefined}
             datasetDescription={heroParagraphText}
+            onInsightsReady={setHasGeneratedInsights}
           />
         </div>
       )}

@@ -10,6 +10,8 @@ interface CsvTableProps {
   sectorFilters?: string[];
   /** Whether to keep the second column sticky alongside the first */
   stickySecondColumn?: boolean;
+  /** When true, remove right padding and square top-right radius */
+  panelOpen?: boolean;
 }
 
 export default function CsvTable({
@@ -18,6 +20,7 @@ export default function CsvTable({
   pageSize = 10,
   sectorFilters = [],
   stickySecondColumn = false,
+  panelOpen = false,
 }: CsvTableProps) {
   const [rows, setRows] = useState<string[][]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -257,7 +260,11 @@ export default function CsvTable({
     <div className="relative">
       <div className="py-3.5 md:py-5 xl:py-6">
         <div className="mx-auto max-w-7xl">
-          <div className="shadow-md border p-4 border-gray-200 rounded-lg">
+          <div
+            className={`shadow-md border border-gray-200 rounded-lg ${
+              panelOpen ? "pt-4 pb-4 pl-4 pr-0 rounded-tr-none" : "p-4"
+            }`}
+          >
             <div className="relative mx-auto w-fit max-w-full">
               <div
                 id="table-wrapper"
@@ -266,7 +273,11 @@ export default function CsvTable({
                 }`}
               >
                 <div className="w-[1200px] table-inner">
-                  <table className="border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg">
+                  <table
+                    className={`border-collapse bg-white border-b border-gray-100 min-w-max rounded-lg ${
+                      panelOpen ? "rounded-tr-none" : ""
+                    }`}
+                  >
                     <thead ref={theadRef} className="rounded-t-lg">
                       <tr>
                         {displayHeaders.map((header, i) => {

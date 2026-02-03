@@ -125,6 +125,7 @@ export type AIInsightsPanelProps = {
   titleCardHeadline?: string;
   datasetDescription?: string;
   manualInsights?: AIInsightsResponse | null;
+  onInsightsReady?: (ready: boolean) => void;
 };
 
 export default function AIInsightsPanel({
@@ -133,6 +134,7 @@ export default function AIInsightsPanel({
   titleCardHeadline,
   datasetDescription,
   manualInsights,
+  onInsightsReady,
 }: AIInsightsPanelProps) {
   const [insights, setInsights] = useState<AIInsightsResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -228,6 +230,11 @@ export default function AIInsightsPanel({
       setLoading(false);
     }
   }, [manualInsights]);
+
+  useEffect(() => {
+    const hasInsightsActivity = loading || !!insights;
+    onInsightsReady?.(hasInsightsActivity && !error);
+  }, [onInsightsReady, insights, loading, error]);
 
   const shouldShowLoaderContent = (loading && !insights) || !!error;
 
