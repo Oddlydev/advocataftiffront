@@ -33,6 +33,7 @@ export const baskervville = Baskervville({
 });
 
 export const ibmPlexSans = IBM_Plex_Sans({
+  weight: "400",
   subsets: ["latin"],
   variable: "--font-ibmplexsans",
 });
