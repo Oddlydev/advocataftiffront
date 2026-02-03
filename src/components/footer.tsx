@@ -16,16 +16,17 @@ export default function Footer(): JSX.Element {
   const [openQuick, setOpenQuick] = useState(false);
   const [openDashboards, setOpenDashboards] = useState(false);
   const pathname = usePathname();
+  const sitemapUrl = `${process.env.NEXT_PUBLIC_WP_URL}/sitemap_index.xml`;
 
   const { data } = useQuery(FOOTER_MENU_QUERY);
   const allItems: FooterMenuItem[] = data?.menu?.menuItems?.nodes ?? [];
 
   // Find top-level grouping items by label
   const quickLinksParent = allItems.find(
-    (n) => !n.parentId && n.label?.toLowerCase?.().includes("quick")
+    (n) => !n.parentId && n.label?.toLowerCase?.().includes("quick"),
   );
   const dashboardsParent = allItems.find(
-    (n) => !n.parentId && n.label?.toLowerCase?.().includes("dashboard")
+    (n) => !n.parentId && n.label?.toLowerCase?.().includes("dashboard"),
   );
 
   const quickLinks = quickLinksParent
@@ -568,6 +569,16 @@ export default function Footer(): JSX.Element {
                     className="footer-link text-sm/5 text-brand-white/60 hover:underline font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%]"
                   >
                     Terms &amp; Conditions
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={sitemapUrl}
+                    className="footer-link text-sm/5 text-brand-white/60 hover:underline font-normal font-sourcecodepro transform transition-all duration-300 ease-in-out hover:decoration-[6px_solid_currentColor] hover:decoration-from-font hover:underline-offset-[40%]"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Sitemap
                   </a>
                 </li>
               </ul>
