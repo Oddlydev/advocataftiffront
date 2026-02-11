@@ -66,7 +66,7 @@ export default function PostContent({ content, variant = "single" }: Props) {
           // ---------- LISTS ----------
           case "ol":
             return (
-              <ol className="break-all text-slate-600 text-lg/7 font-baskervville font-normal py-2 mx-auto max-w-4xl px-5 md:px-10 xl:px-16">
+              <ol className="list-decimal list-inside break-all text-slate-600 text-lg/7 font-baskervville font-normal py-2 mx-auto max-w-4xl px-5 md:px-10 xl:px-16">
                 {domToReact(domNode.children, options)}
               </ol>
             );
