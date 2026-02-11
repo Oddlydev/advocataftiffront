@@ -402,7 +402,7 @@ export default function AIInsightsPanel({
             >
               {error ? (
                 <div className="flex w-full flex-col items-center justify-center gap-6 px-1 py-8 text-center">
-                  <div className="flex h-20 w-20 items-center justify-center rounded-[33554400px] border-2 border-[#FECACA] bg-[#FEF2F2]">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-[33554400px] border-2 border-[#FECACA] bg-[#FEF2F2] shadow-[0_10px_30px_rgba(251,44,54,0.2)]">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="23"
