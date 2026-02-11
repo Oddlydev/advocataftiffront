@@ -78,12 +78,21 @@ export default function PostContent({ content, variant = "single" }: Props) {
               </ul>
             );
 
-          case "li":
+          case "li": {
+            const isUnordered = domNode.parent?.name === "ul";
+
             return (
-              <li className="relative pl-8 before:absolute mx-auto max-w-4xl before:left-0 before:top-1 before:w-5 before:h-5 before:bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2720%27%20height%3D%2720%27%20viewBox%3D%270%200%2020%2020%27%20fill%3D%27none%27%3E%3Cpath%20d%3D%27M9.99999%2018.3334C14.5833%2018.3334%2018.3333%2014.5834%2018.3333%2010.0001C18.3333%205.41675%2014.5833%201.66675%209.99999%201.66675C5.41666%201.66675%201.66666%205.41675%201.66666%2010.0001C1.66666%2014.5834%205.41666%2018.3334%209.99999%2018.3334Z%27%20stroke%3D%27%23475669%27%20stroke-width%3D%271.25%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27/%3E%3Cpath%20d%3D%27M6.45834%209.99993L8.81668%2012.3583L13.5417%207.6416%27%20stroke%3D%27%23475669%27%20stroke-width%3D%271.25%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27/%3E%3C/svg%3E')] before:bg-contain before:bg-no-repeat">
+              <li
+                className={
+                  isUnordered
+                    ? "relative pl-8 mx-auto max-w-4xl before:absolute before:left-0 before:top-1 before:w-5 before:h-5 before:bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2720%27%20height%3D%2720%27%20viewBox%3D%270%200%2020%2020%27%20fill%3D%27none%27%3E%3Cpath%20d%3D%27M9.99999%2018.3334C14.5833%2018.3334%2018.3333%2014.5834%2018.3333%2010.0001C18.3333%205.41675%2014.5833%201.66675%209.99999%201.66675C5.41666%201.66675%201.66666%205.41675%201.66666%2010.0001C1.66666%2014.5834%205.41666%2018.3334%209.99999%2018.3334Z%27%20stroke%3D%27%23475669%27%20stroke-width%3D%271.25%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27/%3E%3Cpath%20d%3D%27M6.45834%209.99993L8.81668%2012.3583L13.5417%207.6416%27%20stroke%3D%27%23475669%27%20stroke-width%3D%271.25%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27/%3E%3C/svg%3E')] before:bg-contain before:bg-no-repeat"
+                    : ""
+                }
+              >
                 {domToReact(domNode.children, options)}
               </li>
             );
+          }
 
           // ---------- BLOCKQUOTE ----------
           case "blockquote":
