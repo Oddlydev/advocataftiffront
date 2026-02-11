@@ -23,7 +23,7 @@ export const WysiwygInner: React.FC<WysiwygInnerProps> = ({
         "[&_p>span]:text-brand-black",
 
         // ordered lists
-        "[&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:ml-6 [&_ol]:space-y-3 [&_ol]:text-slate-600 [&_ol]:text-lg/7 [&_ol]:font-normal [&_ol]:font-sourcecodepro [&_ol]:py-2",
+        "[&_ol]:text-slate-600 [&_ol]:text-lg/7 [&_ol]:font-normal [&_ol]:font-sourcecodepro [&_ol]:py-2",
         "[&_ol>li>a]:text-secondary [&_ol>li>a]:italic [&_ol>li>a]:underline [&_ol>li>a]:underline-offset-4 [&_ol>li>a]:transition-colors",
 
         // unordered lists + custom bullet (slightly smaller, 18px)
