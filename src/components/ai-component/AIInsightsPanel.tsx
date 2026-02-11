@@ -318,7 +318,7 @@ export default function AIInsightsPanel({
 
   return (
     <div className="flex w-full flex-col gap-3">
-      <article className="rounded-[14px] bg-slate-50/50 px-6 pb-6 pt-6 border-l border-slate-200">
+      <article className="rounded-[14px] px-6 pb-6 pt-6">
         <header className="flex items-start justify-between gap-4 border-b border-slate-200 pb-4">
           <div className="flex items-center gap-3">
             <span className="flex h-12 w-12 items-center justify-center rounded-[16px] bg-gradient-to-br from-[#EA1952] to-[#AA1E58]">
