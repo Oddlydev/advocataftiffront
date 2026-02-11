@@ -651,7 +651,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       {/* Sidebar (slides in) */}
       {isPanelVisible && (
         <div
-          className={`fixed inset-y-0 right-0 z-50 pointer-events-auto overflow-y-auto bg-slate-50 border-l border-slate-200
+          className={`fixed inset-y-0 right-0 z-50 pointer-events-auto overflow-y-auto bg-slate-50/50 backdrop-blur-md border-l border-slate-200
                      transition-transform duration-600 ease-[cubic-bezier(0.7,0,0.3,1)]
                      ${
                        isInsightsPanelOpen && hasGeneratedInsights
