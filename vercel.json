@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/sitemap_index.xml",
+      "destination": "https://advoctaftiffront.vercel.app//sitemap_index.xml"
+    },
+    {
+      "source": "/sitemap-:slug(.*).xml",
+      "destination": "https://advoctaftiffront.vercel.app//sitemap-:slug.xml"
+    }
+  ]
+}
