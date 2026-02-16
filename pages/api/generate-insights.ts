@@ -37,6 +37,78 @@ const MODELS_TO_TRY = [
     'gemini-1.0-pro-001',
 ];
 
+const MINUTE_RATE_LIMIT = Number.parseInt(process.env.INSIGHTS_RATE_LIMIT_PER_MINUTE ?? '10', 10);
+const HOURLY_RATE_LIMIT = Number.parseInt(process.env.INSIGHTS_RATE_LIMIT_PER_HOUR ?? '60', 10);
+
+const RATE_LIMIT_WINDOWS = [
+    { key: 'minute', windowMs: 60 * 1000, max: MINUTE_RATE_LIMIT },
+    { key: 'hour', windowMs: 60 * 60 * 1000, max: HOURLY_RATE_LIMIT },
+] as const;
+
+const rateLimitStore = new Map<string, number[]>();
+
+function getClientIp(req: NextApiRequest) {
+    const forwardedFor = req.headers['x-forwarded-for'];
+    const realIp = req.headers['x-real-ip'];
+
+    if (typeof forwardedFor === 'string' && forwardedFor.trim()) {
+        return forwardedFor.split(',')[0].trim();
+    }
+
+    if (Array.isArray(forwardedFor) && forwardedFor.length > 0) {
+        const first = forwardedFor[0]?.split(',')[0]?.trim();
+        if (first) {
+            return first;
+        }
+    }
+
+    if (typeof realIp === 'string' && realIp.trim()) {
+        return realIp.trim();
+    }
+
+    return req.socket.remoteAddress || 'unknown';
+}
+
+function evaluateRateLimit(clientKey: string, now = Date.now()) {
+    const maxWindowMs = RATE_LIMIT_WINDOWS.reduce((largest, current) => Math.max(largest, current.windowMs), 0);
+    const existing = rateLimitStore.get(clientKey) ?? [];
+    const recent = existing.filter((timestamp) => now - timestamp < maxWindowMs);
+
+    let retryAfterMs = 0;
+    let violatedWindow: 'minute' | 'hour' | null = null;
+
+    for (const window of RATE_LIMIT_WINDOWS) {
+        const timestampsInWindow = recent.filter((timestamp) => now - timestamp < window.windowMs);
+        if (timestampsInWindow.length >= window.max) {
+            const oldestTimestampInWindow = timestampsInWindow[0];
+            const retryMsForWindow = Math.max(oldestTimestampInWindow + window.windowMs - now, 1000);
+
+            if (retryMsForWindow > retryAfterMs) {
+                retryAfterMs = retryMsForWindow;
+                violatedWindow = window.key;
+            }
+        }
+    }
+
+    if (retryAfterMs > 0) {
+        rateLimitStore.set(clientKey, recent);
+        return {
+            limited: true,
+            retryAfterSeconds: Math.ceil(retryAfterMs / 1000),
+            violatedWindow,
+        };
+    }
+
+    recent.push(now);
+    rateLimitStore.set(clientKey, recent);
+
+    return {
+        limited: false,
+        retryAfterSeconds: 0,
+        violatedWindow: null,
+    };
+}
+
 
 function aggregateCandidateContent(response: any) {
     const candidate = response?.candidates?.[0];
@@ -134,6 +206,30 @@ function extractJsonObject(payload: string) {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
+    }
+
+    const clientIp = getClientIp(req);
+    const rateLimit = evaluateRateLimit(`generate-insights:${clientIp}`);
+
+    if (rateLimit.limited) {
+        const scopeMessage =
+            rateLimit.violatedWindow === 'hour'
+                ? `Hourly limit reached (${HOURLY_RATE_LIMIT} requests per hour).`
+                : `Rate limit reached (${MINUTE_RATE_LIMIT} requests per minute).`;
+
+        const retryMessage = `Please try again in ${rateLimit.retryAfterSeconds} seconds.`;
+        const message = `${scopeMessage} ${retryMessage}`;
+
+        res.setHeader('Retry-After', String(rateLimit.retryAfterSeconds));
+        return res.status(429).json({
+            message,
+            code: 'RATE_LIMIT_EXCEEDED',
+            retryAfterSeconds: rateLimit.retryAfterSeconds,
+            limits: {
+                perMinute: MINUTE_RATE_LIMIT,
+                perHour: HOURLY_RATE_LIMIT,
+            },
+        });
     }
 
     const { datasetUrl, prompt, datasetDescription, datasetTitle } = req.body;

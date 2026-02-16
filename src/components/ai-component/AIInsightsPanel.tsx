@@ -291,6 +291,9 @@ export default function AIInsightsPanel({
   const loadingText = loadingSteps[loadingStepIndex % loadingSteps.length];
   const showSkeleton =
     shouldShowLoaderContent && loadingStepIndex >= loadingSteps.length;
+  const isRateLimitError =
+    typeof error === "string" &&
+    /(rate limit|too many requests|429)/i.test(error);
 
   const reportContent = insights
     ? buildMoreInsightsDownloadReport(
@@ -433,13 +436,15 @@ export default function AIInsightsPanel({
                       className="text-xl leading-[25px] font-bold text-[#0F172B]"
                       style={{ fontFamily: "Montserrat" }}
                     >
-                      Unable to Generate Insights
+                      {isRateLimitError
+                        ? "Rate Limit Reached"
+                        : "Unable to Generate Insights"}
                     </p>
                     <p
                       className="text-sm leading-[17.5px] text-slate-600"
                       style={{ fontFamily: '"Source Code Pro"' }}
                     >
-                      Simulated error for demonstration
+                      {error || "Failed to generate insights. Please try again."}
                     </p>
                     <p
                       className="text-sm leading-6 text-slate-600"
