@@ -368,7 +368,9 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
           />
 
           {/* Hero */}
-          <section className={heroSectionClass}>
+          <section
+            className={`${heroSectionClass} ${isPanelVisible ? "hidden" : ""}`}
+          >
             <div className="px-5 md:px-10 xl:px-16 mx-auto w-full">
               <HeroWhite
                 title={dataset.title ?? ""}

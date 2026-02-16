@@ -344,5 +344,5 @@ button {
 }
 
 .ai-insights-sidebar-open header.navbar {
-  padding-right: 480px;
+  display: none;
 }
