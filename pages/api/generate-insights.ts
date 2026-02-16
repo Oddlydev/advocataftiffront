@@ -214,8 +214,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (rateLimit.limited) {
         const scopeMessage =
             rateLimit.violatedWindow === 'hour'
-                ? `Hourly limit reached (${HOURLY_RATE_LIMIT} requests per hour).`
-                : `Rate limit reached (${MINUTE_RATE_LIMIT} requests per minute).`;
+                ? `Hourly limit reached).`
+                : `Rate limit reached).`;
 
         const retryMessage = `Please try again in ${rateLimit.retryAfterSeconds} seconds.`;
         const message = `${scopeMessage} ${retryMessage}`;
