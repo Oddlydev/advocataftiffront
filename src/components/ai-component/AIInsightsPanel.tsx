@@ -444,7 +444,8 @@ export default function AIInsightsPanel({
                       className="text-sm leading-[17.5px] text-slate-600"
                       style={{ fontFamily: '"Source Code Pro"' }}
                     >
-                      {error || "Failed to generate insights. Please try again."}
+                      {error ||
+                        "Failed to generate insights. Please try again."}
                     </p>
                     <p
                       className="text-sm leading-6 text-slate-600"

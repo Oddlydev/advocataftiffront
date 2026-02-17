@@ -179,6 +179,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const [isInsightsPanelOpen, setIsInsightsPanelOpen] = useState(false);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
   const closeTimeoutRef = useRef<number | null>(null);
+  const openScrollTimeoutRef = useRef<number | null>(null);
   const [isVerticalTransitionSuppressed, setIsVerticalTransitionSuppressed] =
     useState(false);
   const [isPlaygroundFormOpen, setIsPlaygroundFormOpen] = useState(false);
@@ -189,12 +190,25 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   const [playgroundError, setPlaygroundError] = useState<string | null>(null);
   const [isTestMode, setIsTestMode] = useState(false);
   const [hasGeneratedInsights, setHasGeneratedInsights] = useState(false);
+  const [navbarHeight, setNavbarHeight] = useState(0);
 
   // Sidebar width must be 480px
   const SIDEBAR_WIDTH = 480;
 
   // measure the table wrapper
   const tableWrapRef = useRef<HTMLDivElement | null>(null);
+  const tableStartRef = useRef<HTMLDivElement | null>(null);
+
+  const getVisibleNavbarHeight = () => {
+    const navbar = document.querySelector(
+      "header.navbar",
+    ) as HTMLElement | null;
+    if (!navbar) return 0;
+    const rect = navbar.getBoundingClientRect();
+    const isVisible = rect.bottom > 0 && rect.top < window.innerHeight;
+    if (!isVisible) return 0;
+    return Math.ceil(rect.height);
+  };
 
   if (!dataset) return <p>Dataset not found.</p>;
 
@@ -221,12 +235,28 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
   useEffect(() => {
     return () => {
       if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+      if (openScrollTimeoutRef.current)
+        clearTimeout(openScrollTimeoutRef.current);
     };
   }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setIsTestMode(params.get("mode") === "test");
+  }, []);
+
+  useEffect(() => {
+    const updateNavbarHeight = () => {
+      setNavbarHeight(getVisibleNavbarHeight());
+    };
+
+    updateNavbarHeight();
+    window.addEventListener("resize", updateNavbarHeight);
+    window.addEventListener("scroll", updateNavbarHeight, { passive: true });
+    return () => {
+      window.removeEventListener("resize", updateNavbarHeight);
+      window.removeEventListener("scroll", updateNavbarHeight);
+    };
   }, []);
 
   useEffect(() => {
@@ -245,6 +275,26 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
     }
+    if (openScrollTimeoutRef.current) {
+      clearTimeout(openScrollTimeoutRef.current);
+      openScrollTimeoutRef.current = null;
+    }
+
+    const measuredNavbarHeight = getVisibleNavbarHeight();
+    setNavbarHeight(measuredNavbarHeight);
+
+    const scrollToTableStart = (behavior: ScrollBehavior = "auto") => {
+      const target = tableStartRef.current ?? tableWrapRef.current;
+      if (!target) return;
+      const tableTop =
+        target.getBoundingClientRect().top +
+        window.scrollY -
+        measuredNavbarHeight;
+      window.scrollTo({
+        top: Math.max(0, tableTop),
+        behavior,
+      });
+    };
 
     setIsVerticalTransitionSuppressed(true);
     setIsPanelVisible(true);
@@ -253,10 +303,21 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
     requestAnimationFrame(() => {
       setIsInsightsPanelOpen(true);
       setIsVerticalTransitionSuppressed(false);
+
+      requestAnimationFrame(() => scrollToTableStart("auto"));
+      openScrollTimeoutRef.current = window.setTimeout(() => {
+        scrollToTableStart("auto");
+        openScrollTimeoutRef.current = null;
+      }, 640);
     });
   };
 
   const closeInsightsPanel = () => {
+    if (openScrollTimeoutRef.current) {
+      clearTimeout(openScrollTimeoutRef.current);
+      openScrollTimeoutRef.current = null;
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setIsVerticalTransitionSuppressed(false);
     setIsInsightsPanelOpen(false);
     closeTimeoutRef.current = window.setTimeout(() => {
@@ -368,9 +429,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
           />
 
           {/* Hero */}
-          <section
-            className={`${heroSectionClass} ${isPanelVisible ? "hidden" : ""}`}
-          >
+          <section className={heroSectionClass}>
             <div className="px-5 md:px-10 xl:px-16 mx-auto w-full">
               <HeroWhite
                 title={dataset.title ?? ""}
@@ -479,7 +538,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                   </div>
                 )}
                 {/* CRITICAL: horizontal scroll so wide tables never crop */}
-                <div className="relative overflow-x-auto">
+                <div ref={tableStartRef} className="relative overflow-x-auto">
                   <CsvTable
                     csvUrl={downloadUrl}
                     stickySecondColumn
@@ -645,7 +704,8 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       {/* Overlay: does NOT close sidebar (close icon only) */}
       {isPanelVisible && (
         <div
-          className="fixed inset-0 z-40 bg-transparent pointer-events-none"
+          className="fixed inset-x-0 bottom-0 z-40 bg-transparent pointer-events-none"
+          style={{ top: `${navbarHeight}px` }}
           aria-hidden="true"
         />
       )}
@@ -653,7 +713,7 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
       {/* Sidebar (slides in) */}
       {isPanelVisible && (
         <div
-          className={`fixed inset-y-0 right-0 z-50 pointer-events-auto overflow-y-auto bg-slate-50/50 backdrop-blur-md border-l border-slate-200
+          className={`fixed right-0 z-50 pointer-events-auto overflow-y-auto bg-slate-50/50 backdrop-blur-md border-l border-slate-200
                      transition-transform duration-600 ease-[cubic-bezier(0.7,0,0.3,1)]
                      ${
                        isInsightsPanelOpen && hasGeneratedInsights
@@ -662,6 +722,8 @@ const DatasetInnerPage: React.FC<SingleDatasetProps> = ({ data }) => {
                      }`}
           style={{
             width: `${SIDEBAR_WIDTH}px`,
+            top: `${navbarHeight}px`,
+            height: `calc(100vh - ${navbarHeight}px)`,
             transform: `${
               isInsightsPanelOpen
                 ? "translateX(0px)"

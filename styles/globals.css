@@ -20,6 +20,7 @@ button {
 }
 
 @layer utilities {
+
   #search-home:-webkit-autofill,
   #search-home:-webkit-autofill:hover,
   #search-home:-webkit-autofill:focus {
@@ -40,26 +41,33 @@ button {
   input:-internal-autofill-selected {
     -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
     box-shadow: 0 0 0px 1000px transparent inset !important;
-    -webkit-text-fill-color: inherit !important; /* keep text color same as normal input */
-    background-color: transparent !important; /* remove autofill background */
-    transition: background-color 5000s ease-in-out 0s; /* prevents browser animation */
+    -webkit-text-fill-color: inherit !important;
+    /* keep text color same as normal input */
+    background-color: transparent !important;
+    /* remove autofill background */
+    transition: background-color 5000s ease-in-out 0s;
+    /* prevents browser animation */
   }
 }
 
 /* Utilities: hide scrollbar + iOS momentum */
 @layer utilities {
   .secondary-nav-flyout .no-scrollbar::-webkit-scrollbar {
-    display: none; /* Chrome/Safari/Edge */
+    display: none;
+    /* Chrome/Safari/Edge */
   }
 
   .secondary-nav-flyout .no-scrollbar {
     -ms-overflow-style: none;
-    scrollbar-width: none; /* IE/Firefox */
+    scrollbar-width: none;
+    /* IE/Firefox */
   }
 
   .secondary-nav-flyout .momentum {
-    -webkit-overflow-scrolling: touch; /* iOS smooth momentum */
-    scroll-behavior: smooth; /* desktop + modern browsers */
+    -webkit-overflow-scrolling: touch;
+    /* iOS smooth momentum */
+    scroll-behavior: smooth;
+    /* desktop + modern browsers */
   }
 }
 
@@ -68,8 +76,9 @@ button {
  * --------------------------------------------------------------------- */
 #table-wrapper,
 .custom-scroll {
-  background-clip: content-box; /* keeps table background intact */
-  scrollbar-gutter: stable both-edges; /* Chrome/Edge/Firefox */
+  background-clip: content-box;
+  /* keeps table background intact */
+  /* scrollbar-gutter: stable both-edges;  Chrome/Edge/Firefox */
   overflow-y: auto;
 }
 
@@ -136,7 +145,7 @@ button {
   *  ---------------------------------------------------------------------
 */
 @layer components {
-  .tns-horizontal.tns-subpixel > .tns-item {
+  .tns-horizontal.tns-subpixel>.tns-item {
     vertical-align: middle !important;
     text-align: center !important;
   }
@@ -144,12 +153,13 @@ button {
   .tns-horizontal {
     align-items: center !important;
   }
+
   /* 
     #tns1 > .tns-item {
         width: calc(2.9991%) !important;
     } */
 
-  .tns-horizontal.tns-subpixel > .tns-item {
+  .tns-horizontal.tns-subpixel>.tns-item {
     vertical-align: middle !important;
   }
 
@@ -175,6 +185,7 @@ button {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -240,36 +251,26 @@ button {
 
   /* Gradients & shadows (deduped a bit) */
   --color-linear-gradient-1: linear-gradient(180deg, #270015 0%, #4c0b1b 100%);
-  --color-linear-gradient-2: linear-gradient(
-    94deg,
-    #fff -15.14%,
-    rgba(255, 255, 255, 0.3) 128.27%
-  );
-  --color-linear-gradient-3: linear-gradient(
-    94deg,
-    #fff -15.14%,
-    rgba(255, 255, 255, 0.3) 128.27%
-  );
+  --color-linear-gradient-2: linear-gradient(94deg,
+      #fff -15.14%,
+      rgba(255, 255, 255, 0.3) 128.27%);
+  --color-linear-gradient-3: linear-gradient(94deg,
+      #fff -15.14%,
+      rgba(255, 255, 255, 0.3) 128.27%);
   --color-linear-gradient-4: linear-gradient(90deg, #eb1a52 0%, #1465f5 100%);
-  --color-linear-gradient-5: linear-gradient(
-    177deg,
-    #1c0209 8.9%,
-    #7a0a28 52.08%,
-    #4b0619 95.26%
-  );
-  --color-radial-gradient-1: radial-gradient(
-    131.11% 61.3% at 48.62% 46.15%,
-    #bb1b73 0%,
-    #b62048 46.53%,
-    #4f082e 100%
-  );
+  --color-linear-gradient-5: linear-gradient(177deg,
+      #1c0209 8.9%,
+      #7a0a28 52.08%,
+      #4b0619 95.26%);
+  --color-radial-gradient-1: radial-gradient(131.11% 61.3% at 48.62% 46.15%,
+      #bb1b73 0%,
+      #b62048 46.53%,
+      #4f082e 100%);
   --color-radial-gradient-2:
-    radial-gradient(
-      51.99% 67.19% at 50% 96.88%,
+    radial-gradient(51.99% 67.19% at 50% 96.88%,
       rgba(76, 11, 27, 0.8) 0%,
       rgba(76, 11, 27, 0) 100%,
-      rgba(76, 11, 27, 0.12) 100%
-    ),
+      rgba(76, 11, 27, 0.12) 100%),
     #270015;
 
   --shadow-custom-lg: 0px 4px 14px 0px rgba(0, 0, 0, 0.18);
@@ -314,35 +315,39 @@ button {
 }
 
 .large-img img {
-  width: 100% !important; /* fills container width */
-  display: block; /* centers with margin auto */
+  width: 100% !important;
+  /* fills container width */
+  display: block;
+  /* centers with margin auto */
   margin-left: auto;
   margin-right: auto;
-  max-width: 56rem; /* Tailwind max-w-4xl = 64rem */
-  padding-left: 1.25rem; /* Tailwind px-5 = 1.25rem */
+  max-width: 56rem;
+  /* Tailwind max-w-4xl = 64rem */
+  padding-left: 1.25rem;
+  /* Tailwind px-5 = 1.25rem */
   padding-right: 1.25rem;
 }
 
 @media (min-width: 768px) {
+
   /* md */
   .large-img img {
-    padding-left: 2.5rem; /* Tailwind md:px-10 */
+    padding-left: 2.5rem;
+    /* Tailwind md:px-10 */
     padding-right: 2.5rem;
   }
 }
 
 @media (min-width: 1280px) {
+
   /* xl */
   .large-img img {
-    padding-left: 4rem; /* Tailwind xl:px-16 */
+    padding-left: 4rem;
+    /* Tailwind xl:px-16 */
     padding-right: 4rem;
   }
 }
 
 .ai-insights-sidebar-open footer.footer {
-  display: none;
-}
-
-.ai-insights-sidebar-open header.navbar {
   display: none;
 }
