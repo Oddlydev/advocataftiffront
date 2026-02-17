@@ -2,7 +2,7 @@
 import "../faust.config";
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import { AppProps } from "next/app";
+import App, { AppContext, AppInitialProps, AppProps } from "next/app";
 import { FaustProvider } from "@faustwp/core";
 import Script from "next/script";
 import "../styles/globals.css";
@@ -23,7 +23,63 @@ import {
   baskervville,
 } from "@/src/lib/fonts";
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+type HeaderMenuItem = {
+  id: string;
+  label: string;
+  uri?: string | null;
+  parentId?: string | null;
+};
+
+type AppPageProps = AppProps["pageProps"] & {
+  headerMenuItems?: HeaderMenuItem[];
+};
+
+const MENU_PREFETCH_QUERY = `
+  query GetHeaderMenuPrefetch {
+    menu(id: "Main Menu", idType: NAME) {
+      menuItems(first: 200) {
+        nodes {
+          id
+          label
+          uri
+          parentId
+        }
+      }
+    }
+  }
+`;
+
+function resolveWpGraphqlEndpoint(): string | null {
+  const wpBase =
+    process.env.NEXT_PUBLIC_WP_URL ||
+    process.env.NEXT_PUBLIC_WORDPRESS_URL ||
+    process.env.WORDPRESS_URL;
+
+  if (!wpBase) return null;
+  return `${wpBase.replace(/\/+$/, "")}/graphql`;
+}
+
+async function fetchHeaderMenuItems(): Promise<HeaderMenuItem[]> {
+  const endpoint = resolveWpGraphqlEndpoint();
+  if (!endpoint) return [];
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query: MENU_PREFETCH_QUERY }),
+    });
+
+    if (!response.ok) return [];
+
+    const payload = await response.json();
+    return payload?.data?.menu?.menuItems?.nodes ?? [];
+  } catch {
+    return [];
+  }
+}
+
+function MyApp({ Component, pageProps }: AppProps<AppPageProps>) {
   const router = useRouter();
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -69,6 +125,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <HeaderNav
           logoSrc={BrandLogo.src}
           navDropdownImage={navbarImg.src}
+          initialMenuItems={pageProps?.headerMenuItems ?? []}
           onSearch={(q) => console.log("search:", q)}
         />
 
@@ -80,3 +137,22 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     </FaustProvider>
   );
 }
+
+MyApp.getInitialProps = async (
+  appContext: AppContext,
+): Promise<AppInitialProps> => {
+  const appProps = await App.getInitialProps(appContext);
+
+  // Only prefetch on server so initial HTML contains real menu links.
+  if (typeof window === "undefined") {
+    const headerMenuItems = await fetchHeaderMenuItems();
+    appProps.pageProps = {
+      ...appProps.pageProps,
+      headerMenuItems,
+    };
+  }
+
+  return appProps;
+};
+
+export default MyApp;

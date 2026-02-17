@@ -12,6 +12,7 @@ export type HeaderNavProps = {
   onSearch?: (query: string) => void;
   className?: string;
   siteUrl?: string;
+  initialMenuItems?: MenuItem[];
 };
 
 const SidebarItem: React.FC<{
@@ -617,14 +618,26 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
   onSearch,
   className,
   siteUrl,
+  initialMenuItems = [],
 }) => {
-  const { data } = useQuery(HEADER_MENU_QUERY);
+  const { data, previousData, loading } = useQuery(HEADER_MENU_QUERY, {
+    fetchPolicy: "cache-first",
+    nextFetchPolicy: "cache-first",
+    returnPartialData: true,
+    notifyOnNetworkStatusChange: false,
+  });
   const pathname = usePathname() || "";
 
   const baseUrl =
     siteUrl || (typeof window !== "undefined" ? window.location.origin : "/");
 
-  const allMenuItems: MenuItem[] = data?.menu?.menuItems?.nodes ?? [];
+  const menuData = data ?? previousData;
+  const queriedMenuItems: MenuItem[] = menuData?.menu?.menuItems?.nodes ?? [];
+  const allMenuItems: MenuItem[] =
+    queriedMenuItems.length > 0 ? queriedMenuItems : initialMenuItems;
+  const hasResolvedMenu = Boolean(menuData?.menu);
+  const isMenuLoading =
+    loading && !hasResolvedMenu && initialMenuItems.length === 0;
   const dashboardsItem = allMenuItems.find(
     (n) => n.label?.toLowerCase?.().includes("dashboard") && !n.parentId
   );
@@ -662,7 +675,14 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
 
         <div className="flex items-center gap-10">
           {/* Desktop Nav */}
-          <nav className="nav hidden lg:flex items-center space-x-2">
+          <nav className="nav hidden lg:flex items-center space-x-2" aria-busy={isMenuLoading}>
+            {isMenuLoading && (
+              <>
+                <span className="h-11 w-24 rounded-md bg-slate-600/50 animate-pulse" aria-hidden="true" />
+                <span className="h-11 w-28 rounded-md bg-slate-600/50 animate-pulse" aria-hidden="true" />
+                <span className="h-11 w-24 rounded-md bg-slate-600/50 animate-pulse" aria-hidden="true" />
+              </>
+            )}
             {itemsBeforeDashboard.map((item) => {
               const isActive = pathname === item.uri;
               return (
