@@ -24,15 +24,15 @@ button {
   #search-home:-webkit-autofill,
   #search-home:-webkit-autofill:hover,
   #search-home:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0px 1000px theme("colors.brandBlack") inset !important;
-    -webkit-text-fill-color: theme("colors.brandWhite") !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--color-brand-black) inset !important;
+    -webkit-text-fill-color: var(--color-brand-white) !important;
     transition: background-color 5000s ease-in-out 0s !important;
   }
 
   .search-input:-webkit-autofill,
   .search-input:-webkit-autofill:hover,
   .search-input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0px 1000px theme("colors.white") inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
   }
 
   input:-webkit-autofill,
