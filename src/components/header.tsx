@@ -195,8 +195,20 @@ type MenuItem = {
 // Normalize paths
 const normalizePath = (p?: string | null) => {
   if (!p) return "";
-  if (p === "/") return "/";
-  return String(p).replace(/\/+$/, "");
+  const raw = String(p).trim();
+  let pathname = raw;
+
+  // Support absolute URLs returned by CMS menu data.
+  if (/^https?:\/\//i.test(raw)) {
+    try {
+      pathname = new URL(raw).pathname;
+    } catch {
+      pathname = raw;
+    }
+  }
+
+  if (pathname === "/") return "/";
+  return pathname.replace(/\/+$/, "") || "/";
 };
 
 const pathMatches = (current?: string | null, target?: string | null) => {
@@ -299,9 +311,7 @@ const DashboardDropdown: React.FC<{
             <nav className="sidebar-fill pt-4" aria-label="Sidebar">
               <ul role="list" className="space-y-1">
                 {items.map((item) => {
-                  const isActive =
-                    typeof window !== "undefined" &&
-                    window.location.pathname === item.uri;
+                  const isActive = pathMatches(currentPathname, item.uri);
                   return (
                     <li key={item.id}>
                       <SidebarItem
@@ -469,9 +479,7 @@ const MobileMenu: React.FC<{
           return (
             <>
               {firstRow.map((item) => {
-                const isActive =
-                  typeof window !== "undefined" &&
-                  window.location.pathname === item.uri;
+                const isActive = pathMatches(currentPathname, item.uri);
                 return (
                   <a
                     key={item.id}
@@ -547,9 +555,10 @@ const MobileMenu: React.FC<{
                         >
                           <ul role="list" className="space-y-1">
                             {dashboardItems.map((item) => {
-                              const isActive =
-                                typeof window !== "undefined" &&
-                                window.location.pathname === item.uri;
+                              const isActive = pathMatches(
+                                currentPathname,
+                                item.uri
+                              );
                               return (
                                 <li key={item.id}>
                                   <SidebarItem
@@ -586,9 +595,7 @@ const MobileMenu: React.FC<{
               )}
 
               {restRows.map((item) => {
-                const isActive =
-                  typeof window !== "undefined" &&
-                  window.location.pathname === item.uri;
+                const isActive = pathMatches(currentPathname, item.uri);
                 return (
                   <a
                     key={item.id}
@@ -684,7 +691,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
               </>
             )}
             {itemsBeforeDashboard.map((item) => {
-              const isActive = pathname === item.uri;
+              const isActive = pathMatches(pathname, item.uri);
               return (
                 <a
                   key={item.id}
@@ -711,7 +718,7 @@ const HeaderNav: React.FC<HeaderNavProps> = ({
             )}
 
             {itemsAfterDashboard.map((item) => {
-              const isActive = pathname === item.uri;
+              const isActive = pathMatches(pathname, item.uri);
               return (
                 <a
                   key={item.id}
