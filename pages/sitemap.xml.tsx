@@ -4,10 +4,14 @@ import { GetServerSidePropsContext } from "next"; // Import GetServerSidePropsCo
 export default function Sitemap() {}
 
 export function getServerSideProps(ctx: GetServerSidePropsContext) {
-  // Add type for ctx
+  const proto = (ctx.req.headers["x-forwarded-proto"] as string) || "https";
+  const host = ctx.req.headers.host || "localhost:3000";
+  const frontendUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || `${proto}://${host}`;
+
   return getSitemapProps(ctx, {
-    frontendUrl: process.env.NEXT_PUBLIC_WP_URL || "", // Add empty string as fallback
-    // sitemapIndexPath: 'sitemap.xml',
+    frontendUrl,
+    sitemapIndexPath: "/sitemap_index.xml",
     // sitemapPathsToIgnore: ['/wp-sitemap-users-*'],
   });
 }
