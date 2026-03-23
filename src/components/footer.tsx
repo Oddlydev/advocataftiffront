@@ -16,7 +16,7 @@ export default function Footer(): JSX.Element {
   const [openQuick, setOpenQuick] = useState(false);
   const [openDashboards, setOpenDashboards] = useState(false);
   const pathname = usePathname();
-  const sitemapUrl = "/sitemap.xml";
+  const sitemapUrl = `${process.env.NEXT_PUBLIC_WP_URL}/sitemap_index.xml`;
 
   const { data } = useQuery(FOOTER_MENU_QUERY);
   const allItems: FooterMenuItem[] = data?.menu?.menuItems?.nodes ?? [];
