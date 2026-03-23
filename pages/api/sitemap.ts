@@ -23,22 +23,11 @@ function resolveWordPressOrigin(): string | null {
   }
 }
 
-function resolveFrontendOrigin(req: NextApiRequest): string {
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/+$/, "");
-  }
-
-  const proto = (req.headers["x-forwarded-proto"] as string) || "https";
-  const host = req.headers.host || "localhost:3000";
-  return `${proto}://${host}`;
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   const wpOrigin = resolveWordPressOrigin();
-  const frontendOrigin = resolveFrontendOrigin(req);
   const headerPath = req.headers["x-sitemap-path"];
   const rawPath =
     typeof headerPath === "string"
@@ -59,27 +48,17 @@ export default async function handler(
   }
 
   try {
-    const upstreamUrl = `${wpOrigin}${path}`;
-    const upstreamRes = await fetch(upstreamUrl);
-    const xml = await upstreamRes.text();
+    const xmlRes = await fetch(`${wpOrigin}${path}`);
+    const xml = await xmlRes.text();
 
-    if (!upstreamRes.ok) {
-      res.status(upstreamRes.status).send(xml || `Failed to fetch ${path}`);
+    if (!xmlRes.ok) {
+      res.status(xmlRes.status).send(xml || `Failed to fetch ${path}`);
       return;
     }
 
-    const normalizedXml = xml
-      .replace(/<\?xml-stylesheet[^?]*\?>/i, "")
-      .replace(/href="\/\//g, 'href="https://')
-      .replaceAll(wpOrigin, frontendOrigin);
-
-    res.status(200);
-    res.setHeader(
-      "Content-Type",
-      upstreamRes.headers.get("content-type") || "application/xml; charset=utf-8",
-    );
-    res.setHeader("Cache-Control", "no-store, max-age=0");
-    res.send(normalizedXml);
+    res.setHeader("Content-Type", "text/xml");
+    res.write(xml);
+    res.end();
   } catch (error) {
     console.error("Error fetching sitemap from WordPress:", error);
     res.status(502).send("Failed to fetch sitemap");
