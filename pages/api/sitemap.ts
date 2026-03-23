@@ -56,8 +56,10 @@ export default async function handler(
       return;
     }
 
+    const plainXml = xml.replace(/<\?xml-stylesheet[^?]*\?>\s*/i, "");
+
     res.setHeader("Content-Type", "text/xml");
-    res.write(xml);
+    res.write(plainXml);
     res.end();
   } catch (error) {
     console.error("Error fetching sitemap from WordPress:", error);
