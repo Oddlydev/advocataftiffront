@@ -2,27 +2,19 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const wpUrl = process.env.NEXT_PUBLIC_WP_URL || 'https://advocataftifda.wpenginepowered.com'
-  const robotsUrl = `${wpUrl.replace(/\/$/, '')}/robots.txt`
+  const proto = (req.headers['x-forwarded-proto'] as string) || 'https'
+  const host = req.headers.host || 'localhost:3000'
+  const requestOrigin = `${proto}://${host}`
+  const siteOrigin = (process.env.NEXT_PUBLIC_SITE_URL || requestOrigin).replace(/\/$/, '')
 
-  try {
-    const response = await fetch(robotsUrl)
-    const text = await response.text()
+  const robotsTxt = `User-agent: *
+Allow: /
 
-    res.setHeader('Content-Type', 'text/plain')
-    // Optional caching for 1 hour at the Vercel edge
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate')
+Sitemap: ${siteOrigin}/sitemap.xml
+`
 
-    res.status(200).send(text)
-  } catch (error) {
-    console.error('Error fetching robots.txt from WP:', error)
-    // Fallback robots.txt if WP is unreachable
-    res.setHeader('Content-Type', 'text/plain')
-    const proto = (req.headers['x-forwarded-proto'] as string) || 'https'
-    const host = req.headers.host || 'localhost:3000'
-    const origin = `${proto}://${host}`
-    res.status(200).send(`User-agent: *
-Allow: /\n\nSitemap: ${origin}/sitemap.xml\n`)
-  }
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+  res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+  res.status(200).send(robotsTxt)
 }
 
